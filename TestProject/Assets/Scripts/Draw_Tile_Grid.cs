@@ -151,25 +151,52 @@ public class Draw_Tile_Grid : MonoBehaviour {
 		SpriteRenderer sprite2 = Tile2.GetComponent<SpriteRenderer>();
 		SpriteRenderer sprite3 = Tile3.GetComponent<SpriteRenderer>();
 		SpriteRenderer sprite4 = Tile4.GetComponent<SpriteRenderer>();
+		Transform tran;
+		GameObject obj;
 		foreach (Tile t in tile_grid.get_tiles()) {
 
 			for (int i=0; i < t.get_height(); i++){
 
 				if (t.get_tile_sprite() == 1){
-					Instantiate(Tile1, new Vector3((float)t.get_x_pos(), (float)(t.get_y_pos()+i*tile_grid.get_TILE_HEIGHT()/100.0), 0), Quaternion.identity);
-					sprite1 = Tile1.GetComponent<SpriteRenderer>();
+
+					if (i != t.get_height()-1){
+						Destroy (((Transform)Instantiate(Tile1, new Vector3((float)t.get_x_pos(), (float)(t.get_y_pos()+i*tile_grid.get_TILE_HEIGHT()/100.0), 0), Quaternion.identity)).gameObject.GetComponent<PolygonCollider2D>());
+						sprite1 = Tile1.GetComponent<SpriteRenderer>();
+					}
+					else {
+						Instantiate(Tile1, new Vector3((float)t.get_x_pos(), (float)(t.get_y_pos()+i*tile_grid.get_TILE_HEIGHT()/100.0), 0), Quaternion.identity);
+						sprite1 = Tile1.GetComponent<SpriteRenderer>();
+					}
 				}
 				else if (t.get_tile_sprite() == 2){
-					Instantiate(Tile2, new Vector3((float)t.get_x_pos(), (float)(t.get_y_pos()+i*tile_grid.get_TILE_HEIGHT()/100.0), 0), Quaternion.identity);
-					sprite2 = Tile2.GetComponent<SpriteRenderer>();
+					if (i != t.get_height()-1){
+						Destroy (((Transform)Instantiate(Tile2, new Vector3((float)t.get_x_pos(), (float)(t.get_y_pos()+i*tile_grid.get_TILE_HEIGHT()/100.0), 0), Quaternion.identity)).gameObject.GetComponent<PolygonCollider2D>());
+						sprite1 = Tile2.GetComponent<SpriteRenderer>();
+					}
+					else {
+						Instantiate(Tile2, new Vector3((float)t.get_x_pos(), (float)(t.get_y_pos()+i*tile_grid.get_TILE_HEIGHT()/100.0), 0), Quaternion.identity);
+						sprite1 = Tile2.GetComponent<SpriteRenderer>();
+					}
 				}
 				else if (t.get_tile_sprite() == 3){
-					Instantiate(Tile3, new Vector3((float)t.get_x_pos(), (float)(t.get_y_pos()+i*tile_grid.get_TILE_HEIGHT()/100.0), 0), Quaternion.identity);
-					sprite3 = Tile3.GetComponent<SpriteRenderer>();
+					if (i != t.get_height()-1){
+						Destroy (((Transform)Instantiate(Tile3, new Vector3((float)t.get_x_pos(), (float)(t.get_y_pos()+i*tile_grid.get_TILE_HEIGHT()/100.0), 0), Quaternion.identity)).gameObject.GetComponent<PolygonCollider2D>());
+						sprite1 = Tile3.GetComponent<SpriteRenderer>();
+					}
+					else {
+						Instantiate(Tile3, new Vector3((float)t.get_x_pos(), (float)(t.get_y_pos()+i*tile_grid.get_TILE_HEIGHT()/100.0), 0), Quaternion.identity);
+						sprite1 = Tile3.GetComponent<SpriteRenderer>();
+					}
 				}
 				else if (t.get_tile_sprite() == 4){
-					Instantiate(Tile4, new Vector3((float)t.get_x_pos(), (float)(t.get_y_pos()+i*tile_grid.get_TILE_HEIGHT()/100.0), 0), Quaternion.identity);
-					sprite4 = Tile4.GetComponent<SpriteRenderer>();
+					if (i != t.get_height()-1){
+						Destroy (((Transform)Instantiate(Tile4, new Vector3((float)t.get_x_pos(), (float)(t.get_y_pos()+i*tile_grid.get_TILE_HEIGHT()/100.0), 0), Quaternion.identity)).gameObject.GetComponent<PolygonCollider2D>());
+						sprite1 = Tile4.GetComponent<SpriteRenderer>();
+					}
+					else {
+						Instantiate(Tile4, new Vector3((float)t.get_x_pos(), (float)(t.get_y_pos()+i*tile_grid.get_TILE_HEIGHT()/100.0), 0), Quaternion.identity);
+						sprite1 = Tile4.GetComponent<SpriteRenderer>();
+					}
 				}
 				if (sprite1)
 				{
