@@ -40,8 +40,7 @@ public class MovementScript : MonoBehaviour{
 			//if (currentTile != selectedTile){
 			currentTile.GetComponent<SpriteRenderer> ().color = new Color(255f, 255f, 255f, 1f);
 			currentTile = hit.transform;
-			transform.position = new Vector3(currentTile.position.x, currentTile.position.y+(float)(script.tileGrid.TILE_LENGTH/200.0), currentTile.position.z);
-				//renderer = (SpriteRenderer)currentTile.GetComponent<SpriteRenderer> ();
+
 			currentTile.GetComponent<SpriteRenderer> ().color = new Color(0f, 0f, 0f, 1f); // Set to opaque black
 				//print("test");
 			//}
@@ -54,6 +53,11 @@ public class MovementScript : MonoBehaviour{
 			selectedTile.GetComponent<SpriteRenderer> ().color=new Color(255f, 255f, 255f, 1f); // Set to white
 			selectedTile = currentTile;
 			selectedTile.GetComponent<SpriteRenderer> ().color=new Color(255f, 0f, 0f, 1f); // Set to blue
+			if(data.traversible){
+				transform.position = new Vector3(currentTile.position.x, currentTile.position.y+(float)(transform.GetComponent<SpriteRenderer> ().sprite.rect.height/transform.GetComponent<SpriteRenderer> ().sprite.pixelsPerUnit + 0.15f), currentTile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), currentTile.position.z);
+				//renderer = (SpriteRenderer)currentTile.GetComponent<SpriteRenderer> ();
+				transform.GetComponent<SpriteRenderer> ().sortingOrder = currentTile.GetComponent<SpriteRenderer> ().sortingOrder + 1;
+			}
 
 		}
 
@@ -64,7 +68,9 @@ public class MovementScript : MonoBehaviour{
 	void Initialize(){
 		script = Tile_Grid.GetComponent<Draw_Tile_Grid>();
 		tiles = script.tileGrid.getTiles ();
-		currentTile = tiles[0, 0, 0].getObj ();
-		selectedTile = tiles [0, 0, 0].getObj ();
+		currentTile = tiles[0, 0, 2].getObj ();
+		selectedTile = tiles [0, 0, 2].getObj ();
+
+
 	}
 }

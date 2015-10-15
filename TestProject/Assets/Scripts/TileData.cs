@@ -10,6 +10,8 @@ public class TileData : MonoBehaviour{
 	public int z_index;
 	public int tile_height;
 	public int tile_sprite_index;
+	public bool traversible;
+	public int object_sprite;
 	/*
 	public void set_x_index(int x){
 		x_index = x;
