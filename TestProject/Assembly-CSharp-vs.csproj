@@ -50,8 +50,9 @@
      <Compile Include="Assets\Scripts\Draw_Tile_Grid.cs" />
      <Compile Include="Assets\Scripts\MovementScript.cs" />
      <Compile Include="Assets\Scripts\TileData.cs" />
-     <None Include="Assets\height_map.txt" />
-     <None Include="Assets\tile_map.txt" />
+     <None Include="Assets\Maps\height_map.txt" />
+     <None Include="Assets\Maps\falls_map.txt" />
+     <None Include="Assets\Maps\tile_map.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>C:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

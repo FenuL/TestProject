@@ -94,7 +94,7 @@ public class Tile_Grid : MonoBehaviour{
 		int col_num = 0;
 		int i = 0;
 		double start_x_pos = 0;
-		double start_y_pos = 4;
+		double start_y_pos = 3.5;
 		foreach (string line in lines){
 			string[] elements = line.Split(';');
 			foreach (string e in elements){
@@ -151,19 +151,23 @@ public class Tile_Grid : MonoBehaviour{
 					//Set the correct sprite for the tile
 					sprite = tile.GetComponent<SpriteRenderer>();
 					sprite.sprite = tileSpriteSheet[tile_sprites[x,y,z]-1];
-					
-					//Instantiate the tile object. Destroy the collider on the prefab if the tile is not on top of the stack. 
+ 
+					//Instantiate the tile object. Destroy the collider on the prefab if the tile is not on top of the stack.
+					Transform instance= (Transform)Instantiate(tile, new Vector3((float)(start_x_pos - (x) * (TILE_WIDTH/200) + (y) * (TILE_WIDTH/200)), (float)(start_y_pos - (x) * (TILE_LENGTH/200) - (y) * (TILE_LENGTH/200)+z*TILE_HEIGHT/100.0), 0), Quaternion.identity);
 					if (z != tile_heights[x,y]-1){
-						Destroy (((Transform)Instantiate(tile, new Vector3((float)(start_x_pos - (x) * (TILE_WIDTH/200) + (y) * (TILE_WIDTH/200)), (float)(start_y_pos - (x) * (TILE_LENGTH/200) - (y) * (TILE_LENGTH/200)+z*TILE_HEIGHT/100.0), 0), Quaternion.identity)).gameObject.GetComponent<PolygonCollider2D>());
+						Destroy (instance.gameObject.GetComponent<PolygonCollider2D>());
 					}
-					else {
-						Instantiate(tile, new Vector3((float)(start_x_pos - (x) * (TILE_WIDTH/200) + (y) * (TILE_WIDTH/200)), (float)(start_y_pos - (x) * (TILE_LENGTH/200) - (y) * (TILE_LENGTH/200)+z*TILE_HEIGHT/100.0), 0), Quaternion.identity);
+					if (tile_sprites[x,y,z]-1 != 2){
+						Destroy (instance.gameObject.GetComponent<Animator>());
 					}
+					//else {
+					//	instance = Instantiate(tile, new Vector3((float)(start_x_pos - (x) * (TILE_WIDTH/200) + (y) * (TILE_WIDTH/200)), (float)(start_y_pos - (x) * (TILE_LENGTH/200) - (y) * (TILE_LENGTH/200)+z*TILE_HEIGHT/100.0), 0), Quaternion.identity);
+					//}
 					//Increase the tile draw order so other tiles are drawn correctly.
 					//if (sprite)
 					//{
-						tile_number++;
-						sprite.sortingOrder = tile_number;
+					tile_number++;
+					sprite.sortingOrder = tile_number;
 					//}
 					tiles[x,y,z] = new Tile(tile,x,y,tile_heights[x,y],tile_sprites[x,y,z]);
 					script = tile.GetComponent<TileData>();
@@ -215,18 +219,54 @@ public class Draw_Tile_Grid : MonoBehaviour {
 	public Transform item;
 	public Sprite[] itemSpriteSheet;
 	public Tile_Grid tileGrid;
+	public string currMap;
 
 	// Use this for initialization
 	void Start () {
-		string[] lines = System.IO.File.ReadAllLines(@"Assets/tile_map.txt");
+		//string[] lines = System.IO.File.ReadAllLines(@"Assets/Maps/falls_map.txt");
+		currMap = "Assets/Maps/tile_map.txt";
+		string[] lines = System.IO.File.ReadAllLines(currMap);
 		tileGrid = new Tile_Grid(lines, tile, tileSpriteSheet, item, itemSpriteSheet);
 		tile.GetComponent<SpriteRenderer> ().color = new Color(255f, 255f, 255f, 1f);
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		if (Input.GetKeyDown ("space")) {
+			if(currMap == "Assets/Maps/falls_map.txt"){
+				//destroy the old map
+			    GameObject[] objects = GameObject.FindGameObjectsWithTag ("Tile");
+			    foreach (GameObject game_object in objects) {
+				    Destroy (game_object);
+			    }
+				objects = GameObject.FindGameObjectsWithTag ("Object");
+				foreach (GameObject game_object in objects) {
+					Destroy (game_object);
+				}
+				//create new map
+				currMap = "Assets/Maps/tile_map.txt";
+				string[] lines = System.IO.File.ReadAllLines(currMap);
+			    tileGrid = new Tile_Grid(lines, tile, tileSpriteSheet, item, itemSpriteSheet);
+			    tile.GetComponent<SpriteRenderer> ().color = new Color(255f, 255f, 255f, 1f);
+			}else{
+				//destroy the old map
+				GameObject[] objects = GameObject.FindGameObjectsWithTag ("Tile");
+				foreach (GameObject game_object in objects) {
+					Destroy (game_object);
+				}
+				objects = GameObject.FindGameObjectsWithTag ("Object");
+				foreach (GameObject game_object in objects) {
+					Destroy (game_object);
+				}
+				//create new map
+				currMap = "Assets/Maps/falls_map.txt";
+				string[] lines = System.IO.File.ReadAllLines(currMap);
+				tileGrid = new Tile_Grid(lines, tile, tileSpriteSheet, item, itemSpriteSheet);
+				tile.GetComponent<SpriteRenderer> ().color = new Color(255f, 255f, 255f, 1f);
+			}
+		}
 	}
-
+	
 	void OnApplicationQuit() {
 		tile.GetComponent<SpriteRenderer> ().color = new Color(255f, 255f, 255f, 1f);
 	}
