@@ -66,7 +66,7 @@ public class Tile {
 public class Tile_Grid : MonoBehaviour{
 	public float TILE_LENGTH = 43;
 	public float TILE_WIDTH = 85;
-	public float TILE_HEIGHT = 25;
+	public float TILE_HEIGHT = 18;
 	public static int MAX_TILES = 10;
 	public static int tile_grid_width=20;
 	public static int tile_grid_height=20;

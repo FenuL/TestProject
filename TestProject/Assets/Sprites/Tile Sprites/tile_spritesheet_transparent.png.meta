@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: cefa5a8268e5d5044b8c69b766bd75c6
-timeCreated: 1444701627
+timeCreated: 1446083318
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -8,6 +8,15 @@ TextureImporter:
     21300002: tile_spritesheet_transparent_1
     21300004: tile_spritesheet_transparent_2
     21300006: tile_spritesheet_transparent_3
+    21300008: tile_spritesheet_transparent_4
+    21300010: tile_spritesheet_transparent_5
+    21300012: tile_spritesheet_transparent_6
+    21300014: tile_spritesheet_transparent_7
+    21300016: tile_spritesheet_transparent_8
+    21300018: tile_spritesheet_transparent_9
+    21300020: tile_spritesheet_transparent_10
+    21300022: tile_spritesheet_transparent_11
+    21300024: tile_spritesheet_transparent_12
   serializedVersion: 2
   mipmaps:
     mipMapMode: 0
@@ -59,9 +68,9 @@ TextureImporter:
         x: 0
         y: 0
         width: 88
-        height: 71
+        height: 61
       alignment: 0
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: tile_spritesheet_transparent_1
       rect:
@@ -69,9 +78,9 @@ TextureImporter:
         x: 88
         y: 0
         width: 88
-        height: 71
+        height: 61
       alignment: 0
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: tile_spritesheet_transparent_2
       rect:
@@ -79,9 +88,9 @@ TextureImporter:
         x: 176
         y: 0
         width: 88
-        height: 71
+        height: 61
       alignment: 0
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: tile_spritesheet_transparent_3
       rect:
@@ -89,9 +98,99 @@ TextureImporter:
         x: 264
         y: 0
         width: 88
-        height: 71
+        height: 61
       alignment: 0
-      pivot: {x: .5, y: .5}
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheet_transparent_4
+      rect:
+        serializedVersion: 2
+        x: 352
+        y: 0
+        width: 88
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheet_transparent_5
+      rect:
+        serializedVersion: 2
+        x: 440
+        y: 0
+        width: 88
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheet_transparent_6
+      rect:
+        serializedVersion: 2
+        x: 528
+        y: 0
+        width: 88
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheet_transparent_7
+      rect:
+        serializedVersion: 2
+        x: 616
+        y: 0
+        width: 88
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheet_transparent_8
+      rect:
+        serializedVersion: 2
+        x: 704
+        y: 0
+        width: 88
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheet_transparent_9
+      rect:
+        serializedVersion: 2
+        x: 792
+        y: 0
+        width: 88
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheet_transparent_10
+      rect:
+        serializedVersion: 2
+        x: 880
+        y: 0
+        width: 88
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheet_transparent_11
+      rect:
+        serializedVersion: 2
+        x: 968
+        y: 0
+        width: 88
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheet_transparent_12
+      rect:
+        serializedVersion: 2
+        x: 1056
+        y: 0
+        width: 88
+        height: 61
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
   spritePackingTag: 
   userData: 
