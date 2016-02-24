@@ -6,11 +6,24 @@ public class MovementScript : MonoBehaviour{
 	// Use this for initialization
 	void Start () {
 	}
-
+	public int PlayerNum;
+	public string PlayerName;
+	public int PlayerHealth;
+	public int PlayerMana;
+	public int Strength;
+	public int Coordination;
+	public int Spirit;
+	public int Dexterity;
+	public int Vitality;
+	public int level;
+	public string profession;
+	public Equipment[] Equipment;
+	public GameObject controller;
 	public GameObject Tile_Grid;
 	public Draw_Tile_Grid script;
 	private TileData data;
 	private Tile[,,] tiles;
+	private Transform clickedTile;
 	private Transform currentTile;
 	private Transform selectedTile;
 	private bool initialized = false;
@@ -18,6 +31,9 @@ public class MovementScript : MonoBehaviour{
 
 	// Update is called once per frame
 	void Update () {
+		if (currentTile == null || selectedTile == null || clickedTile == null) {
+			initialized = false;
+		}
 		if (! initialized) {
 			Initialize ();
 			initialized = true;
@@ -38,10 +54,10 @@ public class MovementScript : MonoBehaviour{
 			data = hit.transform.GetComponent<TileData>();
 			print ("x: " + data.x_index + ", y: " + data.y_index + ", z: " + data.z_index);
 			//if (currentTile != selectedTile){
-			currentTile.GetComponent<SpriteRenderer> ().color = new Color(255f, 255f, 255f, 1f);
-			currentTile = hit.transform;
+			selectedTile.GetComponent<SpriteRenderer> ().color = new Color(255f, 255f, 255f, 1f);
+			selectedTile = hit.transform;
 
-			currentTile.GetComponent<SpriteRenderer> ().color = new Color(0f, 0f, 0f, 1f); // Set to opaque black
+			selectedTile.GetComponent<SpriteRenderer> ().color = new Color(0f, 0f, 0f, 1f); // Set to opaque black
 				//print("test");
 			//}
 			//Vector3 worldPos = hit.point;
@@ -50,13 +66,18 @@ public class MovementScript : MonoBehaviour{
 
 		if(Input.GetMouseButton(0)){
 			//print("test2");
-			selectedTile.GetComponent<SpriteRenderer> ().color=new Color(255f, 255f, 255f, 1f); // Set to white
-			selectedTile = currentTile;
-			selectedTile.GetComponent<SpriteRenderer> ().color=new Color(255f, 0f, 0f, 1f); // Set to blue
+			clickedTile.GetComponent<SpriteRenderer> ().color=new Color(255f, 255f, 255f, 1f); // Set to white
+			clickedTile = selectedTile;
+			clickedTile.GetComponent<SpriteRenderer> ().color=new Color(255f, 0f, 0f, 1f); // Set to blue
 			if(data.traversible){
-				transform.position = new Vector3(currentTile.position.x, currentTile.position.y+(float)(transform.GetComponent<SpriteRenderer> ().sprite.rect.height/transform.GetComponent<SpriteRenderer> ().sprite.pixelsPerUnit + 0.15f), currentTile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), currentTile.position.z);
-				//renderer = (SpriteRenderer)currentTile.GetComponent<SpriteRenderer> ();
-				transform.GetComponent<SpriteRenderer> ().sortingOrder = currentTile.GetComponent<SpriteRenderer> ().sortingOrder + 1;
+				if(PlayerNum == controller.GetComponent<Game_Controller>().currentPlayer){
+					currentTile.GetComponent<TileData>().traversible = true;
+					currentTile = clickedTile;
+					currentTile.GetComponent<TileData>().traversible = false;
+					transform.position = new Vector3(currentTile.position.x, currentTile.position.y+(float)(transform.GetComponent<SpriteRenderer> ().sprite.rect.height/transform.GetComponent<SpriteRenderer> ().sprite.pixelsPerUnit + 0.15f), currentTile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), currentTile.position.z);
+					//renderer = (SpriteRenderer)currentTile.GetComponent<SpriteRenderer> ();
+					transform.GetComponent<SpriteRenderer> ().sortingOrder = currentTile.GetComponent<SpriteRenderer> ().sortingOrder + 1;
+				}
 			}
 
 		}
@@ -70,6 +91,7 @@ public class MovementScript : MonoBehaviour{
 		tiles = script.tileGrid.getTiles ();
 		currentTile = tiles[0, 0, 2].getObj ();
 		selectedTile = tiles [0, 0, 2].getObj ();
+		clickedTile = tiles[0, 0, 2].getObj ();
 
 
 	}

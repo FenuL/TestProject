@@ -66,7 +66,7 @@ public class Tile {
 public class Tile_Grid : MonoBehaviour{
 	public float TILE_LENGTH = 43;
 	public float TILE_WIDTH = 85;
-	public float TILE_HEIGHT = 18;
+	public float TILE_HEIGHT = 16;
 	public static int MAX_TILES = 10;
 	public static int tile_grid_width=20;
 	public static int tile_grid_height=20;
@@ -219,12 +219,13 @@ public class Draw_Tile_Grid : MonoBehaviour {
 	public Transform item;
 	public Sprite[] itemSpriteSheet;
 	public Tile_Grid tileGrid;
+	public GameObject controller;
 	public string currMap;
 
 	// Use this for initialization
 	void Start () {
 		//string[] lines = System.IO.File.ReadAllLines(@"Assets/Maps/falls_map.txt");
-		currMap = "Assets/Maps/tile_map.txt";
+		currMap = controller.GetComponent<Game_Controller>().currentMap;
 		string[] lines = System.IO.File.ReadAllLines(currMap);
 		tileGrid = new Tile_Grid(lines, tile, tileSpriteSheet, item, itemSpriteSheet);
 		tile.GetComponent<SpriteRenderer> ().color = new Color(255f, 255f, 255f, 1f);
@@ -232,38 +233,22 @@ public class Draw_Tile_Grid : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Input.GetKeyDown ("space")) {
-			if(currMap == "Assets/Maps/falls_map.txt"){
-				//destroy the old map
-			    GameObject[] objects = GameObject.FindGameObjectsWithTag ("Tile");
-			    foreach (GameObject game_object in objects) {
-				    Destroy (game_object);
-			    }
-				objects = GameObject.FindGameObjectsWithTag ("Object");
-				foreach (GameObject game_object in objects) {
-					Destroy (game_object);
-				}
-				//create new map
-				currMap = "Assets/Maps/tile_map.txt";
-				string[] lines = System.IO.File.ReadAllLines(currMap);
-			    tileGrid = new Tile_Grid(lines, tile, tileSpriteSheet, item, itemSpriteSheet);
-			    tile.GetComponent<SpriteRenderer> ().color = new Color(255f, 255f, 255f, 1f);
-			}else{
-				//destroy the old map
-				GameObject[] objects = GameObject.FindGameObjectsWithTag ("Tile");
-				foreach (GameObject game_object in objects) {
-					Destroy (game_object);
-				}
-				objects = GameObject.FindGameObjectsWithTag ("Object");
-				foreach (GameObject game_object in objects) {
-					Destroy (game_object);
-				}
-				//create new map
-				currMap = "Assets/Maps/falls_map.txt";
-				string[] lines = System.IO.File.ReadAllLines(currMap);
-				tileGrid = new Tile_Grid(lines, tile, tileSpriteSheet, item, itemSpriteSheet);
-				tile.GetComponent<SpriteRenderer> ().color = new Color(255f, 255f, 255f, 1f);
+		print ("currMap  " + currMap);
+		print ("currentMap " + controller.GetComponent<Game_Controller> ().currentMap);
+		if (currMap != controller.GetComponent<Game_Controller> ().currentMap) {
+			currMap = controller.GetComponent<Game_Controller> ().currentMap;
+			//destroy the old map
+			GameObject[] objects = GameObject.FindGameObjectsWithTag ("Tile");
+			foreach (GameObject game_object in objects) {
+				Destroy (game_object);
 			}
+			objects = GameObject.FindGameObjectsWithTag ("Object");
+			foreach (GameObject game_object in objects) {
+				Destroy (game_object);
+			}
+			string[] lines = System.IO.File.ReadAllLines(currMap);
+			tileGrid = new Tile_Grid(lines, tile, tileSpriteSheet, item, itemSpriteSheet);
+			tile.GetComponent<SpriteRenderer> ().color = new Color(255f, 255f, 255f, 1f);
 		}
 	}
 	
