@@ -50,8 +50,8 @@
      <Compile Include="Assets\Scripts\Draw_Tile_Grid.cs" />
      <Compile Include="Assets\Scripts\Equipment.cs" />
      <Compile Include="Assets\Scripts\Game_Controller.cs" />
-     <Compile Include="Assets\Scripts\MovementScript.cs" />
-     <Compile Include="Assets\Scripts\TileData.cs" />
+     <Compile Include="Assets\Scripts\Player_Script.cs" />
+     <Compile Include="Assets\Scripts\Tile_Data.cs" />
      <None Include="Assets\Maps\height_map.txt" />
      <None Include="Assets\Maps\falls_map.txt" />
      <None Include="Assets\Maps\tile_map.txt" />
