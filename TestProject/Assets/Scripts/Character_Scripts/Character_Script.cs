@@ -2,29 +2,47 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Player_Script : MonoBehaviour{
+public class Character_Script : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-
 	}
 
-	public int player_num;
-	public string player_name;
-	public int player_health;
-	public int player_mana;
-	public int strength;
-	public int coordination;
-	public int spirit;
-	public int dexterity;
-	public int vitality;
-	public int level;
-	public string profession;
-	public Equipment[] equipment;
-	public GameObject controller;
-	public Transform curr_tile;
-	public List<Transform> reachable_tiles;
+	public void Randomize(){
+		aura_max = Random.Range (10, 30);
+		aura_curr = aura_max;
+		canister_max = Random.Range (0,3);
+		canister_curr = canister_max;
+		armor = Random.Range (0, 5);
+		strength = Random.Range (1,7);
+		coordination = Random.Range (1, 7);
+		spirit = Random.Range (1, 7);
+		dexterity = Random.Range (1, 7);
+		vitality = Random.Range (1, 7);
+		level = 1;
+		controller = Game_Controller.controller;
+	}
 
+	public int character_id { get; set; } 
+	public int character_num { get; set; }
+	public string character_name { get; set; }
+	public int aura_max { get; set; }
+	public int aura_curr { get; set; }
+	public int canister_max { get; set; }
+	public int canister_curr { get; set; }
+	public int armor { get; set; }
+	public int strength { get; set; }
+	public int coordination { get; set; }
+	public int spirit { get; set; }
+	public int dexterity { get; set; }
+	public int vitality { get; set; }
+	public int level { get; set; }
+	public string profession { get; set; }
+	public Equipment[] equipment { get; set; }
+	public Game_Controller controller { get; set; }
+	public Transform curr_tile { get; set; }
+	public List<Transform> reachable_tiles { get; set; }
+	
 	//public SpriteRenderer renderer;
 	public void FindReachable(GameObject grid){
 		reachable_tiles = new List<Transform> ();
@@ -56,6 +74,9 @@ public class Player_Script : MonoBehaviour{
 		}
 	}
 
+	public Character_Script(){
+	}
+	
 	// Update is called once per frame
 	void Update () {
 	}

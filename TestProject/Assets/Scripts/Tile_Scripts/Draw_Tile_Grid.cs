@@ -122,7 +122,7 @@ public class Tile_Grid : MonoBehaviour{
 					sprite.sortingOrder = tile_number + 1;
 					Instantiate(item, new Vector3((float)(start_x_pos - (x) * (TILE_WIDTH/200) + (y) * (TILE_WIDTH/200)), (float)(start_y_pos - (x) * (TILE_LENGTH/200) - (y) * (TILE_LENGTH/200)+tile_heights[x,y]*TILE_HEIGHT/100.0+ 0.075f), 0), Quaternion.identity);
 
-					print (sprite.sortingOrder);
+					//print (sprite.sortingOrder);
 					//Instantiate(new Transform())
 				}
 			}
@@ -172,8 +172,8 @@ public class Draw_Tile_Grid : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		print ("curr_map  " + curr_map);
-		print ("currMap " + controller.GetComponent<Game_Controller> ().curr_map);
+		//print ("curr_map  " + curr_map);
+		//print ("currMap " + controller.GetComponent<Game_Controller> ().curr_map);
 		if (curr_map != controller.GetComponent<Game_Controller> ().curr_map) {
 			curr_map = controller.GetComponent<Game_Controller> ().curr_map;
 			//destroy the old map
