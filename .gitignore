@@ -8,3 +8,4 @@ TestProject/Temp/*
 TestProject/TestProject-csharp.sln
 TestProject/TestProject.sln
 TestProject/Library/ScriptAssemblies/BuiltinAssemblies.stamp
+TestProject/Library/CrashedAssetImports.txt
