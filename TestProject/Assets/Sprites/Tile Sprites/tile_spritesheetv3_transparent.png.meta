@@ -1,0 +1,825 @@
+fileFormatVersion: 2
+guid: 959a4782ff36b434aaf5ea2ac3946c75
+timeCreated: 1461807268
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: tile_spritesheetv3_transparent_0
+    21300002: tile_spritesheetv3_transparent_1
+    21300004: tile_spritesheetv3_transparent_2
+    21300006: tile_spritesheetv3_transparent_3
+    21300008: tile_spritesheetv3_transparent_4
+    21300010: tile_spritesheetv3_transparent_5
+    21300012: tile_spritesheetv3_transparent_6
+    21300014: tile_spritesheetv3_transparent_7
+    21300016: tile_spritesheetv3_transparent_8
+    21300018: tile_spritesheetv3_transparent_9
+    21300020: tile_spritesheetv3_transparent_10
+    21300022: tile_spritesheetv3_transparent_11
+    21300024: tile_spritesheetv3_transparent_12
+    21300026: tile_spritesheetv3_transparent_13
+    21300028: tile_spritesheetv3_transparent_14
+    21300030: tile_spritesheetv3_transparent_15
+    21300032: tile_spritesheetv3_transparent_16
+    21300034: tile_spritesheetv3_transparent_17
+    21300036: tile_spritesheetv3_transparent_18
+    21300038: tile_spritesheetv3_transparent_19
+    21300040: tile_spritesheetv3_transparent_20
+    21300042: tile_spritesheetv3_transparent_21
+    21300044: tile_spritesheetv3_transparent_22
+    21300046: tile_spritesheetv3_transparent_23
+    21300048: tile_spritesheetv3_transparent_24
+    21300050: tile_spritesheetv3_transparent_25
+    21300052: tile_spritesheetv3_transparent_26
+    21300054: tile_spritesheetv3_transparent_27
+    21300056: tile_spritesheetv3_transparent_28
+    21300058: tile_spritesheetv3_transparent_29
+    21300060: tile_spritesheetv3_transparent_30
+    21300062: tile_spritesheetv3_transparent_31
+    21300064: tile_spritesheetv3_transparent_32
+    21300066: tile_spritesheetv3_transparent_33
+    21300068: tile_spritesheetv3_transparent_34
+    21300070: tile_spritesheetv3_transparent_35
+    21300072: tile_spritesheetv3_transparent_36
+    21300074: tile_spritesheetv3_transparent_37
+    21300076: tile_spritesheetv3_transparent_38
+    21300078: tile_spritesheetv3_transparent_39
+    21300080: tile_spritesheetv3_transparent_40
+    21300082: tile_spritesheetv3_transparent_41
+    21300084: tile_spritesheetv3_transparent_42
+    21300086: tile_spritesheetv3_transparent_43
+    21300088: tile_spritesheetv3_transparent_44
+    21300090: tile_spritesheetv3_transparent_45
+    21300092: tile_spritesheetv3_transparent_46
+    21300094: tile_spritesheetv3_transparent_47
+    21300096: tile_spritesheetv3_transparent_48
+    21300098: tile_spritesheetv3_transparent_49
+    21300100: tile_spritesheetv3_transparent_50
+    21300102: tile_spritesheetv3_transparent_51
+    21300104: tile_spritesheetv3_transparent_52
+    21300106: tile_spritesheetv3_transparent_53
+    21300108: tile_spritesheetv3_transparent_54
+    21300110: tile_spritesheetv3_transparent_55
+    21300112: tile_spritesheetv3_transparent_56
+    21300114: tile_spritesheetv3_transparent_57
+    21300116: tile_spritesheetv3_transparent_58
+    21300118: tile_spritesheetv3_transparent_59
+    21300120: tile_spritesheetv3_transparent_60
+    21300122: tile_spritesheetv3_transparent_61
+    21300124: tile_spritesheetv3_transparent_62
+    21300126: tile_spritesheetv3_transparent_63
+    21300128: tile_spritesheetv3_transparent_64
+    21300130: tile_spritesheetv3_transparent_65
+    21300132: tile_spritesheetv3_transparent_66
+    21300134: tile_spritesheetv3_transparent_67
+    21300136: tile_spritesheetv3_transparent_68
+    21300138: tile_spritesheetv3_transparent_69
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: .25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 8
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: .5, y: .5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    sprites:
+    - name: tile_spritesheetv3_transparent_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 679
+        width: 86
+        height: 61
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_1
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 679
+        width: 86
+        height: 61
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_2
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 679
+        width: 86
+        height: 61
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_3
+      rect:
+        serializedVersion: 2
+        x: 258
+        y: 679
+        width: 86
+        height: 61
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_4
+      rect:
+        serializedVersion: 2
+        x: 344
+        y: 679
+        width: 86
+        height: 61
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_5
+      rect:
+        serializedVersion: 2
+        x: 430
+        y: 679
+        width: 86
+        height: 61
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_6
+      rect:
+        serializedVersion: 2
+        x: 516
+        y: 679
+        width: 86
+        height: 61
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_7
+      rect:
+        serializedVersion: 2
+        x: 602
+        y: 679
+        width: 86
+        height: 61
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_8
+      rect:
+        serializedVersion: 2
+        x: 688
+        y: 679
+        width: 86
+        height: 61
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_9
+      rect:
+        serializedVersion: 2
+        x: 774
+        y: 679
+        width: 86
+        height: 61
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_10
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 600
+        width: 86
+        height: 79
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_11
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 600
+        width: 86
+        height: 79
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_12
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 600
+        width: 86
+        height: 79
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_13
+      rect:
+        serializedVersion: 2
+        x: 258
+        y: 600
+        width: 86
+        height: 79
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_14
+      rect:
+        serializedVersion: 2
+        x: 344
+        y: 600
+        width: 86
+        height: 79
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_15
+      rect:
+        serializedVersion: 2
+        x: 430
+        y: 600
+        width: 86
+        height: 79
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_16
+      rect:
+        serializedVersion: 2
+        x: 516
+        y: 600
+        width: 86
+        height: 79
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_17
+      rect:
+        serializedVersion: 2
+        x: 602
+        y: 600
+        width: 86
+        height: 79
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_18
+      rect:
+        serializedVersion: 2
+        x: 688
+        y: 600
+        width: 86
+        height: 79
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_19
+      rect:
+        serializedVersion: 2
+        x: 774
+        y: 600
+        width: 86
+        height: 79
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_20
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 502
+        width: 86
+        height: 97
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_21
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 502
+        width: 86
+        height: 97
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_22
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 502
+        width: 86
+        height: 97
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_23
+      rect:
+        serializedVersion: 2
+        x: 258
+        y: 502
+        width: 86
+        height: 97
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_24
+      rect:
+        serializedVersion: 2
+        x: 344
+        y: 502
+        width: 86
+        height: 97
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_25
+      rect:
+        serializedVersion: 2
+        x: 430
+        y: 502
+        width: 86
+        height: 97
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_26
+      rect:
+        serializedVersion: 2
+        x: 516
+        y: 502
+        width: 86
+        height: 97
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_27
+      rect:
+        serializedVersion: 2
+        x: 602
+        y: 502
+        width: 86
+        height: 97
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_28
+      rect:
+        serializedVersion: 2
+        x: 688
+        y: 502
+        width: 86
+        height: 97
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_29
+      rect:
+        serializedVersion: 2
+        x: 774
+        y: 502
+        width: 86
+        height: 97
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_30
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 404
+        width: 86
+        height: 97
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_31
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 404
+        width: 86
+        height: 97
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_32
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 404
+        width: 86
+        height: 97
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_33
+      rect:
+        serializedVersion: 2
+        x: 258
+        y: 404
+        width: 86
+        height: 97
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_34
+      rect:
+        serializedVersion: 2
+        x: 344
+        y: 404
+        width: 86
+        height: 97
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_35
+      rect:
+        serializedVersion: 2
+        x: 430
+        y: 404
+        width: 86
+        height: 97
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_36
+      rect:
+        serializedVersion: 2
+        x: 516
+        y: 404
+        width: 86
+        height: 97
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_37
+      rect:
+        serializedVersion: 2
+        x: 602
+        y: 404
+        width: 86
+        height: 97
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_38
+      rect:
+        serializedVersion: 2
+        x: 688
+        y: 404
+        width: 86
+        height: 97
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_39
+      rect:
+        serializedVersion: 2
+        x: 774
+        y: 404
+        width: 86
+        height: 97
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_40
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 288
+        width: 86
+        height: 115
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_41
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 288
+        width: 86
+        height: 115
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_42
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 288
+        width: 86
+        height: 115
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_43
+      rect:
+        serializedVersion: 2
+        x: 258
+        y: 288
+        width: 86
+        height: 115
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_44
+      rect:
+        serializedVersion: 2
+        x: 344
+        y: 288
+        width: 86
+        height: 115
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_45
+      rect:
+        serializedVersion: 2
+        x: 430
+        y: 288
+        width: 86
+        height: 115
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_46
+      rect:
+        serializedVersion: 2
+        x: 516
+        y: 288
+        width: 86
+        height: 115
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_47
+      rect:
+        serializedVersion: 2
+        x: 602
+        y: 288
+        width: 86
+        height: 115
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_48
+      rect:
+        serializedVersion: 2
+        x: 688
+        y: 288
+        width: 86
+        height: 115
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_49
+      rect:
+        serializedVersion: 2
+        x: 774
+        y: 288
+        width: 86
+        height: 115
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_50
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 154
+        width: 86
+        height: 133
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_51
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 154
+        width: 86
+        height: 133
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_52
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 154
+        width: 86
+        height: 133
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_53
+      rect:
+        serializedVersion: 2
+        x: 258
+        y: 154
+        width: 86
+        height: 133
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_54
+      rect:
+        serializedVersion: 2
+        x: 344
+        y: 154
+        width: 86
+        height: 133
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_55
+      rect:
+        serializedVersion: 2
+        x: 430
+        y: 154
+        width: 86
+        height: 133
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_56
+      rect:
+        serializedVersion: 2
+        x: 516
+        y: 154
+        width: 86
+        height: 133
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_57
+      rect:
+        serializedVersion: 2
+        x: 602
+        y: 154
+        width: 86
+        height: 133
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_58
+      rect:
+        serializedVersion: 2
+        x: 688
+        y: 154
+        width: 86
+        height: 133
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_59
+      rect:
+        serializedVersion: 2
+        x: 774
+        y: 154
+        width: 86
+        height: 133
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_60
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 2
+        width: 86
+        height: 151
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_61
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 2
+        width: 86
+        height: 151
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_62
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 2
+        width: 86
+        height: 151
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_63
+      rect:
+        serializedVersion: 2
+        x: 258
+        y: 2
+        width: 86
+        height: 151
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_64
+      rect:
+        serializedVersion: 2
+        x: 344
+        y: 2
+        width: 86
+        height: 151
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_65
+      rect:
+        serializedVersion: 2
+        x: 430
+        y: 2
+        width: 86
+        height: 151
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_66
+      rect:
+        serializedVersion: 2
+        x: 516
+        y: 3
+        width: 86
+        height: 150
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_67
+      rect:
+        serializedVersion: 2
+        x: 602
+        y: 2
+        width: 86
+        height: 151
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_68
+      rect:
+        serializedVersion: 2
+        x: 689
+        y: 2
+        width: 85
+        height: 151
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+    - name: tile_spritesheetv3_transparent_69
+      rect:
+        serializedVersion: 2
+        x: 774
+        y: 2
+        width: 86
+        height: 151
+      alignment: 7
+      pivot: {x: .5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

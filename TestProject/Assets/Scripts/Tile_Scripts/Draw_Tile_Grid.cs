@@ -5,19 +5,19 @@ using UnityEditor;
 public class Tile_Grid : MonoBehaviour{
 	public float TILE_LENGTH = 43;
 	public float TILE_WIDTH = 85;
-	public float TILE_HEIGHT = 16;
+	public float TILE_HEIGHT = 20;
 	public static int MAX_TILES = 10;
-	public static int tile_grid_width=20;
-	public static int tile_grid_height=20;
+	public static int tile_grid_width=30;
+	public static int tile_grid_height=30;
 	Transform tile;
 	Sprite[] tile_sprite_sheet;
 	Transform item;
 	Sprite[] item_sprite_sheet;
 	SpriteRenderer sprite;
 	int[,] item_sprites = new int[tile_grid_width, tile_grid_height];
-	Transform[,,] tiles = new Transform[tile_grid_width, tile_grid_height,MAX_TILES];
+	Transform[,] tiles = new Transform[tile_grid_width, tile_grid_height];
 	int[,] tile_heights = new int[tile_grid_width, tile_grid_height];
-	int[,,] tile_sprites = new int[tile_grid_width, tile_grid_height,MAX_TILES];
+	int[,] tile_sprites = new int[tile_grid_width, tile_grid_height];
 
 	public Tile_Grid(string[] lines, Transform tile_prefab, Sprite[] newTileSprites, Transform item_prefab, Sprite[] newItemSpriteSheet){
 		tile = tile_prefab;
@@ -48,21 +48,21 @@ public class Tile_Grid : MonoBehaviour{
 				}
 				else if (row_num >= 3 && row_num < tile_grid_height+3){
 					//print ("string " + e);
-					string[] str = e.Split (',');
-					i = 0;
-					foreach (string s in str) {
-					    if (int.TryParse(s, out tile_sprite)){
+					//string[] str = e.Split (',');
+					//i = 0;
+					//foreach (string s in str) {
+					    if (int.TryParse(e, out tile_sprite)){
 							//print ("Tile " + (row_num-3) + "," + col_num + "," + i + " sprite = " + s);
-							tile_sprites[row_num-3,col_num,i] = tile_sprite;
+							tile_sprites[row_num-3,col_num] = tile_sprite;
 							//tile_sprites[row_num-tile_grid_height-4,col_num,i] = tile_sprite;
-						    i++;
-							if (i >= MAX_TILES){
-								break;
-							}
-						}
+					//	    i++;
+					//		if (i >= MAX_TILES){
+					//			break;
+					//		}
+					//	}
 					}
 					//print ("i = " + i);
-					tile_heights[row_num-3,col_num] = i;
+					tile_heights[row_num-3,col_num] = tile_sprite/10+1;
 				}
 				else if(row_num >= tile_grid_height+4){
 					if (int.TryParse(e, out item_sprite)){
@@ -83,20 +83,21 @@ public class Tile_Grid : MonoBehaviour{
 
 		for (int x = 0; x < tile_grid_width; x++){
 			for (int y = 0; y < tile_grid_height; y++){
-				for (int z=0; z < tile_heights[x,y]; z++){
+				//for (int z=0; z < tile_heights[x,y]; z++){
 					//Set the correct sprite for the tile
 					sprite = tile.GetComponent<SpriteRenderer>();
-					sprite.sprite = tile_sprite_sheet[tile_sprites[x,y,z]-1];
+					sprite.sprite = tile_sprite_sheet[tile_sprites[x,y]-1];
  
 					//Instantiate the tile object. Destroy the collider on the prefab if the tile is not on top of the stack.
-					Transform instance= (Transform)Instantiate(tile, new Vector3((float)(start_x_pos - (x) * (TILE_WIDTH/200) + (y) * (TILE_WIDTH/200)), (float)(start_y_pos - (x) * (TILE_LENGTH/200) - (y) * (TILE_LENGTH/200)+z*TILE_HEIGHT/100.0), 0), Quaternion.identity);
-					if (z != tile_heights[x,y]-1){
+					Transform instance= (Transform)Instantiate(tile, new Vector3((float)(start_x_pos - (x) * (TILE_WIDTH/200) + (y) * (TILE_WIDTH/200)), (float)(start_y_pos - (x) * (TILE_LENGTH/200) - (y) * (TILE_LENGTH/200)), 0), Quaternion.identity);
+				    instance.gameObject.GetComponent<PolygonCollider2D>().offset.Set(0,.20f*tile_heights[x,y]+3);
+				    /*if (z != tile_heights[x,y]-1){
 						Destroy (instance.gameObject.GetComponent<PolygonCollider2D>());
-					}
-					if (tile_sprites[x,y,z]-1 != 2){
+					}*/
+					if (tile_sprites[x,y]-1 != 5){
 						Destroy (instance.gameObject.GetComponent<Animator>());
 					}
-					instance.GetComponent<Tile_Data>().instantiate(x,y,tile_heights[x,y],tile_sprites[x,y,z]);
+					instance.GetComponent<Tile_Data>().instantiate(x,y,tile_heights[x,y],tile_sprites[x,y]);
 
 					//else {
 					//	instance = Instantiate(tile, new Vector3((float)(start_x_pos - (x) * (TILE_WIDTH/200) + (y) * (TILE_WIDTH/200)), (float)(start_y_pos - (x) * (TILE_LENGTH/200) - (y) * (TILE_LENGTH/200)+z*TILE_HEIGHT/100.0), 0), Quaternion.identity);
@@ -107,20 +108,21 @@ public class Tile_Grid : MonoBehaviour{
 					tile_number++;
 					sprite.sortingOrder = tile_number;
 					//}
-					tiles[x,y,z] = instance;
+					tiles[x,y] = instance;
 
 					if(item_sprites[x,y] == 0){
-						tiles[x,y,z].GetComponent<Tile_Data>().traversible = true;
+						tiles[x,y].GetComponent<Tile_Data>().traversible = true;
 					}
 					else{
-						tiles[x,y,z].GetComponent<Tile_Data>().traversible = false;
+						tiles[x,y].GetComponent<Tile_Data>().traversible = false;
 					}
-				}
+				//}
+				//create OBJECTS on top of tiles
 				if (item_sprites[x,y] != 0) {
 					sprite = item.GetComponent<SpriteRenderer>();
 					sprite.sprite = item_sprite_sheet[item_sprites[x,y]-1];
-					sprite.sortingOrder = tile_number + 1;
-					Instantiate(item, new Vector3((float)(start_x_pos - (x) * (TILE_WIDTH/200) + (y) * (TILE_WIDTH/200)), (float)(start_y_pos - (x) * (TILE_LENGTH/200) - (y) * (TILE_LENGTH/200)+tile_heights[x,y]*TILE_HEIGHT/100.0+ 0.075f), 0), Quaternion.identity);
+					sprite.sortingOrder = tile_number;
+					Instantiate(item, new Vector3((float)(start_x_pos - (x) * (TILE_WIDTH/200) + (y) * (TILE_WIDTH/200)), (float)(start_y_pos - (x) * (TILE_LENGTH/200) - (y) * (TILE_LENGTH/200)+tile_heights[x,y]*TILE_HEIGHT/100.0+.35f), 0), Quaternion.identity);
 
 					//print (sprite.sortingOrder);
 					//Instantiate(new Transform())
@@ -131,21 +133,21 @@ public class Tile_Grid : MonoBehaviour{
 
 	}
 
-	public Transform[,,] getTiles(){
+	public Transform[,] getTiles(){
 		return tiles;
 	}
 
-	public Transform getTile(int x, int y, int z){
-		return tiles [x, y, z];
+	public Transform getTile(int x, int y){
+		return tiles [x, y];
 	}
 
-	public Transform getTopTile(int x, int y){
-		if (tiles [x, y, 0].GetComponent<Tile_Data>().tile_height == 0)
-			return tiles [x, y, 0];
+/*	public Transform getTopTile(int x, int y){
+		if (tiles [x, y].GetComponent<Tile_Data>().tile_height == 0)
+			return tiles [x, y];
 		else
-			return tiles [x, y, tiles [x, y, 0].GetComponent<Tile_Data>().tile_height - 1];
+			return tiles [x, y, tiles [x, y].GetComponent<Tile_Data>().tile_height - 1];
 	}
-
+*/
 	public double get_TILE_HEIGHT(){
 		return TILE_HEIGHT;
 	}

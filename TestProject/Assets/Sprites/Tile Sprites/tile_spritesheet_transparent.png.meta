@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: cefa5a8268e5d5044b8c69b766bd75c6
-timeCreated: 1446083318
+timeCreated: 1461807324
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -69,8 +69,8 @@ TextureImporter:
         y: 0
         width: 88
         height: 61
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: tile_spritesheet_transparent_1
       rect:
@@ -79,8 +79,8 @@ TextureImporter:
         y: 0
         width: 88
         height: 61
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: tile_spritesheet_transparent_2
       rect:
@@ -89,8 +89,8 @@ TextureImporter:
         y: 0
         width: 88
         height: 61
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: tile_spritesheet_transparent_3
       rect:
@@ -99,8 +99,8 @@ TextureImporter:
         y: 0
         width: 88
         height: 61
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: tile_spritesheet_transparent_4
       rect:
@@ -109,8 +109,8 @@ TextureImporter:
         y: 0
         width: 88
         height: 61
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: tile_spritesheet_transparent_5
       rect:
@@ -119,8 +119,8 @@ TextureImporter:
         y: 0
         width: 88
         height: 61
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: tile_spritesheet_transparent_6
       rect:
@@ -129,8 +129,8 @@ TextureImporter:
         y: 0
         width: 88
         height: 61
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: tile_spritesheet_transparent_7
       rect:
@@ -139,8 +139,8 @@ TextureImporter:
         y: 0
         width: 88
         height: 61
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: tile_spritesheet_transparent_8
       rect:
@@ -149,8 +149,8 @@ TextureImporter:
         y: 0
         width: 88
         height: 61
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: tile_spritesheet_transparent_9
       rect:
@@ -159,8 +159,8 @@ TextureImporter:
         y: 0
         width: 88
         height: 61
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: tile_spritesheet_transparent_10
       rect:
@@ -169,8 +169,8 @@ TextureImporter:
         y: 0
         width: 88
         height: 61
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: tile_spritesheet_transparent_11
       rect:
@@ -179,8 +179,8 @@ TextureImporter:
         y: 0
         width: 88
         height: 61
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
     - name: tile_spritesheet_transparent_12
       rect:
@@ -189,8 +189,8 @@ TextureImporter:
         y: 0
         width: 88
         height: 61
-      alignment: 0
-      pivot: {x: 0, y: 0}
+      alignment: 7
+      pivot: {x: .5, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
   spritePackingTag: 
   userData: 

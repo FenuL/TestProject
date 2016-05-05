@@ -20,6 +20,7 @@ public class Character_Script : MonoBehaviour {
 		dexterity = Random.Range (1, 7);
 		vitality = Random.Range (1, 7);
 		level = 1;
+		character_name = "Character " + character_num;
 		controller = Game_Controller.controller;
 	}
 
@@ -54,15 +55,15 @@ public class Character_Script : MonoBehaviour {
 			while (j <= dexterity) {
 				//print ("i " + i);
 				//print ("j " + j);
-				if (x_index + i  >= 0 && x_index + i < 20){
-					if( y_index + j >= 0 && y_index + j < 20)
+				if (x_index + i  >= 0 && x_index + i < 30){
+					if( y_index + j >= 0 && y_index + j < 30)
 					{
-						int h = grid.GetComponent<Draw_Tile_Grid>().tile_grid.getTopTile(x_index + i, y_index + j ).GetComponent<Tile_Data>().tile_height-1;
+						int h = grid.GetComponent<Draw_Tile_Grid>().tile_grid.getTile(x_index + i, y_index + j ).GetComponent<Tile_Data>().tile_height-1;
 						//print ("distance " + (Mathf.Abs(i)+ Mathf.Abs(j)));
 						if (Mathf.Abs (i) + Mathf.Abs (j) <= dexterity){
 							//print ("tile " + (x_index +i) + ","+ (y_index+ j) + " is reachable");
-							if (grid.GetComponent<Draw_Tile_Grid>().tile_grid.getTile(x_index + i, y_index + j, h).GetComponent<Tile_Data>().traversible){
-								reachable_tiles.Add(grid.GetComponent<Draw_Tile_Grid>().tile_grid.getTile(x_index + i, y_index + j, h));
+							if (grid.GetComponent<Draw_Tile_Grid>().tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile_Data>().traversible){
+								reachable_tiles.Add(grid.GetComponent<Draw_Tile_Grid>().tile_grid.getTile(x_index + i, y_index + j));
 							}
 						}
 					}
