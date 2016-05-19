@@ -73,7 +73,7 @@ public class Game_Controller : MonoBehaviour {
 		if(curr_character_num >= 5){
 			curr_character_num = 0;
 		}
-		GameObject[] objects = GameObject.FindGameObjectsWithTag ("Player");
+
 		foreach (GameObject game_object in characters) {
 			if(game_object.GetComponent<Character_Script>().character_num == curr_character_num){
 				curr_player.GetComponent<Animator>().SetBool("Selected", false);
@@ -82,10 +82,30 @@ public class Game_Controller : MonoBehaviour {
 
 			}
 		}
-		curr_player.GetComponent<Character_Script>().FindReachable(tile_grid);
+		//curr_player.GetComponent<Character_Script>().FindReachable(tile_grid);
 		CleanReachable ();
-		MarkReachable ();
+		//MarkReachable ();
 
+	}
+
+	public void PrevPlayer(){
+		curr_character_num = curr_character_num - 1;
+		if(curr_character_num < 0) {
+			curr_character_num = 4;
+		}
+
+		foreach (GameObject game_object in characters) {
+			if(game_object.GetComponent<Character_Script>().character_num == curr_character_num){
+				curr_player.GetComponent<Animator>().SetBool("Selected", false);
+				curr_player = game_object; 
+				curr_player.GetComponent<Animator>().SetBool("Selected", true);
+				
+			}
+		}
+		//curr_player.GetComponent<Character_Script>().FindReachable(tile_grid);
+		CleanReachable ();
+		//MarkReachable ();
+		
 	}
 
 	void Awake (){
@@ -195,40 +215,60 @@ public class Game_Controller : MonoBehaviour {
 			//clicked_tile.GetComponent<SpriteRenderer> ().color = new Color (255f, 255f, 255f, 1f); // Set to white
 			clicked_tile = selected_tile;
 			//clicked_tile.GetComponent<SpriteRenderer> ().color = new Color (255f, 0f, 0f, 1f); // Set to blue
-			if (tile_data.traversible) {
+			//if (tile_data.traversible) {
 				foreach (Transform tile in curr_player.GetComponent<Character_Script>().reachable_tiles){
 					if (tile.Equals(clicked_tile)){
-						curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data> ().traversible = true;
-						curr_player.GetComponent<Character_Script>().curr_tile = clicked_tile;
-						curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data> ().traversible = false;
-						if (curr_player.CompareTag("Player")) { 
-							curr_player.transform.position = new Vector3 (curr_player.GetComponent<Character_Script>().curr_tile.position.x, 
-						                                              //curr_player.GetComponent<Character_Script>().curr_tile.position.y + (float)(curr_player.GetComponent<SpriteRenderer> ().sprite.rect.height / curr_player.GetComponent<SpriteRenderer> ().sprite.pixelsPerUnit + 0.15f),
-							                                          (float)(curr_player.GetComponent<Character_Script>().curr_tile.position.y + (curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height)/100)+ 0.15f,
-						                                              curr_player.GetComponent<Character_Script>().curr_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);
-						}
-						else {
-							curr_player.transform.position = new Vector3 (curr_player.GetComponent<Character_Script>().curr_tile.position.x, 
-							                                              (float)(curr_player.GetComponent<Character_Script>().curr_tile.position.y + (curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height)/100)+ 0.15f,
-							                                              //curr_player.GetComponent<Character_Script>().curr_tile.position.y+0.5f,
-							                                              curr_player.GetComponent<Character_Script>().curr_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);
-						}
-						//renderer = (SpriteRenderer)curr_tile.GetComponent<SpriteRenderer> ();
-						curr_player.GetComponent<SpriteRenderer> ().sortingOrder = curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer> ().sortingOrder+1;
+						if (curr_player.GetComponent<Character_Script>().state == "Moving"){
+							curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data> ().traversible = true;
+							curr_player.GetComponent<Character_Script>().curr_tile = clicked_tile;
+							curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data> ().traversible = false;
+							if (curr_player.CompareTag("Player")) { 
+								curr_player.transform.position = new Vector3 (curr_player.GetComponent<Character_Script>().curr_tile.position.x, 
+						            	                                  //curr_player.GetComponent<Character_Script>().curr_tile.position.y + (float)(curr_player.GetComponent<SpriteRenderer> ().sprite.rect.height / curr_player.GetComponent<SpriteRenderer> ().sprite.pixelsPerUnit + 0.15f),
+							    	                                      (float)(curr_player.GetComponent<Character_Script>().curr_tile.position.y + (curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height)/100)+ 0.15f,
+						    	                                          curr_player.GetComponent<Character_Script>().curr_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);
+							}
+							else {
+								curr_player.transform.position = new Vector3 (curr_player.GetComponent<Character_Script>().curr_tile.position.x, 
+								                                              (float)(curr_player.GetComponent<Character_Script>().curr_tile.position.y + (curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height)/100)+ 0.15f,
+							    	                                          //curr_player.GetComponent<Character_Script>().curr_tile.position.y+0.5f,
+								                                              curr_player.GetComponent<Character_Script>().curr_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);
+							}
+							//renderer = (SpriteRenderer)curr_tile.GetComponent<SpriteRenderer> ();
+							curr_player.GetComponent<SpriteRenderer> ().sortingOrder = curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer> ().sortingOrder+1;
 
-						//display possible movement tiles.
-						//if (character_num == controller.GetComponent<Game_Controller> ().curr_player) {
-						
+							//display possible movement tiles.
+							//if (character_num == controller.GetComponent<Game_Controller> ().curr_player) {
+						}
+						if (curr_player.GetComponent<Character_Script>().state == "Attacking"){
+							foreach (GameObject character in characters) {
+								if (character.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data> ().x_index  == clicked_tile.GetComponent<Tile_Data>().x_index &&
+								    character.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data> ().y_index  == clicked_tile.GetComponent<Tile_Data>().y_index){
+									character.GetComponent<Character_Script>().aura_curr -= curr_player.GetComponent<Character_Script>().strength;
+								}
+							}
+						}
 						NextPlayer ();
 					}
 				}
 
-			}
+			//}
 		}
 
 		if (Input.GetMouseButtonUp (0)) {
 			cursor.GetComponent<Animator>().SetBool("Clicked", false);
 		}
+
+		//Next player button
+		if (Input.GetKeyDown (KeyCode.RightArrow)) {
+			NextPlayer();
+		}
+
+		//Prev player button
+		if (Input.GetKeyDown (KeyCode.LeftArrow)) {
+			PrevPlayer();
+		}
+
 	}
 
 	void Initialize(){
@@ -241,7 +281,7 @@ public class Game_Controller : MonoBehaviour {
 			     (float)(game_object.GetComponent<Character_Script>().curr_tile.position.y + (game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height)/100)+ 0.15f,
 			     game_object.GetComponent<Character_Script>().curr_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);
 			game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().traversible = false;
-			game_object.GetComponent<Character_Script>().FindReachable(tile_grid);
+			//game_object.GetComponent<Character_Script>().FindReachable(tile_grid);
 		}
 		objects = GameObject.FindGameObjectsWithTag ("Monster");
 		foreach (GameObject game_object in objects) {
@@ -251,7 +291,7 @@ public class Game_Controller : MonoBehaviour {
 			                                              (float)(game_object.GetComponent<Character_Script>().curr_tile.position.y + (game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height)/100)+ 0.15f,
 			                                              game_object.GetComponent<Character_Script>().curr_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);
 			game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().traversible = false;
-			game_object.GetComponent<Character_Script>().FindReachable(tile_grid);
+			//game_object.GetComponent<Character_Script>().FindReachable(tile_grid);
 		}
 		selected_tile = tiles [0, 0];
 		clicked_tile = tiles[0, 0];
@@ -261,21 +301,28 @@ public class Game_Controller : MonoBehaviour {
 			
 	}
 
-	void MarkReachable(){
+	public void MarkReachable(){
 		foreach (Transform tile in curr_player.GetComponent<Character_Script> ().reachable_tiles){
-			reachable_tile_prefab.GetComponent<SpriteRenderer>().sortingOrder = tile.GetComponent<SpriteRenderer>().sortingOrder+1;
+			reachable_tile_prefab.GetComponent<SpriteRenderer>().sortingOrder = tile.GetComponent<SpriteRenderer>().sortingOrder;
+			if (curr_player.GetComponent<Character_Script>().state == "Moving"){
+				reachable_tile_prefab.GetComponent<SpriteRenderer>().color=new Color(0,0,255);
+			}
+			if (curr_player.GetComponent<Character_Script>().state == "Attacking"){
+				reachable_tile_prefab.GetComponent<SpriteRenderer>().color=new Color(255,255,0);
+			}
 			Instantiate(reachable_tile_prefab, new Vector3(tile.position.x,
 			                                               //tile.position.y+0.08f,
 			                                               (float)(tile.position.y + (tile.GetComponent<SpriteRenderer>().sprite.rect.height)/100)-.24f,
 			                                               tile.position.z),
 			                                               Quaternion.identity);
+
 			//+ tile.GetComponent<SpriteRenderer>().sprite.rect.width/200
 			// + selected_tile.GetComponent<SpriteRenderer>().sprite.rect.height/200
 		}
 
 	}
 
-	void CleanReachable(){
+	public void CleanReachable(){
 		GameObject[] objects = GameObject.FindGameObjectsWithTag ("Reachable");
 		foreach (GameObject game_object in objects) {
 			Destroy(game_object);

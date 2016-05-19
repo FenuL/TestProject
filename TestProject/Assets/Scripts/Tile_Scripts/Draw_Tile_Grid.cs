@@ -7,8 +7,10 @@ public class Tile_Grid : MonoBehaviour{
 	public float TILE_WIDTH = 85;
 	public float TILE_HEIGHT = 20;
 	public static int MAX_TILES = 10;
-	public static int tile_grid_width=30;
-	public static int tile_grid_height=30;
+	public static int tile_grid_width=40;
+	public static int tile_grid_height=40;
+	public int map_height;
+	public int map_width;
 	Transform tile;
 	Sprite[] tile_sprite_sheet;
 	Transform item;
@@ -37,16 +39,18 @@ public class Tile_Grid : MonoBehaviour{
 			string[] elements = line.Split(';');
 			foreach (string e in elements){
 				if (row_num == 1) { 
-					if (col_num==0){
-						//if (int.TryParse(e, out tile_grid_width)){
-						//}
+					if (col_num == 0){
+						if (int.TryParse(e, out map_width)){
+
+						}
 					}
 					else if (col_num == 1) {
-						//if (int.TryParse(e, out tile_grid_height)){
-						//}
+						if (int.TryParse(e, out map_height)){
+
+						}
 					}
 				}
-				else if (row_num >= 3 && row_num < tile_grid_height+3){
+				else if (row_num >= 3 && row_num < map_height+3){
 					//print ("string " + e);
 					//string[] str = e.Split (',');
 					//i = 0;
@@ -64,10 +68,10 @@ public class Tile_Grid : MonoBehaviour{
 					//print ("i = " + i);
 					tile_heights[row_num-3,col_num] = tile_sprite/10+1;
 				}
-				else if(row_num >= tile_grid_height+4){
+				else if(row_num >= map_height+4){
 					if (int.TryParse(e, out item_sprite)){
 						//TODO FIX TILE OBJECTS
-						item_sprites[row_num-tile_grid_height-4,col_num] = item_sprite;
+						item_sprites[row_num-map_height-4,col_num] = item_sprite;
 						//tile_sprites[row_num-tile_grid_height-4,col_num] = tile_sprite;
 						//print("line_num:" + line_num);
 						//print ("line_num - tile_grid_height - 4 = " + (line_num-tile_grid_height-4));
@@ -81,8 +85,8 @@ public class Tile_Grid : MonoBehaviour{
 			row_num++;
 		}
 
-		for (int x = 0; x < tile_grid_width; x++){
-			for (int y = 0; y < tile_grid_height; y++){
+		for (int x = 0; x < map_width; x++){
+			for (int y = 0; y < map_height; y++){
 				//for (int z=0; z < tile_heights[x,y]; z++){
 					//Set the correct sprite for the tile
 					sprite = tile.GetComponent<SpriteRenderer>();
