@@ -31,21 +31,7 @@ public class Camera_Controller : MonoBehaviour {
 		              "Spt: " + controller.curr_player.GetComponent<Character_Script> ().spirit + "   Dex: " + controller.curr_player.GetComponent<Character_Script> ().dexterity + "\n" + 
 		              "Vit: " + controller.curr_player.GetComponent<Character_Script> ().vitality);
 
-		for (int x=0; x < controller.curr_player.GetComponent<Character_Script>().actions.Length; x++) {
-			//GUI.Button button = 
-			string text = controller.curr_player.GetComponent<Character_Script>().actions[x];
-			if (GUI.Button (new Rect (Screen.width-110, Screen.height-120+40*x, 100, 30), text)) {
-				if (text == "Move"){
-					controller.curr_player.GetComponent<Character_Script>().Action("Move");
-				}
-				if (text == "Attack"){
-					controller.curr_player.GetComponent<Character_Script>().Action("Attack");
-				}
-				if (text == "Wait"){
-					controller.NextPlayer();
-				}
-			}
-		}
+
 
 	}
 
@@ -59,12 +45,12 @@ public class Camera_Controller : MonoBehaviour {
 	void Update () {
 		//check mouse position and scroll camera if necessary
 		//transform.Translate(horizontal_speed* Input.GetAxis("Mouse Y"),vertical_speed* Input.GetAxis("Mouse X"),0);
-		if (transform.position.x >= -2) {
+		if (transform.position.x >= -3) {
 			if (Input.mousePosition.x <= 200) {
 				transform.Translate (-.2f, 0, 0);// (transform.position.x-1,transform.position.y, transform.position.z);
 			}
 		}
-		if (transform.position.x <= 2) {
+		if (transform.position.x <= 3) {
 			if (Input.mousePosition.x >= Screen.width - 200) {
 				transform.Translate (.2f, 0, 0);
 			}

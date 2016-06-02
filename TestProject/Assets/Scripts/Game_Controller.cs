@@ -19,6 +19,7 @@ public class Game_Controller : MonoBehaviour {
 	public Transform[,] tiles;
 	public Transform clicked_tile;
 	public Transform selected_tile;
+    public Transform action_menu;
 	public bool initialized = false;
 	public int curr_turn;
 	public Transform reachable_tile_prefab;
@@ -84,6 +85,7 @@ public class Game_Controller : MonoBehaviour {
 		}
 		//curr_player.GetComponent<Character_Script>().FindReachable(tile_grid);
 		CleanReachable ();
+        action_menu.GetComponent<Action_Menu_Script>().resetActions();
 		//MarkReachable ();
 
 	}
@@ -120,7 +122,7 @@ public class Game_Controller : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		int x = 0;
-		curr_map = "Assets/Maps/tile_map.txt";
+		//curr_map = "Assets/Maps/tile_map.txt";
 		GameObject[] objects = GameObject.FindGameObjectsWithTag ("Player");
 		foreach (GameObject game_object in objects) {
 			game_object.GetComponent<Character_Script>().character_num = x;
@@ -281,7 +283,7 @@ public class Game_Controller : MonoBehaviour {
 			     (float)(game_object.GetComponent<Character_Script>().curr_tile.position.y + (game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height)/100)+ 0.15f,
 			     game_object.GetComponent<Character_Script>().curr_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);
 			game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().traversible = false;
-			//game_object.GetComponent<Character_Script>().FindReachable(tile_grid);
+			game_object.GetComponent<Character_Script>().FindReachable(tile_grid, game_object.GetComponent<Character_Script>().dexterity);
 		}
 		objects = GameObject.FindGameObjectsWithTag ("Monster");
 		foreach (GameObject game_object in objects) {
@@ -291,15 +293,16 @@ public class Game_Controller : MonoBehaviour {
 			                                              (float)(game_object.GetComponent<Character_Script>().curr_tile.position.y + (game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height)/100)+ 0.15f,
 			                                              game_object.GetComponent<Character_Script>().curr_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);
 			game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().traversible = false;
-			//game_object.GetComponent<Character_Script>().FindReachable(tile_grid);
+			game_object.GetComponent<Character_Script>().FindReachable(tile_grid, game_object.GetComponent<Character_Script>().dexterity);
 		}
 		selected_tile = tiles [0, 0];
 		clicked_tile = tiles[0, 0];
-		//CleanReachable ();
-		MarkReachable ();
-		//transform.position = new Vector3(curr_tile.position.x, curr_tile.position.y+(float)(transform.GetComponent<SpriteRenderer> ().sprite.rect.height/transform.GetComponent<SpriteRenderer> ().sprite.pixelsPerUnit + 0.15f), curr_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);
-			
-	}
+        action_menu.GetComponent<Action_Menu_Script>().resetActions();
+        //CleanReachable ();
+        //MarkReachable ();
+        //transform.position = new Vector3(curr_tile.position.x, curr_tile.position.y+(float)(transform.GetComponent<SpriteRenderer> ().sprite.rect.height/transform.GetComponent<SpriteRenderer> ().sprite.pixelsPerUnit + 0.15f), curr_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);
+
+    }
 
 	public void MarkReachable(){
 		foreach (Transform tile in curr_player.GetComponent<Character_Script> ().reachable_tiles){

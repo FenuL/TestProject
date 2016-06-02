@@ -28,6 +28,7 @@ public class Character_Script : MonoBehaviour {
 		level = 1;
 		character_name = "Character " + character_num;
 		controller = Game_Controller.controller;
+        //FindReachable(controller.GetComponent<Game_Controller>().tile_grid,dexterity);
 	}
 
 	public int character_id { get; set; } 
