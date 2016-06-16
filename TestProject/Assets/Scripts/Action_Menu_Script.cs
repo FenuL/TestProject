@@ -29,7 +29,8 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
 	}
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
         //transform.position = new Vector3(controller.curr_player.transform.position.x, controller.curr_player.transform.position.y, controller.curr_player.transform.position.z);
 
         if (isOpen)
@@ -56,15 +57,15 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
             button.name = text;
             button.FindChild("Text").GetComponent<Text>().text= text;
             button.GetComponent<Button>().onClick.RemoveAllListeners();
-            if (text == "Move")
+            if (text == Character_Script.Actions.Move.ToString())
             {
-                button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_player.GetComponent<Character_Script>().Action("Move"); });
+                button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_player.GetComponent<Character_Script>().Action(Character_Script.Actions.Move); });
             }
-            if (text == "Attack")
+            if (text == Character_Script.Actions.Attack.ToString())
             {
-                button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_player.GetComponent<Character_Script>().Action("Attack"); });// button.GetComponent<Button>().onClick = controller.curr_player.GetComponent<Character_Script>().Action("Attack");
+                button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_player.GetComponent<Character_Script>().Action(Character_Script.Actions.Attack); });// button.GetComponent<Button>().onClick = controller.curr_player.GetComponent<Character_Script>().Action("Attack");
             }
-            if (text == "Wait")
+            if (text == Character_Script.Actions.Wait.ToString())
             {
                 button.GetComponent<Button>().onClick.AddListener(() => { controller.NextPlayer(); }); //; button.GetComponent<Button>().onClick = controller.NextPlayer();
             }

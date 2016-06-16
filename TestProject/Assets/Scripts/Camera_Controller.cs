@@ -29,7 +29,7 @@ public class Camera_Controller : MonoBehaviour {
 		              "Lvl: " + controller.curr_player.GetComponent<Character_Script> ().level + "\n" +
 		              "Str: " + controller.curr_player.GetComponent<Character_Script> ().strength + "   Crd: " + controller.curr_player.GetComponent<Character_Script> ().coordination + "\n" + 
 		              "Spt: " + controller.curr_player.GetComponent<Character_Script> ().spirit + "   Dex: " + controller.curr_player.GetComponent<Character_Script> ().dexterity + "\n" + 
-		              "Vit: " + controller.curr_player.GetComponent<Character_Script> ().vitality);
+		              "Vit: " + controller.curr_player.GetComponent<Character_Script> ().vitality + "   Wep: " + controller.curr_player.GetComponent<Character_Script>().weapon.name);
 
 
 
@@ -45,23 +45,23 @@ public class Camera_Controller : MonoBehaviour {
 	void Update () {
 		//check mouse position and scroll camera if necessary
 		//transform.Translate(horizontal_speed* Input.GetAxis("Mouse Y"),vertical_speed* Input.GetAxis("Mouse X"),0);
-		if (transform.position.x >= -3) {
-			if (Input.mousePosition.x <= 200) {
+		if (transform.position.x >= -4) {
+			if (Input.mousePosition.x <= 20) {
 				transform.Translate (-.2f, 0, 0);// (transform.position.x-1,transform.position.y, transform.position.z);
 			}
 		}
-		if (transform.position.x <= 3) {
-			if (Input.mousePosition.x >= Screen.width - 200) {
+		if (transform.position.x <= 4) {
+			if (Input.mousePosition.x >= Screen.width - 20) {
 				transform.Translate (.2f, 0, 0);
 			}
 		}
-		if (transform.position.y >= -4) {
-			if (Input.mousePosition.y <= 100) {
+		if (transform.position.y >= -5) {
+			if (Input.mousePosition.y <= 10) {
 				transform.Translate (0, -.2f, 0);// (transform.position.x-1,transform.position.y, transform.position.z);
 			}
 		}
-		if (transform.position.y <= 0) {
-			if (Input.mousePosition.y >= Screen.height - 100) {
+		if (transform.position.y <= 1) {
+			if (Input.mousePosition.y >= Screen.height - 10) {
 				transform.Translate (0, .2f, 0);
 			}
 		}
