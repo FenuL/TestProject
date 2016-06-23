@@ -10,10 +10,11 @@ public class Game_Controller : MonoBehaviour {
 	public static Game_Controller controller;
 	
 	public string curr_map;
-    public List<GameObject> turn_order;
     public int turn_index; 
 	public int curr_character_num;
 	public GameObject[] characters;
+    public SortedList<int, GameObject> turn_order;
+    public IList<int> keys;
 	public GameObject curr_player;
 	public GameObject cursor;
 	public GameObject tile_grid;
@@ -72,12 +73,23 @@ public class Game_Controller : MonoBehaviour {
 	}
 
 	public void NextPlayer(){
-		curr_character_num = curr_character_num + 1;
-		if(curr_character_num >= 5){
-			curr_character_num = 0;
-		}
+        curr_character_num = curr_character_num - 1;
+        if (curr_character_num < 0)
+        {
+            curr_character_num = 4;
+        }
+        curr_player.GetComponent<Animator>().SetBool("Selected", false);
+        curr_player = turn_order[keys[curr_character_num]];
+        if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Dead)
+        {
+            NextPlayer();
+        }
+        else
+        {
+            curr_player.GetComponent<Animator>().SetBool("Selected", true);
+        }
 
-		foreach (GameObject game_object in characters) {
+		/*foreach (GameObject game_object in characters) {
 			if(game_object.GetComponent<Character_Script>().character_num == curr_character_num){
                 if (game_object.GetComponent<Character_Script>().state == Character_Script.States.Dead)
                 {
@@ -91,7 +103,7 @@ public class Game_Controller : MonoBehaviour {
                 }
 
 			}
-		}
+		}*/
 		//curr_player.GetComponent<Character_Script>().FindReachable(tile_grid);
 		CleanReachable ();
         action_menu.GetComponent<Action_Menu_Script>().resetActions();
@@ -100,24 +112,41 @@ public class Game_Controller : MonoBehaviour {
 	}
 
 	public void PrevPlayer(){
-		curr_character_num = curr_character_num - 1;
-		if(curr_character_num < 0) {
-			curr_character_num = 4;
-		}
+        curr_character_num = curr_character_num + 1;
+        if (curr_character_num >= 5)
+        {
+            curr_character_num = 0;
+        }
 
-		foreach (GameObject game_object in characters) {
+        curr_player.GetComponent<Animator>().SetBool("Selected", false);
+        curr_player = turn_order[keys[curr_character_num]];
+        if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Dead)
+        {
+            PrevPlayer();
+        }
+        else
+        {
+            curr_player.GetComponent<Animator>().SetBool("Selected", true);
+        }
+
+        /*foreach (GameObject game_object in characters) {
 			if(game_object.GetComponent<Character_Script>().character_num == curr_character_num){
-				curr_player.GetComponent<Animator>().SetBool("Selected", false);
+                if (game_object.GetComponent<Character_Script>().state == Character_Script.States.Dead)
+                {
+                    PrevPlayer();
+                }
+                curr_player.GetComponent<Animator>().SetBool("Selected", false);
 				curr_player = game_object; 
 				curr_player.GetComponent<Animator>().SetBool("Selected", true);
 				
 			}
-		}
+		}*/
 		//curr_player.GetComponent<Character_Script>().FindReachable(tile_grid);
 		CleanReachable ();
-		//MarkReachable ();
-		
-	}
+        action_menu.GetComponent<Action_Menu_Script>().resetActions();
+        //MarkReachable ();
+
+    }
 
     public void NextRound()
     {
@@ -125,7 +154,7 @@ public class Game_Controller : MonoBehaviour {
         print("Round: " + curr_round);
         foreach (GameObject game_object in characters)
         {
-            if (turn_order.Count > 0)
+            /*if (turn_order.Count > 0)
             {
                 foreach (GameObject obj in turn_order)
                 {
@@ -148,7 +177,7 @@ public class Game_Controller : MonoBehaviour {
                     }
                 }
             }
-            else turn_order.Add(gameObject);
+            else turn_order.Add(gameObject);*/
         }
     }
 
@@ -166,27 +195,44 @@ public class Game_Controller : MonoBehaviour {
 		int x = 0;
 		//curr_map = "Assets/Maps/tile_map.txt";
 		GameObject[] objects = GameObject.FindGameObjectsWithTag ("Player");
+        turn_order = new SortedList<int, GameObject>();
 		foreach (GameObject game_object in objects) {
 			game_object.GetComponent<Character_Script>().character_num = x;
 			game_object.GetComponent<Character_Script>().Randomize();
-			if(game_object.GetComponent<Character_Script>().character_num == curr_character_num){
+            int key = game_object.GetComponent<Character_Script>().dexterity;
+            while (turn_order.ContainsKey(key))
+            {
+                key++;
+            }
+            turn_order.Add(key, game_object);
+            /*if(game_object.GetComponent<Character_Script>().character_num == curr_character_num){
 				curr_player = game_object; 
 				curr_player.GetComponent<Animator>().SetBool("Selected", true);
-			}
-			x++;
+			}*/
+            x++;
 		}
 		objects = GameObject.FindGameObjectsWithTag ("Monster");
 		//print (objects.Length);
 		foreach (GameObject game_object in objects) {
 			game_object.GetComponent<Character_Script>().character_num = x; 
 			game_object.GetComponent<Character_Script>().Randomize();
-			if(game_object.GetComponent<Character_Script>().character_num == curr_character_num){
+            int key = game_object.GetComponent<Character_Script>().dexterity;
+            while (turn_order.ContainsKey(key))
+            {
+                key++;
+            }
+            turn_order.Add(key,game_object);
+            /*if(game_object.GetComponent<Character_Script>().character_num == curr_character_num){
 				curr_player = game_object; 
 				curr_player.GetComponent<Animator>().SetBool("Selected", true);
-			}
-			x++;
+			}*/
+            x++;
 		}
-		cursor = GameObject.FindGameObjectWithTag ("Cursor");
+        curr_character_num = x-1;
+        keys = turn_order.Keys;
+        curr_player = turn_order[keys[curr_character_num]];
+        curr_player.GetComponent<Animator>().SetBool("Selected", true);
+        cursor = GameObject.FindGameObjectWithTag ("Cursor");
 		x = 0;
 		//MarkReachable ();
 	}
@@ -264,7 +310,7 @@ public class Game_Controller : MonoBehaviour {
 					if (tile.Equals(clicked_tile)){
 						if (clicked_tile.GetComponent<Tile_Data>().traversible && curr_player.GetComponent<Character_Script>().state == Character_Script.States.Moving){
                             curr_player.GetComponent<Character_Script>().Move(clicked_tile);
-                            NextPlayer();
+                            //NextPlayer();
                         }
 						if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Attacking)
                         {
@@ -272,13 +318,17 @@ public class Game_Controller : MonoBehaviour {
 								if (character.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data> ().x_index  == clicked_tile.GetComponent<Tile_Data>().x_index &&
 								    character.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data> ().y_index  == clicked_tile.GetComponent<Tile_Data>().y_index){
                                     curr_player.GetComponent<Character_Script>().Attack(character);
-                                    NextPlayer();
+                                    //NextPlayer();
                                     break;
                                 }
 							}
 						}
-
-					}
+                        if (clicked_tile.GetComponent<Tile_Data>().traversible && curr_player.GetComponent<Character_Script>().state == Character_Script.States.Blinking)
+                        {
+                            curr_player.GetComponent<Character_Script>().Blink(clicked_tile);
+                            //NextPlayer();
+                        }
+                    }
 				}
 
 			//}
@@ -334,7 +384,8 @@ public class Game_Controller : MonoBehaviour {
 	public void MarkReachable(){
 		foreach (Transform tile in curr_player.GetComponent<Character_Script> ().reachable_tiles){
 			reachable_tile_prefab.GetComponent<SpriteRenderer>().sortingOrder = tile.GetComponent<SpriteRenderer>().sortingOrder;
-			if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Moving){
+			if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Moving || curr_player.GetComponent<Character_Script>().state == Character_Script.States.Blinking)
+            {
 				reachable_tile_prefab.GetComponent<SpriteRenderer>().color=new Color(0,0,255);
 			}
 			if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Attacking){

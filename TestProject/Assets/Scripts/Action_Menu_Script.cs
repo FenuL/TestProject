@@ -50,7 +50,39 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
     public void resetActions()
     {
         int buttons = 0;
-        for (int x = 0; x < controller.curr_player.GetComponent<Character_Script>().actions.Length; x++)
+        int x = 0;
+        foreach (Character_Script.Actions a in controller.curr_player.GetComponent<Character_Script>().actions)
+        {
+            Transform button = container.GetComponent<RectTransform>().GetChild(x);
+            button.localScale = new Vector3(1, 1, 1);
+            string text = a.ToString();
+            button.name = text;
+            button.FindChild("Text").GetComponent<Text>().text = text;
+            button.GetComponent<Button>().onClick.RemoveAllListeners();
+            if (text == Character_Script.Actions.Move.ToString())
+            {
+                button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_player.GetComponent<Character_Script>().Action(Character_Script.Actions.Move); });
+            }
+            if (text == Character_Script.Actions.Attack.ToString())
+            {
+                button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_player.GetComponent<Character_Script>().Action(Character_Script.Actions.Attack); });// button.GetComponent<Button>().onClick = controller.curr_player.GetComponent<Character_Script>().Action("Attack");
+            }
+            if (text == Character_Script.Actions.Wait.ToString())
+            {
+                button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_player.GetComponent<Character_Script>().Action(Character_Script.Actions.Wait);  }); //; button.GetComponent<Button>().onClick = controller.NextPlayer();
+            }
+            if (text == Character_Script.Actions.Blink.ToString())
+            {
+                button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_player.GetComponent<Character_Script>().Action(Character_Script.Actions.Blink); }); //; button.GetComponent<Button>().onClick = controller.NextPlayer();
+            }
+            if (text == Character_Script.Actions.Channel.ToString())
+            {
+                button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_player.GetComponent<Character_Script>().Action(Character_Script.Actions.Channel); });// button.GetComponent<Button>().onClick = controller.NextPlayer();
+            }
+            buttons = x + 1;
+            x++;
+        }
+        /*for (int x = 0; x < controller.curr_player.GetComponent<Character_Script>().actions.Length; x++)
         {
             Transform button = container.GetComponent<RectTransform>().GetChild(x);
             string text = controller.curr_player.GetComponent<Character_Script>().actions[x];
@@ -70,13 +102,13 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
                 button.GetComponent<Button>().onClick.AddListener(() => { controller.NextPlayer(); }); //; button.GetComponent<Button>().onClick = controller.NextPlayer();
             }
             buttons = x+1;
-        }
+        }*/
         //make other buttons invisible;
         if (buttons < container.GetComponent<RectTransform>().childCount)
         {
-            for(int x = buttons; x < container.GetComponent<RectTransform>().childCount; x++)
+            for(int y = buttons; y < container.GetComponent<RectTransform>().childCount; y++)
             {
-                Transform button = container.GetComponent<RectTransform>().GetChild(x);
+                Transform button = container.GetComponent<RectTransform>().GetChild(y);
                 button.GetComponent<Button>().onClick.RemoveAllListeners();
                 button.localScale = new Vector3(0,0,0);
             }
