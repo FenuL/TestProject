@@ -22,8 +22,8 @@ public class Camera_Controller : MonoBehaviour {
 			Game_Controller.controller.NextPlayer();
 		}
 
-		//print (controller.curr_player.GetComponent<Character_Script> ().character_name);
-		 GUI.TextArea (new Rect (10, Screen.height - 120, 200, 110), controller.curr_player.GetComponent<Character_Script> ().character_name + "\n" + 
+        //print (controller.curr_player.GetComponent<Character_Script> ().character_name);
+        GUI.TextArea (new Rect (10, Screen.height - 120, 200, 110), controller.curr_player.GetComponent<Character_Script> ().character_name + "\n" + 
 		              "AU: " + controller.curr_player.GetComponent<Character_Script> ().aura_curr + " / " + controller.curr_player.GetComponent<Character_Script> ().aura_max + "\n" +
                       "AP: " + controller.curr_player.GetComponent<Character_Script>().action_curr + " / " + controller.curr_player.GetComponent<Character_Script>().action_max + "\n" +
                       "Can: " + controller.curr_player.GetComponent<Character_Script> ().canister_curr + " / " + controller.curr_player.GetComponent<Character_Script> ().canister_max + "\n" +

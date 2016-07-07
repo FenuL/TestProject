@@ -54,9 +54,11 @@
      <Compile Include="Assets\Scripts\Game_Controller.cs" />
      <Compile Include="Assets\Scripts\Tile_Scripts\Draw_Tile_Grid.cs" />
      <Compile Include="Assets\Scripts\Tile_Scripts\Tile_Data.cs" />
+     <None Include="Assets\Characters\Player_Characters\Player_Character_Data.txt" />
      <None Include="Assets\Maps\height_map.txt" />
      <None Include="Assets\Maps\falls_map.txt" />
      <None Include="Assets\Maps\tile_map.txt" />
+     <None Include="Assets\Characters\Monster_Characters\Monster_Character_Data.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>E:/Program Files (x86)/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

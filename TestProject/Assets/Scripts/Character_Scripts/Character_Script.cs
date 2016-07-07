@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 public class Character_Script : MonoBehaviour {
 
@@ -9,14 +10,14 @@ public class Character_Script : MonoBehaviour {
     public int AP_MULTIPLIER = 5;
     public int AP_RECOVERY = 10;
     public int SPEED = 5;
+    public int character_id;
     public enum States { Moving, Attacking, Idle, Dead, Blinking }
     public enum Actions { Move, Attack, Wait, Blink, Channel }
     public enum Weapons { Sword, Rifle, Spear, Sniper, Pistol, Claws }
-    public enum Armors { Light, Medium, Heavy}
+    public enum Armors { Light, Medium, Heavy }
     public enum Character_Stats { aura_max, action_max, canister_max, strength, coordination, spirit, dexterity, vitality, speed };
 
     //Variables
-    public int character_id { get; set; }
     public int character_num { get; set; }
     public string character_name { get; set; }
     public int aura_max { get; set; }
@@ -183,6 +184,57 @@ public class Character_Script : MonoBehaviour {
 	void Start () {
 	}
 
+    public Character_Script(string nm, int lvl, int str, int crd, int spt, int dex, int vit, int spd, int can, string wep, string arm)
+    {
+        controller = Game_Controller.controller;
+        character_name = nm.TrimStart();
+        level = lvl;
+        strength = str;
+        coordination = crd;
+        spirit = spt;
+        dexterity = dex;
+        vitality = vit;
+        speed = spd;
+        aura_max = vitality * AURA_MULTIPLIER;
+        aura_curr = aura_max;
+        action_max = spirit * AP_MULTIPLIER;
+        action_curr = action_max;
+        actions = new List<Actions>();
+        canister_max = can;
+        canister_curr = canister_max;
+        state = States.Idle;
+        foreach (Weapons weps in Enum.GetValues(typeof(Weapons)))
+        {
+            if (wep.TrimStart() == weps.ToString())
+            {
+                Weapon w = new Weapon(weps);
+                Equip(w);
+                break;
+            }
+        }
+        foreach (Armors arms in Enum.GetValues(typeof(Armors)))
+        {
+            if (arm.TrimStart() == arms.ToString())
+            {
+                Armor a = new Armor(arms);
+                Equip(a);
+                break;
+            }
+        }
+        //foreach (string s in acc)
+        //{
+        //    foreach (Weapons weps in Enum.GetValues(typeof(Weapons)))
+        //    {
+        //        if (wep == weps.ToString())
+        //        {
+        //            Weapon w = new Weapon(weps);
+        //            Equip(w);
+        //            break;
+        //        }
+        //    }
+        //}
+    }
+
     public void Equip(Equipment e)
     {
         switch (e.type)
@@ -268,11 +320,11 @@ public class Character_Script : MonoBehaviour {
 
     public void Randomize(){
         //Randomize stats
-		strength = Random.Range (1,7);
-		coordination = Random.Range (1, 7);
-		spirit = Random.Range (1, 7);
-		dexterity = Random.Range (1, 7);
-		vitality = Random.Range (1, 7);
+		strength = UnityEngine.Random.Range (1,7);
+		coordination = UnityEngine.Random.Range (1, 7);
+		spirit = UnityEngine.Random.Range (1, 7);
+		dexterity = UnityEngine.Random.Range (1, 7);
+		vitality = UnityEngine.Random.Range (1, 7);
 
         //Formulas
         speed = SPEED;
@@ -281,12 +333,12 @@ public class Character_Script : MonoBehaviour {
         action_max = spirit * AP_MULTIPLIER;
         action_curr = action_max;
         actions = new List<Actions>();
-        canister_max = Random.Range(0, 3);
+        canister_max = UnityEngine.Random.Range(0, 3);
         canister_curr = canister_max;
 		state = States.Idle;
 
         //Randomize Equipment
-        int w = Random.Range(0, 5);
+        int w = UnityEngine.Random.Range(0, 5);
         Weapon wep;
         if (w == 0)
         {
@@ -312,7 +364,7 @@ public class Character_Script : MonoBehaviour {
             wep = new Weapon(Weapons.Claws);
         }
         Equip(wep);
-        int a = Random.Range(0, 3);
+        int a = UnityEngine.Random.Range(0, 3);
         Armor ar;
         if (a == 0)
         {

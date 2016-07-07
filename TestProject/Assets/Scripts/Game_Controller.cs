@@ -13,6 +13,8 @@ public class Game_Controller : MonoBehaviour {
     public int turn_index; 
 	public int curr_character_num;
 	public GameObject[] characters;
+    public Character_Script[] player_character_data;
+    public Character_Script[] monster_character_data;
     public SortedList<int, GameObject> turn_order;
     public IList<int> keys;
 	public GameObject curr_player;
@@ -181,6 +183,105 @@ public class Game_Controller : MonoBehaviour {
         }
     }
 
+    Character_Script[] ReadCharacterData(string file)
+    {
+        string[] lines = System.IO.File.ReadAllLines(file);
+        Character_Script[] objects = new Character_Script[lines.Length / 13];
+
+        int count = 0;
+        string name = "";
+        int level = 1;
+        int strength = 1;
+        int coordination = 1;
+        int spirit = 1;
+        int dexterity = 1;
+        int vitality = 1;
+        int speed = 5;
+        int canister_max = 1;
+        string weapon = "Sword";
+        string armor = "Light";
+        foreach (string line in lines)
+        {
+            string[] elements = line.Split(':');
+            if (!elements[0].Contains("#") && elements.Length > 1)
+            {
+                if (elements[0] == "name")
+                {
+                    name = elements[1];
+                }
+                else if (elements[0] == "level")
+                {
+                    if (int.TryParse(elements[1], out level))
+                    {}
+                }
+                else if (elements[0] == "strength")
+                {
+                    if (int.TryParse(elements[1], out strength))
+                    {}
+                }
+                else if (elements[0] == "coordination")
+                {
+                    if (int.TryParse(elements[1], out coordination))
+                    {}
+                }
+                else if (elements[0] == "spirit")
+                {
+                    if (int.TryParse(elements[1], out spirit))
+                    {}
+                }
+                else if (elements[0] == "dexterity")
+                {
+                    if (int.TryParse(elements[1], out dexterity))
+                    {}
+                }
+                else if (elements[0] == "vitality")
+                {
+                    if (int.TryParse(elements[1], out vitality))
+                    {}
+                }
+                else if (elements[0] == "speed")
+                {
+                    if (int.TryParse(elements[1], out speed))
+                    {}
+                }
+                else if (elements[0] == "canister_max")
+                {
+                    if (int.TryParse(elements[1], out canister_max))
+                    {}
+                }
+                else if (elements[0] == "weapon")
+                {
+                    weapon = elements[1];
+                }
+                else if (elements[0] == "armor")
+                {
+                    armor = elements[1];
+                }
+                else if (elements[0] == "accessories")
+                {
+                    
+                }
+            }
+            if (elements[0] == "")
+            {
+                objects[count] = new Character_Script(name, level, strength, coordination, spirit, dexterity, vitality, speed, canister_max, weapon, armor);
+                count++;
+                name = "";
+                level = 1;
+                strength = 1;
+                coordination = 1;
+                spirit = 1;
+                dexterity = 1;
+                vitality = 1;
+                speed = 5;
+                canister_max = 1;
+                weapon = "Sword";
+                armor = "Light";
+            }
+        }
+        return objects;
+    }
+
 	void Awake (){
 		if (controller == null) {
 			DontDestroyOnLoad (gameObject);
@@ -195,10 +296,31 @@ public class Game_Controller : MonoBehaviour {
 		int x = 0;
 		//curr_map = "Assets/Maps/tile_map.txt";
 		GameObject[] objects = GameObject.FindGameObjectsWithTag ("Player");
+        player_character_data = ReadCharacterData("Assets/Characters/Player_Characters/Player_Character_Data.txt");
+        monster_character_data = ReadCharacterData("Assets/Characters/Monster_Characters/Monster_Character_Data.txt");
         turn_order = new SortedList<int, GameObject>();
 		foreach (GameObject game_object in objects) {
 			game_object.GetComponent<Character_Script>().character_num = x;
-			game_object.GetComponent<Character_Script>().Randomize();
+            game_object.GetComponent<Character_Script>().character_name = player_character_data[game_object.GetComponent<Character_Script>().character_id].character_name;
+            game_object.GetComponent<Character_Script>().level = player_character_data[game_object.GetComponent<Character_Script>().character_id].level;
+            game_object.GetComponent<Character_Script>().strength = player_character_data[game_object.GetComponent<Character_Script>().character_id].strength;
+            game_object.GetComponent<Character_Script>().coordination = player_character_data[game_object.GetComponent<Character_Script>().character_id].coordination;
+            game_object.GetComponent<Character_Script>().spirit = player_character_data[game_object.GetComponent<Character_Script>().character_id].spirit;
+            game_object.GetComponent<Character_Script>().dexterity = player_character_data[game_object.GetComponent<Character_Script>().character_id].dexterity;
+            game_object.GetComponent<Character_Script>().vitality = player_character_data[game_object.GetComponent<Character_Script>().character_id].vitality;
+            game_object.GetComponent<Character_Script>().speed = player_character_data[game_object.GetComponent<Character_Script>().character_id].speed;
+            game_object.GetComponent<Character_Script>().canister_max = player_character_data[game_object.GetComponent<Character_Script>().character_id].canister_max;
+            game_object.GetComponent<Character_Script>().weapon = player_character_data[game_object.GetComponent<Character_Script>().character_id].weapon;
+            game_object.GetComponent<Character_Script>().armor = player_character_data[game_object.GetComponent<Character_Script>().character_id].armor;
+            game_object.GetComponent<Character_Script>().aura_max = player_character_data[game_object.GetComponent<Character_Script>().character_id].aura_max;
+            game_object.GetComponent<Character_Script>().aura_curr= player_character_data[game_object.GetComponent<Character_Script>().character_id].aura_curr;
+            game_object.GetComponent<Character_Script>().action_max = player_character_data[game_object.GetComponent<Character_Script>().character_id].action_max;
+            game_object.GetComponent<Character_Script>().action_curr = player_character_data[game_object.GetComponent<Character_Script>().character_id].action_curr;
+            game_object.GetComponent<Character_Script>().actions = player_character_data[game_object.GetComponent<Character_Script>().character_id].actions;
+            game_object.GetComponent<Character_Script>().canister_curr = player_character_data[game_object.GetComponent<Character_Script>().character_id].canister_curr;
+            game_object.GetComponent<Character_Script>().state = player_character_data[game_object.GetComponent<Character_Script>().character_id].state;
+            game_object.GetComponent<Character_Script>().controller = player_character_data[game_object.GetComponent<Character_Script>().character_id].controller;
+            //game_object.GetComponent<Character_Script>().Randomize();
             int key = game_object.GetComponent<Character_Script>().dexterity;
             while (turn_order.ContainsKey(key))
             {
@@ -214,8 +336,27 @@ public class Game_Controller : MonoBehaviour {
 		objects = GameObject.FindGameObjectsWithTag ("Monster");
 		//print (objects.Length);
 		foreach (GameObject game_object in objects) {
-			game_object.GetComponent<Character_Script>().character_num = x; 
-			game_object.GetComponent<Character_Script>().Randomize();
+			game_object.GetComponent<Character_Script>().character_num = x;
+            game_object.GetComponent<Character_Script>().character_name = monster_character_data[game_object.GetComponent<Character_Script>().character_id].character_name;
+            game_object.GetComponent<Character_Script>().level = monster_character_data[game_object.GetComponent<Character_Script>().character_id].level;
+            game_object.GetComponent<Character_Script>().strength = monster_character_data[game_object.GetComponent<Character_Script>().character_id].strength;
+            game_object.GetComponent<Character_Script>().coordination = monster_character_data[game_object.GetComponent<Character_Script>().character_id].coordination;
+            game_object.GetComponent<Character_Script>().spirit = monster_character_data[game_object.GetComponent<Character_Script>().character_id].spirit;
+            game_object.GetComponent<Character_Script>().dexterity = monster_character_data[game_object.GetComponent<Character_Script>().character_id].dexterity;
+            game_object.GetComponent<Character_Script>().vitality = monster_character_data[game_object.GetComponent<Character_Script>().character_id].vitality;
+            game_object.GetComponent<Character_Script>().speed = monster_character_data[game_object.GetComponent<Character_Script>().character_id].speed;
+            game_object.GetComponent<Character_Script>().canister_max = monster_character_data[game_object.GetComponent<Character_Script>().character_id].canister_max;
+            game_object.GetComponent<Character_Script>().weapon = monster_character_data[game_object.GetComponent<Character_Script>().character_id].weapon;
+            game_object.GetComponent<Character_Script>().armor = monster_character_data[game_object.GetComponent<Character_Script>().character_id].armor;
+            game_object.GetComponent<Character_Script>().aura_max = monster_character_data[game_object.GetComponent<Character_Script>().character_id].aura_max;
+            game_object.GetComponent<Character_Script>().aura_curr = monster_character_data[game_object.GetComponent<Character_Script>().character_id].aura_curr;
+            game_object.GetComponent<Character_Script>().action_max = monster_character_data[game_object.GetComponent<Character_Script>().character_id].action_max;
+            game_object.GetComponent<Character_Script>().action_curr = monster_character_data[game_object.GetComponent<Character_Script>().character_id].action_curr;
+            game_object.GetComponent<Character_Script>().actions = monster_character_data[game_object.GetComponent<Character_Script>().character_id].actions;
+            game_object.GetComponent<Character_Script>().canister_curr = monster_character_data[game_object.GetComponent<Character_Script>().character_id].canister_curr;
+            game_object.GetComponent<Character_Script>().state = monster_character_data[game_object.GetComponent<Character_Script>().character_id].state;
+            game_object.GetComponent<Character_Script>().controller = player_character_data[game_object.GetComponent<Character_Script>().character_id].controller;
+            //game_object.GetComponent<Character_Script>().Randomize();
             int key = game_object.GetComponent<Character_Script>().dexterity;
             while (turn_order.ContainsKey(key))
             {
