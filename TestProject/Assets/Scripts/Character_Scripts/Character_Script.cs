@@ -69,6 +69,43 @@ public class Character_Script : MonoBehaviour {
 
     public class Armor: Equipment
     {
+        public Armor(string str)
+        {
+            type = Equipment_Type.Armor;
+            durability = 100;
+            switch (str)
+            {
+                case "Light":
+                    name = Armors.Light.ToString();
+                    armor = -1;
+                    weight = 0;
+                    effects = new Effect[2];
+                    effects[0] = new Effect(Character_Stats.speed, 1);
+                    effects[1] = new Effect(Character_Stats.dexterity, 1);
+                    actions = new Actions[1];
+                    actions[0] = Actions.Blink;
+                    break;
+                case "Medium":
+                    name = Armors.Medium.ToString();
+                    armor = 2;
+                    weight = 1;
+                    effects = new Effect[2];
+                    effects[0] = new Effect(Character_Stats.strength, 1);
+                    effects[1] = new Effect(Character_Stats.coordination, 1);
+                    break;
+                case "Heavy":
+                    name = Armors.Heavy.ToString();
+                    armor = 5;
+                    weight = 2;
+                    effects = new Effect[2];
+                    effects[0] = new Effect(Character_Stats.vitality, 1);
+                    effects[1] = new Effect(Character_Stats.spirit, 1);
+                    actions = new Actions[1];
+                    actions[0] = Actions.Channel;
+                    break;
+            }
+        }
+
         public Armor(Armors ar)
         {
             type = Equipment_Type.Armor;
@@ -120,7 +157,64 @@ public class Character_Script : MonoBehaviour {
         public int range;
         public int attack;
         public bool ranged;
-        
+
+        public Weapon(string str)
+        {
+            type = Equipment_Type.Weapon;
+            durability = 100;
+            actions = new Actions[3];
+            actions[0] = Actions.Move;
+            actions[1] = Actions.Attack;
+            actions[2] = Actions.Wait;
+            switch (str)
+            {
+                case "Sword":
+                    name = Weapons.Sword.ToString();
+                    range = 1;
+                    attack = 2;
+                    weight = 0.5;
+                    ranged = false;
+                    break;
+                case "Rifle":
+                    name = Weapons.Rifle.ToString();
+                    range = 4;
+                    attack = 3;
+                    ranged = true;
+                    weight = 1;
+                    break;
+                case "Spear":
+                    name = Weapons.Spear.ToString();
+                    range = 2;
+                    attack = 2;
+                    ranged = false;
+                    weight = 1;
+                    break;
+                case "Sniper":
+                    name = Weapons.Sniper.ToString();
+                    range = 6;
+                    attack = 5;
+                    ranged = true;
+                    weight = 3;
+                    break;
+                case "Pistol":
+                    name = Weapons.Pistol.ToString();
+                    range = 3;
+                    attack = 2;
+                    ranged = true;
+                    weight = 0.5;
+                    break;
+                case "Claws":
+                    name = Weapons.Claws.ToString();
+                    range = 1;
+                    attack = 10;
+                    ranged = false;
+                    weight = 4;
+                    break;
+                default:
+                    break;
+            }
+        }
+
         public Weapon(Weapons wep)
         {
             type = Equipment_Type.Weapon;
@@ -307,14 +401,14 @@ public class Character_Script : MonoBehaviour {
         }
     }
 
-    public int Calculate_Damage()
+    public int Calculate_Damage(Armor a)
     {
         if (weapon.ranged)
         {
-            return weapon.attack + coordination;
+            return weapon.attack + coordination - a.armor;
         }else
         {
-            return weapon.attack + strength;
+            return weapon.attack + strength - a.armor;
         }
     }
 
@@ -411,7 +505,12 @@ public class Character_Script : MonoBehaviour {
 								}
 							}
 							if (state == States.Attacking){
-								reachable_tiles.Add(grid.GetComponent<Draw_Tile_Grid>().tile_grid.getTile(x_index + i, y_index + j));
+                                //print ("scanned x index: " + x_index + i )
+                                //Prevent Self-Harm
+                                if (i != 0 || j != 0)
+                                {
+                                    reachable_tiles.Add(grid.GetComponent<Draw_Tile_Grid>().tile_grid.getTile(x_index + i, y_index + j));
+                                }
 							}
 
 						}
@@ -445,6 +544,7 @@ public class Character_Script : MonoBehaviour {
             {
                 action_curr = action_max;
             }
+            print("Character " + character_name + " Waited, Recovering 10AP.");
             controller.CleanReachable();
             controller.NextPlayer();
         }
@@ -472,6 +572,7 @@ public class Character_Script : MonoBehaviour {
 
     public void Move(Transform clicked_tile)
     {
+        print("Character " + character_name + " Moved from: " + curr_tile.GetComponent<Tile_Data>().x_index + "," + curr_tile.GetComponent<Tile_Data>().y_index + " to: " + clicked_tile.GetComponent<Tile_Data>().x_index + "," + clicked_tile.GetComponent<Tile_Data>().y_index + " Using 5 AP");
         action_curr -= 5;
         curr_tile.GetComponent<Tile_Data>().traversible = true;
         curr_tile = clicked_tile;
@@ -502,13 +603,14 @@ public class Character_Script : MonoBehaviour {
 
     public void Attack(GameObject character)
     {
+        print("Character " + character_name + " Attacked: " + character.GetComponent<Character_Script>().character_name + "; Dealing " + Calculate_Damage(character.GetComponent<Character_Script>().armor) + " damage and Using 5 AP");
         action_curr -= 5;
         if (character.GetComponent<Character_Script>().aura_curr == 0 )
         {
             character.GetComponent<Character_Script>().Die();
         }else
         {
-            character.GetComponent<Character_Script>().aura_curr -= Calculate_Damage();
+            character.GetComponent<Character_Script>().aura_curr -= Calculate_Damage(character.GetComponent<Character_Script>().armor);
             if(character.GetComponent<Character_Script>().aura_curr < 0)
             {
                 character.GetComponent<Character_Script>().aura_curr = 0;
@@ -531,6 +633,7 @@ public class Character_Script : MonoBehaviour {
 
     public void Blink (Transform clicked_tile)
     {
+        print("Character " + character_name + " Blinked from: " + curr_tile.GetComponent<Tile_Data>().x_index + "," + curr_tile.GetComponent<Tile_Data>().y_index + " to: " + clicked_tile.GetComponent<Tile_Data>().x_index + "," + clicked_tile.GetComponent<Tile_Data>().y_index + " Using 10 AP");
         action_curr -= 10;
         curr_tile.GetComponent<Tile_Data>().traversible = true;
         curr_tile = clicked_tile;
@@ -561,6 +664,7 @@ public class Character_Script : MonoBehaviour {
 
     public void Channel()
     {
+        print("Character " + character_name + " Channeled from: " + aura_curr + ", Using 10 AP");
         action_curr -= 10;
         aura_curr += 10;
         state = States.Idle;

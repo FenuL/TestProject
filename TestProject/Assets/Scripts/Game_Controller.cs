@@ -15,10 +15,11 @@ public class Game_Controller : MonoBehaviour {
 	public GameObject[] characters;
     public Character_Script[] player_character_data;
     public Character_Script[] monster_character_data;
-    public SortedList<int, GameObject> turn_order;
+    public List<GameObject> turn_order;
     public IList<int> keys;
 	public GameObject curr_player;
-	public GameObject cursor;
+    public GameObject highlighted_player;
+    public GameObject cursor;
 	public GameObject tile_grid;
 	public Tile_Data tile_data;
 	public Transform[,] tiles;
@@ -78,10 +79,10 @@ public class Game_Controller : MonoBehaviour {
         curr_character_num = curr_character_num - 1;
         if (curr_character_num < 0)
         {
-            curr_character_num = 4;
+            curr_character_num = characters.Length-1;
         }
         curr_player.GetComponent<Animator>().SetBool("Selected", false);
-        curr_player = turn_order[keys[curr_character_num]];
+        curr_player = turn_order[curr_character_num];
         if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Dead)
         {
             NextPlayer();
@@ -115,13 +116,13 @@ public class Game_Controller : MonoBehaviour {
 
 	public void PrevPlayer(){
         curr_character_num = curr_character_num + 1;
-        if (curr_character_num >= 5)
+        if (curr_character_num >= characters.Length)
         {
             curr_character_num = 0;
         }
 
         curr_player.GetComponent<Animator>().SetBool("Selected", false);
-        curr_player = turn_order[keys[curr_character_num]];
+        curr_player = turn_order[curr_character_num];
         if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Dead)
         {
             PrevPlayer();
@@ -295,45 +296,58 @@ public class Game_Controller : MonoBehaviour {
 	void Start () {
 		int x = 0;
 		//curr_map = "Assets/Maps/tile_map.txt";
-		GameObject[] objects = GameObject.FindGameObjectsWithTag ("Player");
+		//GameObject[] objects = GameObject.FindGameObjectsWithTag ("Player");
         player_character_data = ReadCharacterData("Assets/Characters/Player_Characters/Player_Character_Data.txt");
         monster_character_data = ReadCharacterData("Assets/Characters/Monster_Characters/Monster_Character_Data.txt");
-        turn_order = new SortedList<int, GameObject>();
-		foreach (GameObject game_object in objects) {
+        //turn_order = new SortedList<int, GameObject>();
+        turn_order = new List<GameObject>();
+        Character_Script[] character_data;
+		foreach (GameObject game_object in characters) {
+            if (game_object.tag == "Player")
+            {
+                character_data = player_character_data;
+            }else
+            {
+                character_data = monster_character_data;
+            }
 			game_object.GetComponent<Character_Script>().character_num = x;
-            game_object.GetComponent<Character_Script>().character_name = player_character_data[game_object.GetComponent<Character_Script>().character_id].character_name;
-            game_object.GetComponent<Character_Script>().level = player_character_data[game_object.GetComponent<Character_Script>().character_id].level;
-            game_object.GetComponent<Character_Script>().strength = player_character_data[game_object.GetComponent<Character_Script>().character_id].strength;
-            game_object.GetComponent<Character_Script>().coordination = player_character_data[game_object.GetComponent<Character_Script>().character_id].coordination;
-            game_object.GetComponent<Character_Script>().spirit = player_character_data[game_object.GetComponent<Character_Script>().character_id].spirit;
-            game_object.GetComponent<Character_Script>().dexterity = player_character_data[game_object.GetComponent<Character_Script>().character_id].dexterity;
-            game_object.GetComponent<Character_Script>().vitality = player_character_data[game_object.GetComponent<Character_Script>().character_id].vitality;
-            game_object.GetComponent<Character_Script>().speed = player_character_data[game_object.GetComponent<Character_Script>().character_id].speed;
-            game_object.GetComponent<Character_Script>().canister_max = player_character_data[game_object.GetComponent<Character_Script>().character_id].canister_max;
-            game_object.GetComponent<Character_Script>().weapon = player_character_data[game_object.GetComponent<Character_Script>().character_id].weapon;
-            game_object.GetComponent<Character_Script>().armor = player_character_data[game_object.GetComponent<Character_Script>().character_id].armor;
-            game_object.GetComponent<Character_Script>().aura_max = player_character_data[game_object.GetComponent<Character_Script>().character_id].aura_max;
-            game_object.GetComponent<Character_Script>().aura_curr= player_character_data[game_object.GetComponent<Character_Script>().character_id].aura_curr;
-            game_object.GetComponent<Character_Script>().action_max = player_character_data[game_object.GetComponent<Character_Script>().character_id].action_max;
-            game_object.GetComponent<Character_Script>().action_curr = player_character_data[game_object.GetComponent<Character_Script>().character_id].action_curr;
-            game_object.GetComponent<Character_Script>().actions = player_character_data[game_object.GetComponent<Character_Script>().character_id].actions;
-            game_object.GetComponent<Character_Script>().canister_curr = player_character_data[game_object.GetComponent<Character_Script>().character_id].canister_curr;
-            game_object.GetComponent<Character_Script>().state = player_character_data[game_object.GetComponent<Character_Script>().character_id].state;
-            game_object.GetComponent<Character_Script>().controller = player_character_data[game_object.GetComponent<Character_Script>().character_id].controller;
+            game_object.GetComponent<Character_Script>().character_name = character_data[game_object.GetComponent<Character_Script>().character_id].character_name;
+            game_object.GetComponent<Character_Script>().level = character_data[game_object.GetComponent<Character_Script>().character_id].level;
+            game_object.GetComponent<Character_Script>().strength = character_data[game_object.GetComponent<Character_Script>().character_id].strength;
+            game_object.GetComponent<Character_Script>().coordination = character_data[game_object.GetComponent<Character_Script>().character_id].coordination;
+            game_object.GetComponent<Character_Script>().spirit = character_data[game_object.GetComponent<Character_Script>().character_id].spirit;
+            game_object.GetComponent<Character_Script>().dexterity = character_data[game_object.GetComponent<Character_Script>().character_id].dexterity;
+            game_object.GetComponent<Character_Script>().vitality = character_data[game_object.GetComponent<Character_Script>().character_id].vitality;
+            game_object.GetComponent<Character_Script>().speed = character_data[game_object.GetComponent<Character_Script>().character_id].speed;
+            game_object.GetComponent<Character_Script>().canister_max = character_data[game_object.GetComponent<Character_Script>().character_id].canister_max;
+            
+            //game_object.GetComponent<Character_Script>().Equip(character_data[game_object.GetComponent<Character_Script>().character_id].weapon);
+            //game_object.GetComponent<Character_Script>().Equip(character_data[game_object.GetComponent<Character_Script>().character_id].armor);
+            game_object.GetComponent<Character_Script>().weapon = character_data[game_object.GetComponent<Character_Script>().character_id].weapon;
+            game_object.GetComponent<Character_Script>().armor = character_data[game_object.GetComponent<Character_Script>().character_id].armor;
+            game_object.GetComponent<Character_Script>().aura_max = character_data[game_object.GetComponent<Character_Script>().character_id].aura_max;
+            game_object.GetComponent<Character_Script>().aura_curr= character_data[game_object.GetComponent<Character_Script>().character_id].aura_curr;
+            game_object.GetComponent<Character_Script>().action_max = character_data[game_object.GetComponent<Character_Script>().character_id].action_max;
+            game_object.GetComponent<Character_Script>().action_curr = character_data[game_object.GetComponent<Character_Script>().character_id].action_curr;
+            game_object.GetComponent<Character_Script>().actions = character_data[game_object.GetComponent<Character_Script>().character_id].actions;
+            game_object.GetComponent<Character_Script>().canister_curr = character_data[game_object.GetComponent<Character_Script>().character_id].canister_curr;
+            game_object.GetComponent<Character_Script>().state = character_data[game_object.GetComponent<Character_Script>().character_id].state;
+            game_object.GetComponent<Character_Script>().controller = character_data[game_object.GetComponent<Character_Script>().character_id].controller;
             //game_object.GetComponent<Character_Script>().Randomize();
-            int key = game_object.GetComponent<Character_Script>().dexterity;
+            /*int key = game_object.GetComponent<Character_Script>().dexterity;
             while (turn_order.ContainsKey(key))
             {
                 key++;
-            }
-            turn_order.Add(key, game_object);
+            }*/
+            turn_order.Add(game_object);
             /*if(game_object.GetComponent<Character_Script>().character_num == curr_character_num){
 				curr_player = game_object; 
 				curr_player.GetComponent<Animator>().SetBool("Selected", true);
 			}*/
             x++;
 		}
-		objects = GameObject.FindGameObjectsWithTag ("Monster");
+        //turn_order
+		/*objects = GameObject.FindGameObjectsWithTag ("Monster");
 		//print (objects.Length);
 		foreach (GameObject game_object in objects) {
 			game_object.GetComponent<Character_Script>().character_num = x;
@@ -363,15 +377,15 @@ public class Game_Controller : MonoBehaviour {
                 key++;
             }
             turn_order.Add(key,game_object);
-            /*if(game_object.GetComponent<Character_Script>().character_num == curr_character_num){
+            if(game_object.GetComponent<Character_Script>().character_num == curr_character_num){
 				curr_player = game_object; 
 				curr_player.GetComponent<Animator>().SetBool("Selected", true);
-			}*/
+			}
             x++;
-		}
-        curr_character_num = x-1;
-        keys = turn_order.Keys;
-        curr_player = turn_order[keys[curr_character_num]];
+		}*/
+        curr_character_num = characters.Length-1;
+        //keys = turn_order.Keys;
+        curr_player = turn_order[curr_character_num];
         curr_player.GetComponent<Animator>().SetBool("Selected", true);
         cursor = GameObject.FindGameObjectWithTag ("Cursor");
 		x = 0;
@@ -420,6 +434,21 @@ public class Game_Controller : MonoBehaviour {
 		//hit = Physics2D.GetRayIntersection (ray, Mathf.Infinity, 0);
 		if (hit){
 			tile_data = hit.transform.GetComponent<Tile_Data>();
+            //If the tile is not traversible we know it is occupied, check for a player there
+            if (!tile_data.traversible)
+            {
+                foreach (GameObject character in characters)
+                {
+                    if (character.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().x_index == tile_data.x_index && character.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().y_index == tile_data.y_index)
+                    {
+                        highlighted_player = character;
+                    }
+                }
+            }
+            else
+            {
+                highlighted_player = null;
+            }
 			//print ("x: " + data.x_index + ", y: " + data.y_index + ", z: " + data.z_index);
 			//if (curr_tile != selected_tile){
 			//selected_tile.GetComponent<SpriteRenderer> ().color = new Color(255f, 255f, 255f, 1f);
@@ -502,7 +531,9 @@ public class Game_Controller : MonoBehaviour {
 			     game_object.GetComponent<Character_Script>().curr_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);
 			game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().traversible = false;
 			game_object.GetComponent<Character_Script>().FindReachable(tile_grid, game_object.GetComponent<Character_Script>().dexterity);
-		}
+            game_object.GetComponent<SpriteRenderer>().sortingOrder = game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sortingOrder+1;
+
+        }
 		objects = GameObject.FindGameObjectsWithTag ("Monster");
 		foreach (GameObject game_object in objects) {
 			game_object.GetComponent<Character_Script>().curr_tile = tile_grid.GetComponent<Draw_Tile_Grid>().tile_grid.getTile(19-game_object.GetComponent<Character_Script>().character_num,19);// [19-game_object.GetComponent<Character_Script>().character_num,19,0];
@@ -512,7 +543,8 @@ public class Game_Controller : MonoBehaviour {
 			                                              game_object.GetComponent<Character_Script>().curr_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);
 			game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().traversible = false;
 			game_object.GetComponent<Character_Script>().FindReachable(tile_grid, game_object.GetComponent<Character_Script>().dexterity);
-		}
+            game_object.GetComponent<SpriteRenderer>().sortingOrder = game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sortingOrder+1;
+        }
 		selected_tile = tiles [0, 0];
 		clicked_tile = tiles[0, 0];
         action_menu.GetComponent<Action_Menu_Script>().resetActions();
