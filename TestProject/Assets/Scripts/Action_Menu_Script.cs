@@ -76,7 +76,7 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
             button.GetComponent<Button>().onClick.RemoveAllListeners();
             if (text.Contains(Character_Script.Actions.Move.ToString()))
             {
-                if ((int)a < controller.curr_player.GetComponent<Character_Script>().action_curr)
+                if ((int)a <= controller.curr_player.GetComponent<Character_Script>().action_curr)
                 {
                     button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_player.GetComponent<Character_Script>().Action(Character_Script.Actions.Move); });
                 }
@@ -88,7 +88,7 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
             }
             if (text.Contains(Character_Script.Actions.Attack.ToString()))
             {
-                if ((int)a < controller.curr_player.GetComponent<Character_Script>().action_curr)
+                if ((int)a <= controller.curr_player.GetComponent<Character_Script>().action_curr)
                 {
                     button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_player.GetComponent<Character_Script>().Action(Character_Script.Actions.Attack); });// button.GetComponent<Button>().onClick = controller.curr_player.GetComponent<Character_Script>().Action("Attack");
                 }
@@ -100,7 +100,7 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
             }
             if (text.Contains(Character_Script.Actions.Wait.ToString()))
             {
-                if ((int)a < controller.curr_player.GetComponent<Character_Script>().action_curr)
+                if ((int)a <= controller.curr_player.GetComponent<Character_Script>().action_curr)
                 {
                     button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_player.GetComponent<Character_Script>().Action(Character_Script.Actions.Wait); }); //; button.GetComponent<Button>().onClick = controller.NextPlayer();
                 }
@@ -112,7 +112,7 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
             }
             if (text.Contains(Character_Script.Actions.Blink.ToString()))
             {
-                if ((int)a < controller.curr_player.GetComponent<Character_Script>().action_curr)
+                if ((int)a <= controller.curr_player.GetComponent<Character_Script>().action_curr)
                 {
                     button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_player.GetComponent<Character_Script>().Action(Character_Script.Actions.Blink); }); //; button.GetComponent<Button>().onClick = controller.NextPlayer();
                 }
@@ -124,7 +124,7 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
             }
             if (text.Contains(Character_Script.Actions.Channel.ToString()))
             {
-                if ((int)a < controller.curr_player.GetComponent<Character_Script>().action_curr)
+                if ((int)a <= controller.curr_player.GetComponent<Character_Script>().action_curr)
                 {
                     button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_player.GetComponent<Character_Script>().Action(Character_Script.Actions.Channel); });// button.GetComponent<Button>().onClick = controller.NextPlayer();
                 }
