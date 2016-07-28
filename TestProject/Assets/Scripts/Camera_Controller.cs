@@ -23,13 +23,13 @@ public class Camera_Controller : MonoBehaviour {
 		}
 
         //print (controller.curr_player.GetComponent<Character_Script> ().character_name);
-        GUI.TextArea (new Rect (10, Screen.height - 120, 200, 110), controller.curr_player.GetComponent<Character_Script> ().character_name + "\n" + 
-		              "AU: " + controller.curr_player.GetComponent<Character_Script> ().aura_curr + " / " + controller.curr_player.GetComponent<Character_Script> ().aura_max + "\n" +
-                      "AP: " + controller.curr_player.GetComponent<Character_Script>().action_curr + " / " + controller.curr_player.GetComponent<Character_Script>().action_max + "\n" +
-                      "Can: " + controller.curr_player.GetComponent<Character_Script> ().canister_curr + " / " + controller.curr_player.GetComponent<Character_Script> ().canister_max + "\n" +
-		              "Str: " + controller.curr_player.GetComponent<Character_Script> ().strength + "   Crd: " + controller.curr_player.GetComponent<Character_Script> ().coordination + "    Spt: " + controller.curr_player.GetComponent<Character_Script>().spirit + "\n" + 
-		              "Dex: " + controller.curr_player.GetComponent<Character_Script> ().dexterity + "   Vit: " + controller.curr_player.GetComponent<Character_Script>().vitality + "\n" + 
-		              "Wep: " + controller.curr_player.GetComponent<Character_Script>().weapon.name + "   Armor: " + controller.curr_player.GetComponent<Character_Script>().armor.name);
+        GUI.TextArea(new Rect(10, Screen.height - 120, 200, 110), controller.curr_player.GetComponent<Character_Script>().character_name + "\n" +
+              "AU: " + controller.curr_player.GetComponent<Character_Script>().aura_curr + " / " + controller.curr_player.GetComponent<Character_Script>().aura_max + "\n" +
+              "AP: " + (controller.curr_player.GetComponent<Character_Script>().action_curr - controller.curr_player.GetComponent<Character_Script>().action_cost) + " / " + controller.curr_player.GetComponent<Character_Script>().action_max + "\n" +
+              "Can: " + controller.curr_player.GetComponent<Character_Script>().canister_curr + " / " + controller.curr_player.GetComponent<Character_Script>().canister_max + "\n" +
+              "Str: " + controller.curr_player.GetComponent<Character_Script>().strength + "   Crd: " + controller.curr_player.GetComponent<Character_Script>().coordination + "    Spt: " + controller.curr_player.GetComponent<Character_Script>().spirit + "\n" +
+              "Dex: " + controller.curr_player.GetComponent<Character_Script>().dexterity + "   Vit: " + controller.curr_player.GetComponent<Character_Script>().vitality + "\n" +
+              "Wep: " + controller.curr_player.GetComponent<Character_Script>().weapon.name + "   Armor: " + controller.curr_player.GetComponent<Character_Script>().armor.name);
 
         if (controller.highlighted_player != null) {
             GUI.TextArea(new Rect(220, Screen.height - 120, 200, 110), controller.highlighted_player.GetComponent<Character_Script>().character_name + "\n" +

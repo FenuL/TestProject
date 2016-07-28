@@ -12,7 +12,7 @@ public class Character_Script : MonoBehaviour {
     public int SPEED = 5;
     public int character_id;
     public enum States { Moving, Attacking, Idle, Dead, Blinking }
-    public enum Actions { Move, Attack, Wait, Blink, Channel }
+    public enum Actions { Move=-1, Attack=5, Wait = 0, Blink=-2, Channel = 10 }
     public enum Weapons { Sword, Rifle, Spear, Sniper, Pistol, Claws }
     public enum Armors { Light, Medium, Heavy }
     public enum Character_Stats { aura_max, action_max, canister_max, strength, coordination, spirit, dexterity, vitality, speed };
@@ -24,6 +24,7 @@ public class Character_Script : MonoBehaviour {
     public int aura_curr { get; set; }
     public int action_max { get; set; }
     public int action_curr { get; set; }
+    public int action_cost { get; set; }
     public int canister_max { get; set; }
     public int canister_curr { get; set; }
     public int strength { get; set; }
@@ -293,6 +294,7 @@ public class Character_Script : MonoBehaviour {
         aura_curr = aura_max;
         action_max = spirit * AP_MULTIPLIER;
         action_curr = action_max;
+        action_cost = 0;
         actions = new List<Actions>();
         canister_max = can;
         canister_curr = canister_max;
@@ -387,11 +389,11 @@ public class Character_Script : MonoBehaviour {
                 }
             }
         }
-        speed -= e.weight;
+        /*speed -= e.weight;
         if( speed <= 0)
         {
             speed = 1;
-        }
+        }*/
         if (e.actions != null)
         {
             foreach(Actions a in e.actions)
@@ -499,11 +501,25 @@ public class Character_Script : MonoBehaviour {
                         //print ("distance " + (Mathf.Abs(i)+ Mathf.Abs(j)));
                         if (Mathf.Abs(i) + Mathf.Abs(j) <= limit) {
                             //print ("tile " + (x_index +i) + ","+ (y_index+ j) + " is reachable");
-                            if (state == States.Moving || state == States.Blinking){
+                            if (state == States.Moving )
+                            { 
 								if (grid.GetComponent<Draw_Tile_Grid>().tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile_Data>().traversible){
-									reachable_tiles.Add(grid.GetComponent<Draw_Tile_Grid>().tile_grid.getTile(x_index + i, y_index + j));
+                                    if ((Math.Abs(x_index - (x_index + i)) * (int)(armor.weight + weapon.weight) + Math.Abs(y_index - (y_index + j)) * (int)(armor.weight + weapon.weight) + (grid.GetComponent<Draw_Tile_Grid>().tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile_Data>().tile_height - curr_tile.GetComponent<Tile_Data>().tile_height) * 2) < action_curr)
+                                    {
+                                        reachable_tiles.Add(grid.GetComponent<Draw_Tile_Grid>().tile_grid.getTile(x_index + i, y_index + j));
+                                    }
 								}
 							}
+                            if (state == States.Blinking)
+                            {
+                                if (grid.GetComponent<Draw_Tile_Grid>().tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile_Data>().traversible)
+                                {
+                                    if ((Math.Abs(x_index - (x_index + i)) + Math.Abs(y_index - (y_index + j))) < action_curr)
+                                    {
+                                        reachable_tiles.Add(grid.GetComponent<Draw_Tile_Grid>().tile_grid.getTile(x_index + i, y_index + j));
+                                    }
+                                }
+                            }
 							if (state == States.Attacking){
                                 //print ("scanned x index: " + x_index + i )
                                 //Prevent Self-Harm
@@ -524,8 +540,20 @@ public class Character_Script : MonoBehaviour {
 	}
 
 	public void Action(Actions act){
-		if (act == Actions.Move && state != States.Dead) {
-			state = States.Moving;
+        if ((int)act > 0)
+        {
+            action_cost = (int)act;
+        }else if ((int)act == 0)
+        {
+            action_cost = -AP_RECOVERY;
+        }
+        if(action_curr-action_cost < 0)
+        {
+            action_cost = action_curr;
+        }
+        if (act == Actions.Move && state != States.Dead) {
+
+            state = States.Moving;
 			FindReachable(controller.tile_grid, speed);
 			controller.CleanReachable ();
 			controller.MarkReachable ();
@@ -539,12 +567,13 @@ public class Character_Script : MonoBehaviour {
         if (act == Actions.Wait && state != States.Dead)
         {
             state = States.Idle;
-            action_curr += AP_RECOVERY;
+            action_curr -= action_cost;
+            print("Character " + character_name + " Waited, Recovering " + AP_RECOVERY + " AP.");
+            action_cost = 0;
             if (action_curr > action_max)
             {
                 action_curr = action_max;
             }
-            print("Character " + character_name + " Waited, Recovering 10AP.");
             controller.CleanReachable();
             controller.NextPlayer();
         }
@@ -572,8 +601,18 @@ public class Character_Script : MonoBehaviour {
 
     public void Move(Transform clicked_tile)
     {
-        print("Character " + character_name + " Moved from: " + curr_tile.GetComponent<Tile_Data>().x_index + "," + curr_tile.GetComponent<Tile_Data>().y_index + " to: " + clicked_tile.GetComponent<Tile_Data>().x_index + "," + clicked_tile.GetComponent<Tile_Data>().y_index + " Using 5 AP");
-        action_curr -= 5;
+        action_cost = Math.Abs(curr_tile.GetComponent<Tile_Data>().x_index - clicked_tile.GetComponent<Tile_Data>().x_index) * (int)(armor.weight + weapon.weight) +Math.Abs(curr_tile.GetComponent<Tile_Data>().y_index - clicked_tile.GetComponent<Tile_Data>().y_index) * (int)(armor.weight + weapon.weight) + (clicked_tile.GetComponent<Tile_Data>().tile_height - curr_tile.GetComponent<Tile_Data>().tile_height)*2;
+        if (action_cost < 1)
+        {
+            action_cost = 1;
+        }
+        if (action_cost > action_curr)
+        {
+            action_cost = action_curr;
+        }
+        print("Character " + character_name + " Moved from: " + curr_tile.GetComponent<Tile_Data>().x_index + "," + curr_tile.GetComponent<Tile_Data>().y_index + " to: " + clicked_tile.GetComponent<Tile_Data>().x_index + "," + clicked_tile.GetComponent<Tile_Data>().y_index + " Using " + action_cost + " AP");
+        action_curr -= action_cost;
+        action_cost = 0;
         curr_tile.GetComponent<Tile_Data>().traversible = true;
         curr_tile = clicked_tile;
         curr_tile.GetComponent<Tile_Data>().traversible = false;
@@ -599,12 +638,14 @@ public class Character_Script : MonoBehaviour {
         {
             action_curr = action_max;
         }
+        controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
     }
 
     public void Attack(GameObject character)
     {
-        print("Character " + character_name + " Attacked: " + character.GetComponent<Character_Script>().character_name + "; Dealing " + Calculate_Damage(character.GetComponent<Character_Script>().armor) + " damage and Using 5 AP");
-        action_curr -= 5;
+        print("Character " + character_name + " Attacked: " + character.GetComponent<Character_Script>().character_name + "; Dealing " + Calculate_Damage(character.GetComponent<Character_Script>().armor) + " damage and Using " + action_cost + " AP");
+        action_curr -= action_cost;
+        action_cost = 0;
         if (character.GetComponent<Character_Script>().aura_curr == 0 )
         {
             character.GetComponent<Character_Script>().Die();
@@ -629,12 +670,23 @@ public class Character_Script : MonoBehaviour {
         {
             action_curr = action_max;
         }
+        controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
     }
 
     public void Blink (Transform clicked_tile)
     {
-        print("Character " + character_name + " Blinked from: " + curr_tile.GetComponent<Tile_Data>().x_index + "," + curr_tile.GetComponent<Tile_Data>().y_index + " to: " + clicked_tile.GetComponent<Tile_Data>().x_index + "," + clicked_tile.GetComponent<Tile_Data>().y_index + " Using 10 AP");
-        action_curr -= 10;
+        action_cost = Math.Abs(curr_tile.GetComponent<Tile_Data>().x_index - clicked_tile.GetComponent<Tile_Data>().x_index) + Math.Abs(curr_tile.GetComponent<Tile_Data>().y_index - clicked_tile.GetComponent<Tile_Data>().y_index);
+        if (action_cost < 1)
+        {
+            action_cost = 1;
+        }
+        if (action_cost > action_curr)
+        {
+            action_cost = action_curr;
+        }
+        print("Character " + character_name + " Blinked from: " + curr_tile.GetComponent<Tile_Data>().x_index + "," + curr_tile.GetComponent<Tile_Data>().y_index + " to: " + clicked_tile.GetComponent<Tile_Data>().x_index + "," + clicked_tile.GetComponent<Tile_Data>().y_index + " Using " + action_cost + " AP");
+        action_curr -= action_cost;
+        action_cost = 0;
         curr_tile.GetComponent<Tile_Data>().traversible = true;
         curr_tile = clicked_tile;
         curr_tile.GetComponent<Tile_Data>().traversible = false;
@@ -660,12 +712,14 @@ public class Character_Script : MonoBehaviour {
         {
             action_curr = action_max;
         }
+        controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
     }
 
     public void Channel()
     {
-        print("Character " + character_name + " Channeled from: " + aura_curr + ", Using 10 AP");
-        action_curr -= 10;
+        print("Character " + character_name + " Channeled from: " + aura_curr + ", Using " + action_cost + " AP");
+        action_curr -= action_cost;
+        action_cost = 0;
         aura_curr += 10;
         state = States.Idle;
         if (aura_curr > aura_max)
@@ -682,6 +736,7 @@ public class Character_Script : MonoBehaviour {
         {
             action_curr = action_max;
         }
+        controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
     }
 
     public Character_Script(){
