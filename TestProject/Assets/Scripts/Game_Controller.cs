@@ -327,8 +327,8 @@ public class Game_Controller : MonoBehaviour {
             game_object.GetComponent<Character_Script>().armor = character_data[game_object.GetComponent<Character_Script>().character_id].armor;
             game_object.GetComponent<Character_Script>().aura_max = character_data[game_object.GetComponent<Character_Script>().character_id].aura_max;
             game_object.GetComponent<Character_Script>().aura_curr= character_data[game_object.GetComponent<Character_Script>().character_id].aura_curr;
-            game_object.GetComponent<Character_Script>().action_max = character_data[game_object.GetComponent<Character_Script>().character_id].action_max;
-            game_object.GetComponent<Character_Script>().action_curr = character_data[game_object.GetComponent<Character_Script>().character_id].action_curr;
+            game_object.GetComponent<Character_Script>().action_max = 20;// character_data[game_object.GetComponent<Character_Script>().character_id].action_max;
+            game_object.GetComponent<Character_Script>().action_curr = 20;// character_data[game_object.GetComponent<Character_Script>().character_id].action_curr;
             game_object.GetComponent<Character_Script>().action_cost = 0;
             game_object.GetComponent<Character_Script>().actions = character_data[game_object.GetComponent<Character_Script>().character_id].actions;
             game_object.GetComponent<Character_Script>().canister_curr = character_data[game_object.GetComponent<Character_Script>().character_id].canister_curr;
@@ -454,10 +454,10 @@ public class Game_Controller : MonoBehaviour {
 			tile_data = hit.transform.GetComponent<Tile_Data>();
             if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Moving)
             {
-                curr_player.GetComponent<Character_Script>().action_cost = Math.Abs(curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().x_index - tile_data.x_index) * (int)(curr_player.GetComponent<Character_Script>().armor.weight + curr_player.GetComponent<Character_Script>().weapon.weight) + Math.Abs(curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().y_index - tile_data.y_index) * (int)(curr_player.GetComponent<Character_Script>().armor.weight + curr_player.GetComponent<Character_Script>().weapon.weight) + (tile_data.tile_height - curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().tile_height) * 2;
+                curr_player.GetComponent<Character_Script>().action_cost = (int)tile_data.node.weight;//Math.Abs(curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().x_index - tile_data.x_index) * (int)(curr_player.GetComponent<Character_Script>().armor.weight + curr_player.GetComponent<Character_Script>().weapon.weight) + Math.Abs(curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().y_index - tile_data.y_index) * (int)(curr_player.GetComponent<Character_Script>().armor.weight + curr_player.GetComponent<Character_Script>().weapon.weight) + (tile_data.node.height - curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height) * 2;
                 if (curr_player.GetComponent<Character_Script>().action_cost < 1)
                 {
-                    curr_player.GetComponent<Character_Script>().action_cost = 1;
+                    curr_player.GetComponent<Character_Script>().action_cost = 0;
                 }
                 if (curr_player.GetComponent<Character_Script>().action_cost > curr_player.GetComponent<Character_Script>().action_curr)
                 {
@@ -477,7 +477,7 @@ public class Game_Controller : MonoBehaviour {
                 }
             }
             //If the tile is not traversible we know it is occupied, check for a player there
-            if (!tile_data.traversible)
+            if (!tile_data.node.traversible)
             {
                 foreach (GameObject character in characters)
                 {
@@ -513,17 +513,22 @@ public class Game_Controller : MonoBehaviour {
 		
 		if (Input.GetMouseButtonDown (0)) {
 			cursor.GetComponent<Animator>().SetBool("Clicked", true);
-
-			//print("test2");
-			//clicked_tile.GetComponent<SpriteRenderer> ().color = new Color (255f, 255f, 255f, 1f); // Set to white
-			clicked_tile = selected_tile;
+            print("Height: " + tile_data.node.height);
+            tile_data.node.printEdges();
+            print("Traversible: " +tile_data.node.traversible);
+            print("Cost: " + tile_data.node.weight);
+            print("Sprite: " + tile_data.tile_sprite_index);
+            //print("test2");
+            //clicked_tile.GetComponent<SpriteRenderer> ().color = new Color (255f, 255f, 255f, 1f); // Set to white
+            clicked_tile = selected_tile;
 			//clicked_tile.GetComponent<SpriteRenderer> ().color = new Color (255f, 0f, 0f, 1f); // Set to blue
 			//if (tile_data.traversible) {
 				foreach (Transform tile in curr_player.GetComponent<Character_Script>().reachable_tiles){
 					if (tile.Equals(clicked_tile)){
-						if (clicked_tile.GetComponent<Tile_Data>().traversible && curr_player.GetComponent<Character_Script>().state == Character_Script.States.Moving)
+						if (clicked_tile.GetComponent<Tile_Data>().node.traversible && curr_player.GetComponent<Character_Script>().state == Character_Script.States.Moving)
                         {
-                            curr_player.GetComponent<Character_Script>().Move(clicked_tile);
+                            StartCoroutine(curr_player.GetComponent<Character_Script>().Move(clicked_tile));
+                            CleanReachable();
                             //NextPlayer();
                         }
 						if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Attacking)
@@ -537,7 +542,7 @@ public class Game_Controller : MonoBehaviour {
                                 }
 							}
 						}
-                        if (clicked_tile.GetComponent<Tile_Data>().traversible && curr_player.GetComponent<Character_Script>().state == Character_Script.States.Blinking)
+                        if (clicked_tile.GetComponent<Tile_Data>().node.traversible && curr_player.GetComponent<Character_Script>().state == Character_Script.States.Blinking)
                         {
                             curr_player.GetComponent<Character_Script>().Blink(clicked_tile);
                             //NextPlayer();
@@ -573,7 +578,7 @@ public class Game_Controller : MonoBehaviour {
 		         //game_object.GetComponent<Character_Script>().curr_tile.position.y + (float)(game_object.GetComponent<SpriteRenderer> ().sprite.rect.height / game_object.GetComponent<SpriteRenderer> ().sprite.pixelsPerUnit + 0.15f),
 			     (float)(game_object.GetComponent<Character_Script>().curr_tile.position.y + (game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height)/100)+ 0.15f,
 			     game_object.GetComponent<Character_Script>().curr_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);
-			game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().traversible = false;
+			game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.traversible = false;
 			game_object.GetComponent<Character_Script>().FindReachable(tile_grid, game_object.GetComponent<Character_Script>().dexterity);
             game_object.GetComponent<SpriteRenderer>().sortingOrder = game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sortingOrder+1;
 
@@ -585,7 +590,7 @@ public class Game_Controller : MonoBehaviour {
 			                                              //game_object.GetComponent<Character_Script>().curr_tile.position.y + 0.5f,
 			                                              (float)(game_object.GetComponent<Character_Script>().curr_tile.position.y + (game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height)/100)+ 0.15f,
 			                                              game_object.GetComponent<Character_Script>().curr_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);
-			game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().traversible = false;
+			game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.traversible = false;
 			game_object.GetComponent<Character_Script>().FindReachable(tile_grid, game_object.GetComponent<Character_Script>().dexterity);
             game_object.GetComponent<SpriteRenderer>().sortingOrder = game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sortingOrder+1;
         }
@@ -623,6 +628,7 @@ public class Game_Controller : MonoBehaviour {
 	public void CleanReachable(){
 		GameObject[] objects = GameObject.FindGameObjectsWithTag ("Reachable");
 		foreach (GameObject game_object in objects) {
+
 			Destroy(game_object);
 		}
 	}

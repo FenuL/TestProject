@@ -20,6 +20,7 @@ public class Tile_Grid : MonoBehaviour{
 	Transform[,] tiles = new Transform[tile_grid_width, tile_grid_height];
 	int[,] tile_heights = new int[tile_grid_width, tile_grid_height];
 	int[,] tile_sprites = new int[tile_grid_width, tile_grid_height];
+    public Tile_Data.Graph navmesh { get; set; }
 
 	public Tile_Grid(string[] lines, Transform tile_prefab, Sprite[] newTileSprites, Transform item_prefab, Sprite[] newItemSpriteSheet){
 		tile = tile_prefab;
@@ -35,6 +36,7 @@ public class Tile_Grid : MonoBehaviour{
 		int i = 0;
 		double start_x_pos = 0;
 		double start_y_pos = 3.5;
+        navmesh = new Tile_Data.Graph();
 		foreach (string line in lines){
 			string[] elements = line.Split(';');
 			foreach (string e in elements){
@@ -102,6 +104,7 @@ public class Tile_Grid : MonoBehaviour{
 						Destroy (instance.gameObject.GetComponent<Animator>());
 					}
 					instance.GetComponent<Tile_Data>().instantiate(x,y,tile_heights[x,y],tile_sprites[x,y]);
+                    
 
 					//else {
 					//	instance = Instantiate(tile, new Vector3((float)(start_x_pos - (x) * (TILE_WIDTH/200) + (y) * (TILE_WIDTH/200)), (float)(start_y_pos - (x) * (TILE_LENGTH/200) - (y) * (TILE_LENGTH/200)+z*TILE_HEIGHT/100.0), 0), Quaternion.identity);
@@ -113,12 +116,21 @@ public class Tile_Grid : MonoBehaviour{
 					sprite.sortingOrder = tile_number;
 					//}
 					tiles[x,y] = instance;
+                    navmesh.addNode(tiles[x,y].GetComponent<Tile_Data>().node);
+                    if (x > 0)
+                    {
+                        tiles[x,y].GetComponent<Tile_Data>().node.addEdge(tiles[x - 1, y].GetComponent<Tile_Data>().node);
+                    }
+                    if (y > 0)
+                    {
+                        tiles[x,y].GetComponent<Tile_Data>().node.addEdge(tiles[x, y - 1].GetComponent<Tile_Data>().node);
+                    }
 
-					if(item_sprites[x,y] == 0){
-						tiles[x,y].GetComponent<Tile_Data>().traversible = true;
+                if (item_sprites[x,y] == 0){
+						tiles[x,y].GetComponent<Tile_Data>().node.traversible = true;
 					}
 					else{
-						tiles[x,y].GetComponent<Tile_Data>().traversible = false;
+						tiles[x,y].GetComponent<Tile_Data>().node.traversible = false;
 					}
 				//}
 				//create OBJECTS on top of tiles
@@ -174,6 +186,7 @@ public class Draw_Tile_Grid : MonoBehaviour {
 		string[] lines = System.IO.File.ReadAllLines(curr_map);
 		tile_grid = new Tile_Grid(lines, tile, tile_sprite_sheet, item, item_sprite_sheet);
 		tile.GetComponent<SpriteRenderer> ().color = new Color(255f, 255f, 255f, 1f);
+        //tile_grid.navmesh.printGraph();
 	}
 	
 	// Update is called once per frame
