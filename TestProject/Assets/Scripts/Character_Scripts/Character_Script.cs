@@ -683,6 +683,40 @@ public class Character_Script : MonoBehaviour {
         }
         else
         {
+            Tile_Data.Node temp_tile = clicked_tile.GetComponent<Tile_Data>().node;
+            Tile_Data.Node prev_tile = curr_tile.GetComponent<Tile_Data>().node;
+            Stack<Tile_Data.Node> path = new Stack<Tile_Data.Node>();
+            //Construct a stack that is a path from the clicked tile to the source.
+            while (!(temp_tile.id[0] == curr_tile.GetComponent<Tile_Data>().node.id[0] && temp_tile.id[1] == curr_tile.GetComponent<Tile_Data>().node.id[1]))
+            {
+                path.Push(temp_tile);
+                temp_tile = temp_tile.parent;
+            }
+            Debug.Log("temp_tile.id[0]: " + temp_tile.id[0]);
+            Debug.Log("temp_tile.id[1]: " + temp_tile.id[1]);
+            Debug.Log("curr_tile.id[0]: " + curr_tile.GetComponent<Tile_Data>().node.id[0]);
+            Debug.Log("curr_tile.id[0]: " + curr_tile.GetComponent<Tile_Data>().node.id[1]);
+            //Navigate the path by popping tiles out of the stack.
+            while (path.Count != 0)
+            {
+
+                temp_tile = path.Pop();
+                transform.position = new Vector3(controller.tiles[temp_tile.id[0], temp_tile.id[1]].position.x, (float)(controller.tiles[temp_tile.id[0], temp_tile.id[1]].position.y + (controller.tiles[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z);
+                gameObject.GetComponent<SpriteRenderer>().sortingOrder = controller.tiles[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sortingOrder + 1;
+                prev_tile = temp_tile;
+                yield return new WaitForSeconds(.3f);
+
+                //while (elapsedTime < duration)
+                //{
+                //    transform.position = Vector3.Lerp(new Vector3(controller.tiles[prev_tile.id[0], prev_tile.id[1]].position.x, (float)(controller.tiles[prev_tile.id[0], prev_tile.id[1]].position.y + (controller.tiles[prev_tile.id[0], prev_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z), new Vector3(controller.tiles[temp_tile.id[0], temp_tile.id[1]].position.x, (float)(controller.tiles[temp_tile.id[0], temp_tile.id[1]].position.y + (controller.tiles[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z), elapsedTime/duration);
+                //   elapsedTime += Time.deltaTime;
+                //    yield return new WaitForEndOfFrame();
+                //}
+
+
+                //    new Vector3(controller.tiles[temp_tile.id[0], temp_tile.id[1]].position.x, (float)(controller.tiles[temp_tile.id[0], temp_tile.id[1]].position.y + (controller.tiles[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z);
+                //WaitForSeconds(1);
+            }
             //transform.position = new Vector3(curr_tile.position.x, (float)(curr_tile.position.y + (curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z); 
         }
         //renderer = (SpriteRenderer)curr_tile.GetComponent<SpriteRenderer> ();
