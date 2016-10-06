@@ -93,6 +93,14 @@ public class Tile_Data : MonoBehaviour{
                 Debug.Log("Node (" + id[0] + "," + id[1] + ") Connects to Node: (" + e.node2.id[0] + "," + e.node2.id[1] + ") with a cost of " + e.cost);
             }
         }
+
+        public void SortEdges()
+        {
+            List<Edge> new_edges = new List<Edge>();
+            Edge[] edge_array = edges.ToArray();
+            edges = new_edges;
+        }
+
     }
 
     public class Edge
@@ -128,11 +136,34 @@ public class Tile_Data : MonoBehaviour{
             }
             cost = cost + node2.modifier;
         }
+
+        public Edge compare(Edge e1, Edge e2)
+        {
+            if (e1.cost <= e2.cost)
+            {
+                return e1;
+            }
+            else if (e1.cost > e2.cost)
+            {
+                return e2;
+            }
+            else return null;
+        }
+
+        public bool equals(Edge e1, Edge e2)
+        {
+            if (e1.node1.id[0] == e2.node1.id[0] && e1.node1.id[1] == e2.node1.id[1] && e1.node2.id[0] == e2.node2.id[0] && e1.node2.id[1] == e2.node2.id[1] && e1.cost == e2.cost)
+            {
+                return true;
+            }
+            return false;
+        }
     }
 
     public class Graph
     {
         public List<Node> nodes;
+        public List<Node> visitedNodes;
 
         public Graph()
         {
@@ -150,6 +181,70 @@ public class Tile_Data : MonoBehaviour{
             {
                 n.printEdges();
             }
+        }
+
+        public Stack<Node> shortestPath(Node start, Node end)
+        {
+            visitedNodes = new List<Node>();
+            int cost = 0;
+            Node current = start;
+            Stack<Node> curr_path = new Stack<Node>();
+            Stack<Node> spares = new Stack<Node>();
+            curr_path.Push(current);
+            visitedNodes.Add(current);
+            int diffX = Mathf.Abs(end.id[0] - start.id[0]);
+            int diffY = Mathf.Abs(end.id[1] - start.id[1]);
+            while (current.id[0] != end.id[0] && current.id[1] != end.id[1])
+            {
+
+                foreach (Edge e in current.edges)
+                {
+                    if (e.node2.traversible && Mathf.Abs(end.id[0]-current.id[0]) < diffX)
+                    {
+                        current.weight = cost;
+                        cost = cost + (int)e.cost;
+                        current = e.node2;
+                        curr_path.Push(current);
+                        visitedNodes.Add(current);
+                    }
+                    else if (e.node2.traversible && Mathf.Abs(end.id[1] - current.id[1]) < diffY)
+                    {
+                        current.weight = cost;
+                        cost = cost + (int)e.cost;
+                        current = e.node2;
+                        curr_path.Push(current);
+                        visitedNodes.Add(current);
+                    }
+                }
+            }
+            return curr_path;
+            /*if ()
+            {
+                return curr_path;
+            }
+
+            foreach (Edge e in start.edges)
+            {
+                
+            }
+            else if ()
+            {
+
+            }
+            Node current = start;
+            Stack <Node> path  = new Stack<Node>();
+
+            Debug.Log("Current Node: " + current.id[0] + "," + current.id[1] + "; Cost: " + current.weight);
+            while (current.id[0] != end.id[0] && current.id[1] != end.id[1])
+            {
+                foreach
+            }
+            return path;*/
+        }
+
+        public int shortestPathCost()
+        {
+            return 2;
         }
 
         public void bfs(Node start, int limit)

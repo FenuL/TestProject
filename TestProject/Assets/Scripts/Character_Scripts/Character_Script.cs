@@ -10,7 +10,7 @@ public class Character_Script : MonoBehaviour {
     public int AP_MULTIPLIER = 5;
     public int AP_MAX = 20;
     public int AP_RECOVERY = 10;
-    public int SPEED = 5;
+    public int SPEED = 8;
     public int character_id;
     public enum States { Moving, Attacking, Idle, Dead, Blinking }
     public enum Actions { Move=-1, Attack=5, Wait = 0, Blink=-2, Channel = 10 }
@@ -487,7 +487,9 @@ public class Character_Script : MonoBehaviour {
 	public void FindReachable(GameObject grid, double lim){
         int limit = (int)lim;
         grid.GetComponent<Draw_Tile_Grid>().tile_grid.navmesh.bfs(curr_tile.GetComponent<Tile_Data>().node, limit);
+
         reachable_tiles = new List<Transform> ();
+        Debug.Log("SP "+ SPEED);
 		int x_index = curr_tile.GetComponent<Tile_Data> ().x_index;
 		int y_index = curr_tile.GetComponent<Tile_Data> ().y_index;
 		int i = -limit;
@@ -501,7 +503,7 @@ public class Character_Script : MonoBehaviour {
                     {
                         int h = grid.GetComponent<Draw_Tile_Grid>().tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile_Data>().node.height - 1;
                         //print ("distance " + (Mathf.Abs(i)+ Mathf.Abs(j)));
-                        if (Mathf.Abs(i) + Mathf.Abs(j) <= limit) {
+                        if (Mathf.Abs(i) + Mathf.Abs(j) <= SPEED) {
                             //print ("tile " + (x_index +i) + ","+ (y_index+ j) + " is reachable");
                             if (state == States.Moving )
                             { 
@@ -648,12 +650,15 @@ public class Character_Script : MonoBehaviour {
             Tile_Data.Node temp_tile = clicked_tile.GetComponent<Tile_Data>().node;
             Tile_Data.Node prev_tile = curr_tile.GetComponent<Tile_Data>().node;
             Stack<Tile_Data.Node> path = new Stack<Tile_Data.Node>();
+            
             //Construct a stack that is a path from the clicked tile to the source.
             while(!(temp_tile.id[0] == curr_tile.GetComponent<Tile_Data>().node.id[0] && temp_tile.id[1] == curr_tile.GetComponent<Tile_Data>().node.id[1]))
             {
                 path.Push(temp_tile);
+                //Look at the parent tile.
                 temp_tile = temp_tile.parent;
             }
+            //distances.Push(distance);
             Debug.Log("temp_tile.id[0]: " + temp_tile.id[0]);
             Debug.Log("temp_tile.id[1]: " + temp_tile.id[1]);
             Debug.Log("curr_tile.id[0]: " + curr_tile.GetComponent<Tile_Data>().node.id[0]);
@@ -663,17 +668,30 @@ public class Character_Script : MonoBehaviour {
             {
 
                 temp_tile = path.Pop();
-                transform.position = new Vector3(controller.tiles[temp_tile.id[0], temp_tile.id[1]].position.x, (float)(controller.tiles[temp_tile.id[0], temp_tile.id[1]].position.y + (controller.tiles[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z);
+                //transform.position = new Vector3(controller.tiles[temp_tile.id[0], temp_tile.id[1]].position.x, (float)(controller.tiles[temp_tile.id[0], temp_tile.id[1]].position.y + (controller.tiles[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z);
+                //
+                //yield return new WaitForSeconds(.3f);
+
+                float elapsedTime = 0;
+                float duration = .3f;
+                print("duration: " +duration);
+                while (elapsedTime < duration)
+                {
+                    transform.position = Vector3.Lerp(new Vector3(controller.tiles[prev_tile.id[0], prev_tile.id[1]].position.x, (float)(controller.tiles[prev_tile.id[0], prev_tile.id[1]].position.y + (controller.tiles[prev_tile.id[0], prev_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z), new Vector3(controller.tiles[temp_tile.id[0], temp_tile.id[1]].position.x, (float)(controller.tiles[temp_tile.id[0], temp_tile.id[1]].position.y + (controller.tiles[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z), elapsedTime/duration);
+                    elapsedTime += Time.deltaTime;
+                    if (controller.tiles[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sortingOrder > curr_tile.GetComponent<SpriteRenderer>().sortingOrder)
+                    {
+                        gameObject.GetComponent<SpriteRenderer>().sortingOrder = controller.tiles[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sortingOrder + 1;
+                    }
+                    else
+                    {
+                        gameObject.GetComponent<SpriteRenderer>().sortingOrder = curr_tile.GetComponent<SpriteRenderer>().sortingOrder+1;
+                    }
+                    yield return new WaitForEndOfFrame();
+                }
                 gameObject.GetComponent<SpriteRenderer>().sortingOrder = controller.tiles[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sortingOrder + 1;
                 prev_tile = temp_tile;
-                yield return new WaitForSeconds(.3f);
 
-                //while (elapsedTime < duration)
-                //{
-                //    transform.position = Vector3.Lerp(new Vector3(controller.tiles[prev_tile.id[0], prev_tile.id[1]].position.x, (float)(controller.tiles[prev_tile.id[0], prev_tile.id[1]].position.y + (controller.tiles[prev_tile.id[0], prev_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z), new Vector3(controller.tiles[temp_tile.id[0], temp_tile.id[1]].position.x, (float)(controller.tiles[temp_tile.id[0], temp_tile.id[1]].position.y + (controller.tiles[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z), elapsedTime/duration);
-                //   elapsedTime += Time.deltaTime;
-                //    yield return new WaitForEndOfFrame();
-                //}
 
 
                 //    new Vector3(controller.tiles[temp_tile.id[0], temp_tile.id[1]].position.x, (float)(controller.tiles[temp_tile.id[0], temp_tile.id[1]].position.y + (controller.tiles[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z);
@@ -701,21 +719,25 @@ public class Character_Script : MonoBehaviour {
             {
 
                 temp_tile = path.Pop();
-                transform.position = new Vector3(controller.tiles[temp_tile.id[0], temp_tile.id[1]].position.x, (float)(controller.tiles[temp_tile.id[0], temp_tile.id[1]].position.y + (controller.tiles[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z);
+                float elapsedTime = 0;
+                float duration = .3f;
+                print("duration: " + duration);
+                while (elapsedTime < duration)
+                {
+                    transform.position = Vector3.Lerp(new Vector3(controller.tiles[prev_tile.id[0], prev_tile.id[1]].position.x, (float)(controller.tiles[prev_tile.id[0], prev_tile.id[1]].position.y + (controller.tiles[prev_tile.id[0], prev_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z), new Vector3(controller.tiles[temp_tile.id[0], temp_tile.id[1]].position.x, (float)(controller.tiles[temp_tile.id[0], temp_tile.id[1]].position.y + (controller.tiles[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z), elapsedTime / duration);
+                    elapsedTime += Time.deltaTime;
+                    if (controller.tiles[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sortingOrder > curr_tile.GetComponent<SpriteRenderer>().sortingOrder)
+                    {
+                        gameObject.GetComponent<SpriteRenderer>().sortingOrder = controller.tiles[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sortingOrder + 1;
+                    }
+                    else
+                    {
+                        gameObject.GetComponent<SpriteRenderer>().sortingOrder = curr_tile.GetComponent<SpriteRenderer>().sortingOrder + 1;
+                    }
+                    yield return new WaitForEndOfFrame();
+                }
                 gameObject.GetComponent<SpriteRenderer>().sortingOrder = controller.tiles[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sortingOrder + 1;
                 prev_tile = temp_tile;
-                yield return new WaitForSeconds(.3f);
-
-                //while (elapsedTime < duration)
-                //{
-                //    transform.position = Vector3.Lerp(new Vector3(controller.tiles[prev_tile.id[0], prev_tile.id[1]].position.x, (float)(controller.tiles[prev_tile.id[0], prev_tile.id[1]].position.y + (controller.tiles[prev_tile.id[0], prev_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z), new Vector3(controller.tiles[temp_tile.id[0], temp_tile.id[1]].position.x, (float)(controller.tiles[temp_tile.id[0], temp_tile.id[1]].position.y + (controller.tiles[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z), elapsedTime/duration);
-                //   elapsedTime += Time.deltaTime;
-                //    yield return new WaitForEndOfFrame();
-                //}
-
-
-                //    new Vector3(controller.tiles[temp_tile.id[0], temp_tile.id[1]].position.x, (float)(controller.tiles[temp_tile.id[0], temp_tile.id[1]].position.y + (controller.tiles[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z);
-                //WaitForSeconds(1);
             }
             //transform.position = new Vector3(curr_tile.position.x, (float)(curr_tile.position.y + (curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z); 
         }
