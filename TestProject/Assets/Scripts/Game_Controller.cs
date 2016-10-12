@@ -21,6 +21,7 @@ public class Game_Controller : MonoBehaviour {
     public GameObject highlighted_player;
     public GameObject cursor;
 	public GameObject tile_grid;
+    public Tile_Data.Graph navmesh; 
 	public Tile_Data tile_data;
 	public Transform[,] tiles;
 	public Transform clicked_tile;
@@ -444,7 +445,7 @@ public class Game_Controller : MonoBehaviour {
 		/*if (Physics.Raycast (ray, out hit)) {
 			// if the ray hit a collider, we'll get the world-coordinate here.
 			Vector3 worldPos = hit.point;
-			print("x="+ worldPos.x + ", y=" + worldPos.y);
+			//print("x="+ worldPos.x + ", y=" + worldPos.y);
 		}*/
 		hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 		
@@ -513,11 +514,11 @@ public class Game_Controller : MonoBehaviour {
 		
 		if (Input.GetMouseButtonDown (0)) {
 			cursor.GetComponent<Animator>().SetBool("Clicked", true);
-            print("Height: " + tile_data.node.height);
-            tile_data.node.printEdges();
-            print("Traversible: " +tile_data.node.traversible);
-            print("Cost: " + tile_data.node.weight);
-            print("Sprite: " + tile_data.tile_sprite_index);
+            //print("Height: " + tile_data.node.height);
+            //tile_data.node.printEdges();
+            //print("Traversible: " +tile_data.node.traversible);
+            //print("Cost: " + tile_data.node.weight);
+            //print("Sprite: " + tile_data.tile_sprite_index);
             //print("test2");
             //clicked_tile.GetComponent<SpriteRenderer> ().color = new Color (255f, 255f, 255f, 1f); // Set to white
             clicked_tile = selected_tile;
@@ -571,6 +572,7 @@ public class Game_Controller : MonoBehaviour {
 
 	void Initialize(){
 		tiles = tile_grid.GetComponent<Draw_Tile_Grid>().tile_grid.getTiles ();
+        navmesh = tile_grid.GetComponent<Draw_Tile_Grid>().tile_grid.navmesh;
 		GameObject[] objects = GameObject.FindGameObjectsWithTag ("Player");
 		foreach (GameObject game_object in objects) {
 			game_object.GetComponent<Character_Script>().curr_tile = tile_grid.GetComponent<Draw_Tile_Grid>().tile_grid.getTile(game_object.GetComponent<Character_Script>().character_num,0);
@@ -579,7 +581,7 @@ public class Game_Controller : MonoBehaviour {
 			     (float)(game_object.GetComponent<Character_Script>().curr_tile.position.y + (game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height)/100)+ 0.15f,
 			     game_object.GetComponent<Character_Script>().curr_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);
 			game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.traversible = false;
-			game_object.GetComponent<Character_Script>().FindReachable(tile_grid, game_object.GetComponent<Character_Script>().dexterity);
+			game_object.GetComponent<Character_Script>().FindReachable(tile_grid, game_object.GetComponent<Character_Script>().action_max, game_object.GetComponent<Character_Script>().dexterity);
             game_object.GetComponent<SpriteRenderer>().sortingOrder = game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sortingOrder+1;
 
         }
@@ -591,7 +593,7 @@ public class Game_Controller : MonoBehaviour {
 			                                              (float)(game_object.GetComponent<Character_Script>().curr_tile.position.y + (game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height)/100)+ 0.15f,
 			                                              game_object.GetComponent<Character_Script>().curr_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);
 			game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.traversible = false;
-			game_object.GetComponent<Character_Script>().FindReachable(tile_grid, game_object.GetComponent<Character_Script>().dexterity);
+			game_object.GetComponent<Character_Script>().FindReachable(tile_grid, game_object.GetComponent<Character_Script>().action_max, game_object.GetComponent<Character_Script>().dexterity);
             game_object.GetComponent<SpriteRenderer>().sortingOrder = game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sortingOrder+1;
         }
 		selected_tile = tiles [0, 0];

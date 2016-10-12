@@ -119,11 +119,11 @@ public class Tile_Grid : MonoBehaviour{
                     navmesh.addNode(tiles[x,y].GetComponent<Tile_Data>().node);
                     if (x > 0)
                     {
-                        tiles[x,y].GetComponent<Tile_Data>().node.addEdge(tiles[x - 1, y].GetComponent<Tile_Data>().node);
+                        tiles[x,y].GetComponent<Tile_Data>().node.addEdge(tiles[x - 1, y].GetComponent<Tile_Data>().node, 3);
                     }
                     if (y > 0)
                     {
-                        tiles[x,y].GetComponent<Tile_Data>().node.addEdge(tiles[x, y - 1].GetComponent<Tile_Data>().node);
+                        tiles[x,y].GetComponent<Tile_Data>().node.addEdge(tiles[x, y - 1].GetComponent<Tile_Data>().node, 0);
                     }
 
                 if (item_sprites[x,y] == 0){
