@@ -1,4 +1,5 @@
 #Monster Data
+id: 1
 name: Beetleboar
 level: 1  
 strength: 5
@@ -13,6 +14,7 @@ armor: Heavy
 #accessories: none, none
 
 name: King
+id: 2
 level: 3  
 strength: 7
 coordination: 1

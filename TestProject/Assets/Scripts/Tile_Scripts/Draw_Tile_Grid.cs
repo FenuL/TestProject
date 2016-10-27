@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEditor;
+using System.Collections.Generic;
 
 public class Tile_Grid : MonoBehaviour{
 	public float TILE_LENGTH = 43;
@@ -169,22 +170,220 @@ public class Tile_Grid : MonoBehaviour{
 	}
 }
 
-public class Draw_Tile_Grid : MonoBehaviour {
-
-	public Transform tile;
-	public Sprite[] tile_sprite_sheet;
-	public Transform item;
-	public Sprite[] item_sprite_sheet;
-	public Tile_Grid tile_grid;
+public class Scenario : MonoBehaviour {
+    public enum Objectives { Vanquish, Resupply, Boss, Escort }
+    public Tile_Grid tile_grid;
 	public GameObject controller;
-	public string curr_map;
+	public string scenario_file;
+    public int scenario_id;
+    public string scenario_sector;
+    public string scenario_name;
+    public string description;
+    public Objectives objective;
+    public List<string> rewards;
+    public string bonus_objective;
+    public List<string> bonus_rewards;
+    public List<int> unlocks_scenarios;
+    public List<int> unlocks_scenarios_on_loss;
+    public List<int> unlocks_scenarios_on_win;
+    public List<int> unlocks_scenarios_on_bonus;
+
+    public Scenario(string filename)
+    {
+        scenario_file = filename;
+        //Initialize Lists
+        rewards = new List<string>();
+        bonus_rewards = new List<string>();
+        List<int> unlocks_scenarios = new List<int>();
+        List<int> unlocks_scenarios_on_loss = new List<int>();
+        List<int> unlocks_scenarios_on_win = new List<int>();
+        List<int> unlocks_scenarios_on_bonus = new List<int>();
+        //Read in the file
+        string[] lines = System.IO.File.ReadAllLines(scenario_file);
+        string line = "";
+        string[] elements = new string[2];
+        //30 is the default grid size;
+        int grid_width=30;
+        int grid_length=30;
+        int[,] tile_sprite_ids;
+        //Read through the file line by line, looking for specific headings
+        for (int i = 0; i < lines.Length; i++)
+        {
+            line = lines[i];
+            switch (line)
+            {
+                //ID of the scenario
+                case "[ID]":
+                    scenario_name = lines[i + 1];
+                    i += 2;
+                    break;
+                //What Sector the scenario can be found in
+                case "[Sector]":
+                    scenario_sector = lines[i + 1];
+                    i += 2;
+                    break;
+                //Name of the Scenario
+                case "[Name]":
+                    scenario_name = lines[i + 1];
+                    i+=2;
+                    break;
+                //Description for the Scenario
+                case "[Description]":
+                    description = lines[i + 1];
+                    i += 2;
+                    break;
+                //Objective for the scenario (see Objectives enum for list of possible objectives.)
+                case "[Objective]":
+                    foreach (Objectives obj in System.Enum.GetValues(typeof(Objectives)))
+                    {
+                        if(obj.ToString() == lines[i + 1])
+                        {
+                            objective = obj;
+                        }
+                    }
+                    i += 2;
+                    break;
+                //Reward for winning the scenario
+                case "[Reward]":
+                    for(int j = i+1; j<lines.Length; j++)
+                    {
+                        if (lines[j] != "")
+                        {
+                            rewards.Add(lines[j]);
+                        }
+                        else
+                        {
+                            i = j;
+                            j = lines.Length;
+                        }
+                    }
+                    break;
+                //Bonus objective for the scenario
+                case "[Bonus Objective]":
+                    bonus_objective = lines[i + 1];
+                    i += 2;
+                    break;
+                //Reward for completing the Bonus Objective
+                case "[Bonus Reward]":
+                    for (int j = i + 1; j < lines.Length; j++)
+                    {
+                        if (lines[j] != "")
+                        {
+                            bonus_rewards.Add(lines[j]);
+                        }
+                        else
+                        {
+                            i = j;
+                            j = lines.Length;
+                        }
+                    }
+                    break;
+                //Scenario IDs that will be unlocked regardless of wether or not the Objective is met
+                case "[Unlocks]":
+                    elements = lines[i + 1].Split(';');
+                    int id = scenario_id;
+                    foreach (string s in elements)
+                    {
+                        if (int.TryParse(s, out id))
+                        {
+                            unlocks_scenarios.Add(id);
+                        }
+                    }
+                    i += 2;
+                    break;
+                //Scenario IDs that will be unlocked if the Objective is not met
+                case "[Unlocks on Loss]":
+                    elements = lines[i + 1].Split(';');
+                    id = scenario_id;
+                    foreach (string s in elements)
+                    {
+                        if (int.TryParse(s, out id))
+                        {
+                            unlocks_scenarios_on_loss.Add(id);
+                        }
+                    }
+                    i += 2;
+                    break;
+                //Scenario IDs that will be unlocked if the Objective is met
+                case "[Unlocks on Win]":
+                    elements = lines[i + 1].Split(';');
+                    id = scenario_id;
+                    foreach (string s in elements)
+                    {
+                        if (int.TryParse(s, out id))
+                        {
+                            unlocks_scenarios_on_win.Add(id);
+                        }
+                    }
+                    i += 2;
+                    break;
+                //Scenario IDs that will be unlocked if the Bonus Objective is met
+                case "[Unlocks on Bonus]":
+                    elements = lines[i + 1].Split(';');
+                    id = scenario_id;
+                    foreach (string s in elements)
+                    {
+                        if (int.TryParse(s, out id))
+                        {
+                            unlocks_scenarios_on_bonus.Add(id);
+                        }
+                    }
+                    i += 2;
+                    break;
+                //Size of the tile grid map
+                case "[Grid Size]":
+                    int width = 30;
+                    int length = 30;
+                    if (int.TryParse(lines[i + 1].Split(';')[0], out width))
+                    {
+                        grid_width = width;
+                    }
+                    if (int.TryParse(lines[i + 1].Split(';')[1], out length))
+                    {
+                        grid_length = length;
+                    }
+                    i += 2;
+                    break;
+                case "[Tile Map]":
+                    tile_sprite_ids = new int[grid_width, grid_length];
+                    for( int k = i+1; k<i+grid_length; k++)
+                    {
+                        for (int l = 0; l<grid_width; l++)
+                        {
+                            int sprite;
+                            
+                        }
+                    }
+                    break;
+                case "[Object Map]":
+                    break;
+                case "[Creature Map]":
+                    break;
+                //Default in case none of the above cases are met
+                default:
+                    break;
+            }
+        }
+    }
+
+    public LoadGrid()
+    {
+
+    }
 
 	// Use this for initialization
 	void Start () {
-		//string[] lines = System.IO.File.ReadAllLines(@"Assets/Maps/falls_map.txt");
-		curr_map = controller.GetComponent<Game_Controller>().curr_map;
+        Transform tile_prefab = (Transform)Resources.Load("/Prefabs/Tile Prefabs/tile prefab");
+        Sprite[] tile_sprite_sheet = new Sprite[100];
+        for (int x = 0; x < 69; x++{
+        )(Sprite[])Resources.Load("/Prefabs/Tile Prefabs/tile prefab");
+    }
+    public Transform object_prefab = (Transform)Resources.Load("/Prefabs/Object Prefabs/tile prefab");
+public Sprite[] object_sprite_sheet = (Sprite[])Resources.Load("/Prefabs/Object Prefabs/tile prefab");
+//string[] lines = System.IO.File.ReadAllLines(@"Assets/Maps/falls_map.txt");
+curr_map = controller.GetComponent<Game_Controller>().curr_map;
 		string[] lines = System.IO.File.ReadAllLines(curr_map);
-		tile_grid = new Tile_Grid(lines, tile, tile_sprite_sheet, item, item_sprite_sheet);
+		tile_grid = new Tile_Grid(lines, tile_prefab, tile_sprite_sheet, item_prefab, item_sprite_sheet);
 		tile.GetComponent<SpriteRenderer> ().color = new Color(255f, 255f, 255f, 1f);
         //tile_grid.navmesh.printGraph();
 	}
