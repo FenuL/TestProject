@@ -66,22 +66,22 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Action_Menu_Script.cs" />
-    <Compile Include="Assets\Scripts\Camera_Controller.cs" />
-    <Compile Include="Assets\Scripts\Character_Scripts\Character_Script.cs" />
-    <Compile Include="Assets\Scripts\Character_Scripts\Monster_Scripts\Monster_Script.cs" />
-    <Compile Include="Assets\Scripts\Character_Scripts\Player_Scripts\Equipment.cs" />
-    <Compile Include="Assets\Scripts\Character_Scripts\Player_Scripts\Player_Script.cs" />
-    <Compile Include="Assets\Scripts\Game_Controller.cs" />
-    <Compile Include="Assets\Scripts\Tile_Scripts\Draw_Tile_Grid.cs" />
-    <Compile Include="Assets\Scripts\Tile_Scripts\Tile_Data.cs" />
+    <Compile Include="Assets\Resources\Scripts\Action_Menu_Script.cs" />
+    <Compile Include="Assets\Resources\Scripts\Camera_Controller.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Character_Script.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Monster_Scripts\Monster_Script.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Player_Scripts\Equipment.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Player_Scripts\Player_Script.cs" />
+    <Compile Include="Assets\Resources\Scripts\Game_Controller.cs" />
+    <Compile Include="Assets\Resources\Scripts\Tile_Scripts\Scenario.cs" />
+    <Compile Include="Assets\Resources\Scripts\Tile_Scripts\Tile_Data.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Characters\Monster_Characters\Monster_Character_Data.txt" />
-    <None Include="Assets\Characters\Player_Characters\Player_Character_Data.txt" />
-    <None Include="Assets\Maps\falls_map.txt" />
-    <None Include="Assets\Maps\height_map.txt" />
-    <None Include="Assets\Maps\tile_map.txt" />
+    <None Include="Assets\Resources\Characters\Monster_Characters\Monster_Character_Data.txt" />
+    <None Include="Assets\Resources\Characters\Player_Characters\Player_Character_Data.txt" />
+    <None Include="Assets\Resources\Maps\falls_map.txt" />
+    <None Include="Assets\Resources\Maps\height_map.txt" />
+    <None Include="Assets\Resources\Maps\tile_map.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\SyntaxTree\UnityVS\2015\UnityVS.CSharp.targets" />
 </Project>
