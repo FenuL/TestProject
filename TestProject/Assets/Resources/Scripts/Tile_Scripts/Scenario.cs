@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEditor;
 using System.Collections.Generic;
 using System;
+using UnityEngine.SceneManagement;
 
 public class Tile_Grid : MonoBehaviour{
     //Constants
@@ -90,56 +91,106 @@ public class Tile_Grid : MonoBehaviour{
                 tile_number++;
 
                 //Instantiate the tile object.
-                Transform instance = ((GameObject)Instantiate(tile_prefab, new Vector3((float)(START_X - (x) * (TILE_WIDTH / 200) + (y) * (TILE_WIDTH / 200)), (float)(START_Y - (x) * (TILE_LENGTH / 200) - (y) * (TILE_LENGTH / 200)), 0), Quaternion.identity)).transform;
-                instance.gameObject.GetComponent<PolygonCollider2D>().offset.Set(0, .20f * tile_heights[x, y] + 3);
-                
-                //Destroy the animator on the tile if necessary
-                if (tile_sprite_ids[x, y] - 1 != 5)
+                if (SceneManager.GetActiveScene().name == "isometric grid")
                 {
-                    Destroy(instance.gameObject.GetComponent<Animator>());
+                    Transform instance = ((GameObject)Instantiate(tile_prefab, new Vector3((float)(START_X - (x) * (TILE_WIDTH / 200) + (y) * (TILE_WIDTH / 200)), (float)(START_Y - (x) * (TILE_LENGTH / 200) - (y) * (TILE_LENGTH / 200)), 0), Quaternion.identity)).transform;
+                    instance.gameObject.GetComponent<PolygonCollider2D>().offset.Set(0, .20f * tile_heights[x, y] + 3);
+
+                    //Destroy the animator on the tile if necessary
+                    if (tile_sprite_ids[x, y] - 1 != 5)
+                    {
+                        Destroy(instance.gameObject.GetComponent<Animator>());
+                    }
+
+                    //Generate the tile data for the tile
+                    instance.GetComponent<Tile_Data>().instantiate(x, y, tile_heights[x, y], tile_sprite_ids[x, y]);
+
+                    //Store the instantiated tile in our Tile Tranform Grid;
+                    tiles[x, y] = instance;
+
+                    //Add a node to the navmesh
+                    navmesh.addNode(tiles[x, y].GetComponent<Tile_Data>().node);
+
+                    //Connect the new node to previous nodes in the mesh
+                    if (x > 0)
+                    {
+                        tiles[x, y].GetComponent<Tile_Data>().node.addEdge(tiles[x - 1, y].GetComponent<Tile_Data>().node, 3);
+                    }
+                    if (y > 0)
+                    {
+                        tiles[x, y].GetComponent<Tile_Data>().node.addEdge(tiles[x, y - 1].GetComponent<Tile_Data>().node, 0);
+                    }
+
+                    //If there is an object on the tile, mark it non traversible
+                    if (object_sprite_ids[x, y] == 0)
+                    {
+                        tiles[x, y].GetComponent<Tile_Data>().node.traversible = true;
+                    }
+                    else
+                    {
+                        tiles[x, y].GetComponent<Tile_Data>().node.traversible = false;
+                    }
+
+                    //create OBJECTS on top of tiles
+                    if (object_sprite_ids[x, y] != 0)
+                    {
+                        //pull up the object prefab
+                        sprite = object_prefab.GetComponent<SpriteRenderer>();
+
+                        //set the right sprite;
+                        sprite.sprite = (Sprite)object_sprite_sheet[object_sprite_ids[x, y] - 1];
+                        sprite.sortingOrder = tile_number;
+
+                        //instantiate the object
+                        Instantiate(object_prefab, new Vector3((float)(START_X - (x) * (TILE_WIDTH / 200) + (y) * (TILE_WIDTH / 200)), (float)(START_Y - (x) * (TILE_LENGTH / 200) - (y) * (TILE_LENGTH / 200) + tile_heights[x, y] * TILE_HEIGHT / 100.0 + .35f), 0), Quaternion.identity);
+                    }
                 }
-
-                //Generate the tile data for the tile
-                instance.GetComponent<Tile_Data>().instantiate(x, y, tile_heights[x, y], tile_sprite_ids[x, y]);
-
-                //Store the instantiated tile in our Tile Tranform Grid;
-                tiles[x, y] = instance;
-
-                //Add a node to the navmesh
-                navmesh.addNode(tiles[x, y].GetComponent<Tile_Data>().node);
-
-                //Connect the new node to previous nodes in the mesh
-                if (x > 0)
-                {
-                    tiles[x, y].GetComponent<Tile_Data>().node.addEdge(tiles[x - 1, y].GetComponent<Tile_Data>().node, 3);
-                }
-                if (y > 0)
-                {
-                    tiles[x, y].GetComponent<Tile_Data>().node.addEdge(tiles[x, y - 1].GetComponent<Tile_Data>().node, 0);
-                }
-
-                //If there is an object on the tile, mark it non traversible
-                if (object_sprite_ids[x, y] == 0)
-                {
-                    tiles[x, y].GetComponent<Tile_Data>().node.traversible = true;
-                }
+                //3d logic
                 else
                 {
-                    tiles[x, y].GetComponent<Tile_Data>().node.traversible = false;
-                }
-
-                //create OBJECTS on top of tiles
-                if (object_sprite_ids[x, y] != 0)
-                {
-                    //pull up the object prefab
-                    sprite = object_prefab.GetComponent<SpriteRenderer>();
-
-                    //set the right sprite;
-                    sprite.sprite = (Sprite)object_sprite_sheet[object_sprite_ids[x, y] - 1];
-                    sprite.sortingOrder = tile_number;
-
-                    //instantiate the object
-                    Instantiate(object_prefab, new Vector3((float)(START_X - (x) * (TILE_WIDTH / 200) + (y) * (TILE_WIDTH / 200)), (float)(START_Y - (x) * (TILE_LENGTH / 200) - (y) * (TILE_LENGTH / 200) + tile_heights[x, y] * TILE_HEIGHT / 100.0 + .35f), 0), Quaternion.identity);
+         
+                    string file = "Objects/" + tile_heights[x,y] + "_tall";
+                    int XOFFSET=0;
+                    int YOFFSET=0;
+                    int ZOFFSET=0;
+                    if (tile_heights[x,y] == 1)
+                    {
+                        XOFFSET = 0;
+                        YOFFSET = 0;
+                        ZOFFSET = 0;
+                    }
+                    else if (tile_heights[x, y] == 2)
+                    {
+                        XOFFSET = 0;
+                        YOFFSET = 1;
+                        ZOFFSET = -30;
+                    }
+                    else if (tile_heights[x, y] == 3)
+                    {
+                        XOFFSET = 2;
+                        YOFFSET = 5;
+                        ZOFFSET = -3;
+                    }
+                    else if (tile_heights[x, y] == 4)
+                    {
+                        XOFFSET = 2;
+                        YOFFSET = 2;
+                        ZOFFSET = -3;
+                    }
+                    else if (tile_heights[x, y] == 5)
+                    {
+                        XOFFSET = 0;
+                        YOFFSET = 2;
+                        ZOFFSET = -3;
+                    }
+                    GameObject tile3d = Resources.Load(file, typeof(GameObject)) as GameObject;
+                    int NEWSTARTX = 0;
+                    int NEWSTARTY = 0;
+                    int NEWSTARTZ = 0;
+                    int NEWTILEWIDTH = 2;
+                    int NEWTILELENGTH = 2;
+                    int NEWTILEHEIGHT = 1; 
+                    Transform instance = ((GameObject)Instantiate(tile3d, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity)).transform;
                 }
             }
         }

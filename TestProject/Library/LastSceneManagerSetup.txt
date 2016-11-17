@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/isometric grid.unity
+- path: Assets/3d grid.unity
   isLoaded: 1
   isActive: 1
