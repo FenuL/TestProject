@@ -183,6 +183,24 @@ public class Tile_Grid : MonoBehaviour{
                         YOFFSET = 2;
                         ZOFFSET = -3;
                     }
+                    else if (tile_heights[x, y] == 6)
+                    {
+                        XOFFSET = 2;
+                        YOFFSET = 2;
+                        ZOFFSET = -1;
+                    }
+                    else if (tile_heights[x, y] == 7)
+                    {
+                        XOFFSET = 0;
+                        YOFFSET = 2;
+                        ZOFFSET = -1;
+                    }
+                    else if (tile_heights[x, y] == 8)
+                    {
+                        XOFFSET = 2;
+                        YOFFSET = 10;
+                        ZOFFSET = -2;
+                    }
                     GameObject tile3d = Resources.Load(file, typeof(GameObject)) as GameObject;
                     int NEWSTARTX = 0;
                     int NEWSTARTY = 0;
