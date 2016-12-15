@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine.SceneManagement;
 
-public class Tile_Grid : MonoBehaviour{
+public class Tile_Grid : ScriptableObject{
     //Constants
     public static string TILE_SPRITESHEET_FILE = "Sprites/Tile Sprites/tile_spritesheetv3_transparent";
     public static string OBJECT_SPRITESHEET_FILE = "Sprites/Object Sprites/object_spritesheet_transparent";
@@ -208,7 +208,51 @@ public class Tile_Grid : MonoBehaviour{
                     int NEWTILEWIDTH = 2;
                     int NEWTILELENGTH = 2;
                     int NEWTILEHEIGHT = 1; 
-                    Transform instance = ((GameObject)Instantiate(tile3d, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity)).transform;
+                    GameObject instance = ((GameObject)Instantiate(tile3d, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity));
+
+                    //Generate the tile data for the tile
+                    instance.AddComponent<Tile_Data>();
+                    instance.GetComponent<Tile_Data>().instantiate(x, y, tile_heights[x, y], tile_sprite_ids[x, y]);
+
+                    //Store the instantiated tile in our Tile Tranform Grid;
+                    tiles[x, y] = instance.transform;
+
+                    //Add a node to the navmesh
+                    navmesh.addNode(tiles[x, y].GetComponent<Tile_Data>().node);
+
+                    //Connect the new node to previous nodes in the mesh
+                    if (x > 0)
+                    {
+                        tiles[x, y].GetComponent<Tile_Data>().node.addEdge(tiles[x - 1, y].GetComponent<Tile_Data>().node, 3);
+                    }
+                    if (y > 0)
+                    {
+                        tiles[x, y].GetComponent<Tile_Data>().node.addEdge(tiles[x, y - 1].GetComponent<Tile_Data>().node, 0);
+                    }
+
+                    //create OBJECTS on top of tiles
+                    if (object_sprite_ids[x, y] != 0)
+                    {
+                        //pull up the object prefab
+                        sprite = object_prefab.GetComponent<SpriteRenderer>();
+
+                        //set the right sprite;
+                        sprite.sprite = (Sprite)object_sprite_sheet[object_sprite_ids[x, y] - 1];
+                        sprite.sortingOrder = tile_number;
+
+                        //instantiate the object
+                        Instantiate(object_prefab, new Vector3((float)(START_X - (x) * (TILE_WIDTH / 200) + (y) * (TILE_WIDTH / 200)), (float)(START_Y - (x) * (TILE_LENGTH / 200) - (y) * (TILE_LENGTH / 200) + tile_heights[x, y] * TILE_HEIGHT / 100.0 + .35f), 0), Quaternion.identity);
+                    }
+
+                    //If there is an object on the tile, mark it non traversible
+                    if (object_sprite_ids[x, y] == 0)
+                    {
+                        tiles[x, y].GetComponent<Tile_Data>().node.traversible = true;
+                    }
+                    else
+                    {
+                        tiles[x, y].GetComponent<Tile_Data>().node.traversible = false;
+                    }
                 }
             }
         }
@@ -756,12 +800,14 @@ public class Scenario : MonoBehaviour {
             game_object.GetComponent<Character_Script>().character_num = char_num;
             game_object.GetComponent<Character_Script>().curr_tile = tile_grid.getTile(char_num, 0);
             game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x,
+                game_object.GetComponent<Character_Script>().curr_tile.position.y,
+                game_object.GetComponent<Character_Script>().curr_tile.position.z);
                  //game_object.GetComponent<Character_Script>().curr_tile.position.y + (float)(game_object.GetComponent<SpriteRenderer> ().sprite.rect.height / game_object.GetComponent<SpriteRenderer> ().sprite.pixelsPerUnit + 0.15f),
-                 (float)(game_object.GetComponent<Character_Script>().curr_tile.position.y + (game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f,
-                 game_object.GetComponent<Character_Script>().curr_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);
+                 //(float)(game_object.GetComponent<Character_Script>().curr_tile.position.y + (game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f,
+                 //game_object.GetComponent<Character_Script>().curr_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);
             game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.traversible = false;
             //game_object.GetComponent<Character_Script>().FindReachable(tile_grid, game_object.GetComponent<Character_Script>().action_max, game_object.GetComponent<Character_Script>().dexterity);
-            game_object.GetComponent<SpriteRenderer>().sortingOrder = game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sortingOrder + 1;
+            //game_object.GetComponent<SpriteRenderer>().sortingOrder = game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sortingOrder + 1;
             char_num++;
         }
         //set starting position for monsters
@@ -773,12 +819,14 @@ public class Scenario : MonoBehaviour {
             game_object.GetComponent<Character_Script>().character_num = char_num;
             game_object.GetComponent<Character_Script>().curr_tile = tile_grid.getTile(19 - game_object.GetComponent<Character_Script>().character_num, 19);// [19-game_object.GetComponent<Character_Script>().character_num,19,0];
             game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x,
+                game_object.GetComponent<Character_Script>().curr_tile.position.y,
+                game_object.GetComponent<Character_Script>().curr_tile.position.z);
                                                           //game_object.GetComponent<Character_Script>().curr_tile.position.y + 0.5f,
-                                                          (float)(game_object.GetComponent<Character_Script>().curr_tile.position.y + (game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f,
-                                                          game_object.GetComponent<Character_Script>().curr_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);
+                                                          //(float)(game_object.GetComponent<Character_Script>().curr_tile.position.y + (game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f,
+                                                          //game_object.GetComponent<Character_Script>().curr_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);
             game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.traversible = false;
             //game_object.GetComponent<Character_Script>().FindReachable(tile_grid, game_object.GetComponent<Character_Script>().action_max, game_object.GetComponent<Character_Script>().dexterity);
-            game_object.GetComponent<SpriteRenderer>().sortingOrder = game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sortingOrder + 1;
+            //game_object.GetComponent<SpriteRenderer>().sortingOrder = game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sortingOrder + 1;
             char_num++;
         }
 
@@ -1095,7 +1143,7 @@ public class Scenario : MonoBehaviour {
         reachable_tile_objects = new List<GameObject>();
         foreach (Transform tile in reachable_tiles)
         {
-            tile_grid.reachable_prefab.GetComponent<SpriteRenderer>().sortingOrder = tile.GetComponent<SpriteRenderer>().sortingOrder;
+            //tile_grid.reachable_prefab.GetComponent<SpriteRenderer>().sortingOrder = tile.GetComponent<SpriteRenderer>().sortingOrder;
             if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Moving || curr_player.GetComponent<Character_Script>().state == Character_Script.States.Blinking)
             {
                 tile_grid.reachable_prefab.GetComponent<SpriteRenderer>().color = new Color(0, 0, 255);
@@ -1106,7 +1154,8 @@ public class Scenario : MonoBehaviour {
             }
             reachable_tile_objects.Add((GameObject)Instantiate(tile_grid.reachable_prefab, new Vector3(tile.position.x,
                                                            //tile.position.y+0.08f,
-                                                           (float)(tile.position.y + (tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) - .24f,
+                                                           //(float)(tile.position.y + (tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) - .24f,
+                                                           tile.position.y,
                                                            tile.position.z),
                                                            Quaternion.identity));
 
@@ -1148,6 +1197,9 @@ public class Scenario : MonoBehaviour {
         controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
         //MarkReachable ();
 
+        //Center camera on player
+        Camera.main.transform.position = curr_player.transform.position - Camera.main.transform.forward * 20;
+
     }
 
     public void PrevPlayer()
@@ -1172,12 +1224,13 @@ public class Scenario : MonoBehaviour {
         controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
         //MarkReachable ();
 
+        //Center camera on player
+        Camera.main.transform.position = curr_player.transform.position - Camera.main.transform.forward * 20;
     }
 
     public void NextRound()
     {
         curr_round += 1;
-        print("Round: " + curr_round);
         foreach (GameObject game_object in characters)
         {
             /*if (turn_order.Count > 0)

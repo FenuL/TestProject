@@ -75,6 +75,8 @@ public class Game_Controller : MonoBehaviour {
         avail_scenarios = new ArrayList();
         avail_scenarios.Add(curr_scenario);
         curr_scenario.LoadScenario();
+        action_menu.GetComponent<Action_Menu_Script>().controller = this;
+        action_menu.GetComponent<Action_Menu_Script>().isOpen = false;
         action_menu.GetComponent<Action_Menu_Script>().resetActions();
         //MarkReachable ();
     }

@@ -80,6 +80,7 @@
     <None Include="Assets\Resources\Characters\Monster_Characters\Monster_Character_Data.txt" />
     <None Include="Assets\Resources\Characters\Player_Characters\Player_Character_Data.txt" />
     <None Include="Assets\Resources\Maps\New Text Document.txt" />
+    <None Include="Assets\Resources\Maps\RuinedSteps_map.txt" />
     <None Include="Assets\Resources\Maps\falls_map.txt" />
     <None Include="Assets\Resources\Maps\height_map.txt" />
     <None Include="Assets\Resources\Maps\tile_map.txt" />
