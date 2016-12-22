@@ -153,47 +153,71 @@ public class Tile_Grid : ScriptableObject{
                     int XOFFSET=0;
                     int YOFFSET=0;
                     int ZOFFSET=0;
+                    float COLLXOFFSET = 0;
+                    float COLLYOFFSET = 0;
+                    float COLLZOFFSET = 0;
                     if (tile_heights[x,y] == 1)
                     {
                         XOFFSET = 0;
                         YOFFSET = 0;
                         ZOFFSET = 0;
+                        COLLXOFFSET = 1;
+                        COLLYOFFSET = 2.5f;
+                        COLLZOFFSET = -2;
                     }
                     else if (tile_heights[x, y] == 2)
                     {
                         XOFFSET = 0;
                         YOFFSET = 1;
                         ZOFFSET = -30;
+                        COLLXOFFSET = 1;
+                        COLLYOFFSET = 2;
+                        COLLZOFFSET = 28;
                     }
                     else if (tile_heights[x, y] == 3)
                     {
                         XOFFSET = 2;
                         YOFFSET = 5;
                         ZOFFSET = -3;
+                        COLLXOFFSET = -1;
+                        COLLYOFFSET = -1.5f;
+                        COLLZOFFSET = 1;
                     }
                     else if (tile_heights[x, y] == 4)
                     {
                         XOFFSET = 2;
                         YOFFSET = 2;
                         ZOFFSET = -3;
+                        COLLXOFFSET = -1;
+                        COLLYOFFSET = 2;
+                        COLLZOFFSET = 1;
                     }
                     else if (tile_heights[x, y] == 5)
                     {
                         XOFFSET = 0;
                         YOFFSET = 2;
                         ZOFFSET = -3;
+                        COLLXOFFSET = 1;
+                        COLLYOFFSET = 2.5f;
+                        COLLZOFFSET = 1;
                     }
                     else if (tile_heights[x, y] == 6)
                     {
                         XOFFSET = 2;
                         YOFFSET = 2;
                         ZOFFSET = -1;
+                        COLLXOFFSET = -1;
+                        COLLYOFFSET = 3;
+                        COLLZOFFSET = -1;
                     }
                     else if (tile_heights[x, y] == 7)
                     {
                         XOFFSET = 0;
                         YOFFSET = 2;
                         ZOFFSET = -1;
+                        COLLXOFFSET = 1;
+                        COLLYOFFSET = 3.5f;
+                        COLLZOFFSET = -1;
                     }
                     else if (tile_heights[x, y] == 8)
                     {
@@ -209,6 +233,11 @@ public class Tile_Grid : ScriptableObject{
                     int NEWTILELENGTH = 2;
                     int NEWTILEHEIGHT = 1; 
                     GameObject instance = ((GameObject)Instantiate(tile3d, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity));
+
+                    //Add a collider to the tile (TEMPORARY)
+                    BoxCollider collider = instance.AddComponent<BoxCollider>();
+                    collider.size = new Vector3(2,tile_heights[x,y],2);
+                    collider.center = new Vector3(COLLXOFFSET, COLLYOFFSET, COLLZOFFSET);
 
                     //Generate the tile data for the tile
                     instance.AddComponent<Tile_Data>();
@@ -241,7 +270,8 @@ public class Tile_Grid : ScriptableObject{
                         sprite.sortingOrder = tile_number;
 
                         //instantiate the object
-                        Instantiate(object_prefab, new Vector3((float)(START_X - (x) * (TILE_WIDTH / 200) + (y) * (TILE_WIDTH / 200)), (float)(START_Y - (x) * (TILE_LENGTH / 200) - (y) * (TILE_LENGTH / 200) + tile_heights[x, y] * TILE_HEIGHT / 100.0 + .35f), 0), Quaternion.identity);
+                        Instantiate(object_prefab, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity);
+                        //Instantiate(object_prefab, new Vector3((float)(START_X - (x) * (TILE_WIDTH / 200) + (y) * (TILE_WIDTH / 200)), (float)(START_Y - (x) * (TILE_LENGTH / 200) - (y) * (TILE_LENGTH / 200) + tile_heights[x, y] * TILE_HEIGHT / 100.0 + .35f), 0), Quaternion.identity);
                     }
 
                     //If there is an object on the tile, mark it non traversible
@@ -989,9 +1019,10 @@ public class Scenario : MonoBehaviour {
     {
         //create a ray at the mouse position, point it towards the grid. See if it hits a collider.
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit2D hit;
-        hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-        if (hit)
+        RaycastHit hit;
+        //deprecated 2d raycast physics
+        //hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+        if (Physics.Raycast(ray, out hit, 100))
         {
             Tile_Data tile_data = hit.transform.GetComponent<Tile_Data>();
             //set the player's action cost to be the weight of the selected tile
@@ -1038,13 +1069,8 @@ public class Scenario : MonoBehaviour {
 
             //update cursor location
             selected_tile = hit.transform;
-            cursor.transform.position = new Vector3((float)(selected_tile.position.x + selected_tile.GetComponent<SpriteRenderer>().sprite.rect.width / 200) - .85f,
-                                                     (float)(selected_tile.position.y + (selected_tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100),
-                                                        selected_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);
-                                                                                   //renderer = (SpriteRenderer)curr_tile.GetComponent<SpriteRenderer> ();
-            cursor.GetComponent<SpriteRenderer>().sortingOrder = selected_tile.GetComponent<SpriteRenderer>().sortingOrder + 1;
+            cursor.transform.position = new Vector3(selected_tile.position.x, selected_tile.position.y+1, selected_tile.position.z);
         }
-
     }
 
 	// Update is called once per frame
@@ -1198,7 +1224,7 @@ public class Scenario : MonoBehaviour {
         //MarkReachable ();
 
         //Center camera on player
-        Camera.main.transform.position = curr_player.transform.position - Camera.main.transform.forward * 20;
+        Camera.main.transform.position = curr_player.transform.position - Camera.main.transform.forward * 25;
 
     }
 
@@ -1225,7 +1251,7 @@ public class Scenario : MonoBehaviour {
         //MarkReachable ();
 
         //Center camera on player
-        Camera.main.transform.position = curr_player.transform.position - Camera.main.transform.forward * 20;
+        Camera.main.transform.position = curr_player.transform.position - Camera.main.transform.forward * 25;
     }
 
     public void NextRound()

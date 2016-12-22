@@ -7,8 +7,9 @@ using System.IO;
 
 public class Game_Controller : MonoBehaviour {
     public static string STARTING_SCENARIO = "Assets/Resources/Maps/tile_map.txt";
+    //public static string STARTING_SCENARIO = "Assets/Resources/Maps/falls_map.txt";
 
-	public static Game_Controller controller;
+    public static Game_Controller controller;
     public Scenario curr_scenario;
     public ArrayList avail_scenarios;
     public IList<int> keys;
