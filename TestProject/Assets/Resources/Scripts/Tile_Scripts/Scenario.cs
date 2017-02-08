@@ -149,8 +149,8 @@ public class Tile_Grid : ScriptableObject{
                 else
                 {
          
-                    string file = "Objects/" + tile_heights[x,y] + "_tall";
-                    int XOFFSET=0;
+                    string file = "Objects/Test3x" + tile_heights[x,y];
+                    /*int XOFFSET=0;
                     int YOFFSET=0;
                     int ZOFFSET=0;
                     float COLLXOFFSET = 0;
@@ -224,20 +224,22 @@ public class Tile_Grid : ScriptableObject{
                         XOFFSET = 2;
                         YOFFSET = 10;
                         ZOFFSET = -2;
-                    }
+                    }*/
                     GameObject tile3d = Resources.Load(file, typeof(GameObject)) as GameObject;
                     int NEWSTARTX = 0;
                     int NEWSTARTY = 0;
                     int NEWSTARTZ = 0;
-                    int NEWTILEWIDTH = 2;
-                    int NEWTILELENGTH = 2;
-                    int NEWTILEHEIGHT = 1; 
-                    GameObject instance = ((GameObject)Instantiate(tile3d, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity));
-
+                    float NEWTILEWIDTH = 1.5f;
+                    float NEWTILELENGTH = 1.5f;
+                    float NEWTILEHEIGHT = 1f;
+                    float NEWSCALE = 4f;
+                    //GameObject instance = ((GameObject)Instantiate(tile3d, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity));
+                    GameObject instance = ((GameObject)Instantiate(tile3d, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y), (float)(NEWSTARTY), (float)(NEWSTARTZ - NEWTILELENGTH * x)), Quaternion.identity));
+                    instance.transform.localScale = new Vector3(.25f,.5f,.25f);
                     //Add a collider to the tile (TEMPORARY)
                     BoxCollider collider = instance.AddComponent<BoxCollider>();
-                    collider.size = new Vector3(2,tile_heights[x,y],2);
-                    collider.center = new Vector3(COLLXOFFSET, COLLYOFFSET, COLLZOFFSET);
+                    collider.size = new Vector3(NEWTILELENGTH*NEWSCALE,tile_heights[x,y]*NEWTILEHEIGHT*(NEWSCALE/2),NEWTILEWIDTH*NEWSCALE);
+                    //collider.center = new Vector3(COLLXOFFSET, COLLYOFFSET, COLLZOFFSET);
 
                     //Generate the tile data for the tile
                     instance.AddComponent<Tile_Data>();
@@ -270,7 +272,8 @@ public class Tile_Grid : ScriptableObject{
                         sprite.sortingOrder = tile_number;
 
                         //instantiate the object
-                        Instantiate(object_prefab, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity);
+                        //Instantiate(object_prefab, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity);
+                        Instantiate(object_prefab, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y), (float)(NEWSTARTY), (float)(NEWSTARTZ - NEWTILELENGTH * x)), Quaternion.identity);
                         //Instantiate(object_prefab, new Vector3((float)(START_X - (x) * (TILE_WIDTH / 200) + (y) * (TILE_WIDTH / 200)), (float)(START_Y - (x) * (TILE_LENGTH / 200) - (y) * (TILE_LENGTH / 200) + tile_heights[x, y] * TILE_HEIGHT / 100.0 + .35f), 0), Quaternion.identity);
                     }
 
