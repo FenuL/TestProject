@@ -21,6 +21,7 @@ public class Tile_Data : MonoBehaviour{
 		node.height = height;
 		tile_sprite_index = sprite;
 		node.traversible = true;
+        node.weight = -1;
 	}
 	
 	public Tile_Data(int x, int y, int height){
@@ -29,7 +30,8 @@ public class Tile_Data : MonoBehaviour{
 		node.height = height;
 		tile_sprite_index = 1;
 		node.traversible = true;
-	}
+        node.weight = -1;
+    }
 
 	public void instantiate(int x, int y, int height, int sprite){
 		x_index = x;
