@@ -12,7 +12,7 @@ public class Character_Script : MonoBehaviour {
     public int AP_RECOVERY = 10;
     public int SPEED = 8;
     public int character_id;
-    public enum States { Moving, Attacking, Idle, Dead, Blinking }
+    public enum States { Moving, Attacking, Idle, Dead, Blinking, Walking }
     public enum Actions { Move=-1, Attack=5, Wait = 0, Blink=-2, Channel = 10 }
     public enum Weapons { Sword, Rifle, Spear, Sniper, Pistol, Claws }
     public enum Armors { Light, Medium, Heavy }
@@ -542,7 +542,17 @@ public class Character_Script : MonoBehaviour {
     public void Die()
     {
         state = States.Dead;
+        //reset the tile traversible state
+        curr_tile.GetComponent<Tile_Data>().node.traversible = true;
+
+        //remove the character from the turn order and character list
+        controller.curr_scenario.characters.RemoveAt(character_num);
+        controller.curr_scenario.turn_order.Remove(transform.gameObject);
+
+        //remove the character from the board
         gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0);
+        Destroy(this.gameObject);
+
     }
 
     public IEnumerator MoveOverTime(Tile_Data.Node prev_tile, Tile_Data.Node temp_tile)
@@ -572,6 +582,7 @@ public class Character_Script : MonoBehaviour {
 
     public IEnumerator Move(Transform clicked_tile)
     {
+        state = States.Walking;
         Stack<Tile_Data.Node> path = new Stack<Tile_Data.Node>();
         //path = controller.navmesh.shortestPath(curr_tile.GetComponent<Tile_Data>().node, clicked_tile.GetComponent<Tile_Data>().node, action_curr, SPEED);
         //Tile_Data.Node temp_tile;
@@ -717,6 +728,7 @@ public class Character_Script : MonoBehaviour {
             action_curr = action_max;
         }
         controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
+
     }
 
     public void Attack(GameObject character)
@@ -826,7 +838,8 @@ public class Character_Script : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (aura_curr < 0) {
+        
+        if (aura_curr < 0) {
 			aura_curr = 0;
 		}
         if (aura_curr > aura_max)

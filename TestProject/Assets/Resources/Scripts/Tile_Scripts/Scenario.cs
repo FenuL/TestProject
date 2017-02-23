@@ -238,8 +238,9 @@ public class Tile_Grid : ScriptableObject{
                     instance.transform.localScale = new Vector3(.25f,.25f,.25f);
                     //Add a collider to the tile (TEMPORARY)
                     BoxCollider collider = instance.AddComponent<BoxCollider>();
-                    collider.size = new Vector3(NEWTILELENGTH*NEWSCALE,tile_heights[x,y]*NEWTILEHEIGHT*(NEWSCALE/2),NEWTILEWIDTH*NEWSCALE);
-                    //collider.center = new Vector3(COLLXOFFSET, COLLYOFFSET, COLLZOFFSET);
+                    //collider.size = new Vector3(NEWTILELENGTH*NEWSCALE,tile_heights[x,y]*NEWTILEHEIGHT*(NEWSCALE/2),NEWTILEWIDTH*NEWSCALE);
+                    collider.size = new Vector3(NEWTILELENGTH * NEWSCALE, 0, NEWTILEWIDTH * NEWSCALE);
+                    collider.center = new Vector3(0, 10, 0);
 
                     //Generate the tile data for the tile
                     instance.AddComponent<Tile_Data>();
@@ -940,6 +941,28 @@ public class Scenario : MonoBehaviour {
         controller = Game_Controller.controller;
 	}
 
+    public void checkForVictory()
+    {
+        bool victory = true;
+
+        //The Goal for Vanquish is to kill all Enemies on the board.
+        if (objective == Objectives.Vanquish)
+        {
+
+            foreach (GameObject character in characters)
+            {
+                if (character != null && character.tag != "Player")
+                {
+                    victory = false;
+                }
+            }
+        }
+        if (victory)
+        {
+            Debug.Log("CONGRATULATIONS! YOU WON!!!");
+        }
+    }
+
     void playerInput()
     {
         //player selection
@@ -959,6 +982,12 @@ public class Scenario : MonoBehaviour {
         {
             curr_character_num = 3;
         }
+        if (Input.GetKeyDown("k"))
+        {
+            curr_player.GetComponent<Character_Script>().Die();
+            NextPlayer();
+        }
+
 
         //check for mouse clicks
         if (Input.GetMouseButtonDown(0))
@@ -1067,7 +1096,7 @@ public class Scenario : MonoBehaviour {
                 {
                     foreach (GameObject character in characters)
                     {
-                        if (character.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().x_index == tile_data.x_index && character.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().y_index == tile_data.y_index)
+                        if (character != null && character.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().x_index == tile_data.x_index && character.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().y_index == tile_data.y_index)
                         {
                             highlighted_player = character;
                         }
@@ -1096,6 +1125,7 @@ public class Scenario : MonoBehaviour {
             {
                 playerInput();
                 checkMousePos();
+                checkForVictory();
             }
         }         
     }
@@ -1120,7 +1150,7 @@ public class Scenario : MonoBehaviour {
                         int h = tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile_Data>().node.height - 1;
                         if (Mathf.Abs(i) + Mathf.Abs(j) <= curr_player.GetComponent<Character_Script>().SPEED)
                         {
-                            if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Moving)
+                            if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Moving )
                             {
                                 //if (grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile_Data>().traversible){
                                 //    if ((Math.Abs(x_index - (x_index + i)) * (int)(armor.weight + weapon.weight) + Math.Abs(y_index - (y_index + j)) * (int)(armor.weight + weapon.weight) + (grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile_Data>().tile_height - curr_tile.GetComponent<Tile_Data>().tile_height) * 2) < action_curr)
