@@ -66,6 +66,7 @@ public class Tile_Data : MonoBehaviour{
         public int distance;
         public bool visited;
         public bool traversible;
+        public GameObject obj;
         public Node parent;
         public int height;
         public int modifier;
@@ -83,6 +84,12 @@ public class Tile_Data : MonoBehaviour{
             visited = false;
             traversible = true;
             parent = null;
+            obj = null;
+        }
+
+        public void setObj(GameObject new_obj)
+        {
+            obj = new_obj;
         }
 
         public void addEdge(Node n, int dir)
@@ -833,7 +840,7 @@ public class Tile_Data : MonoBehaviour{
                     {
                         if (!e.node2.visited && 
                             current.weight + e.cost <= cost_limit && 
-                            e.node2.traversible && 
+                            (! e.node2.obj || e.node2.obj.tag == start.obj.tag) && 
                             current.distance < distace_limit)
                         {
                             //Debug.Log("Cost:" + e.cost);

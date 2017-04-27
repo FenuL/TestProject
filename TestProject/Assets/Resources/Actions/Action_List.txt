@@ -1,0 +1,65 @@
+﻿name: Attack
+cost: 5
+range: WPR
+area: 0
+falloff: 0
+self_effect: NUL
+target_effect: Damage 10
+activation_type: active
+origin: innate
+trigger: NUL
+enabled: true
+animation: NUL
+=================
+name: Blink
+cost: 10
+range: 10
+area: 0
+falloff: 0
+self_effect: Move 4
+target_effect: NUL
+activation_type: active
+origin: innate
+trigger: NUL
+enabled: true
+animation: NUL
+=================
+name: Channel
+cost: -10
+range: 0
+area: 0
+falloff: 0
+self_effect: Pass; Heal 10
+target_effect: NUL
+activation_type: active
+origin: innate
+trigger: NUL
+enabled: true
+animation: NUL
+=================
+name: Move
+cost: MOC
+range: SPD
+area: 0
+falloff: 0
+self_effect: Move 1
+target_effect: NUL
+activation_type: active
+origin: innate
+trigger: NUL
+enabled: true
+animation: NUL
+=================
+name: Wait
+cost: -10
+range: 0
+area: 0
+falloff: 0
+self_effect: Pass
+target_effect: NUL
+activation_type: active
+origin: innate
+trigger: NUL
+enabled: true
+animation: NUL
+=================

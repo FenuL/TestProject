@@ -2,8 +2,577 @@
 using System.Collections;
 using System.Collections.Generic;
 using System;
+using UnityEngine.UI;
 
 public class Character_Script : MonoBehaviour {
+
+    public class Action
+    {
+        public static string PLAYER_ACTIONS_FILE = "Assets/Resources/Actions/Action_List.txt";
+        public static int HEADINGS = 12;
+        public enum Activation_Types { Active, Passive, Reactive }
+        public enum Origin_Types { Innate, Soul, Weapon }
+        public enum Accepted_Shortcuts { AUM, AUC, CAM, CAC, SPD, STR, CRD, SPT, DEX, VIT, LVL, WPR, WPD, ARM, WGT, MOC, DST, NUL }
+        /// <summary>
+        /// AUM = Char Aura MAX
+        /// AUC = Char Aura Current
+        /// CAM = Char Canister Max
+        /// CAC = Char Canister Current
+        /// SPD = Char Speed
+        /// STR = Char Strength
+        /// CRD = Char Coordination
+        /// SPT = Char Spirit
+        /// DEX = Char Dexterity
+        /// VIT = Char Vitality
+        /// LVL = Char Level
+        /// WPR = Weapon Range
+        /// WPD = Weapon Damage
+        /// WPN = Weapon
+        /// ARM = Armor Value
+        /// WGT = Character Weight
+        /// MOC = Movement Cost
+        /// DST = Distance between self and target
+        /// NUL = Null
+        /// </summary>
+
+        //Action name
+        public String name;
+        //Cost in AP
+        public String cost;
+        //Affects the number of tiles away the skill can target.
+        public String range;
+        //Area affected by the skill in number of tiles (1 range is single target)
+        public String area;
+        //falloff on the skill effect over the area (affects Damage and Elevetaion). 
+        public String falloff;
+        public List<Effect> self_effect;
+        public List<Effect> target_effect;
+        public Activation_Types type;
+        //what triggers the action if it is a reactive action
+        public String trigger;
+        //Where the skill originates (for disabling purposes later)
+        public Origin_Types origin;
+        //if the action is enabled or not
+        public bool enabled;
+        public String animation;
+
+        public static Action Parse(String[] input)
+        {
+            Action act = new Action();
+            foreach (String s in input)
+            {
+                if (s != null)
+                {
+                    String category = s.Split(':')[0];
+                    String values = s.Split(':')[1];
+                    switch (category)
+                    {
+                        case "name":
+                            act.name = values.TrimStart().TrimEnd();
+                            break;
+                        case "cost":
+                            act.cost = values.Trim();
+                            break;
+                        case "range":
+                            act.range = values.Trim();
+                            break;
+                        case "area":
+                            act.area = values.Trim();
+                            break;
+                        case "falloff":
+                            act.falloff = values.Trim();
+                            break;
+                        case "self_effect":
+                            act.self_effect = new List<Effect>();
+                            if (!values.Contains("NUL"))
+                            {
+                                foreach (String value in values.TrimStart().TrimEnd().Split(';'))
+                                {
+                                    act.self_effect.Add(new Effect(value));
+                                }
+                            }
+                            break;
+                        case "target_effect":
+                            act.target_effect = new List<Effect>();
+                            if (!values.Contains("NUL"))
+                            {
+                                foreach (String value in values.TrimStart().TrimEnd().Split(';'))
+                                {
+                                    act.target_effect.Add(new Effect(value));
+                                }
+                            }
+                            break;
+                        case "activation_type":
+                            if (values.Trim() == "Reactive" ||
+                                values.Trim() == "reactive")
+                            {
+                                act.type = Activation_Types.Reactive;
+                            }
+                            else if (values.Trim() == "Passive" ||
+                                values.Trim() == "passive")
+                            {
+                                act.type = Activation_Types.Passive;
+                            }
+                            else
+                            {
+                                act.type = Activation_Types.Active;
+                            }
+                            break;
+                        case "origin":
+                            if (values.Trim() == "Weapon" ||
+                                values.Trim() == "weapon")
+                            {
+                                act.origin = Origin_Types.Weapon;
+                            }
+                            else if (values.Trim() == "Soul" ||
+                                values.Trim() == "soul")
+                            {
+                                act.origin = Origin_Types.Soul;
+                            }
+                            else
+                            {
+                                act.origin = Origin_Types.Innate;
+                            }
+                            break;
+                        case "trigger":
+                            act.trigger = values.Trim();
+                            break;
+                        case "enabled":
+                            if (values.Trim() == "True" ||
+                                values.Trim() == "true" ||
+                                values.Trim() == "TRUE")
+                            {
+                                act.enabled = true;
+                            }
+                            else
+                            {
+                                act.enabled = false;
+                            }
+                            break;
+                        case "animation":
+                            act.animation = values.Trim();
+                            break;
+                    }
+                }
+            }
+            return act;
+        }
+
+        public static List<Action> LoadActions()
+        {
+            string[] lines = System.IO.File.ReadAllLines(PLAYER_ACTIONS_FILE);
+            string[] subset = new String[HEADINGS];
+            string line = "";
+            List<Action> actions = new List<Action>();
+            for (int i = 0; i < lines.Length; i++)
+            {
+                line = lines[i];
+                if(!lines[i].Contains("==="))
+                {
+                    subset[i % (HEADINGS)] = lines[i];
+                }
+                else
+                {
+                    actions.Add(Parse(subset));
+                    subset = new String[HEADINGS];
+                }
+
+            }
+            return actions;
+        }
+
+        public double convertToDouble(string input, Character_Script obj)
+        {
+            double output = 0.0;
+            if (double.TryParse(input, out output))
+            {
+                return output;
+            }
+            else
+            {
+                Array values = Enum.GetValues(typeof(Accepted_Shortcuts));
+
+                foreach (Accepted_Shortcuts val in values)
+                {
+                    if (input.Contains(val.ToString()))
+                    {
+                        if (val.ToString() == "AUM")
+                        {
+                            input = input.Replace(val.ToString(), ""+obj.aura_max );
+                        }
+                        else if (val.ToString() == "AUC")
+                        {
+                            input = input.Replace(val.ToString(), "" + obj.aura_curr);
+                        }
+                        else if (val.ToString() == "CAM")
+                        {
+                            input = input.Replace(val.ToString(), "" + obj.canister_max);
+                        }
+                        else if (val.ToString() == "CAC")
+                        {
+                            input = input.Replace(val.ToString(), "" + obj.canister_curr);
+                        }
+                        else if (val.ToString() == "SPD")
+                        {
+                            input = input.Replace(val.ToString(), "" + obj.speed);
+                        }
+                        else if (val.ToString() == "STR")
+                        {
+                            input = input.Replace(val.ToString(), "" + obj.strength);
+                        }
+                        else if (val.ToString() == "CRD")
+                        {
+                            input = input.Replace(val.ToString(), "" + obj.coordination);
+                        }
+                        else if (val.ToString() == "SPT")
+                        {
+                            input = input.Replace(val.ToString(), "" + obj.spirit);
+                        }
+                        else if (val.ToString() == "DEX")
+                        {
+                            input = input.Replace(val.ToString(), "" + obj.dexterity);
+                        }
+                        else if (val.ToString() == "VIT")
+                        {
+                            input = input.Replace(val.ToString(), "" + obj.vitality);
+                        }
+                        else if (val.ToString() == "LVL")
+                        {
+                            input = input.Replace(val.ToString(), "" + obj.level);
+                        }
+                        else if (val.ToString() == "WPR")
+                        {
+                            input = input.Replace(val.ToString(), "" + obj.weapon.range);
+                        }
+                        else if (val.ToString() == "WPD")
+                        {
+                            input = input.Replace(val.ToString(), "" + obj.weapon.attack);
+                        }
+                        else if (val.ToString() == "WPN")
+                        {
+                            input = input.Replace(val.ToString(), "" + obj.weapon.name);
+                        }
+                        else if (val.ToString() == "ARM")
+                        {
+                            input = input.Replace(val.ToString(), "" + obj.armor.armor);
+                        }
+                        else if (val.ToString() == "WGT")
+                        {
+                            input = input.Replace(val.ToString(), "" + obj.armor.weight);
+                        }
+                        else if (val.ToString() == "MOC")
+                        {
+                            input = input.Replace(val.ToString(), "" + obj.action_curr);
+                        }
+                        else if (val.ToString() == "DST")
+                        {
+                            input = input.Replace(val.ToString(), "" + obj.aura_max);
+                        }
+                        else if (val.ToString() == "NUL")
+                        {
+                            input = input.Replace(val.ToString(), "" + 0.0);
+                        }
+                    }
+                    //try to convert to double after converting
+                    if (double.TryParse(input, out output))
+                    {
+                        return output;
+                    }
+
+                }
+                return -1.0;
+            }
+
+        }
+
+        public void Select(Character_Script character)
+        {
+            character.action_cost = (int)convertToDouble(cost, character);
+            if (target_effect != null)
+            {
+                foreach (Effect eff in target_effect)
+                {
+                    if (eff.type.ToString() == Effect.Types.Move.ToString())
+                    {
+                        character.state = States.Moving;
+                        
+                        character.controller.curr_scenario.FindReachable((int)convertToDouble(cost, character), (int)convertToDouble(range, character));
+                    }
+                    else if (eff.type.ToString() == Effect.Types.Damage.ToString())
+                    {
+                        character.state = States.Attacking;
+                        character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
+                    }
+                    else if (eff.type.ToString() == Effect.Types.Heal.ToString())
+                    {
+                        character.state = States.Attacking;
+                        character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
+                    }
+                    else if (eff.type.ToString() == Effect.Types.Status.ToString())
+                    {
+                        character.state = States.Attacking;
+                        character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
+                    }
+                    else if (eff.type.ToString() == Effect.Types.Elevator.ToString())
+                    {
+                        character.state = States.Attacking;
+                        character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
+                    }
+                    else if (eff.type.ToString() == Effect.Types.Enabler.ToString())
+                    {
+                        character.state = States.Attacking;
+                        character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
+                    }
+                }
+            }
+            if (self_effect != null)
+            {
+                foreach (Effect eff in self_effect)
+                {
+                    if (eff.type.ToString() == Effect.Types.Move.ToString())
+                    {
+                        character.state = States.Moving;
+                        character.controller.curr_scenario.FindReachable((int)convertToDouble(cost, character), (int)convertToDouble(range, character));
+                    }
+                    else if (eff.type.ToString() == Effect.Types.Damage.ToString())
+                    {
+                        character.state = States.Attacking;
+                        character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
+                    }
+                    else if (eff.type.ToString() == Effect.Types.Heal.ToString())
+                    {
+                        character.state = States.Attacking;
+                        character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
+
+                    }
+                    else if (eff.type.ToString() == Effect.Types.Status.ToString())
+                    {
+                        character.state = States.Attacking;
+                        character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
+                    }
+                    else if (eff.type.ToString() == Effect.Types.Elevator.ToString())
+                    {
+                        character.state = States.Attacking;
+                        character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
+                    }
+                    else if (eff.type.ToString() == Effect.Types.Enabler.ToString())
+                    {
+                        character.state = States.Attacking;
+                        character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
+                    }
+                    else if (eff.type.ToString() == Effect.Types.Pass.ToString())
+                    {
+                        character.state = States.Idle;
+                        character.action_curr -= character.action_cost;
+                        print("Character " + character.character_name + " Passed, Recovering " + character.AP_RECOVERY + " AP.");
+                        character.action_cost = 0;
+                        if (character.action_curr > character.action_max)
+                        {
+                            character.action_curr = character.action_max;
+                        }
+                        character.controller.curr_scenario.CleanReachable();
+                        character.controller.curr_scenario.NextPlayer();
+                        return;
+                    }
+                }
+            }
+            //Select the action in the action menu
+            foreach (Transform but in character.controller.action_menu.GetComponent<Action_Menu_Script>().buttons)
+            {
+                if (but.name == name)
+                {
+                    but.GetComponent<Image>().color = Color.blue;
+                }
+                else
+                {
+                    but.GetComponent<Image>().color = Color.white;
+                }
+            }
+            character.controller.curr_scenario.CleanReachable();
+            character.controller.curr_scenario.MarkReachable();
+            character.curr_action = this;
+        }
+
+        public void Enact(Character_Script character, GameObject target_tile)
+        {
+            character.action_curr -= character.action_cost;
+            character.action_cost = 0;
+
+            if (target_effect != null)
+            {
+                foreach (Effect eff in target_effect)
+                {
+                    if(eff.type.ToString() == Effect.Types.Move.ToString())
+                    {
+
+                        //target_character.MoveTo(target_tile.transform);
+                    }
+                    else if (eff.type.ToString() == Effect.Types.Damage.ToString())
+                    {
+                        if (target_tile.GetComponent<Tile_Data>().node.obj == null)
+                        {
+                            return;
+                        }
+                        Character_Script target_character = target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>();
+                        print("Character " + character.character_name + " Attacked: " + target_character.GetComponent<Character_Script>().character_name + "; Dealing " + Calculate_Damage(convertToDouble(eff.value[0], character), target_character) + " damage and Using " + cost + " AP");
+                        if (target_character.GetComponent<Character_Script>().aura_curr == 0)
+                        {
+                            target_character.GetComponent<Character_Script>().Die();
+                        }
+                        else
+                        {
+                            target_character.GetComponent<Character_Script>().aura_curr -= Calculate_Damage(convertToDouble(eff.value[0], character), target_character);
+                            if (target_character.GetComponent<Character_Script>().aura_curr < 0)
+                            {
+                                target_character.GetComponent<Character_Script>().aura_curr = 0;
+                                target_character.GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+                            }
+                        }
+                    }
+                    else if (eff.type.ToString() == Effect.Types.Heal.ToString())
+                    {
+
+
+                    }
+                    else if (eff.type.ToString() == Effect.Types.Status.ToString())
+                    {
+
+
+                    }
+                    else if (eff.type.ToString() == Effect.Types.Elevator.ToString())
+                    {
+
+
+                    }
+                    else if (eff.type.ToString() == Effect.Types.Enabler.ToString())
+                    {
+
+                    }
+                    else if (eff.type.ToString() == Effect.Types.Pass.ToString())
+                    {
+                        target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().state = States.Idle;
+                        target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_curr -= target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_cost;
+                        print("Character " + target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().character_name + " Passed, Recovering " + target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().AP_RECOVERY + " AP.");
+                        target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_cost = 0;
+                        if (target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_curr > target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_max)
+                        {
+                            target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_curr = target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_max;
+                        }
+                        target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().controller.curr_scenario.CleanReachable();
+                        target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().controller.curr_scenario.NextPlayer();
+                    }
+                }
+            }
+            if (self_effect != null)
+            {
+                foreach (Effect eff in self_effect)
+                {
+                    if (eff.type.ToString() == Effect.Types.Move.ToString())
+                    {
+                        //value 0 for movement is movement type 1 is standard movement
+                        character.GetComponent<Character_Script>().MoveTo(target_tile.transform);
+                        character.curr_tile.GetComponent<Tile_Data>().node.traversible = true;
+                        character.curr_tile.GetComponent<Tile_Data>().node.obj = null;
+                        character.curr_tile = target_tile.transform;
+                        character.curr_tile.GetComponent<Tile_Data>().node.traversible = false;
+                        character.curr_tile.GetComponent<Tile_Data>().node.obj = character.gameObject;
+
+                    }
+                    else if (eff.type.ToString() == Effect.Types.Damage.ToString())
+                    {
+                        if (character.GetComponent<Character_Script>().aura_curr == 0)
+                        {
+                            character.GetComponent<Character_Script>().Die();
+                        }
+                        else
+                        {
+                            character.GetComponent<Character_Script>().aura_curr -= Calculate_Damage(convertToDouble(eff.value[0], character), character);
+                            if (character.GetComponent<Character_Script>().aura_curr < 0)
+                            {
+                                character.GetComponent<Character_Script>().aura_curr = 0;
+                                character.GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
+                            }
+                        }
+                    }
+                    else if (eff.type.ToString() == Effect.Types.Heal.ToString())
+                    {
+                    }
+                    else if (eff.type.ToString() == Effect.Types.Status.ToString())
+                    {
+                    }
+                    else if (eff.type.ToString() == Effect.Types.Elevator.ToString())
+                    {
+                    }
+                    else if (eff.type.ToString() == Effect.Types.Enabler.ToString())
+                    {
+                    }
+                    else if (eff.type.ToString() == Effect.Types.Pass.ToString())
+                    {
+                        character.state = States.Idle;
+                        character.action_curr -= character.action_cost;
+                        print("Character " + character.character_name + " Waited, Recovering " + character.AP_RECOVERY + " AP.");
+                        character.action_cost = 0;
+                        if (character.action_curr > character.action_max)
+                        {
+                            character.action_curr = character.action_max;
+                        }
+                        character.controller.curr_scenario.CleanReachable();
+                        character.controller.curr_scenario.NextPlayer();
+                    }
+                }
+            }
+            character.state = States.Idle;
+            character.controller.curr_scenario.CleanReachable();
+            character.controller.curr_scenario.ResetReachable();
+            if (character.action_curr <= 0)
+            {
+                character.action_curr = 0;
+                character.action_curr += character.AP_RECOVERY;
+
+                character.controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
+                character.controller.curr_scenario.NextPlayer();
+            }
+            else
+            {
+                character.FindAction("Move").Select(character);
+            }
+            if (character.action_curr > character.action_max)
+            {
+                character.action_curr = character.action_max;
+            }
+
+        }
+
+    }
+
+    public class Effect
+    {
+        public enum Types { Move, Damage, Heal, Status, Elevator, Enabler, Pass }
+
+        public Types type { get; set; }
+        public String[] value { get; set; }
+
+        public Effect(String input)
+        {
+            String type_string= input.Split(' ')[0];
+            value = new String[input.Split(' ').Length];
+            Array types = Enum.GetValues(typeof(Types));
+
+            foreach (Types ty in types)
+            {
+                if (type_string.Contains(ty.ToString()))
+                {
+                    type = ty;
+                }
+            }
+            int x = 0;
+            while (x < input.Split(' ').Length - 1)
+            {
+                value[x] = input.Split(' ')[x+1];
+                x++;
+            }
+        }
+    }
 
     //Constants
     public int AURA_MULTIPLIER = 10;
@@ -13,8 +582,7 @@ public class Character_Script : MonoBehaviour {
     public int SPEED = 8;
     public int character_id;
     public enum States { Moving, Attacking, Idle, Dead, Blinking, Walking }
-    public enum Actions { Move=-1, Attack=5, Wait = 0, Blink=-2, Channel = 10 }
-    public enum Weapons { Sword, Rifle, Spear, Sniper, Pistol, Claws }
+    public enum Weapons { Sword, Rifle, Spear, Sniper, Pistol, Claws, Orb, Hammer }
     public enum Armors { Light, Medium, Heavy }
     public enum Character_Stats { aura_max, action_max, canister_max, strength, coordination, spirit, dexterity, vitality, speed };
 
@@ -38,7 +606,9 @@ public class Character_Script : MonoBehaviour {
     public Weapon weapon { get; set; }
     public Armor armor { get; set; }
     public Accessory[] accessories { get; set; }
-    public List<Actions> actions { get; set; }
+    public static List<Action> all_actions { get; set; }
+    public List<Action> actions { get; set; }
+    public Action curr_action { get; set; }
     public States state { get; set; }
     public Game_Controller controller { get; set; }
     public Transform curr_tile { get; set; }
@@ -48,7 +618,7 @@ public class Character_Script : MonoBehaviour {
         public string name;
         public enum Equipment_Type { Weapon, Armor, Accessory };
         public Equipment_Type type;
-        public Actions[] actions;
+        public String[] actions;
         public Effect[] effects; 
         public int durability;
         public double weight;
@@ -83,8 +653,9 @@ public class Character_Script : MonoBehaviour {
                     effects = new Effect[2];
                     effects[0] = new Effect(Character_Stats.speed, 1);
                     effects[1] = new Effect(Character_Stats.dexterity, 1);
-                    actions = new Actions[1];
-                    actions[0] = Actions.Blink;
+                    actions = new String[1];
+                    actions[0] = "Blink";
+                    //actions[0] = all_actions;
                     break;
                 case "Medium":
                     name = Armors.Medium.ToString();
@@ -101,8 +672,8 @@ public class Character_Script : MonoBehaviour {
                     effects = new Effect[2];
                     effects[0] = new Effect(Character_Stats.vitality, 1);
                     effects[1] = new Effect(Character_Stats.spirit, 1);
-                    actions = new Actions[1];
-                    actions[0] = Actions.Channel;
+                    actions = new String[1];
+                    actions[0] = "Channel";
                     break;
             }
         }
@@ -120,8 +691,8 @@ public class Character_Script : MonoBehaviour {
                     effects = new Effect[2];
                     effects[0] = new Effect(Character_Stats.speed, 1);
                     effects[1] = new Effect(Character_Stats.dexterity, 1);
-                    actions = new Actions[1];
-                    actions[0] = Actions.Blink;
+                    actions = new String[1];
+                    actions[0] = "Blink";
                     break;
                 case Armors.Medium:
                     name = Armors.Medium.ToString();
@@ -138,8 +709,8 @@ public class Character_Script : MonoBehaviour {
                     effects = new Effect[2];
                     effects[0] = new Effect(Character_Stats.vitality, 1);
                     effects[1] = new Effect(Character_Stats.spirit, 1);
-                    actions = new Actions[1];
-                    actions[0] = Actions.Channel;
+                    actions = new String[1];
+                    actions[0] = "Channel";
                     break;
             }
         }
@@ -163,10 +734,6 @@ public class Character_Script : MonoBehaviour {
         {
             type = Equipment_Type.Weapon;
             durability = 100;
-            actions = new Actions[2];
-            //actions[0] = Actions.Move;
-            actions[0] = Actions.Attack;
-            actions[1] = Actions.Wait;
             switch (str)
             {
                 case "Sword":
@@ -220,10 +787,6 @@ public class Character_Script : MonoBehaviour {
         {
             type = Equipment_Type.Weapon;
             durability = 100;
-            actions = new Actions[2];
-            //actions[0] = Actions.Move;
-            actions[0] = Actions.Attack;
-            actions[1] = Actions.Wait;
             switch (wep)
             {
                 case Weapons.Sword:
@@ -276,7 +839,9 @@ public class Character_Script : MonoBehaviour {
 
     //Methods
 	// Use this for initialization
-	void Start () {
+	void Start ()
+    {
+
         //gameObject.SetActive(true);
     }
 
@@ -296,10 +861,14 @@ public class Character_Script : MonoBehaviour {
         action_max = AP_MAX;
         action_curr = action_max;
         action_cost = 0;
-        actions = new List<Actions>();
+        actions = new List<Action>();
         canister_max = can;
         canister_curr = canister_max;
         state = States.Idle;
+        all_actions = Action.LoadActions();
+        actions.Add(FindAction("Move"));
+        actions.Add(FindAction("Attack"));
+        actions.Add(FindAction("Wait"));
         foreach (Weapons weps in Enum.GetValues(typeof(Weapons)))
         {
             if (wep.TrimStart() == weps.ToString())
@@ -330,6 +899,27 @@ public class Character_Script : MonoBehaviour {
         //        }
         //    }
         //}
+    }
+
+    public Action FindAction(String name)
+    {
+        if (all_actions != null)
+        {
+            //TODO Optimize search to use binary search
+            foreach (Action act in all_actions)
+            {
+                if (act.name == name)
+                {
+                    return act;
+                }
+            }
+        }
+        return null;
+    }
+
+    public void Act(Transform target_tile)
+    {
+        curr_action.Enact(this, target_tile.gameObject);
     }
 
     public void Equip(Equipment e)
@@ -397,22 +987,16 @@ public class Character_Script : MonoBehaviour {
         }*/
         if (e.actions != null)
         {
-            foreach(Actions a in e.actions)
+            foreach(String str in e.actions)
             {
-                actions.Add(a);
+                actions.Add(FindAction(str));
             }
         }
     }
 
-    public int Calculate_Damage(Armor a)
+    public static int Calculate_Damage(double damage, Character_Script target)
     {
-        if (weapon.ranged)
-        {
-            return weapon.attack + coordination - a.armor;
-        }else
-        {
-            return weapon.attack + strength - a.armor;
-        }
+        return (int)(damage - target.armor.armor);
     }
 
     public void Randomize(){
@@ -429,10 +1013,10 @@ public class Character_Script : MonoBehaviour {
         aura_curr = aura_max;
         action_max = AP_MAX;// spirit * AP_MULTIPLIER;
         action_curr = action_max;
-        actions = new List<Actions>();
+        actions = new List<Action>();
         canister_max = UnityEngine.Random.Range(0, 3);
         canister_curr = canister_max;
-		state = States.Moving;
+		state = States.Idle;
 
         //Randomize Equipment
         int w = UnityEngine.Random.Range(0, 5);
@@ -482,62 +1066,6 @@ public class Character_Script : MonoBehaviour {
         //FindReachable(controller.tile_grid, weapon.range);
         //FindReachable(controller.GetComponent<Game_Controller>().tile_grid,dexterity);
 	}
-	
-	//public SpriteRenderer renderer;
-
-	public void Action(Actions act){
-        if ((int)act > 0)
-        {
-            action_cost = (int)act;
-        }else if ((int)act == 0)
-        {
-            action_cost = -AP_RECOVERY;
-        }
-        if(action_curr-action_cost < 0)
-        {
-            action_cost = action_curr;
-        }
-        /*if (act == Actions.Move && state != States.Dead) {
-
-            state = States.Moving;
-			controller.curr_scenario.FindReachable(action_curr, SPEED);
-			controller.curr_scenario.CleanReachable ();
-			controller.curr_scenario.MarkReachable ();
-		}*/
-		if (act == Actions.Attack && state != States.Dead) {
-			state = States.Attacking;
-            controller.curr_scenario.FindReachable(action_curr, weapon.range);
-            controller.curr_scenario.CleanReachable ();
-            controller.curr_scenario.MarkReachable ();
-		}
-        if (act == Actions.Wait && state != States.Dead)
-        {
-            state = States.Idle;
-            action_curr -= action_cost;
-            print("Character " + character_name + " Waited, Recovering " + AP_RECOVERY + " AP.");
-            action_cost = 0;
-            if (action_curr > action_max)
-            {
-                action_curr = action_max;
-            }
-            controller.curr_scenario.CleanReachable();
-            controller.curr_scenario.NextPlayer();
-        }
-        if (act == Actions.Blink && state != States.Dead)
-        {
-            state = States.Blinking;
-            controller.curr_scenario.FindReachable(action_curr, weapon.range);
-            controller.curr_scenario.CleanReachable();
-            controller.curr_scenario.MarkReachable();
-        }
-        if (act == Actions.Channel && state != States.Dead)
-        {
-            Channel();
-            controller.curr_scenario.CleanReachable();
-        }
-
-
-    }
 
     public void Die()
     {
@@ -546,8 +1074,15 @@ public class Character_Script : MonoBehaviour {
         curr_tile.GetComponent<Tile_Data>().node.traversible = true;
 
         //remove the character from the turn order and character list
-        controller.curr_scenario.characters.RemoveAt(character_num);
+        Debug.Log("Character num: " + character_num + " has died");
+        Debug.Log("Characters remaining: " + controller.curr_scenario.characters.Count);
+        controller.curr_scenario.characters.Remove(transform.gameObject);
         controller.curr_scenario.turn_order.Remove(transform.gameObject);
+        controller.curr_scenario.curr_character_num -= 1;
+        if (controller.curr_scenario.curr_character_num < 0)
+        {
+            controller.curr_scenario.curr_character_num = controller.curr_scenario.characters.Count - 1;
+        }
 
         //remove the character from the board
         gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0);
@@ -578,6 +1113,7 @@ public class Character_Script : MonoBehaviour {
     public void MoveTo(Transform clicked_tile)
     {
         StartCoroutine(Move(clicked_tile));
+        //clicked_tile.GetComponent<Tile_Data>().node.obj = this.gameObject;
     }
 
     public IEnumerator Move(Transform clicked_tile)
@@ -709,11 +1245,9 @@ public class Character_Script : MonoBehaviour {
             //transform.position = new Vector3(curr_tile.position.x, (float)(curr_tile.position.y + (curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z); 
         }
         //renderer = (SpriteRenderer)curr_tile.GetComponent<SpriteRenderer> ();
-        curr_tile.GetComponent<Tile_Data>().node.traversible = true;
-        curr_tile = clicked_tile;
-        curr_tile.GetComponent<Tile_Data>().node.traversible = false;
+
         //gameObject.GetComponent<SpriteRenderer>().sortingOrder = clicked_tile.GetComponent<SpriteRenderer>().sortingOrder + 1;
-        state = States.Moving;
+        /*state = States.Idle;
         controller.curr_scenario.ResetReachable();
         controller.curr_scenario.FindReachable(action_curr, SPEED);
         controller.curr_scenario.MarkReachable();
@@ -727,42 +1261,13 @@ public class Character_Script : MonoBehaviour {
         {
             action_curr = action_max;
         }
-        controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
+        controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();*/
 
     }
 
     public void Attack(GameObject character)
     {
-        print("Character " + character_name + " Attacked: " + character.GetComponent<Character_Script>().character_name + "; Dealing " + Calculate_Damage(character.GetComponent<Character_Script>().armor) + " damage and Using " + action_cost + " AP");
-        action_curr -= action_cost;
-        action_cost = 0;
-        if (character.GetComponent<Character_Script>().aura_curr == 0 )
-        {
-            character.GetComponent<Character_Script>().Die();
-        }else
-        {
-            character.GetComponent<Character_Script>().aura_curr -= Calculate_Damage(character.GetComponent<Character_Script>().armor);
-            if(character.GetComponent<Character_Script>().aura_curr < 0)
-            {
-                character.GetComponent<Character_Script>().aura_curr = 0;
-                character.GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-            }
-        }
-        state = States.Moving;
-        controller.curr_scenario.ResetReachable();
-        controller.curr_scenario.FindReachable(action_curr, SPEED);
-        controller.curr_scenario.MarkReachable();
-        if (action_curr <= 0)
-        {
-            action_curr = 0;
-            action_curr += AP_RECOVERY;
-            controller.curr_scenario.NextPlayer();
-        }
-        if (action_curr > action_max)
-        {
-            action_curr = action_max;
-        }
-        controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
+        
     }
 
     public void Blink (Transform clicked_tile)
@@ -792,7 +1297,7 @@ public class Character_Script : MonoBehaviour {
         }
         //renderer = (SpriteRenderer)curr_tile.GetComponent<SpriteRenderer> ();
         gameObject.GetComponent<SpriteRenderer>().sortingOrder = clicked_tile.GetComponent<SpriteRenderer>().sortingOrder + 1;
-        state = States.Moving;
+        state = States.Idle;
         controller.curr_scenario.ResetReachable();
         controller.curr_scenario.FindReachable(action_curr, SPEED);
         controller.curr_scenario.MarkReachable();
@@ -838,7 +1343,7 @@ public class Character_Script : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        
+
         if (aura_curr < 0) {
 			aura_curr = 0;
 		}

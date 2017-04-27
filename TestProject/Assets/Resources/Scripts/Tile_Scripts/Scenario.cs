@@ -274,7 +274,7 @@ public class Tile_Grid : ScriptableObject{
 
                         //instantiate the object
                         //Instantiate(object_prefab, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity);
-                        Instantiate(object_prefab, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y), (float)(NEWSTARTY+0.66f + .25f * tile_heights[x, y]), (float)(NEWSTARTZ - NEWTILELENGTH * x)), Quaternion.identity);
+                        tiles[x, y].GetComponent<Tile_Data>().node.setObj((GameObject) Instantiate(object_prefab, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y), (float)(NEWSTARTY+0.66f + .25f * tile_heights[x, y]), (float)(NEWSTARTZ - NEWTILELENGTH * x)), Quaternion.identity));
                         //Instantiate(object_prefab, new Vector3((float)(START_X - (x) * (TILE_WIDTH / 200) + (y) * (TILE_WIDTH / 200)), (float)(START_Y - (x) * (TILE_LENGTH / 200) - (y) * (TILE_LENGTH / 200) + tile_heights[x, y] * TILE_HEIGHT / 100.0 + .35f), 0), Quaternion.identity);
                     }
 
@@ -833,6 +833,7 @@ public class Scenario : MonoBehaviour {
             characters.Add(game_object);
             game_object.GetComponent<Character_Script>().character_num = char_num;
             game_object.GetComponent<Character_Script>().curr_tile = tile_grid.getTile(char_num, 0);
+            game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.setObj(game_object);
             game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x,
                 game_object.GetComponent<Character_Script>().curr_tile.position.y+ 1.145f + .25f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height,
                 game_object.GetComponent<Character_Script>().curr_tile.position.z);
@@ -852,6 +853,7 @@ public class Scenario : MonoBehaviour {
             characters.Add(game_object);
             game_object.GetComponent<Character_Script>().character_num = char_num;
             game_object.GetComponent<Character_Script>().curr_tile = tile_grid.getTile(19 - game_object.GetComponent<Character_Script>().character_num, 19);// [19-game_object.GetComponent<Character_Script>().character_num,19,0];
+            game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.setObj(game_object);
             game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x,
                 game_object.GetComponent<Character_Script>().curr_tile.position.y + 1.45f + .25f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height,
                 game_object.GetComponent<Character_Script>().curr_tile.position.z);
@@ -908,9 +910,10 @@ public class Scenario : MonoBehaviour {
         curr_player = turn_order[curr_character_num];
         curr_player.GetComponent<Animator>().SetBool("Selected", true);
         char_num = 0;
-        curr_player.GetComponent<Character_Script>().state = Character_Script.States.Moving;
-        FindReachable(curr_player.GetComponent<Character_Script>().action_curr, curr_player.GetComponent<Character_Script>().SPEED);
-        MarkReachable();
+        curr_player.GetComponent<Character_Script>().FindAction("Move").Select(curr_player.GetComponent<Character_Script>());
+        //GetComponent<Character_Script>().state = Character_Script.States.Moving;
+        //FindReachable(curr_player.GetComponent<Character_Script>().action_curr, curr_player.GetComponent<Character_Script>().SPEED);
+        //MarkReachable();
 
 
         //set initial values for selected and clicked tiles.
@@ -1001,6 +1004,9 @@ public class Scenario : MonoBehaviour {
                 {
                     if (tile.Equals(clicked_tile))
                     {
+                        curr_player.GetComponent<Character_Script>().Act(clicked_tile);
+
+                        /*
                         if (clicked_tile.GetComponent<Tile_Data>().node.traversible && curr_player.GetComponent<Character_Script>().state == Character_Script.States.Moving)
                         {
                             //Have to do this instead of calling coroutine directly because Scenario is not attached to any object.
@@ -1027,7 +1033,7 @@ public class Scenario : MonoBehaviour {
                         {
                             curr_player.GetComponent<Character_Script>().Blink(clicked_tile);
                             //NextPlayer();
-                        }
+                        }*/
                     }
                 }
             }
@@ -1215,12 +1221,13 @@ public class Scenario : MonoBehaviour {
             if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Moving || curr_player.GetComponent<Character_Script>().state == Character_Script.States.Blinking)
             {
                 //Set Material to blue
-                //tile_grid.reachable_prefab.GetComponent<SpriteRenderer>().color = new Color(0, 0, 255);
+                //Debug.Log(tile_grid.reachable_prefab.GetComponent<Material>().name);
+                tile_grid.reachable_prefab.GetComponent<Renderer>().sharedMaterial.color = new Color(0, 0, 255);
             }
             if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Attacking)
             {
                 //set material to red.
-                //tile_grid.reachable_prefab.GetComponent<SpriteRenderer>().color = new Color(255, 255, 0);
+                tile_grid.reachable_prefab.GetComponent<Renderer>().sharedMaterial.color = new Color(255, 0, 0);
             }
             reachable_tile_objects.Add((GameObject)Instantiate(tile_grid.reachable_prefab, new Vector3(tile.position.x,
                                                            //tile.position.y+0.08f,
@@ -1263,13 +1270,16 @@ public class Scenario : MonoBehaviour {
         {
             curr_player.GetComponent<Animator>().SetBool("Selected", true);
         }
-        curr_player.GetComponent<Character_Script>().state = Character_Script.States.Moving;
-        FindReachable(curr_player.GetComponent<Character_Script>().action_curr, curr_player.GetComponent<Character_Script>().SPEED);
+        //curr_player.GetComponent<Character_Script>().state = Character_Script.States.Moving;
+        //FindReachable(curr_player.GetComponent<Character_Script>().action_curr, curr_player.GetComponent<Character_Script>().SPEED);
+
         CleanReachable();
-        MarkReachable();
+
+        //MarkReachable();
         //curr_player.GetComponent<Character_Script>().FindReachable(tile_grid);
         //CleanReachable();
         controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
+        curr_player.GetComponent<Character_Script>().FindAction("Move").Select(curr_player.GetComponent<Character_Script>());
         //MarkReachable ();
 
         //Center camera on player
@@ -1295,8 +1305,11 @@ public class Scenario : MonoBehaviour {
         {
             curr_player.GetComponent<Animator>().SetBool("Selected", true);
         }
+
         CleanReachable();
+
         controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
+        curr_player.GetComponent<Character_Script>().FindAction("Move").Select(curr_player.GetComponent<Character_Script>());
         //MarkReachable ();
 
         //Center camera on player
