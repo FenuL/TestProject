@@ -4,7 +4,7 @@ range: WPR
 area: 0
 falloff: 0
 self_effect: NUL
-target_effect: Damage 10
+target_effect: Damage WPD
 activation_type: active
 origin: innate
 trigger: NUL
@@ -29,7 +29,7 @@ cost: -10
 range: 0
 area: 0
 falloff: 0
-self_effect: Pass; Heal 10
+self_effect: Heal 10; Pass
 target_effect: NUL
 activation_type: active
 origin: innate

@@ -55,6 +55,7 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
         int x = 0;
         buttons = new List<Transform>();
         Transform button;
+        double cost;
         foreach (Character_Script.Action a in controller.curr_scenario.curr_player.GetComponent<Character_Script>().actions)
         {
             button = container.GetComponent<RectTransform>().GetChild(x);
@@ -63,24 +64,18 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
             button.GetComponent<Image>().color = Color.white;
             string text="";
             //TODO FIX THIS SHIT
-            int i = 0;
-            if (int.TryParse(a.cost, out i))
+            cost = a.convertToDouble(a.cost, controller.curr_scenario.curr_player.GetComponent<Character_Script>());
+            if (cost > 0)
             {
-                if (i > 0)
-                {
-                    text = a.name + ": -" + i;
-                }
-                else
-                {
-                    text = a.name + ": +" + i;
-                }
-                if (i >= controller.curr_scenario.curr_player.GetComponent<Character_Script>().action_curr)
-                {
-                    button.GetComponent<Image>().color = Color.red;
-                }
-            }else
+                text = a.name + ": -" + cost;
+            }
+            else
             {
-                text = a.name + ": - x";
+                text = a.name + ": +" + Math.Abs(cost);
+            }
+            if (cost > controller.curr_scenario.curr_player.GetComponent<Character_Script>().action_curr)
+            {
+                button.GetComponent<Image>().color = Color.red;
             }
             button.name = a.name;
             button.FindChild("Text").GetComponent<Text>().text = text;

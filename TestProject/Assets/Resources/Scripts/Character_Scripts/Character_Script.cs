@@ -190,8 +190,8 @@ public class Character_Script : MonoBehaviour {
             }
             else
             {
+                //Remove acronyms from equation
                 Array values = Enum.GetValues(typeof(Accepted_Shortcuts));
-
                 foreach (Accepted_Shortcuts val in values)
                 {
                     if (input.Contains(val.ToString()))
@@ -273,136 +273,214 @@ public class Character_Script : MonoBehaviour {
                             input = input.Replace(val.ToString(), "" + 0.0);
                         }
                     }
-                    //try to convert to double after converting
-                    if (double.TryParse(input, out output))
-                    {
-                        return output;
-                    }
-
+                }
+                //try to convert to double after converting
+                if (double.TryParse(input, out output))
+                {
+                    return output;
+                }
+                else if (input.Contains("+") ||
+                    input.Contains("/") ||
+                    input.Contains("*") ||
+                    input.Contains("-") ||
+                    input.Contains("^") ||
+                    input.Contains("(") ||
+                    input.Contains(")"))
+                {
+                    return parseEquation(input);
                 }
                 return -1.0;
             }
 
         }
 
-        public void Select(Character_Script character)
+        public double parseEquation(string input)
         {
-            character.action_cost = (int)convertToDouble(cost, character);
-            if (target_effect != null)
+            //Debug.Log("Parsing: " + input);
+            //base case, can we convert to double?
+            double output;
+            if(double.TryParse(input, out output))
             {
-                foreach (Effect eff in target_effect)
+                return output;
+            }
+            //otherwise, we have work to do
+            else
+            {
+                //Order of operations is reversed because it's a stack.
+                //resolve parentheses
+                if (input.Contains("(") || input.Contains(")"))
                 {
-                    if (eff.type.ToString() == Effect.Types.Move.ToString())
-                    {
-                        character.state = States.Moving;
-                        
-                        character.controller.curr_scenario.FindReachable((int)convertToDouble(cost, character), (int)convertToDouble(range, character));
-                    }
-                    else if (eff.type.ToString() == Effect.Types.Damage.ToString())
-                    {
-                        character.state = States.Attacking;
-                        character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
-                    }
-                    else if (eff.type.ToString() == Effect.Types.Heal.ToString())
-                    {
-                        character.state = States.Attacking;
-                        character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
-                    }
-                    else if (eff.type.ToString() == Effect.Types.Status.ToString())
-                    {
-                        character.state = States.Attacking;
-                        character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
-                    }
-                    else if (eff.type.ToString() == Effect.Types.Elevator.ToString())
-                    {
-                        character.state = States.Attacking;
-                        character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
-                    }
-                    else if (eff.type.ToString() == Effect.Types.Enabler.ToString())
-                    {
-                        character.state = States.Attacking;
-                        character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
-                    }
+                    string[] split = input.Split(new char[] { '(' }, 2);
+                    string[] split2 = split[1].Split(new char[] { ')' }, 2);
+                    double result = parseEquation(split2[0]);
+                    return parseEquation("" + split[0] + result + split2[1]);
+                }
+                //resolve addition
+                if (input.Contains("+"))
+                {
+                    string[] split = input.Split(new char[] { '+' }, 2 );
+                    return parseEquation(""+(parseEquation(split[0]) + parseEquation(split[1])));
+                }
+                //resolve subtraction
+                if (input.Contains("-"))
+                {
+                    string[] split = input.Split(new char[] { '-' }, 2);
+                    return parseEquation("" + (parseEquation(split[0]) - parseEquation(split[1])));
+                }
+                //resolve multiplication
+                if (input.Contains("*"))
+                {
+                    string[] split = input.Split(new char[] { '*' }, 2);
+                    return parseEquation("" + (parseEquation(split[0]) * parseEquation(split[1])));
+                }
+                //resolve division
+                if (input.Contains("/"))
+                {
+                    string[] split = input.Split(new char[] { '/' }, 2);
+                    return parseEquation("" + (parseEquation(split[0]) / parseEquation(split[1])));
+                }
+                //resolve exponents
+                if (input.Contains("^"))
+                {
+                    string[] split = input.Split(new char[] { '^' }, 2);
+                    return parseEquation("" + (Mathf.Pow((float)parseEquation(split[0]), (float)parseEquation(split[1]))));
                 }
             }
-            if (self_effect != null)
-            {
-                foreach (Effect eff in self_effect)
-                {
-                    if (eff.type.ToString() == Effect.Types.Move.ToString())
-                    {
-                        character.state = States.Moving;
-                        character.controller.curr_scenario.FindReachable((int)convertToDouble(cost, character), (int)convertToDouble(range, character));
-                    }
-                    else if (eff.type.ToString() == Effect.Types.Damage.ToString())
-                    {
-                        character.state = States.Attacking;
-                        character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
-                    }
-                    else if (eff.type.ToString() == Effect.Types.Heal.ToString())
-                    {
-                        character.state = States.Attacking;
-                        character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
-
-                    }
-                    else if (eff.type.ToString() == Effect.Types.Status.ToString())
-                    {
-                        character.state = States.Attacking;
-                        character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
-                    }
-                    else if (eff.type.ToString() == Effect.Types.Elevator.ToString())
-                    {
-                        character.state = States.Attacking;
-                        character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
-                    }
-                    else if (eff.type.ToString() == Effect.Types.Enabler.ToString())
-                    {
-                        character.state = States.Attacking;
-                        character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
-                    }
-                    else if (eff.type.ToString() == Effect.Types.Pass.ToString())
-                    {
-                        character.state = States.Idle;
-                        character.action_curr -= character.action_cost;
-                        print("Character " + character.character_name + " Passed, Recovering " + character.AP_RECOVERY + " AP.");
-                        character.action_cost = 0;
-                        if (character.action_curr > character.action_max)
-                        {
-                            character.action_curr = character.action_max;
-                        }
-                        character.controller.curr_scenario.CleanReachable();
-                        character.controller.curr_scenario.NextPlayer();
-                        return;
-                    }
-                }
-            }
-            //Select the action in the action menu
-            foreach (Transform but in character.controller.action_menu.GetComponent<Action_Menu_Script>().buttons)
-            {
-                if (but.name == name)
-                {
-                    but.GetComponent<Image>().color = Color.blue;
-                }
-                else
-                {
-                    but.GetComponent<Image>().color = Color.white;
-                }
-            }
-            character.controller.curr_scenario.CleanReachable();
-            character.controller.curr_scenario.MarkReachable();
-            character.curr_action = this;
+            return output;
         }
 
-        public void Enact(Character_Script character, GameObject target_tile)
+        public void Select(Character_Script character)
         {
-            character.action_curr -= character.action_cost;
-            character.action_cost = 0;
+            //Debug.Log("AP cost: " + (int)convertToDouble(cost, character));
+            //Check to see if player can afford action:
+            if (character.action_curr >= (int)convertToDouble(cost, character))
+            {
+                //Debug.Log("Enough action points");
+                character.action_cost = (int)convertToDouble(cost, character);
+                if (target_effect != null)
+                {
+                    foreach (Effect eff in target_effect)
+                    {
+                        if (eff.type.ToString() == Effect.Types.Move.ToString())
+                        {
+                            character.state = States.Moving;
 
+                            character.controller.curr_scenario.FindReachable((int)convertToDouble(cost, character), (int)convertToDouble(range, character));
+                        }
+                        else if (eff.type.ToString() == Effect.Types.Damage.ToString())
+                        {
+                            character.state = States.Attacking;
+                            character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
+                        }
+                        else if (eff.type.ToString() == Effect.Types.Heal.ToString())
+                        {
+                            character.state = States.Attacking;
+                            character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
+                        }
+                        else if (eff.type.ToString() == Effect.Types.Status.ToString())
+                        {
+                            character.state = States.Attacking;
+                            character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
+                        }
+                        else if (eff.type.ToString() == Effect.Types.Elevator.ToString())
+                        {
+                            character.state = States.Attacking;
+                            character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
+                        }
+                        else if (eff.type.ToString() == Effect.Types.Enabler.ToString())
+                        {
+                            character.state = States.Attacking;
+                            character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
+                        }
+                    }
+                }
+                if (self_effect != null)
+                {
+                    foreach (Effect eff in self_effect)
+                    {
+                        if (eff.type.ToString() == Effect.Types.Move.ToString())
+                        {
+                            character.state = States.Moving;
+                            character.controller.curr_scenario.FindReachable((int)convertToDouble(cost, character), (int)convertToDouble(range, character));
+                        }
+                        else if (eff.type.ToString() == Effect.Types.Damage.ToString())
+                        {
+                            character.state = States.Attacking;
+                            character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
+                        }
+                        else if (eff.type.ToString() == Effect.Types.Heal.ToString())
+                        {
+                            character.state = States.Attacking;
+                            character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
+
+                        }
+                        else if (eff.type.ToString() == Effect.Types.Status.ToString())
+                        {
+                            character.state = States.Attacking;
+                            character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
+                        }
+                        else if (eff.type.ToString() == Effect.Types.Elevator.ToString())
+                        {
+                            character.state = States.Attacking;
+                            character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
+                        }
+                        else if (eff.type.ToString() == Effect.Types.Enabler.ToString())
+                        {
+                            character.state = States.Attacking;
+                            character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
+                        }
+                        else if (eff.type.ToString() == Effect.Types.Pass.ToString())
+                        {
+                            character.state = States.Idle;
+                            character.action_curr -= character.action_cost;
+                            print("Character " + character.character_name + " Passed, Recovering " + character.AP_RECOVERY + " AP.");
+                            character.action_cost = 0;
+                            if (character.action_curr > character.action_max)
+                            {
+                                character.action_curr = character.action_max;
+                            }
+                            character.controller.curr_scenario.CleanReachable();
+                            character.controller.curr_scenario.NextPlayer();
+                            return;
+                        }
+                    }
+                }
+                //Select the action in the action menu
+                foreach (Transform but in character.controller.action_menu.GetComponent<Action_Menu_Script>().buttons)
+                {
+                    if (but.name == name)
+                    {
+                        but.GetComponent<Image>().color = Color.blue;
+                    }
+                    else if (but.GetComponent<Image>().color == Color.blue)
+                    {
+                        but.GetComponent<Image>().color = Color.white;
+                    }
+                }
+                character.controller.curr_scenario.CleanReachable();
+                character.controller.curr_scenario.MarkReachable();
+                character.curr_action = this;
+            }
+            else
+            {
+                Debug.Log("NOT Enough Action Points");
+                foreach (Transform but in character.controller.action_menu.GetComponent<Action_Menu_Script>().buttons)
+                {
+                    if (but.name == name)
+                    {
+                        but.GetComponent<Image>().color = Color.red;
+                    }
+                }
+            }
+        }
+
+        public bool CheckValid(Character_Script character, GameObject target_tile)
+        {
             if (target_effect != null)
             {
                 foreach (Effect eff in target_effect)
                 {
-                    if(eff.type.ToString() == Effect.Types.Move.ToString())
+                    if (eff.type.ToString() == Effect.Types.Move.ToString())
                     {
 
                         //target_character.MoveTo(target_tile.transform);
@@ -411,55 +489,34 @@ public class Character_Script : MonoBehaviour {
                     {
                         if (target_tile.GetComponent<Tile_Data>().node.obj == null)
                         {
-                            return;
-                        }
-                        Character_Script target_character = target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>();
-                        print("Character " + character.character_name + " Attacked: " + target_character.GetComponent<Character_Script>().character_name + "; Dealing " + Calculate_Damage(convertToDouble(eff.value[0], character), target_character) + " damage and Using " + cost + " AP");
-                        if (target_character.GetComponent<Character_Script>().aura_curr == 0)
-                        {
-                            target_character.GetComponent<Character_Script>().Die();
-                        }
-                        else
-                        {
-                            target_character.GetComponent<Character_Script>().aura_curr -= Calculate_Damage(convertToDouble(eff.value[0], character), target_character);
-                            if (target_character.GetComponent<Character_Script>().aura_curr < 0)
-                            {
-                                target_character.GetComponent<Character_Script>().aura_curr = 0;
-                                target_character.GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-                            }
+                            Debug.Log("Invalid tile selected");
+                            return false;
                         }
                     }
                     else if (eff.type.ToString() == Effect.Types.Heal.ToString())
                     {
-
-
+                        if (target_tile.GetComponent<Tile_Data>().node.obj == null)
+                        {
+                            Debug.Log("Invalid tile selected");
+                            return false;
+                        }
                     }
                     else if (eff.type.ToString() == Effect.Types.Status.ToString())
                     {
-
-
+                        if (target_tile.GetComponent<Tile_Data>().node.obj == null)
+                        {
+                            Debug.Log("Invalid tile selected");
+                            return false;
+                        }
                     }
                     else if (eff.type.ToString() == Effect.Types.Elevator.ToString())
                     {
-
-
                     }
                     else if (eff.type.ToString() == Effect.Types.Enabler.ToString())
                     {
-
                     }
                     else if (eff.type.ToString() == Effect.Types.Pass.ToString())
                     {
-                        target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().state = States.Idle;
-                        target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_curr -= target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_cost;
-                        print("Character " + target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().character_name + " Passed, Recovering " + target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().AP_RECOVERY + " AP.");
-                        target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_cost = 0;
-                        if (target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_curr > target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_max)
-                        {
-                            target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_curr = target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_max;
-                        }
-                        target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().controller.curr_scenario.CleanReachable();
-                        target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().controller.curr_scenario.NextPlayer();
                     }
                 }
             }
@@ -469,30 +526,14 @@ public class Character_Script : MonoBehaviour {
                 {
                     if (eff.type.ToString() == Effect.Types.Move.ToString())
                     {
-                        //value 0 for movement is movement type 1 is standard movement
-                        character.GetComponent<Character_Script>().MoveTo(target_tile.transform);
-                        character.curr_tile.GetComponent<Tile_Data>().node.traversible = true;
-                        character.curr_tile.GetComponent<Tile_Data>().node.obj = null;
-                        character.curr_tile = target_tile.transform;
-                        character.curr_tile.GetComponent<Tile_Data>().node.traversible = false;
-                        character.curr_tile.GetComponent<Tile_Data>().node.obj = character.gameObject;
-
+                        if (target_tile.GetComponent<Tile_Data>().node.obj != null)
+                        {
+                            Debug.Log("Invalid tile selected");
+                            return false;
+                        }
                     }
                     else if (eff.type.ToString() == Effect.Types.Damage.ToString())
                     {
-                        if (character.GetComponent<Character_Script>().aura_curr == 0)
-                        {
-                            character.GetComponent<Character_Script>().Die();
-                        }
-                        else
-                        {
-                            character.GetComponent<Character_Script>().aura_curr -= Calculate_Damage(convertToDouble(eff.value[0], character), character);
-                            if (character.GetComponent<Character_Script>().aura_curr < 0)
-                            {
-                                character.GetComponent<Character_Script>().aura_curr = 0;
-                                character.GetComponent<SpriteRenderer>().color = new Color(255, 0, 0);
-                            }
-                        }
                     }
                     else if (eff.type.ToString() == Effect.Types.Heal.ToString())
                     {
@@ -508,39 +549,199 @@ public class Character_Script : MonoBehaviour {
                     }
                     else if (eff.type.ToString() == Effect.Types.Pass.ToString())
                     {
-                        character.state = States.Idle;
-                        character.action_curr -= character.action_cost;
-                        print("Character " + character.character_name + " Waited, Recovering " + character.AP_RECOVERY + " AP.");
-                        character.action_cost = 0;
-                        if (character.action_curr > character.action_max)
-                        {
-                            character.action_curr = character.action_max;
-                        }
-                        character.controller.curr_scenario.CleanReachable();
-                        character.controller.curr_scenario.NextPlayer();
                     }
                 }
             }
-            character.state = States.Idle;
-            character.controller.curr_scenario.CleanReachable();
-            character.controller.curr_scenario.ResetReachable();
-            if (character.action_curr <= 0)
-            {
-                character.action_curr = 0;
-                character.action_curr += character.AP_RECOVERY;
+            //Debug.Log("Valid tile selected");
+            return true;
+        }
 
-                character.controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
-                character.controller.curr_scenario.NextPlayer();
-            }
-            else
+        public void Enact(Character_Script character, GameObject target_tile)
+        {
+            if (CheckValid(character, target_tile))
             {
-                character.FindAction("Move").Select(character);
-            }
-            if (character.action_curr > character.action_max)
-            {
-                character.action_curr = character.action_max;
-            }
+                if (target_effect != null)
+                {
+                    foreach (Effect eff in target_effect)
+                    {
+                        if (eff.type.ToString() == Effect.Types.Move.ToString())
+                        {
 
+                            //target_character.MoveTo(target_tile.transform);
+                        }
+                        else if (eff.type.ToString() == Effect.Types.Damage.ToString())
+                        {
+                            if (target_tile.GetComponent<Tile_Data>().node.obj == null)
+                            {
+                                return;
+                            }
+                            Character_Script target_character = target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>();
+                            Debug.Log("Character " + character.character_name + " Attacked: " + target_character.GetComponent<Character_Script>().character_name + "; Dealing " + Calculate_Damage(convertToDouble(eff.value[0], character), target_character) + " damage and Using " + cost + " AP");
+                            if (target_character.GetComponent<Character_Script>().aura_curr == 0)
+                            {
+                                target_character.GetComponent<Character_Script>().Die();
+                            }
+                            else
+                            {
+                                target_character.GetComponent<Character_Script>().aura_curr -= Calculate_Damage(convertToDouble(eff.value[0], character), target_character);
+                                if (target_character.GetComponent<Character_Script>().aura_curr < 0)
+                                {
+                                    target_character.GetComponent<Character_Script>().aura_curr = 0;
+                                    target_character.GetComponent<SpriteRenderer>().color = Color.red;
+                                }
+                            }
+                        }
+                        else if (eff.type.ToString() == Effect.Types.Heal.ToString())
+                        {
+                            Character_Script target_character = target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>();
+                            if (target_character.GetComponent<Character_Script>().aura_curr == 0)
+                            {
+                                target_character.GetComponent<SpriteRenderer>().color = Color.white;
+                            }
+                            target_character.GetComponent<Character_Script>().aura_curr += (int)convertToDouble(eff.value[0], character);
+                            if (target_character.GetComponent<Character_Script>().aura_curr > target_character.GetComponent<Character_Script>().aura_max)
+                            {
+                                target_character.GetComponent<Character_Script>().aura_curr = target_character.GetComponent<Character_Script>().aura_max;
+                            }
+                        }
+                        else if (eff.type.ToString() == Effect.Types.Status.ToString())
+                        {
+
+
+                        }
+                        else if (eff.type.ToString() == Effect.Types.Elevator.ToString())
+                        {
+
+
+                        }
+                        else if (eff.type.ToString() == Effect.Types.Enabler.ToString())
+                        {
+
+                        }
+                        else if (eff.type.ToString() == Effect.Types.Pass.ToString())
+                        {
+                            target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().state = States.Idle;
+                            target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_curr -= target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_cost;
+                            print("Character " + target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().character_name + " Passed, Recovering " + target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().AP_RECOVERY + " AP.");
+                            target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_cost = 0;
+                            if (target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_curr > target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_max)
+                            {
+                                target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_curr = target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_max;
+                            }
+                            target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().controller.curr_scenario.CleanReachable();
+                            target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().controller.curr_scenario.NextPlayer();
+                        }
+                    }
+                }
+                if (self_effect != null)
+                {
+                    foreach (Effect eff in self_effect)
+                    {
+                        if (eff.type.ToString() == Effect.Types.Move.ToString())
+                        {
+                            //value 0 for movement is movement type 1 is standard movement
+                            character.action_cost = target_tile.GetComponent<Tile_Data>().node.weight;
+                            //action_cost = (int)clicked_tile.GetComponent<Tile_Data>().node.weight;//Math.Abs(curr_tile.GetComponent<Tile_Data>().x_index - clicked_tile.GetComponent<Tile_Data>().x_index) * (int)(armor.weight + weapon.weight) +Math.Abs(curr_tile.GetComponent<Tile_Data>().y_index - clicked_tile.GetComponent<Tile_Data>().y_index) * (int)(armor.weight + weapon.weight) + (clicked_tile.GetComponent<Tile_Data>().node.height - curr_tile.GetComponent<Tile_Data>().node.height)*2;
+                            if (character.action_cost < 1)
+                            {
+                                character.action_cost = 1;
+                            }
+                            if (character.action_cost > character.action_curr)
+                            {
+                                character.action_cost = character.action_curr;
+                            }
+                            Debug.Log("Character " + character.name + " Moved from: " + character.curr_tile.GetComponent<Tile_Data>().x_index + "," + character.curr_tile.GetComponent<Tile_Data>().y_index + " to: " + target_tile.GetComponent<Tile_Data>().x_index + "," + target_tile.GetComponent<Tile_Data>().y_index + " Using " + target_tile.GetComponent<Tile_Data>().node.weight+ " AP");
+                            character.GetComponent<Character_Script>().MoveTo(target_tile.transform);
+                            character.curr_tile.GetComponent<Tile_Data>().node.traversible = true;
+                            character.curr_tile.GetComponent<Tile_Data>().node.obj = null;
+                            character.curr_tile = target_tile.transform;
+                            character.curr_tile.GetComponent<Tile_Data>().node.traversible = false;
+                            character.curr_tile.GetComponent<Tile_Data>().node.obj = character.gameObject;
+
+                        }
+                        else if (eff.type.ToString() == Effect.Types.Damage.ToString())
+                        {
+                            if (character.GetComponent<Character_Script>().aura_curr == 0)
+                            {
+                                character.GetComponent<Character_Script>().Die();
+                            }
+                            else
+                            {
+                                character.GetComponent<Character_Script>().aura_curr -= Calculate_Damage(convertToDouble(eff.value[0], character), character);
+                                if (character.GetComponent<Character_Script>().aura_curr < 0)
+                                {
+                                    character.GetComponent<Character_Script>().aura_curr = 0;
+                                    character.GetComponent<SpriteRenderer>().color = Color.red;
+                                }
+                            }
+                        }
+                        else if (eff.type.ToString() == Effect.Types.Heal.ToString())
+                        {
+                            if (character.GetComponent<Character_Script>().aura_curr == 0)
+                            {
+                                character.GetComponent<SpriteRenderer>().color = Color.white;
+                            }
+                            character.GetComponent<Character_Script>().aura_curr += (int)convertToDouble(eff.value[0], character);
+                            if (character.GetComponent<Character_Script>().aura_curr > character.GetComponent<Character_Script>().aura_max)
+                            {
+                                character.GetComponent<Character_Script>().aura_curr = character.GetComponent<Character_Script>().aura_max;
+                            }
+                        }
+                        else if (eff.type.ToString() == Effect.Types.Status.ToString())
+                        {
+                        }
+                        else if (eff.type.ToString() == Effect.Types.Elevator.ToString())
+                        {
+                        }
+                        else if (eff.type.ToString() == Effect.Types.Enabler.ToString())
+                        {
+                        }
+                        else if (eff.type.ToString() == Effect.Types.Pass.ToString())
+                        {
+                            character.state = States.Idle;
+                            character.action_curr -= character.action_cost;
+                            print("Character " + character.character_name + " Waited, Recovering " + character.AP_RECOVERY + " AP.");
+                            character.action_cost = 0;
+                            if (character.action_curr > character.action_max)
+                            {
+                                character.action_curr = character.action_max;
+                            }
+                            character.controller.curr_scenario.CleanReachable();
+                            character.controller.curr_scenario.NextPlayer();
+                        }
+                    }
+                }
+                character.action_curr -= character.action_cost;
+                character.action_cost = 0;
+                character.state = States.Idle;
+                character.controller.curr_scenario.CleanReachable();
+                character.controller.curr_scenario.ResetReachable();
+                if (character.action_curr <= 0)
+                {
+                    character.action_curr = 0;
+                    character.action_curr += character.AP_RECOVERY;
+
+                    character.controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
+                    character.controller.curr_scenario.NextPlayer();
+                }
+                else
+                {
+                    character.FindAction("Move").Select(character);
+                }
+                if (character.action_curr > character.action_max)
+                {
+                    character.action_curr = character.action_max;
+                }
+                foreach (Transform but in character.controller.action_menu.GetComponent<Action_Menu_Script>().buttons)
+                {
+                    Action act = character.FindAction(but.name);
+                    if (convertToDouble(act.cost, character) > character.action_curr)
+                    {
+                        but.GetComponent<Image>().color = Color.red;
+                    }
+                }
+
+            }
         }
 
     }
@@ -655,7 +856,6 @@ public class Character_Script : MonoBehaviour {
                     effects[1] = new Effect(Character_Stats.dexterity, 1);
                     actions = new String[1];
                     actions[0] = "Blink";
-                    //actions[0] = all_actions;
                     break;
                 case "Medium":
                     name = Armors.Medium.ToString();
@@ -865,7 +1065,7 @@ public class Character_Script : MonoBehaviour {
         canister_max = can;
         canister_curr = canister_max;
         state = States.Idle;
-        all_actions = Action.LoadActions();
+        all_actions = controller.all_actions;
         actions.Add(FindAction("Move"));
         actions.Add(FindAction("Attack"));
         actions.Add(FindAction("Wait"));
@@ -996,6 +1196,7 @@ public class Character_Script : MonoBehaviour {
 
     public static int Calculate_Damage(double damage, Character_Script target)
     {
+        //Debug.Log("Damage: " + damage + ", Armor: " + target.armor.armor);
         return (int)(damage - target.armor.armor);
     }
 
@@ -1070,12 +1271,13 @@ public class Character_Script : MonoBehaviour {
     public void Die()
     {
         state = States.Dead;
-        //reset the tile traversible state
+        //reset the tile traversible state and empty the tile
         curr_tile.GetComponent<Tile_Data>().node.traversible = true;
+        curr_tile.GetComponent<Tile_Data>().node.obj = null;
 
         //remove the character from the turn order and character list
         Debug.Log("Character num: " + character_num + " has died");
-        Debug.Log("Characters remaining: " + controller.curr_scenario.characters.Count);
+        //Debug.Log("Characters remaining: " + controller.curr_scenario.characters.Count);
         controller.curr_scenario.characters.Remove(transform.gameObject);
         controller.curr_scenario.turn_order.Remove(transform.gameObject);
         controller.curr_scenario.curr_character_num -= 1;
@@ -1126,19 +1328,9 @@ public class Character_Script : MonoBehaviour {
         //Tile_Data.Node prev_tile;
         Tile_Data.Node temp_tile = clicked_tile.GetComponent<Tile_Data>().node;
         Tile_Data.Node prev_tile = curr_tile.GetComponent<Tile_Data>().node;
-        action_cost = temp_tile.weight;
-        //action_cost = (int)clicked_tile.GetComponent<Tile_Data>().node.weight;//Math.Abs(curr_tile.GetComponent<Tile_Data>().x_index - clicked_tile.GetComponent<Tile_Data>().x_index) * (int)(armor.weight + weapon.weight) +Math.Abs(curr_tile.GetComponent<Tile_Data>().y_index - clicked_tile.GetComponent<Tile_Data>().y_index) * (int)(armor.weight + weapon.weight) + (clicked_tile.GetComponent<Tile_Data>().node.height - curr_tile.GetComponent<Tile_Data>().node.height)*2;
-        if (action_cost < 1)
-        {
-            action_cost = 1;
-        }
-        if (action_cost > action_curr)
-        {
-            action_cost = action_curr;
-        }
-        print("Character " + character_name + " Moved from: " + curr_tile.GetComponent<Tile_Data>().x_index + "," + curr_tile.GetComponent<Tile_Data>().y_index + " to: " + clicked_tile.GetComponent<Tile_Data>().x_index + "," + clicked_tile.GetComponent<Tile_Data>().y_index + " Using " + action_cost + " AP");
-        action_curr -= action_cost;
-        action_cost = 0;
+        
+        //action_curr -= action_cost;
+        //action_cost = 0;
 
         if (gameObject.CompareTag("Player"))
         {

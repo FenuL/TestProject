@@ -12,6 +12,7 @@ public class Game_Controller : MonoBehaviour {
     public static Game_Controller controller;
     public Scenario curr_scenario;
     public ArrayList avail_scenarios;
+    public List<Character_Script.Action> all_actions { get; set; }
     public IList<int> keys;
     public Transform action_menu;
 	public bool initialized = false;
@@ -72,7 +73,8 @@ public class Game_Controller : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		curr_scenario = new Scenario(STARTING_SCENARIO);
+        all_actions = Character_Script.Action.LoadActions();
+        curr_scenario = new Scenario(STARTING_SCENARIO);
         avail_scenarios = new ArrayList();
         avail_scenarios.Add(curr_scenario);
         curr_scenario.LoadScenario();
