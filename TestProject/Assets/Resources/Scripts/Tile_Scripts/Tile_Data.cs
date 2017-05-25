@@ -37,14 +37,14 @@ public class Tile_Data : MonoBehaviour{
 		x_index = x;
 		y_index = y;
 		tile_sprite_index = sprite;
-        int mod = 0;
+        double mod = 0;
         switch (tile_sprite_index)
         {
             case 13:
-                mod = 1;
+                mod = 0.5;
                 break;
             case 6:
-                mod = 2;
+                mod = 1;
                 break;
         }
         int[] index = { x_index, y_index };
@@ -62,18 +62,18 @@ public class Tile_Data : MonoBehaviour{
 
     public class Node
     {
-        public int weight;
+        public double weight;
         public int distance;
         public bool visited;
         public bool traversible;
         public GameObject obj;
         public Node parent;
         public int height;
-        public int modifier;
+        public double modifier;
         public int[] id;
         public Edge[] edges;
 
-        public Node(int newHeight, int newModifier, int[] newID)
+        public Node(int newHeight, double newModifier, int[] newID)
         {
             height = newHeight;
             modifier = newModifier;
@@ -151,7 +151,7 @@ public class Tile_Data : MonoBehaviour{
 
     public class Edge
     {
-        public int cost;
+        public double cost;
         public Node node1;
         public Node node2;
 
@@ -166,15 +166,15 @@ public class Tile_Data : MonoBehaviour{
             }
             else if (height_diff == -2)
             {
-                cost = 5;
+                cost = 3;
             }
             else if (height_diff == -3)
             {
-                cost = 15;
+                cost = 5;
             }
             else if (height_diff < -3)
             {
-                cost = 125;
+                cost = 25;
             }
             else
             {

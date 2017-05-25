@@ -55,140 +55,36 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
         int x = 0;
         buttons = new List<Transform>();
         Transform button;
-        double cost;
+        double ap_cost;
+        double mp_cost;
         foreach (Character_Script.Action a in controller.curr_scenario.curr_player.GetComponent<Character_Script>().actions)
         {
             button = container.GetComponent<RectTransform>().GetChild(x);
             buttons.Add(button);
             button.localScale = new Vector3(1, 1, 1);
             button.GetComponent<Image>().color = Color.white;
-            string text="";
             //TODO FIX THIS SHIT
-            cost = a.convertToDouble(a.cost, controller.curr_scenario.curr_player.GetComponent<Character_Script>());
-            if (cost > 0)
-            {
-                text = a.name + ": -" + cost;
-            }
-            else
-            {
-                text = a.name + ": +" + Math.Abs(cost);
-            }
-            if (cost > controller.curr_scenario.curr_player.GetComponent<Character_Script>().action_curr)
+            //set the button name and text correctly
+            button.name = a.name;
+            button.FindChild("Text").GetComponent<Text>().text = a.name;
+            button.GetComponent<Button>().onClick.RemoveAllListeners();
+
+            //check if the cost of the action is too high
+            ap_cost = a.Convert_To_Double(a.ap_cost, controller.curr_scenario.curr_player.GetComponent<Character_Script>());
+            mp_cost = a.Convert_To_Double(a.mp_cost, controller.curr_scenario.curr_player.GetComponent<Character_Script>());
+            if (ap_cost > controller.curr_scenario.curr_player.GetComponent<Character_Script>().action_curr ||
+                mp_cost > controller.curr_scenario.curr_player.GetComponent<Character_Script>().mana_curr)
             {
                 button.GetComponent<Image>().color = Color.red;
-            }
-            button.name = a.name;
-            button.FindChild("Text").GetComponent<Text>().text = text;
-            button.GetComponent<Button>().onClick.RemoveAllListeners();
-            int index = x;
-            button.GetComponent<Button>().onClick.AddListener(() => {controller.curr_scenario.curr_player.GetComponent<Character_Script>().actions[index].Select(controller.curr_scenario.curr_player.GetComponent<Character_Script>());});
-            /*if (text.Contains(Character_Script.Actions.Move.ToString()))
+            }else
             {
-                if ((int)a <= controller.curr_scenario.curr_player.GetComponent<Character_Script>().action_curr)
-                {
-                    button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_scenario.curr_player.GetComponent<Character_Script>().Action(Character_Script.Actions.Move); });
-                }
-                else
-                {
-                    button.GetComponent<Image>().color = Color.red;
-                }
-                
+                int index = x;
+                button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_scenario.curr_player.GetComponent<Character_Script>().actions[index].Select(controller.curr_scenario.curr_player.GetComponent<Character_Script>()); });
             }
-            else if (text.Contains(Character_Script.Actions.Wall.ToString()))
-            {
-                if ((int)a <= controller.curr_scenario.curr_player.GetComponent<Character_Script>().action_curr)
-                {
-                    button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_scenario.curr_player.GetComponent<Character_Script>().Action(Character_Script.Actions.Move); });
-                }
-                else
-                {
-                    button.GetComponent<Image>().color = Color.red;
-                }
-            }
-            else if (text.Contains(Character_Script.Actions.Gravity.ToString()))
-            {
-                if ((int)a <= controller.curr_scenario.curr_player.GetComponent<Character_Script>().action_curr)
-                {
-                    button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_scenario.curr_player.GetComponent<Character_Script>().Action(Character_Script.Actions.Move); });
-                }
-                else
-                {
-                    button.GetComponent<Image>().color = Color.red;
-                }
-
-            }
-            else if (text.Contains(Character_Script.Actions.Attack.ToString()))
-            {
-                if ((int)a <= controller.curr_scenario.curr_player.GetComponent<Character_Script>().action_curr)
-                {
-                    button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_scenario.curr_player.GetComponent<Character_Script>().Action(Character_Script.Actions.Attack); });// button.GetComponent<Button>().onClick = controller.curr_player.GetComponent<Character_Script>().Action("Attack");
-                }
-                else
-                {
-                    button.GetComponent<Image>().color = Color.red;
-                }
-                
-            }
-            else if (text.Contains(Character_Script.Actions.Wait.ToString()))
-            {
-                if ((int)a <= controller.curr_scenario.curr_player.GetComponent<Character_Script>().action_curr)
-                {
-                    button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_scenario.curr_player.GetComponent<Character_Script>().Action(Character_Script.Actions.Wait); }); //; button.GetComponent<Button>().onClick = controller.NextPlayer();
-                }
-                else
-                {
-                    button.GetComponent<Image>().color = Color.red;
-                }
-                
-            }
-            else if (text.Contains(Character_Script.Actions.Blink.ToString()))
-            {
-                if ((int)a <= controller.curr_scenario.curr_player.GetComponent<Character_Script>().action_curr)
-                {
-                    button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_scenario.curr_player.GetComponent<Character_Script>().Action(Character_Script.Actions.Blink); }); //; button.GetComponent<Button>().onClick = controller.NextPlayer();
-                }
-                else
-                {
-                    button.GetComponent<Image>().color = Color.red;
-                }
-                
-            }
-            else if (text.Contains(Character_Script.Actions.Channel.ToString()))
-            {
-                if ((int)a.cost <= controller.curr_scenario.curr_player.GetComponent<Character_Script>().action_curr)
-                {
-                    button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_scenario.curr_player.GetComponent<Character_Script>().Action(Character_Script.Actions.Channel); });// button.GetComponent<Button>().onClick = controller.NextPlayer();
-                }
-                else
-                {
-                    button.GetComponent<Image>().color = Color.red;
-                }
-                
-            }*/
             button_num = x + 1;
             x++;
         }
-        /*for (int x = 0; x < controller.curr_player.GetComponent<Character_Script>().actions.Length; x++)
-        {
-            Transform button = container.GetComponent<RectTransform>().GetChild(x);
-            string text = controller.curr_player.GetComponent<Character_Script>().actions[x];
-            button.name = text;
-            button.FindChild("Text").GetComponent<Text>().text= text;
-            button.GetComponent<Button>().onClick.RemoveAllListeners();
-            if (text == Character_Script.Actions.Move.ToString())
-            {
-                button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_player.GetComponent<Character_Script>().Action(Character_Script.Actions.Move); });
-            }
-            if (text == Character_Script.Actions.Attack.ToString())
-            {
-                button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_player.GetComponent<Character_Script>().Action(Character_Script.Actions.Attack); });// button.GetComponent<Button>().onClick = controller.curr_player.GetComponent<Character_Script>().Action("Attack");
-            }
-            if (text == Character_Script.Actions.Wait.ToString())
-            {
-                button.GetComponent<Button>().onClick.AddListener(() => { controller.NextPlayer(); }); //; button.GetComponent<Button>().onClick = controller.NextPlayer();
-            }
-            buttons = x+1;
-        }*/
+        
         //make other buttons invisible;
         if (button_num < container.GetComponent<RectTransform>().childCount)
         {

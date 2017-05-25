@@ -1,5 +1,6 @@
 ﻿name: Attack
-cost: 5
+ap_cost: APC
+mp_cost: 0
 range: WPR
 area: 0
 falloff: 0
@@ -12,8 +13,9 @@ enabled: true
 animation: NUL
 =================
 name: Blink
-cost: 10
-range: 10
+ap_cost: 0
+mp_cost: 5
+range: SPD
 area: 0
 falloff: 0
 self_effect: Move 4
@@ -25,7 +27,8 @@ enabled: true
 animation: NUL
 =================
 name: Channel
-cost: -10
+ap_cost: APC
+mp_cost: 10
 range: 0
 area: 0
 falloff: 0
@@ -38,7 +41,8 @@ enabled: true
 animation: NUL
 =================
 name: Move
-cost: MOC
+ap_cost: 1
+mp_cost: 0
 range: SPD
 area: 0
 falloff: 0
@@ -51,7 +55,8 @@ enabled: true
 animation: NUL
 =================
 name: Wait
-cost: -10
+ap_cost: APC
+mp_cost: -5
 range: 0
 area: 0
 falloff: 0

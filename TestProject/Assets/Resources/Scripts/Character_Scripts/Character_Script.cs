@@ -9,13 +9,18 @@ public class Character_Script : MonoBehaviour {
     public class Action
     {
         public static string PLAYER_ACTIONS_FILE = "Assets/Resources/Actions/Action_List.txt";
-        public static int HEADINGS = 12;
+        public static int HEADINGS = 13;
         public enum Activation_Types { Active, Passive, Reactive }
         public enum Origin_Types { Innate, Soul, Weapon }
-        public enum Accepted_Shortcuts { AUM, AUC, CAM, CAC, SPD, STR, CRD, SPT, DEX, VIT, LVL, WPR, WPD, ARM, WGT, MOC, DST, NUL }
+        public enum Accepted_Shortcuts { AUM, AUC, APM, APC, MPM, MPC, CAM, CAC, SPD, STR, CRD, SPT, DEX, VIT, LVL, WPR, WPD, ARM, WGT, MOC, DST, NUL }
+        
         /// <summary>
         /// AUM = Char Aura MAX
         /// AUC = Char Aura Current
+        /// APM = Action Point Max
+        /// APC = Action Point Curr
+        /// MPM = Mana Point Max
+        /// MPC = Mana Point Curr
         /// CAM = Char Canister Max
         /// CAC = Char Canister Current
         /// SPD = Char Speed
@@ -38,7 +43,9 @@ public class Character_Script : MonoBehaviour {
         //Action name
         public String name;
         //Cost in AP
-        public String cost;
+        public String ap_cost;
+        //Cost in MP
+        public String mp_cost;
         //Affects the number of tiles away the skill can target.
         public String range;
         //Area affected by the skill in number of tiles (1 range is single target)
@@ -70,8 +77,11 @@ public class Character_Script : MonoBehaviour {
                         case "name":
                             act.name = values.TrimStart().TrimEnd();
                             break;
-                        case "cost":
-                            act.cost = values.Trim();
+                        case "ap_cost":
+                            act.ap_cost = values.Trim();
+                            break;
+                        case "mp_cost":
+                            act.mp_cost = values.Trim();
                             break;
                         case "range":
                             act.range = values.Trim();
@@ -158,7 +168,7 @@ public class Character_Script : MonoBehaviour {
             return act;
         }
 
-        public static List<Action> LoadActions()
+        public static List<Action> Load_Actions()
         {
             string[] lines = System.IO.File.ReadAllLines(PLAYER_ACTIONS_FILE);
             string[] subset = new String[HEADINGS];
@@ -181,7 +191,7 @@ public class Character_Script : MonoBehaviour {
             return actions;
         }
 
-        public double convertToDouble(string input, Character_Script obj)
+        public double Convert_To_Double(string input, Character_Script obj)
         {
             double output = 0.0;
             if (double.TryParse(input, out output))
@@ -203,6 +213,22 @@ public class Character_Script : MonoBehaviour {
                         else if (val.ToString() == "AUC")
                         {
                             input = input.Replace(val.ToString(), "" + obj.aura_curr);
+                        }
+                        else if (val.ToString() == "APM")
+                        {
+                            input = input.Replace(val.ToString(), "" + obj.action_max);
+                        }
+                        else if (val.ToString() == "APC")
+                        {
+                            input = input.Replace(val.ToString(), "" + obj.action_curr);
+                        }
+                        else if (val.ToString() == "MPM")
+                        {
+                            input = input.Replace(val.ToString(), "" + obj.mana_max);
+                        }
+                        else if (val.ToString() == "MPC")
+                        {
+                            input = input.Replace(val.ToString(), "" + obj.mana_curr);
                         }
                         else if (val.ToString() == "CAM")
                         {
@@ -287,14 +313,14 @@ public class Character_Script : MonoBehaviour {
                     input.Contains("(") ||
                     input.Contains(")"))
                 {
-                    return parseEquation(input);
+                    return Parse_Equation(input);
                 }
                 return -1.0;
             }
 
         }
 
-        public double parseEquation(string input)
+        public double Parse_Equation(string input)
         {
             //Debug.Log("Parsing: " + input);
             //base case, can we convert to double?
@@ -312,38 +338,38 @@ public class Character_Script : MonoBehaviour {
                 {
                     string[] split = input.Split(new char[] { '(' }, 2);
                     string[] split2 = split[1].Split(new char[] { ')' }, 2);
-                    double result = parseEquation(split2[0]);
-                    return parseEquation("" + split[0] + result + split2[1]);
+                    double result = Parse_Equation(split2[0]);
+                    return Parse_Equation("" + split[0] + result + split2[1]);
                 }
                 //resolve addition
                 if (input.Contains("+"))
                 {
                     string[] split = input.Split(new char[] { '+' }, 2 );
-                    return parseEquation(""+(parseEquation(split[0]) + parseEquation(split[1])));
+                    return Parse_Equation(""+(Parse_Equation(split[0]) + Parse_Equation(split[1])));
                 }
                 //resolve subtraction
                 if (input.Contains("-"))
                 {
                     string[] split = input.Split(new char[] { '-' }, 2);
-                    return parseEquation("" + (parseEquation(split[0]) - parseEquation(split[1])));
+                    return Parse_Equation("" + (Parse_Equation(split[0]) - Parse_Equation(split[1])));
                 }
                 //resolve multiplication
                 if (input.Contains("*"))
                 {
                     string[] split = input.Split(new char[] { '*' }, 2);
-                    return parseEquation("" + (parseEquation(split[0]) * parseEquation(split[1])));
+                    return Parse_Equation("" + (Parse_Equation(split[0]) * Parse_Equation(split[1])));
                 }
                 //resolve division
                 if (input.Contains("/"))
                 {
                     string[] split = input.Split(new char[] { '/' }, 2);
-                    return parseEquation("" + (parseEquation(split[0]) / parseEquation(split[1])));
+                    return Parse_Equation("" + (Parse_Equation(split[0]) / Parse_Equation(split[1])));
                 }
                 //resolve exponents
                 if (input.Contains("^"))
                 {
                     string[] split = input.Split(new char[] { '^' }, 2);
-                    return parseEquation("" + (Mathf.Pow((float)parseEquation(split[0]), (float)parseEquation(split[1]))));
+                    return Parse_Equation("" + (Mathf.Pow((float)Parse_Equation(split[0]), (float)Parse_Equation(split[1]))));
                 }
             }
             return output;
@@ -351,97 +377,99 @@ public class Character_Script : MonoBehaviour {
 
         public void Select(Character_Script character)
         {
-            //Debug.Log("AP cost: " + (int)convertToDouble(cost, character));
+            
+            //Debug.Log("AP cost: " + (int)Convert_To_Double(cost, character));
             //Check to see if player can afford action:
-            if (character.action_curr >= (int)convertToDouble(cost, character))
+            if (character.action_curr >= (int)Convert_To_Double(ap_cost, character))
             {
                 //Debug.Log("Enough action points");
-                character.action_cost = (int)convertToDouble(cost, character);
-                if (target_effect != null)
+                if (character.mana_curr >= (int)Convert_To_Double(mp_cost, character))
                 {
-                    foreach (Effect eff in target_effect)
+                    //Debug.Log("Enough mana points");
+                    character.curr_action = this;
+                    if (target_effect != null)
                     {
-                        if (eff.type.ToString() == Effect.Types.Move.ToString())
+                        foreach (Effect eff in target_effect)
                         {
-                            character.state = States.Moving;
-
-                            character.controller.curr_scenario.FindReachable((int)convertToDouble(cost, character), (int)convertToDouble(range, character));
-                        }
-                        else if (eff.type.ToString() == Effect.Types.Damage.ToString())
-                        {
-                            character.state = States.Attacking;
-                            character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
-                        }
-                        else if (eff.type.ToString() == Effect.Types.Heal.ToString())
-                        {
-                            character.state = States.Attacking;
-                            character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
-                        }
-                        else if (eff.type.ToString() == Effect.Types.Status.ToString())
-                        {
-                            character.state = States.Attacking;
-                            character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
-                        }
-                        else if (eff.type.ToString() == Effect.Types.Elevator.ToString())
-                        {
-                            character.state = States.Attacking;
-                            character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
-                        }
-                        else if (eff.type.ToString() == Effect.Types.Enabler.ToString())
-                        {
-                            character.state = States.Attacking;
-                            character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
+                            if (eff.type.ToString() == Effect.Types.Move.ToString())
+                            {
+                                character.state = States.Moving;
+                                character.controller.curr_scenario.FindReachable( (int)character.speed, (int)Convert_To_Double(range, character));
+                            }
+                            else if (eff.type.ToString() == Effect.Types.Damage.ToString())
+                            {
+                                character.state = States.Attacking;
+                                character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
+                            }
+                            else if (eff.type.ToString() == Effect.Types.Heal.ToString())
+                            {
+                                character.state = States.Attacking;
+                                character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
+                            }
+                            else if (eff.type.ToString() == Effect.Types.Status.ToString())
+                            {
+                                character.state = States.Attacking;
+                                character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
+                            }
+                            else if (eff.type.ToString() == Effect.Types.Elevator.ToString())
+                            {
+                                character.state = States.Attacking;
+                                character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
+                            }
+                            else if (eff.type.ToString() == Effect.Types.Enabler.ToString())
+                            {
+                                character.state = States.Attacking;
+                                character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
+                            }
                         }
                     }
-                }
-                if (self_effect != null)
-                {
-                    foreach (Effect eff in self_effect)
+                    if (self_effect != null)
                     {
-                        if (eff.type.ToString() == Effect.Types.Move.ToString())
+                        foreach (Effect eff in self_effect)
                         {
-                            character.state = States.Moving;
-                            character.controller.curr_scenario.FindReachable((int)convertToDouble(cost, character), (int)convertToDouble(range, character));
-                        }
-                        else if (eff.type.ToString() == Effect.Types.Damage.ToString())
-                        {
-                            character.state = States.Attacking;
-                            character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
-                        }
-                        else if (eff.type.ToString() == Effect.Types.Heal.ToString())
-                        {
-                            character.state = States.Attacking;
-                            character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
-
-                        }
-                        else if (eff.type.ToString() == Effect.Types.Status.ToString())
-                        {
-                            character.state = States.Attacking;
-                            character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
-                        }
-                        else if (eff.type.ToString() == Effect.Types.Elevator.ToString())
-                        {
-                            character.state = States.Attacking;
-                            character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
-                        }
-                        else if (eff.type.ToString() == Effect.Types.Enabler.ToString())
-                        {
-                            character.state = States.Attacking;
-                            character.controller.curr_scenario.FindReachable(character.action_curr, (int)convertToDouble(range, character));
-                        }
-                        else if (eff.type.ToString() == Effect.Types.Pass.ToString())
-                        {
-                            character.state = States.Idle;
-                            character.action_curr -= character.action_cost;
-                            print("Character " + character.character_name + " Passed, Recovering " + character.AP_RECOVERY + " AP.");
-                            character.action_cost = 0;
-                            if (character.action_curr > character.action_max)
+                            if (eff.type.ToString() == Effect.Types.Move.ToString())
                             {
-                                character.action_curr = character.action_max;
+                                if (Convert_To_Double(eff.value[0], character) != 4)
+                                {
+                                    character.state = States.Moving;
+                                    //Debug.Log("Speed: " + character.speed);
+                                    character.controller.curr_scenario.FindReachable((int)character.speed, (int)Convert_To_Double(range, character));
+                                }else
+                                {
+                                    character.state = States.Blinking;
+                                    character.controller.curr_scenario.FindReachable((int)character.speed*2, (int)Convert_To_Double(range, character));
+                                }
                             }
-                            character.controller.curr_scenario.CleanReachable();
-                            character.controller.curr_scenario.NextPlayer();
-                            return;
+                            else if (eff.type.ToString() == Effect.Types.Damage.ToString())
+                            {
+                                character.state = States.Attacking;
+                                character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
+                            }
+                            else if (eff.type.ToString() == Effect.Types.Heal.ToString())
+                            {
+                                character.state = States.Attacking;
+                                character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
+
+                            }
+                            else if (eff.type.ToString() == Effect.Types.Status.ToString())
+                            {
+                                character.state = States.Attacking;
+                                character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
+                            }
+                            else if (eff.type.ToString() == Effect.Types.Elevator.ToString())
+                            {
+                                character.state = States.Attacking;
+                                character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
+                            }
+                            else if (eff.type.ToString() == Effect.Types.Enabler.ToString())
+                            {
+                                character.state = States.Attacking;
+                                character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
+                            }
+                            else if (eff.type.ToString() == Effect.Types.Pass.ToString())
+                            {
+                                character.End_Turn();
+                            }
                         }
                     }
                 }
@@ -474,7 +502,7 @@ public class Character_Script : MonoBehaviour {
             }
         }
 
-        public bool CheckValid(Character_Script character, GameObject target_tile)
+        public bool Check_Valid(Character_Script character, GameObject target_tile)
         {
             if (target_effect != null)
             {
@@ -558,7 +586,7 @@ public class Character_Script : MonoBehaviour {
 
         public void Enact(Character_Script character, GameObject target_tile)
         {
-            if (CheckValid(character, target_tile))
+            if (Check_Valid(character, target_tile))
             {
                 if (target_effect != null)
                 {
@@ -576,14 +604,14 @@ public class Character_Script : MonoBehaviour {
                                 return;
                             }
                             Character_Script target_character = target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>();
-                            Debug.Log("Character " + character.character_name + " Attacked: " + target_character.GetComponent<Character_Script>().character_name + "; Dealing " + Calculate_Damage(convertToDouble(eff.value[0], character), target_character) + " damage and Using " + cost + " AP");
+                            Debug.Log("Character " + character.character_name + " Attacked: " + target_character.GetComponent<Character_Script>().character_name + "; Dealing " + Calculate_Damage(Convert_To_Double(eff.value[0], character), target_character) + " damage and Using " + ap_cost + " AP");
                             if (target_character.GetComponent<Character_Script>().aura_curr == 0)
                             {
                                 target_character.GetComponent<Character_Script>().Die();
                             }
                             else
                             {
-                                target_character.GetComponent<Character_Script>().aura_curr -= Calculate_Damage(convertToDouble(eff.value[0], character), target_character);
+                                target_character.GetComponent<Character_Script>().aura_curr -= Calculate_Damage(Convert_To_Double(eff.value[0], character), target_character);
                                 if (target_character.GetComponent<Character_Script>().aura_curr < 0)
                                 {
                                     target_character.GetComponent<Character_Script>().aura_curr = 0;
@@ -598,7 +626,7 @@ public class Character_Script : MonoBehaviour {
                             {
                                 target_character.GetComponent<SpriteRenderer>().color = Color.white;
                             }
-                            target_character.GetComponent<Character_Script>().aura_curr += (int)convertToDouble(eff.value[0], character);
+                            target_character.GetComponent<Character_Script>().aura_curr += (int)Convert_To_Double(eff.value[0], character);
                             if (target_character.GetComponent<Character_Script>().aura_curr > target_character.GetComponent<Character_Script>().aura_max)
                             {
                                 target_character.GetComponent<Character_Script>().aura_curr = target_character.GetComponent<Character_Script>().aura_max;
@@ -620,16 +648,7 @@ public class Character_Script : MonoBehaviour {
                         }
                         else if (eff.type.ToString() == Effect.Types.Pass.ToString())
                         {
-                            target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().state = States.Idle;
-                            target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_curr -= target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_cost;
-                            print("Character " + target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().character_name + " Passed, Recovering " + target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().AP_RECOVERY + " AP.");
-                            target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_cost = 0;
-                            if (target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_curr > target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_max)
-                            {
-                                target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_curr = target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().action_max;
-                            }
-                            target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().controller.curr_scenario.CleanReachable();
-                            target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().controller.curr_scenario.NextPlayer();
+                            target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().End_Turn();
                         }
                     }
                 }
@@ -640,17 +659,7 @@ public class Character_Script : MonoBehaviour {
                         if (eff.type.ToString() == Effect.Types.Move.ToString())
                         {
                             //value 0 for movement is movement type 1 is standard movement
-                            character.action_cost = target_tile.GetComponent<Tile_Data>().node.weight;
-                            //action_cost = (int)clicked_tile.GetComponent<Tile_Data>().node.weight;//Math.Abs(curr_tile.GetComponent<Tile_Data>().x_index - clicked_tile.GetComponent<Tile_Data>().x_index) * (int)(armor.weight + weapon.weight) +Math.Abs(curr_tile.GetComponent<Tile_Data>().y_index - clicked_tile.GetComponent<Tile_Data>().y_index) * (int)(armor.weight + weapon.weight) + (clicked_tile.GetComponent<Tile_Data>().node.height - curr_tile.GetComponent<Tile_Data>().node.height)*2;
-                            if (character.action_cost < 1)
-                            {
-                                character.action_cost = 1;
-                            }
-                            if (character.action_cost > character.action_curr)
-                            {
-                                character.action_cost = character.action_curr;
-                            }
-                            Debug.Log("Character " + character.name + " Moved from: " + character.curr_tile.GetComponent<Tile_Data>().x_index + "," + character.curr_tile.GetComponent<Tile_Data>().y_index + " to: " + target_tile.GetComponent<Tile_Data>().x_index + "," + target_tile.GetComponent<Tile_Data>().y_index + " Using " + target_tile.GetComponent<Tile_Data>().node.weight+ " AP");
+                            Debug.Log("Character " + character.name + " Moved from: " + character.curr_tile.GetComponent<Tile_Data>().x_index + "," + character.curr_tile.GetComponent<Tile_Data>().y_index + " to: " + target_tile.GetComponent<Tile_Data>().x_index + "," + target_tile.GetComponent<Tile_Data>().y_index + " Using " + target_tile.GetComponent<Tile_Data>().node.weight + " Speed.");
                             character.GetComponent<Character_Script>().MoveTo(target_tile.transform);
                             character.curr_tile.GetComponent<Tile_Data>().node.traversible = true;
                             character.curr_tile.GetComponent<Tile_Data>().node.obj = null;
@@ -667,7 +676,7 @@ public class Character_Script : MonoBehaviour {
                             }
                             else
                             {
-                                character.GetComponent<Character_Script>().aura_curr -= Calculate_Damage(convertToDouble(eff.value[0], character), character);
+                                character.GetComponent<Character_Script>().aura_curr -= Calculate_Damage(Convert_To_Double(eff.value[0], character), character);
                                 if (character.GetComponent<Character_Script>().aura_curr < 0)
                                 {
                                     character.GetComponent<Character_Script>().aura_curr = 0;
@@ -681,7 +690,7 @@ public class Character_Script : MonoBehaviour {
                             {
                                 character.GetComponent<SpriteRenderer>().color = Color.white;
                             }
-                            character.GetComponent<Character_Script>().aura_curr += (int)convertToDouble(eff.value[0], character);
+                            character.GetComponent<Character_Script>().aura_curr += (int)Convert_To_Double(eff.value[0], character);
                             if (character.GetComponent<Character_Script>().aura_curr > character.GetComponent<Character_Script>().aura_max)
                             {
                                 character.GetComponent<Character_Script>().aura_curr = character.GetComponent<Character_Script>().aura_max;
@@ -698,35 +707,22 @@ public class Character_Script : MonoBehaviour {
                         }
                         else if (eff.type.ToString() == Effect.Types.Pass.ToString())
                         {
-                            character.state = States.Idle;
-                            character.action_curr -= character.action_cost;
-                            print("Character " + character.character_name + " Waited, Recovering " + character.AP_RECOVERY + " AP.");
-                            character.action_cost = 0;
-                            if (character.action_curr > character.action_max)
-                            {
-                                character.action_curr = character.action_max;
-                            }
-                            character.controller.curr_scenario.CleanReachable();
-                            character.controller.curr_scenario.NextPlayer();
+                            character.End_Turn();
                         }
                     }
                 }
-                character.action_curr -= character.action_cost;
-                character.action_cost = 0;
+                character.action_curr -= (int)character.curr_action.Convert_To_Double(ap_cost, character);
+                character.mana_curr -= (int)character.curr_action.Convert_To_Double(mp_cost, character);
                 character.state = States.Idle;
                 character.controller.curr_scenario.CleanReachable();
                 character.controller.curr_scenario.ResetReachable();
                 if (character.action_curr <= 0)
                 {
-                    character.action_curr = 0;
-                    character.action_curr += character.AP_RECOVERY;
-
-                    character.controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
-                    character.controller.curr_scenario.NextPlayer();
+                    character.End_Turn();
                 }
                 else
                 {
-                    character.FindAction("Move").Select(character);
+                    character.Find_Action("Move").Select(character);
                 }
                 if (character.action_curr > character.action_max)
                 {
@@ -734,8 +730,12 @@ public class Character_Script : MonoBehaviour {
                 }
                 foreach (Transform but in character.controller.action_menu.GetComponent<Action_Menu_Script>().buttons)
                 {
-                    Action act = character.FindAction(but.name);
-                    if (convertToDouble(act.cost, character) > character.action_curr)
+                    Action act = character.Find_Action(but.name);
+                    if (Convert_To_Double(act.ap_cost, character) > character.action_curr)
+                    {
+                        but.GetComponent<Image>().color = Color.red;
+                    }
+                    if (Convert_To_Double(act.mp_cost, character) > character.mana_curr)
                     {
                         but.GetComponent<Image>().color = Color.red;
                     }
@@ -755,7 +755,7 @@ public class Character_Script : MonoBehaviour {
 
         public Effect(String input)
         {
-            String type_string= input.Split(' ')[0];
+            String type_string= input.TrimStart().Split(' ')[0];
             value = new String[input.Split(' ').Length];
             Array types = Enum.GetValues(typeof(Types));
 
@@ -777,10 +777,11 @@ public class Character_Script : MonoBehaviour {
 
     //Constants
     public int AURA_MULTIPLIER = 10;
-    public int AP_MULTIPLIER = 5;
-    public int AP_MAX = 20;
-    public int AP_RECOVERY = 10;
-    public int SPEED = 8;
+    public int MP_MULTIPLIER = 5;
+    public int MP_RECOVERY = 5;
+    public int AP_MAX = 2;
+    //public int AP_RECOVERY = 10;
+    public int SPEED = 6;
     public int character_id;
     public enum States { Moving, Attacking, Idle, Dead, Blinking, Walking }
     public enum Weapons { Sword, Rifle, Spear, Sniper, Pistol, Claws, Orb, Hammer }
@@ -794,7 +795,10 @@ public class Character_Script : MonoBehaviour {
     public int aura_curr { get; set; }
     public int action_max { get; set; }
     public int action_curr { get; set; }
-    public int action_cost { get; set; }
+    public int mana_max { get; set; }
+    public int mana_curr { get; set; }
+    public int reaction_max { get; set; }
+    public int reaction_curr { get; set; }
     public int canister_max { get; set; }
     public int canister_curr { get; set; }
     public int strength { get; set; }
@@ -1041,7 +1045,6 @@ public class Character_Script : MonoBehaviour {
 	// Use this for initialization
 	void Start ()
     {
-
         //gameObject.SetActive(true);
     }
 
@@ -1060,15 +1063,19 @@ public class Character_Script : MonoBehaviour {
         aura_curr = aura_max;
         action_max = AP_MAX;
         action_curr = action_max;
-        action_cost = 0;
+        mana_max = spirit * MP_MULTIPLIER;
+        mana_curr = MP_RECOVERY;
+        reaction_max = AP_MAX;
+        reaction_curr = reaction_max;
+        curr_action = null;
         actions = new List<Action>();
         canister_max = can;
         canister_curr = canister_max;
         state = States.Idle;
         all_actions = controller.all_actions;
-        actions.Add(FindAction("Move"));
-        actions.Add(FindAction("Attack"));
-        actions.Add(FindAction("Wait"));
+        actions.Add(Find_Action("Move"));
+        actions.Add(Find_Action("Attack"));
+        actions.Add(Find_Action("Wait"));
         foreach (Weapons weps in Enum.GetValues(typeof(Weapons)))
         {
             if (wep.TrimStart() == weps.ToString())
@@ -1101,7 +1108,24 @@ public class Character_Script : MonoBehaviour {
         //}
     }
 
-    public Action FindAction(String name)
+    public void End_Turn()
+    {
+        state = States.Idle;
+        Debug.Log("Character " + character_name + " Passed");
+        curr_action = null;
+        reaction_curr = reaction_max;
+        action_curr = action_max;
+        mana_curr += MP_RECOVERY;
+        if (mana_curr > mana_max)
+        {
+            mana_curr = mana_max;
+        }
+        controller.curr_scenario.CleanReachable();
+        controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
+        controller.curr_scenario.NextPlayer();
+    }
+
+    public Action Find_Action(String name)
     {
         if (all_actions != null)
         {
@@ -1144,10 +1168,6 @@ public class Character_Script : MonoBehaviour {
             {
                 switch (eff.stat)
                 {
-                    case Character_Stats.action_max:
-                        action_max += eff.effect * AP_MULTIPLIER;
-                        action_curr += eff.effect * AP_MULTIPLIER;
-                        break;
                     case Character_Stats.aura_max:
                         aura_max += eff.effect * AURA_MULTIPLIER;
                         aura_max += eff.effect * AURA_MULTIPLIER;
@@ -1166,8 +1186,8 @@ public class Character_Script : MonoBehaviour {
                         break;
                     case Character_Stats.spirit:
                         spirit += eff.effect;
-                        action_max += eff.effect * AP_MULTIPLIER;
-                        action_curr += eff.effect * AP_MULTIPLIER;
+                        mana_max += eff.effect * MP_MULTIPLIER;
+                        //action_curr += eff.effect * MP_MULTIPLIER;
                         break;
                     case Character_Stats.strength:
                         strength += eff.effect;
@@ -1189,7 +1209,7 @@ public class Character_Script : MonoBehaviour {
         {
             foreach(String str in e.actions)
             {
-                actions.Add(FindAction(str));
+                actions.Add(Find_Action(str));
             }
         }
     }
@@ -1197,7 +1217,12 @@ public class Character_Script : MonoBehaviour {
     public static int Calculate_Damage(double damage, Character_Script target)
     {
         //Debug.Log("Damage: " + damage + ", Armor: " + target.armor.armor);
-        return (int)(damage - target.armor.armor);
+        int dmg = (int)(damage - target.armor.armor);
+        if (dmg < 0)
+        {
+            dmg = 0;
+        }
+        return dmg;
     }
 
     public void Randomize(){
@@ -1292,7 +1317,7 @@ public class Character_Script : MonoBehaviour {
 
     }
 
-    public IEnumerator MoveOverTime(Tile_Data.Node prev_tile, Tile_Data.Node temp_tile)
+    public IEnumerator Move_Over_Time(Tile_Data.Node prev_tile, Tile_Data.Node temp_tile)
     {
         float elapsedTime = 0;
         float duration = 2;
@@ -1456,83 +1481,12 @@ public class Character_Script : MonoBehaviour {
         controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();*/
 
     }
-
-    public void Attack(GameObject character)
-    {
-        
-    }
-
-    public void Blink (Transform clicked_tile)
-    {
-        action_cost = Math.Abs(curr_tile.GetComponent<Tile_Data>().x_index - clicked_tile.GetComponent<Tile_Data>().x_index) + Math.Abs(curr_tile.GetComponent<Tile_Data>().y_index - clicked_tile.GetComponent<Tile_Data>().y_index);
-        if (action_cost < 1)
-        {
-            action_cost = 1;
-        }
-        if (action_cost > action_curr)
-        {
-            action_cost = action_curr;
-        }
-        print("Character " + character_name + " Blinked from: " + curr_tile.GetComponent<Tile_Data>().x_index + "," + curr_tile.GetComponent<Tile_Data>().y_index + " to: " + clicked_tile.GetComponent<Tile_Data>().x_index + "," + clicked_tile.GetComponent<Tile_Data>().y_index + " Using " + action_cost + " AP");
-        action_curr -= action_cost;
-        action_cost = 0;
-        curr_tile.GetComponent<Tile_Data>().node.traversible = true;
-        curr_tile = clicked_tile;
-        curr_tile.GetComponent<Tile_Data>().node.traversible = false;
-        if (gameObject.CompareTag("Player"))
-        {
-            transform.position = new Vector3(curr_tile.position.x, (float)(curr_tile.position.y + (curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z);
-        }
-        else
-        {
-            transform.position = new Vector3(curr_tile.position.x, (float)(curr_tile.position.y + (curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z);
-        }
-        //renderer = (SpriteRenderer)curr_tile.GetComponent<SpriteRenderer> ();
-        gameObject.GetComponent<SpriteRenderer>().sortingOrder = clicked_tile.GetComponent<SpriteRenderer>().sortingOrder + 1;
-        state = States.Idle;
-        controller.curr_scenario.ResetReachable();
-        controller.curr_scenario.FindReachable(action_curr, SPEED);
-        controller.curr_scenario.MarkReachable();
-        if (action_curr <= 0)
-        {
-            action_curr = 0;
-            action_curr += AP_RECOVERY;
-            controller.curr_scenario.NextPlayer();
-        }
-        if (action_curr > action_max)
-        {
-            action_curr = action_max;
-        }
-        controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
-    }
-
-    public void Channel()
-    {
-        print("Character " + character_name + " Channeled from: " + aura_curr + ", Using " + action_cost + " AP");
-        action_curr -= action_cost;
-        action_cost = 0;
-        aura_curr += 10;
-        state = States.Idle;
-        if (aura_curr > aura_max)
-        {
-            aura_curr = aura_max;
-        }
-        if (action_curr <= 0)
-        {
-            action_curr = 0;
-            action_curr += AP_RECOVERY;
-            controller.curr_scenario.NextPlayer();
-        }
-        if (action_curr > action_max)
-        {
-            action_curr = action_max;
-        }
-        controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
-    }
-
-    public Character_Script(){
-	}
 	
+    public Character_Script()
+    {
+
+    }
+
 	// Update is called once per frame
 	void Update () {
 
@@ -1542,12 +1496,6 @@ public class Character_Script : MonoBehaviour {
         if (aura_curr > aura_max)
         {
             aura_curr = aura_max;
-        }
-        if (action_curr <= 0)
-        {
-            action_curr = 0;
-            action_curr += AP_RECOVERY;
-            controller.curr_scenario.NextPlayer();
         }
         if (action_curr > action_max)
         {

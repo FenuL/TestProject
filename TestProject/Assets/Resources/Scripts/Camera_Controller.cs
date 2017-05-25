@@ -9,6 +9,8 @@ public class Camera_Controller : MonoBehaviour {
 	float VER_SPD = .4f;
     int CAMERA_HEIGHT = 20;
     float rotationAmount = 0;
+    Character_Script curr_player;
+    Character_Script highlighted_player;
 
     Game_Controller controller;// = Game_Controller.controller;
 
@@ -29,23 +31,27 @@ public class Camera_Controller : MonoBehaviour {
         //print (controller.curr_scenario.curr_player.GetComponent<Character_Script> ().character_name);
         if (controller.curr_scenario.curr_player != null)
         {
-            GUI.TextArea(new Rect(10, Screen.height - 120, 200, 110), controller.curr_scenario.curr_player.GetComponent<Character_Script>().character_name + "\n" +
-                  "AU: " + controller.curr_scenario.curr_player.GetComponent<Character_Script>().aura_curr + " / " + controller.curr_scenario.curr_player.GetComponent<Character_Script>().aura_max + "\n" +
-                  "AP: " + (controller.curr_scenario.curr_player.GetComponent<Character_Script>().action_curr - controller.curr_scenario.curr_player.GetComponent<Character_Script>().action_cost) + " / " + controller.curr_scenario.curr_player.GetComponent<Character_Script>().action_max + "\n" +
-                  "Can: " + controller.curr_scenario.curr_player.GetComponent<Character_Script>().canister_curr + " / " + controller.curr_scenario.curr_player.GetComponent<Character_Script>().canister_max + "\n" +
-                  "Str: " + controller.curr_scenario.curr_player.GetComponent<Character_Script>().strength + "   Crd: " + controller.curr_scenario.curr_player.GetComponent<Character_Script>().coordination + "    Spt: " + controller.curr_scenario.curr_player.GetComponent<Character_Script>().spirit + "\n" +
-                  "Dex: " + controller.curr_scenario.curr_player.GetComponent<Character_Script>().dexterity + "   Vit: " + controller.curr_scenario.curr_player.GetComponent<Character_Script>().vitality + "\n" +
-                  "Wep: " + controller.curr_scenario.curr_player.GetComponent<Character_Script>().weapon.name + "   Armor: " + controller.curr_scenario.curr_player.GetComponent<Character_Script>().armor.name);
+            curr_player = controller.curr_scenario.curr_player.GetComponent<Character_Script>();
+            GUI.TextArea(new Rect(10, Screen.height - 120, 200, 110), curr_player.character_name + "\n" +
+                  "AU: " + curr_player.aura_curr + " / " + curr_player.aura_max + "\n" +
+                  "AP: " + (curr_player.action_curr - curr_player.curr_action.Convert_To_Double(curr_player.curr_action.ap_cost, curr_player)) + " / " + curr_player.action_max + "\n" +
+                  "MP: " + (curr_player.mana_curr - curr_player.curr_action.Convert_To_Double(curr_player.curr_action.mp_cost, curr_player)) + " / " + curr_player.mana_max + "\n" + 
+                  "Can: " + curr_player.canister_curr + " / " + curr_player.canister_max + "\n" +
+                  "Str: " + curr_player.strength + "   Crd: " + curr_player.coordination + "    Spt: " + curr_player.spirit + "\n" +
+                  "Dex: " + curr_player.dexterity + "   Vit: " + curr_player.vitality + "   Spd: " + curr_player.speed + "\n" +
+                  "Wep: " + curr_player.weapon.name + "   Armor: " + curr_player.armor.name);
 
             if (controller.curr_scenario.highlighted_player != null)
             {
-                GUI.TextArea(new Rect(220, Screen.height - 120, 200, 110), controller.curr_scenario.highlighted_player.GetComponent<Character_Script>().character_name + "\n" +
-                              "AU: " + controller.curr_scenario.highlighted_player.GetComponent<Character_Script>().aura_curr + " / " + controller.curr_scenario.highlighted_player.GetComponent<Character_Script>().aura_max + "\n" +
-                              "AP: " + controller.curr_scenario.highlighted_player.GetComponent<Character_Script>().action_curr + " / " + controller.curr_scenario.highlighted_player.GetComponent<Character_Script>().action_max + "\n" +
-                              "Can: " + controller.curr_scenario.highlighted_player.GetComponent<Character_Script>().canister_curr + " / " + controller.curr_scenario.highlighted_player.GetComponent<Character_Script>().canister_max + "\n" +
-                              "Str: " + controller.curr_scenario.highlighted_player.GetComponent<Character_Script>().strength + "   Crd: " + controller.curr_scenario.highlighted_player.GetComponent<Character_Script>().coordination + "    Spt: " + controller.curr_scenario.curr_player.GetComponent<Character_Script>().spirit + "\n" +
-                              "Dex: " + controller.curr_scenario.highlighted_player.GetComponent<Character_Script>().dexterity + "   Vit: " + controller.curr_scenario.highlighted_player.GetComponent<Character_Script>().vitality + "\n" +
-                              "Wep: " + controller.curr_scenario.highlighted_player.GetComponent<Character_Script>().weapon.name + "   Armor: " + controller.curr_scenario.highlighted_player.GetComponent<Character_Script>().armor.name);
+                highlighted_player = controller.curr_scenario.highlighted_player.GetComponent<Character_Script>();
+                GUI.TextArea(new Rect(220, Screen.height - 120, 200, 110), highlighted_player.character_name + "\n" +
+                              "AU: " + highlighted_player.aura_curr + " / " + highlighted_player.aura_max + "\n" +
+                              "AP: " + highlighted_player.action_curr + " / " + highlighted_player.action_max + "\n" +
+                              "MP: " + highlighted_player.mana_curr + " / " + highlighted_player.mana_max + "\n" +
+                              "Can: " + highlighted_player.canister_curr + " / " + highlighted_player.canister_max + "\n" +
+                              "Str: " + highlighted_player.strength + "   Crd: " + highlighted_player.coordination + "    Spt: " + highlighted_player.spirit + "\n" +
+                              "Dex: " + highlighted_player.dexterity + "   Vit: " + highlighted_player.vitality + "   Spd: " + highlighted_player.speed + "\n" +
+                              "Wep: " + highlighted_player.weapon.name + "   Armor: " + highlighted_player.armor.name);
             }
         }
 

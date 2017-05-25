@@ -6,7 +6,7 @@ coordination: 5
 spirit: 4
 dexterity: 5
 vitality: 2
-speed: 5
+speed: 6
 canister_max: 2
 weapon: Sniper
 armor: Medium
@@ -19,7 +19,7 @@ coordination: 4
 spirit: 5
 dexterity: 4
 vitality: 4
-speed: 5
+speed: 6
 canister_max: 2
 weapon: Pistol
 armor: Medium
@@ -32,7 +32,7 @@ coordination: 2
 spirit: 5
 dexterity: 3
 vitality: 5
-speed: 5
+speed: 6
 canister_max: 2
 weapon: Sword
 armor: Light
@@ -45,7 +45,7 @@ coordination: 5
 spirit: 10
 dexterity: 1
 vitality: 1
-speed: 5
+speed: 6
 canister_max: 3
 weapon: Rifle
 armor: Light
@@ -58,7 +58,7 @@ coordination: 1
 spirit: 3
 dexterity: 2
 vitality: 5
-speed: 5
+speed: 6
 canister_max: 2
 weapon: Spear
 armor: Heavy
@@ -71,7 +71,7 @@ coordination: 1
 spirit: 1
 dexterity: 1
 vitality: 1
-speed: 1
+speed: 6
 canister_max: 1
 weapon: Sniper
 armor: Heavy

@@ -73,7 +73,7 @@ public class Game_Controller : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        all_actions = Character_Script.Action.LoadActions();
+        all_actions = Character_Script.Action.Load_Actions();
         curr_scenario = new Scenario(STARTING_SCENARIO);
         avail_scenarios = new ArrayList();
         avail_scenarios.Add(curr_scenario);

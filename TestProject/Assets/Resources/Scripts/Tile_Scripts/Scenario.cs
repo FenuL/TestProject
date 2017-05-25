@@ -709,7 +709,7 @@ public class Scenario : MonoBehaviour {
         int spirit = 1;
         int dexterity = 1;
         int vitality = 1;
-        int speed = 5;
+        int speed = 12;
         int canister_max = 1;
         string weapon = "Sword";
         string armor = "Light";
@@ -786,7 +786,7 @@ public class Scenario : MonoBehaviour {
                 spirit = 1;
                 dexterity = 1;
                 vitality = 1;
-                speed = 5;
+                speed = 12;
                 canister_max = 1;
                 weapon = "Sword";
                 armor = "Light";
@@ -878,7 +878,7 @@ public class Scenario : MonoBehaviour {
             {
                 character_data = monster_character_data;
             }
-            
+            //TODO FIX THIS
             game_object.GetComponent<Character_Script>().character_name = character_data[game_object.GetComponent<Character_Script>().character_id].character_name;
             game_object.GetComponent<Character_Script>().level = character_data[game_object.GetComponent<Character_Script>().character_id].level;
             game_object.GetComponent<Character_Script>().strength = character_data[game_object.GetComponent<Character_Script>().character_id].strength;
@@ -886,7 +886,7 @@ public class Scenario : MonoBehaviour {
             game_object.GetComponent<Character_Script>().spirit = character_data[game_object.GetComponent<Character_Script>().character_id].spirit;
             game_object.GetComponent<Character_Script>().dexterity = character_data[game_object.GetComponent<Character_Script>().character_id].dexterity;
             game_object.GetComponent<Character_Script>().vitality = character_data[game_object.GetComponent<Character_Script>().character_id].vitality;
-            game_object.GetComponent<Character_Script>().speed = character_data[game_object.GetComponent<Character_Script>().character_id].speed;
+            game_object.GetComponent<Character_Script>().speed = (int)character_data[game_object.GetComponent<Character_Script>().character_id].speed;
             game_object.GetComponent<Character_Script>().canister_max = character_data[game_object.GetComponent<Character_Script>().character_id].canister_max;
 
             //game_object.GetComponent<Character_Script>().Equip(character_data[game_object.GetComponent<Character_Script>().character_id].weapon);
@@ -895,13 +895,15 @@ public class Scenario : MonoBehaviour {
             game_object.GetComponent<Character_Script>().armor = character_data[game_object.GetComponent<Character_Script>().character_id].armor;
             game_object.GetComponent<Character_Script>().aura_max = character_data[game_object.GetComponent<Character_Script>().character_id].aura_max;
             game_object.GetComponent<Character_Script>().aura_curr = character_data[game_object.GetComponent<Character_Script>().character_id].aura_curr;
-            game_object.GetComponent<Character_Script>().action_max = 20;// character_data[game_object.GetComponent<Character_Script>().character_id].action_max;
-            game_object.GetComponent<Character_Script>().action_curr = 20;// character_data[game_object.GetComponent<Character_Script>().character_id].action_curr;
-            game_object.GetComponent<Character_Script>().action_cost = 0;
+            game_object.GetComponent<Character_Script>().action_max = character_data[game_object.GetComponent<Character_Script>().character_id].action_max;
+            game_object.GetComponent<Character_Script>().action_curr = character_data[game_object.GetComponent<Character_Script>().character_id].action_max;
+            game_object.GetComponent<Character_Script>().mana_max = character_data[game_object.GetComponent<Character_Script>().character_id].mana_max;// character_data[game_object.GetComponent<Character_Script>().character_id].action_max;
+            game_object.GetComponent<Character_Script>().mana_curr = character_data[game_object.GetComponent<Character_Script>().character_id].mana_curr;
             game_object.GetComponent<Character_Script>().actions = character_data[game_object.GetComponent<Character_Script>().character_id].actions;
             game_object.GetComponent<Character_Script>().canister_curr = character_data[game_object.GetComponent<Character_Script>().character_id].canister_curr;
             game_object.GetComponent<Character_Script>().state = character_data[game_object.GetComponent<Character_Script>().character_id].state;
             game_object.GetComponent<Character_Script>().controller = character_data[game_object.GetComponent<Character_Script>().character_id].controller;
+            
             //game_object.GetComponent<Character_Script>().Randomize();
             turn_order.Add(game_object);
         }
@@ -910,7 +912,7 @@ public class Scenario : MonoBehaviour {
         curr_player = turn_order[curr_character_num];
         curr_player.GetComponent<Animator>().SetBool("Selected", true);
         char_num = 0;
-        curr_player.GetComponent<Character_Script>().FindAction("Move").Select(curr_player.GetComponent<Character_Script>());
+        curr_player.GetComponent<Character_Script>().Find_Action("Move").Select(curr_player.GetComponent<Character_Script>());
         //GetComponent<Character_Script>().state = Character_Script.States.Moving;
         //FindReachable(curr_player.GetComponent<Character_Script>().action_curr, curr_player.GetComponent<Character_Script>().SPEED);
         //MarkReachable();
@@ -1071,31 +1073,6 @@ public class Scenario : MonoBehaviour {
             Tile_Data tile_data = hit.transform.GetComponent<Tile_Data>();
             if (tile_data != null)
             {
-                //set the player's action cost to be the weight of the selected tile
-                if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Moving)
-                {
-                    curr_player.GetComponent<Character_Script>().action_cost = (int)tile_data.node.weight;//Math.Abs(curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().x_index - tile_data.x_index) * (int)(curr_player.GetComponent<Character_Script>().armor.weight + curr_player.GetComponent<Character_Script>().weapon.weight) + Math.Abs(curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().y_index - tile_data.y_index) * (int)(curr_player.GetComponent<Character_Script>().armor.weight + curr_player.GetComponent<Character_Script>().weapon.weight) + (tile_data.node.height - curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height) * 2;
-                    if (curr_player.GetComponent<Character_Script>().action_cost < 1)
-                    {
-                        curr_player.GetComponent<Character_Script>().action_cost = 0;
-                    }
-                    if (curr_player.GetComponent<Character_Script>().action_cost > curr_player.GetComponent<Character_Script>().action_curr)
-                    {
-                        curr_player.GetComponent<Character_Script>().action_cost = curr_player.GetComponent<Character_Script>().action_curr;
-                    }
-                }
-                if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Blinking)
-                {
-                    curr_player.GetComponent<Character_Script>().action_cost = Math.Abs(curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().x_index - tile_data.x_index) + Math.Abs(curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().y_index - tile_data.y_index);
-                    if (curr_player.GetComponent<Character_Script>().action_cost < 1)
-                    {
-                        curr_player.GetComponent<Character_Script>().action_cost = 1;
-                    }
-                    if (curr_player.GetComponent<Character_Script>().action_cost > curr_player.GetComponent<Character_Script>().action_curr)
-                    {
-                        curr_player.GetComponent<Character_Script>().action_cost = curr_player.GetComponent<Character_Script>().action_curr;
-                    }
-                }
                 //If the tile is not traversible we know it is occupied, check for a character there
                 //this is done to print stats of the current highlighted character
                 if (!tile_data.node.traversible)
@@ -1138,6 +1115,7 @@ public class Scenario : MonoBehaviour {
 
     public void FindReachable(int cost_limit, int distance_limit)
     {
+        //Debug.Log("cost limit: " + cost_limit + "; distance limit: " + distance_limit);
         tile_grid.navmesh.bfs(curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node, cost_limit, distance_limit);
 
         reachable_tiles = new List<Transform>();
@@ -1154,7 +1132,7 @@ public class Scenario : MonoBehaviour {
                     if (y_index + j >= 0 && y_index + j < tile_grid.grid_length)
                     {
                         int h = tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile_Data>().node.height - 1;
-                        if (Mathf.Abs(i) + Mathf.Abs(j) <= curr_player.GetComponent<Character_Script>().SPEED)
+                        if (Mathf.Abs(i) + Mathf.Abs(j) <= curr_player.GetComponent<Character_Script>().speed)
                         {
                             if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Moving )
                             {
@@ -1164,7 +1142,7 @@ public class Scenario : MonoBehaviour {
                                 //        reachable_tiles.Add(grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j));
                                 //    }
                                 //}
-                                if (tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile_Data>().node.weight <= curr_player.GetComponent<Character_Script>().action_curr &&
+                                if (tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile_Data>().node.weight <= curr_player.GetComponent<Character_Script>().speed &&
                                     tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile_Data>().node.weight > 0 &&
                                     tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile_Data>().node.distance <= distance_limit)
                                 {
@@ -1175,7 +1153,7 @@ public class Scenario : MonoBehaviour {
                             {
                                 if (tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile_Data>().node.traversible)
                                 {
-                                    if ((Math.Abs(x_index - (x_index + i)) + Math.Abs(y_index - (y_index + j))) < curr_player.GetComponent<Character_Script>().action_curr)
+                                    if ((Math.Abs(x_index - (x_index + i)) + Math.Abs(y_index - (y_index + j))) < curr_player.GetComponent<Character_Script>().speed)
                                     {
                                         reachable_tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
                                     }
@@ -1279,7 +1257,7 @@ public class Scenario : MonoBehaviour {
         //curr_player.GetComponent<Character_Script>().FindReachable(tile_grid);
         //CleanReachable();
         controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
-        curr_player.GetComponent<Character_Script>().FindAction("Move").Select(curr_player.GetComponent<Character_Script>());
+        curr_player.GetComponent<Character_Script>().Find_Action("Move").Select(curr_player.GetComponent<Character_Script>());
         //MarkReachable ();
 
         //Center camera on player
@@ -1309,7 +1287,7 @@ public class Scenario : MonoBehaviour {
         CleanReachable();
 
         controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
-        curr_player.GetComponent<Character_Script>().FindAction("Move").Select(curr_player.GetComponent<Character_Script>());
+        curr_player.GetComponent<Character_Script>().Find_Action("Move").Select(curr_player.GetComponent<Character_Script>());
         //MarkReachable ();
 
         //Center camera on player
