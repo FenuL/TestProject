@@ -425,7 +425,11 @@ public class Tile_Grid : ScriptableObject{
 	}
 
 	public Transform getTile(int x, int y){
-		return tiles [x, y];
+        if (x >= 0 && y >= 0 && x < grid_width && y < grid_length)
+        {
+            return tiles[x, y];
+        }
+        return null;
 	}
 
 	public double get_TILE_HEIGHT(){

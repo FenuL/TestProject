@@ -1,10 +1,10 @@
 ﻿name: Attack
-ap_cost: APC
+ap_cost: 1
 mp_cost: 0
 range: WPR
-area: 0
+area: Target
 falloff: 0
-self_effect: NUL
+self_effect: Enabler Attack false
 target_effect: Damage WPD
 activation_type: active
 origin: innate
@@ -16,7 +16,7 @@ name: Blink
 ap_cost: 0
 mp_cost: 5
 range: SPD
-area: 0
+area: Target
 falloff: 0
 self_effect: Move 4
 target_effect: NUL
@@ -30,7 +30,7 @@ name: Channel
 ap_cost: APC
 mp_cost: 10
 range: 0
-area: 0
+area: Self
 falloff: 0
 self_effect: Heal 10; Pass
 target_effect: NUL
@@ -44,7 +44,7 @@ name: Move
 ap_cost: 1
 mp_cost: 0
 range: SPD
-area: 0
+area: Target
 falloff: 0
 self_effect: Move 1
 target_effect: NUL
@@ -58,10 +58,38 @@ name: Wait
 ap_cost: APC
 mp_cost: -5
 range: 0
-area: 0
+area: Self
 falloff: 0
 self_effect: Pass
 target_effect: NUL
+activation_type: active
+origin: innate
+trigger: NUL
+enabled: true
+animation: NUL
+=================
+name: Cross
+ap_cost: 1
+mp_cost: 5
+range: WPR
+area: Cross Target 1
+falloff: .5
+self_effect: NUL
+target_effect: Damage WPD
+activation_type: active
+origin: innate
+trigger: NUL
+enabled: true
+animation: NUL
+=================
+name: Ring
+ap_cost: 1
+mp_cost: 5
+range: 1
+area: Ring Target 1 0
+falloff: .5
+self_effect: NUL
+target_effect: Damage WPD
 activation_type: active
 origin: innate
 trigger: NUL
