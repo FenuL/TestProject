@@ -473,7 +473,7 @@ public class Character_Script : MonoBehaviour {
                                 }
                                 else if (eff.type.ToString() == Effect.Types.Pass.ToString())
                                 {
-                                    character.End_Turn();
+                                    character.StartCoroutine(character.End_Turn());
                                 }
                             }
                         }
@@ -786,7 +786,8 @@ public class Character_Script : MonoBehaviour {
                         }
                         else if (eff.type.ToString() == Effect.Types.Pass.ToString())
                         {
-                            target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().End_Turn();
+                            Character_Script target_character = target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>();
+                            target_character.StartCoroutine(target_character.End_Turn());
                         }
                     }
                 }
@@ -863,18 +864,18 @@ public class Character_Script : MonoBehaviour {
                         }
                         else if (eff.type.ToString() == Effect.Types.Pass.ToString())
                         {
-                            character.End_Turn();
+                            character.StartCoroutine(character.End_Turn());
                         }
                     }
                 }
                 character.action_curr -= (int)character.curr_action.Convert_To_Double(ap_cost, character);
                 character.mana_curr -= (int)character.curr_action.Convert_To_Double(mp_cost, character);
-                character.state = States.Idle;
+                //character.state = States.Idle;
                 character.controller.curr_scenario.CleanReachable();
                 character.controller.curr_scenario.ResetReachable();
                 if (character.action_curr <= 0)
                 {
-                    character.End_Turn();
+                    character.StartCoroutine(character.End_Turn());
                 }
                 else
                 {
@@ -952,6 +953,7 @@ public class Character_Script : MonoBehaviour {
     public int vitality { get; set; }
     public double speed { get; set; }
     public int level { get; set; }
+    public int orientation { get; set; }
     public Weapon weapon { get; set; }
     public Armor armor { get; set; }
     public Accessory[] accessories { get; set; }
@@ -1206,6 +1208,30 @@ public class Character_Script : MonoBehaviour {
         //gameObject.SetActive(true);
     }
 
+    public void Orient()
+    {
+        //Flip sprite based on orientation
+        //Debug.Log("Current orientation: " + orientation);
+        if (orientation < 2)
+        {
+            this.gameObject.GetComponent<SpriteRenderer>().flipX = true;
+        }
+        else
+        {
+            this.gameObject.GetComponent<SpriteRenderer>().flipX = false;
+        }
+        if (orientation == 2 || orientation == 1)
+        {
+            string object_name = this.gameObject.name;
+            this.gameObject.GetComponent<Animator>().runtimeAnimatorController = Resources.Load("Animations/Controllers/"+object_name+"/"+object_name+ "_Override_S") as AnimatorOverrideController;
+        }
+        else if (orientation == 3 || orientation == 0)
+        {
+            string object_name = this.gameObject.name;
+            this.gameObject.GetComponent<Animator>().runtimeAnimatorController = Resources.Load("Animations/Controllers/" + object_name + "/" + object_name + "_Override_W") as AnimatorOverrideController;
+        }
+    }
+
     public Character_Script(string nm, int lvl, int str, int crd, int spt, int dex, int vit, int spd, int can, string wep, string arm)
     {
         controller = Game_Controller.controller;
@@ -1228,6 +1254,7 @@ public class Character_Script : MonoBehaviour {
         curr_action = null;
         actions = new List<Action>();
         canister_max = can;
+        orientation = 2;
         canister_curr = canister_max;
         state = States.Idle;
         all_actions = controller.all_actions;
@@ -1266,8 +1293,21 @@ public class Character_Script : MonoBehaviour {
         //}
     }
 
-    public void End_Turn()
+    public bool Not_Walking()
     {
+        if (state != States.Walking)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    public IEnumerator End_Turn()
+    {
+        while(state == States.Walking)
+        {
+            yield return new WaitForEndOfFrame();
+        }
         state = States.Idle;
         Debug.Log("Character " + character_name + " Passed");
         curr_action = null;
@@ -1505,13 +1545,17 @@ public class Character_Script : MonoBehaviour {
     //Since it was created using New rather than AddComponent() it exists in the C backend but Unity doesn't know it.
     public void MoveTo(Transform clicked_tile)
     {
+        state = States.Walking;
         StartCoroutine(Move(clicked_tile));
+        //while (state == States.Walking)
+        //{
+        //    Debug.Log("Walking");
+        //}
         //clicked_tile.GetComponent<Tile_Data>().node.obj = this.gameObject;
     }
 
     public IEnumerator Move(Transform clicked_tile)
     {
-        state = States.Walking;
         Stack<Tile_Data.Node> path = new Stack<Tile_Data.Node>();
         //path = controller.navmesh.shortestPath(curr_tile.GetComponent<Tile_Data>().node, clicked_tile.GetComponent<Tile_Data>().node, action_curr, SPEED);
         //Tile_Data.Node temp_tile;
@@ -1556,12 +1600,29 @@ public class Character_Script : MonoBehaviour {
                 //print("duration: " +duration);
                 while (elapsedTime < duration)
                 {
-                    transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x, 
+                    if(prev_tile.id[0] == temp_tile.id[0] && prev_tile.id[1] > temp_tile.id[1])
+                    {
+                        orientation = 0;
+                    }
+                    else if (prev_tile.id[0] < temp_tile.id[0] && prev_tile.id[1] == temp_tile.id[1])
+                    {
+                        orientation = 1;
+                    }
+                    else if (prev_tile.id[0] == temp_tile.id[0] && prev_tile.id[1] < temp_tile.id[1])
+                    {
+                        orientation = 2;
+                    }
+                    else if (prev_tile.id[0] > temp_tile.id[0] && prev_tile.id[1] == temp_tile.id[1])
+                    {
+                        orientation = 3;
+                    }
+                    Orient();
+                    transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x-(.1f* controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height), 
                         (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + 0.25f * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 1.145f),
-                        controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z), 
-                        new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x, 
+                        controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z- (.08f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height)), 
+                        new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x -(.1f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height), 
                         (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + 0.25f* (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 1.145f),
-                        controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z), 
+                        controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z- (.08f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height)), 
                         elapsedTime/duration);
                     //(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f
                     elapsedTime += Time.deltaTime;
@@ -1584,67 +1645,9 @@ public class Character_Script : MonoBehaviour {
                 //WaitForSeconds(1);
             }
             //transform.position = new Vector3(curr_tile.position.x, (float)(curr_tile.position.y + (curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z);
+            
         }
-        else
-        {
-            temp_tile = clicked_tile.GetComponent<Tile_Data>().node;
-            prev_tile = curr_tile.GetComponent<Tile_Data>().node;
-            path = new Stack<Tile_Data.Node>();
-            //Construct a stack that is a path from the clicked tile to the source.
-            while (!(temp_tile.id[0] == curr_tile.GetComponent<Tile_Data>().node.id[0] && temp_tile.id[1] == curr_tile.GetComponent<Tile_Data>().node.id[1]))
-            {
-                path.Push(temp_tile);
-                temp_tile = temp_tile.parent;
-            }
-            //Debug.Log("temp_tile.id[0]: " + temp_tile.id[0]);
-            //Debug.Log("temp_tile.id[1]: " + temp_tile.id[1]);
-            //Debug.Log("curr_tile.id[0]: " + curr_tile.GetComponent<Tile_Data>().node.id[0]);
-            //Debug.Log("curr_tile.id[0]: " + curr_tile.GetComponent<Tile_Data>().node.id[1]);
-            //Navigate the path by popping tiles out of the stack.
-            while (path.Count != 0)
-            {
-
-                temp_tile = path.Pop();
-                float elapsedTime = 0;
-                float duration = .3f;
-                //print("duration: " + duration);
-                while (elapsedTime < duration)
-                {
-                    transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x, (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + 0.25f * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 1.45f), controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z), new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x, (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + 0.25f * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 1.45f), controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z), elapsedTime / duration);
-                    elapsedTime += Time.deltaTime;
-                    /*if (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sortingOrder > curr_tile.GetComponent<SpriteRenderer>().sortingOrder)
-                    {
-                        gameObject.GetComponent<SpriteRenderer>().sortingOrder = controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sortingOrder + 1;
-                    }
-                    else
-                    {
-                        gameObject.GetComponent<SpriteRenderer>().sortingOrder = curr_tile.GetComponent<SpriteRenderer>().sortingOrder + 1;
-                    }*/
-                    yield return new WaitForEndOfFrame();
-                }
-                //gameObject.GetComponent<SpriteRenderer>().sortingOrder = controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sortingOrder + 1;
-                prev_tile = temp_tile;
-            }
-            //transform.position = new Vector3(curr_tile.position.x, (float)(curr_tile.position.y + (curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z); 
-        }
-        //renderer = (SpriteRenderer)curr_tile.GetComponent<SpriteRenderer> ();
-
-        //gameObject.GetComponent<SpriteRenderer>().sortingOrder = clicked_tile.GetComponent<SpriteRenderer>().sortingOrder + 1;
-        /*state = States.Idle;
-        controller.curr_scenario.ResetReachable();
-        controller.curr_scenario.FindReachable(action_curr, SPEED);
-        controller.curr_scenario.MarkReachable();
-        if (action_curr <= 0)
-        {
-            action_curr = 0;
-            action_curr += AP_RECOVERY;
-            controller.curr_scenario.NextPlayer();
-        }
-        if (action_curr > action_max)
-        {
-            action_curr = action_max;
-        }
-        controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();*/
+        state = States.Moving;
 
     }
 	

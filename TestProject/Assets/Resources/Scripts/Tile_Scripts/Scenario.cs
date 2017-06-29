@@ -838,9 +838,9 @@ public class Scenario : MonoBehaviour {
             game_object.GetComponent<Character_Script>().character_num = char_num;
             game_object.GetComponent<Character_Script>().curr_tile = tile_grid.getTile(char_num, 0);
             game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.setObj(game_object);
-            game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x,
+            game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x- (.1f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height),
                 game_object.GetComponent<Character_Script>().curr_tile.position.y+ 1.145f + .25f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height,
-                game_object.GetComponent<Character_Script>().curr_tile.position.z);
+                game_object.GetComponent<Character_Script>().curr_tile.position.z - (.08f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height));
                  //game_object.GetComponent<Character_Script>().curr_tile.position.y + (float)(game_object.GetComponent<SpriteRenderer> ().sprite.rect.height / game_object.GetComponent<SpriteRenderer> ().sprite.pixelsPerUnit + 0.15f),
                  //(float)(game_object.GetComponent<Character_Script>().curr_tile.position.y + (game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f,
                  //game_object.GetComponent<Character_Script>().curr_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);

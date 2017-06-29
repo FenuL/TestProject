@@ -1,0 +1,2747 @@
+fileFormatVersion: 2
+guid: cb9fb1c7e69a8c84ab6e110591ef67e5
+timeCreated: 1498627278
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: fftamaincharactersprites_0
+    21300002: fftamaincharactersprites_1
+    21300004: fftamaincharactersprites_2
+    21300006: fftamaincharactersprites_3
+    21300008: fftamaincharactersprites_4
+    21300010: fftamaincharactersprites_5
+    21300012: fftamaincharactersprites_6
+    21300014: fftamaincharactersprites_7
+    21300016: fftamaincharactersprites_8
+    21300018: fftamaincharactersprites_9
+    21300020: fftamaincharactersprites_10
+    21300022: fftamaincharactersprites_11
+    21300024: fftamaincharactersprites_12
+    21300026: fftamaincharactersprites_13
+    21300028: fftamaincharactersprites_14
+    21300030: fftamaincharactersprites_15
+    21300032: fftamaincharactersprites_16
+    21300034: fftamaincharactersprites_17
+    21300036: fftamaincharactersprites_18
+    21300038: fftamaincharactersprites_19
+    21300040: fftamaincharactersprites_20
+    21300042: fftamaincharactersprites_21
+    21300044: fftamaincharactersprites_22
+    21300046: fftamaincharactersprites_23
+    21300048: fftamaincharactersprites_24
+    21300050: fftamaincharactersprites_25
+    21300052: fftamaincharactersprites_26
+    21300054: fftamaincharactersprites_27
+    21300056: fftamaincharactersprites_28
+    21300058: fftamaincharactersprites_29
+    21300060: fftamaincharactersprites_30
+    21300062: fftamaincharactersprites_31
+    21300064: fftamaincharactersprites_32
+    21300066: fftamaincharactersprites_33
+    21300068: fftamaincharactersprites_34
+    21300070: fftamaincharactersprites_35
+    21300072: fftamaincharactersprites_36
+    21300074: fftamaincharactersprites_37
+    21300076: fftamaincharactersprites_38
+    21300078: fftamaincharactersprites_39
+    21300080: fftamaincharactersprites_40
+    21300082: fftamaincharactersprites_41
+    21300084: fftamaincharactersprites_42
+    21300086: fftamaincharactersprites_43
+    21300088: fftamaincharactersprites_44
+    21300090: fftamaincharactersprites_45
+    21300092: fftamaincharactersprites_46
+    21300094: fftamaincharactersprites_47
+    21300096: fftamaincharactersprites_48
+    21300098: fftamaincharactersprites_49
+    21300100: fftamaincharactersprites_50
+    21300102: fftamaincharactersprites_51
+    21300104: fftamaincharactersprites_52
+    21300106: fftamaincharactersprites_53
+    21300108: fftamaincharactersprites_54
+    21300110: fftamaincharactersprites_55
+    21300112: fftamaincharactersprites_56
+    21300114: fftamaincharactersprites_57
+    21300116: fftamaincharactersprites_58
+    21300118: fftamaincharactersprites_59
+    21300120: fftamaincharactersprites_60
+    21300122: fftamaincharactersprites_61
+    21300124: fftamaincharactersprites_62
+    21300126: fftamaincharactersprites_63
+    21300128: fftamaincharactersprites_64
+    21300130: fftamaincharactersprites_65
+    21300132: fftamaincharactersprites_66
+    21300134: fftamaincharactersprites_67
+    21300136: fftamaincharactersprites_68
+    21300138: fftamaincharactersprites_69
+    21300140: fftamaincharactersprites_70
+    21300142: fftamaincharactersprites_71
+    21300144: fftamaincharactersprites_72
+    21300146: fftamaincharactersprites_73
+    21300148: fftamaincharactersprites_74
+    21300150: fftamaincharactersprites_75
+    21300152: fftamaincharactersprites_76
+    21300154: fftamaincharactersprites_77
+    21300156: fftamaincharactersprites_78
+    21300158: fftamaincharactersprites_79
+    21300160: fftamaincharactersprites_80
+    21300162: fftamaincharactersprites_81
+    21300164: fftamaincharactersprites_82
+    21300166: fftamaincharactersprites_83
+    21300168: fftamaincharactersprites_84
+    21300170: fftamaincharactersprites_85
+    21300172: fftamaincharactersprites_86
+    21300174: fftamaincharactersprites_87
+    21300176: fftamaincharactersprites_88
+    21300178: fftamaincharactersprites_89
+    21300180: fftamaincharactersprites_90
+    21300182: fftamaincharactersprites_91
+    21300184: fftamaincharactersprites_92
+    21300186: fftamaincharactersprites_93
+    21300188: fftamaincharactersprites_94
+    21300190: fftamaincharactersprites_95
+    21300192: fftamaincharactersprites_96
+    21300194: fftamaincharactersprites_97
+    21300196: fftamaincharactersprites_98
+    21300198: fftamaincharactersprites_99
+    21300200: fftamaincharactersprites_100
+    21300202: fftamaincharactersprites_101
+    21300204: fftamaincharactersprites_102
+    21300206: fftamaincharactersprites_103
+    21300208: fftamaincharactersprites_104
+    21300210: fftamaincharactersprites_105
+    21300212: fftamaincharactersprites_106
+    21300214: fftamaincharactersprites_107
+    21300216: fftamaincharactersprites_108
+    21300218: fftamaincharactersprites_109
+    21300220: fftamaincharactersprites_110
+    21300222: fftamaincharactersprites_111
+    21300224: fftamaincharactersprites_112
+    21300226: fftamaincharactersprites_113
+    21300228: fftamaincharactersprites_114
+    21300230: fftamaincharactersprites_115
+    21300232: fftamaincharactersprites_116
+    21300234: fftamaincharactersprites_117
+    21300236: fftamaincharactersprites_118
+    21300238: fftamaincharactersprites_119
+    21300240: fftamaincharactersprites_120
+    21300242: fftamaincharactersprites_121
+    21300244: fftamaincharactersprites_122
+    21300246: fftamaincharactersprites_123
+    21300248: fftamaincharactersprites_124
+    21300250: fftamaincharactersprites_125
+    21300252: fftamaincharactersprites_126
+    21300254: fftamaincharactersprites_127
+    21300256: fftamaincharactersprites_128
+    21300258: fftamaincharactersprites_129
+    21300260: fftamaincharactersprites_130
+    21300262: fftamaincharactersprites_131
+    21300264: fftamaincharactersprites_132
+    21300266: fftamaincharactersprites_133
+    21300268: fftamaincharactersprites_134
+    21300270: fftamaincharactersprites_135
+    21300272: fftamaincharactersprites_136
+    21300274: fftamaincharactersprites_137
+    21300276: fftamaincharactersprites_138
+    21300278: fftamaincharactersprites_139
+    21300280: fftamaincharactersprites_140
+    21300282: fftamaincharactersprites_141
+    21300284: fftamaincharactersprites_142
+    21300286: fftamaincharactersprites_143
+    21300288: fftamaincharactersprites_144
+    21300290: fftamaincharactersprites_145
+    21300292: fftamaincharactersprites_146
+    21300294: fftamaincharactersprites_147
+    21300296: fftamaincharactersprites_148
+    21300298: fftamaincharactersprites_149
+    21300300: fftamaincharactersprites_150
+    21300302: fftamaincharactersprites_151
+    21300304: fftamaincharactersprites_152
+    21300306: fftamaincharactersprites_153
+    21300308: fftamaincharactersprites_154
+    21300310: fftamaincharactersprites_155
+    21300312: fftamaincharactersprites_156
+    21300314: fftamaincharactersprites_157
+    21300316: fftamaincharactersprites_158
+    21300318: fftamaincharactersprites_159
+    21300320: fftamaincharactersprites_160
+    21300322: fftamaincharactersprites_161
+    21300324: fftamaincharactersprites_162
+    21300326: fftamaincharactersprites_163
+    21300328: fftamaincharactersprites_164
+    21300330: fftamaincharactersprites_165
+    21300332: fftamaincharactersprites_166
+    21300334: fftamaincharactersprites_167
+    21300336: fftamaincharactersprites_168
+    21300338: fftamaincharactersprites_169
+    21300340: fftamaincharactersprites_170
+    21300342: fftamaincharactersprites_171
+    21300344: fftamaincharactersprites_172
+    21300346: fftamaincharactersprites_173
+    21300348: fftamaincharactersprites_174
+    21300350: fftamaincharactersprites_175
+    21300352: fftamaincharactersprites_176
+    21300354: fftamaincharactersprites_177
+    21300356: fftamaincharactersprites_178
+    21300358: fftamaincharactersprites_179
+    21300360: fftamaincharactersprites_180
+    21300362: fftamaincharactersprites_181
+    21300364: fftamaincharactersprites_182
+    21300366: fftamaincharactersprites_183
+    21300368: fftamaincharactersprites_184
+    21300370: fftamaincharactersprites_185
+    21300372: fftamaincharactersprites_186
+    21300374: fftamaincharactersprites_187
+    21300376: fftamaincharactersprites_188
+    21300378: fftamaincharactersprites_189
+    21300380: fftamaincharactersprites_190
+    21300382: fftamaincharactersprites_191
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: fftamaincharactersprites_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 326
+        width: 59
+        height: 81
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_1
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 388
+        width: 16
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_2
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 388
+        width: 16
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_3
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 388
+        width: 16
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_4
+      rect:
+        serializedVersion: 2
+        x: 123
+        y: 388
+        width: 16
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_5
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 388
+        width: 16
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_6
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 388
+        width: 16
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_7
+      rect:
+        serializedVersion: 2
+        x: 183
+        y: 388
+        width: 16
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_8
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 388
+        width: 16
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_9
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 388
+        width: 16
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_10
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 388
+        width: 15
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_11
+      rect:
+        serializedVersion: 2
+        x: 262
+        y: 388
+        width: 16
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_12
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 388
+        width: 16
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_13
+      rect:
+        serializedVersion: 2
+        x: 302
+        y: 388
+        width: 15
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_14
+      rect:
+        serializedVersion: 2
+        x: 321
+        y: 388
+        width: 15
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_15
+      rect:
+        serializedVersion: 2
+        x: 340
+        y: 388
+        width: 16
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_16
+      rect:
+        serializedVersion: 2
+        x: 360
+        y: 388
+        width: 16
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_17
+      rect:
+        serializedVersion: 2
+        x: 380
+        y: 388
+        width: 15
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_18
+      rect:
+        serializedVersion: 2
+        x: 399
+        y: 388
+        width: 14
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_19
+      rect:
+        serializedVersion: 2
+        x: 417
+        y: 388
+        width: 24
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_20
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 353
+        width: 14
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_21
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 353
+        width: 16
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_22
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 353
+        width: 15
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_23
+      rect:
+        serializedVersion: 2
+        x: 124
+        y: 353
+        width: 14
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_24
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 353
+        width: 16
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_25
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 353
+        width: 16
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_26
+      rect:
+        serializedVersion: 2
+        x: 183
+        y: 353
+        width: 14
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_27
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 353
+        width: 18
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_28
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 353
+        width: 16
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_29
+      rect:
+        serializedVersion: 2
+        x: 242
+        y: 353
+        width: 15
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_30
+      rect:
+        serializedVersion: 2
+        x: 261
+        y: 353
+        width: 17
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_31
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 353
+        width: 15
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_32
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 353
+        width: 15
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_33
+      rect:
+        serializedVersion: 2
+        x: 319
+        y: 353
+        width: 15
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_34
+      rect:
+        serializedVersion: 2
+        x: 338
+        y: 353
+        width: 15
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_35
+      rect:
+        serializedVersion: 2
+        x: 357
+        y: 353
+        width: 14
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_36
+      rect:
+        serializedVersion: 2
+        x: 375
+        y: 353
+        width: 15
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_37
+      rect:
+        serializedVersion: 2
+        x: 394
+        y: 353
+        width: 14
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_38
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 353
+        width: 14
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_39
+      rect:
+        serializedVersion: 2
+        x: 430
+        y: 353
+        width: 14
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_40
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 317
+        width: 14
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_41
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 317
+        width: 14
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_42
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 317
+        width: 16
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_43
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 317
+        width: 17
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_44
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 317
+        width: 13
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_45
+      rect:
+        serializedVersion: 2
+        x: 158
+        y: 317
+        width: 18
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_46
+      rect:
+        serializedVersion: 2
+        x: 180
+        y: 317
+        width: 20
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_47
+      rect:
+        serializedVersion: 2
+        x: 204
+        y: 317
+        width: 17
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_48
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 317
+        width: 18
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_49
+      rect:
+        serializedVersion: 2
+        x: 247
+        y: 317
+        width: 15
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_50
+      rect:
+        serializedVersion: 2
+        x: 281
+        y: 317
+        width: 16
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_51
+      rect:
+        serializedVersion: 2
+        x: 301
+        y: 317
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_52
+      rect:
+        serializedVersion: 2
+        x: 321
+        y: 317
+        width: 20
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_53
+      rect:
+        serializedVersion: 2
+        x: 345
+        y: 317
+        width: 23
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_54
+      rect:
+        serializedVersion: 2
+        x: 372
+        y: 317
+        width: 23
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_55
+      rect:
+        serializedVersion: 2
+        x: 399
+        y: 317
+        width: 23
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_56
+      rect:
+        serializedVersion: 2
+        x: 426
+        y: 317
+        width: 23
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_57
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 238
+        width: 50
+        height: 62
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_58
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 285
+        width: 16
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_59
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 285
+        width: 16
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_60
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 285
+        width: 16
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_61
+      rect:
+        serializedVersion: 2
+        x: 123
+        y: 285
+        width: 16
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_62
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 285
+        width: 16
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_63
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 285
+        width: 16
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_64
+      rect:
+        serializedVersion: 2
+        x: 183
+        y: 285
+        width: 15
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_65
+      rect:
+        serializedVersion: 2
+        x: 202
+        y: 285
+        width: 14
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_66
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 285
+        width: 16
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_67
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 285
+        width: 15
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_68
+      rect:
+        serializedVersion: 2
+        x: 259
+        y: 285
+        width: 15
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_69
+      rect:
+        serializedVersion: 2
+        x: 278
+        y: 285
+        width: 15
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_70
+      rect:
+        serializedVersion: 2
+        x: 297
+        y: 285
+        width: 15
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_71
+      rect:
+        serializedVersion: 2
+        x: 316
+        y: 285
+        width: 16
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_72
+      rect:
+        serializedVersion: 2
+        x: 336
+        y: 285
+        width: 16
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_73
+      rect:
+        serializedVersion: 2
+        x: 356
+        y: 285
+        width: 15
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_74
+      rect:
+        serializedVersion: 2
+        x: 375
+        y: 285
+        width: 14
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_75
+      rect:
+        serializedVersion: 2
+        x: 393
+        y: 285
+        width: 14
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_76
+      rect:
+        serializedVersion: 2
+        x: 411
+        y: 285
+        width: 14
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_77
+      rect:
+        serializedVersion: 2
+        x: 431
+        y: 271
+        width: 15
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_78
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 253
+        width: 14
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_79
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 253
+        width: 16
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_80
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 253
+        width: 15
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_81
+      rect:
+        serializedVersion: 2
+        x: 124
+        y: 253
+        width: 14
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_82
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 253
+        width: 16
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_83
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 253
+        width: 16
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_84
+      rect:
+        serializedVersion: 2
+        x: 183
+        y: 253
+        width: 14
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_85
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 253
+        width: 18
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_86
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 253
+        width: 16
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_87
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 253
+        width: 15
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_88
+      rect:
+        serializedVersion: 2
+        x: 262
+        y: 253
+        width: 16
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_89
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 253
+        width: 15
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_90
+      rect:
+        serializedVersion: 2
+        x: 301
+        y: 253
+        width: 15
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_91
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 253
+        width: 14
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_92
+      rect:
+        serializedVersion: 2
+        x: 338
+        y: 253
+        width: 14
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_93
+      rect:
+        serializedVersion: 2
+        x: 356
+        y: 253
+        width: 15
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_94
+      rect:
+        serializedVersion: 2
+        x: 375
+        y: 253
+        width: 15
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_95
+      rect:
+        serializedVersion: 2
+        x: 394
+        y: 253
+        width: 14
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_96
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 253
+        width: 15
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_97
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 221
+        width: 15
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_98
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 221
+        width: 15
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_99
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 221
+        width: 15
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_100
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 221
+        width: 14
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_101
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 221
+        width: 14
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_102
+      rect:
+        serializedVersion: 2
+        x: 157
+        y: 221
+        width: 16
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_103
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 221
+        width: 16
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_104
+      rect:
+        serializedVersion: 2
+        x: 197
+        y: 221
+        width: 16
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_105
+      rect:
+        serializedVersion: 2
+        x: 217
+        y: 221
+        width: 16
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_106
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 221
+        width: 16
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_107
+      rect:
+        serializedVersion: 2
+        x: 257
+        y: 221
+        width: 16
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_108
+      rect:
+        serializedVersion: 2
+        x: 277
+        y: 221
+        width: 16
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_109
+      rect:
+        serializedVersion: 2
+        x: 297
+        y: 221
+        width: 16
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_110
+      rect:
+        serializedVersion: 2
+        x: 317
+        y: 221
+        width: 16
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_111
+      rect:
+        serializedVersion: 2
+        x: 337
+        y: 221
+        width: 24
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_112
+      rect:
+        serializedVersion: 2
+        x: 365
+        y: 221
+        width: 19
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_113
+      rect:
+        serializedVersion: 2
+        x: 388
+        y: 221
+        width: 16
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_114
+      rect:
+        serializedVersion: 2
+        x: 408
+        y: 221
+        width: 16
+        height: 21
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_115
+      rect:
+        serializedVersion: 2
+        x: 428
+        y: 221
+        width: 16
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_116
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 143
+        width: 52
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_117
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 190
+        width: 16
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_118
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 190
+        width: 16
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_119
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 190
+        width: 16
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_120
+      rect:
+        serializedVersion: 2
+        x: 123
+        y: 190
+        width: 16
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_121
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 190
+        width: 16
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_122
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 190
+        width: 16
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_123
+      rect:
+        serializedVersion: 2
+        x: 183
+        y: 190
+        width: 16
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_124
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 190
+        width: 15
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_125
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 190
+        width: 16
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_126
+      rect:
+        serializedVersion: 2
+        x: 242
+        y: 190
+        width: 16
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_127
+      rect:
+        serializedVersion: 2
+        x: 262
+        y: 190
+        width: 16
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_128
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 190
+        width: 15
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_129
+      rect:
+        serializedVersion: 2
+        x: 301
+        y: 190
+        width: 14
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_130
+      rect:
+        serializedVersion: 2
+        x: 319
+        y: 190
+        width: 16
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_131
+      rect:
+        serializedVersion: 2
+        x: 339
+        y: 190
+        width: 16
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_132
+      rect:
+        serializedVersion: 2
+        x: 359
+        y: 190
+        width: 16
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_133
+      rect:
+        serializedVersion: 2
+        x: 379
+        y: 190
+        width: 14
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_134
+      rect:
+        serializedVersion: 2
+        x: 397
+        y: 190
+        width: 15
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_135
+      rect:
+        serializedVersion: 2
+        x: 416
+        y: 190
+        width: 14
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_136
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 159
+        width: 15
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_137
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 159
+        width: 16
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_138
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 159
+        width: 15
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_139
+      rect:
+        serializedVersion: 2
+        x: 124
+        y: 159
+        width: 14
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_140
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 159
+        width: 16
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_141
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 159
+        width: 16
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_142
+      rect:
+        serializedVersion: 2
+        x: 183
+        y: 159
+        width: 14
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_143
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 159
+        width: 18
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_144
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 159
+        width: 16
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_145
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 159
+        width: 15
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_146
+      rect:
+        serializedVersion: 2
+        x: 262
+        y: 159
+        width: 16
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_147
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 159
+        width: 15
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_148
+      rect:
+        serializedVersion: 2
+        x: 301
+        y: 159
+        width: 15
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_149
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 159
+        width: 15
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_150
+      rect:
+        serializedVersion: 2
+        x: 339
+        y: 159
+        width: 15
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_151
+      rect:
+        serializedVersion: 2
+        x: 358
+        y: 159
+        width: 14
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_152
+      rect:
+        serializedVersion: 2
+        x: 376
+        y: 159
+        width: 15
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_153
+      rect:
+        serializedVersion: 2
+        x: 395
+        y: 159
+        width: 14
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_154
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 128
+        width: 15
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_155
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 128
+        width: 14
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_156
+      rect:
+        serializedVersion: 2
+        x: 101
+        y: 128
+        width: 16
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_157
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 128
+        width: 16
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_158
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 128
+        width: 16
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_159
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 128
+        width: 16
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_160
+      rect:
+        serializedVersion: 2
+        x: 181
+        y: 128
+        width: 16
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_161
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 63
+        width: 55
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_162
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 77
+        width: 16
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_163
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 77
+        width: 18
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_164
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 77
+        width: 16
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_165
+      rect:
+        serializedVersion: 2
+        x: 125
+        y: 77
+        width: 16
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_166
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 77
+        width: 16
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_167
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 77
+        width: 18
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_168
+      rect:
+        serializedVersion: 2
+        x: 187
+        y: 77
+        width: 15
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_169
+      rect:
+        serializedVersion: 2
+        x: 206
+        y: 77
+        width: 18
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_170
+      rect:
+        serializedVersion: 2
+        x: 228
+        y: 77
+        width: 16
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_171
+      rect:
+        serializedVersion: 2
+        x: 248
+        y: 77
+        width: 14
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_172
+      rect:
+        serializedVersion: 2
+        x: 266
+        y: 77
+        width: 16
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_173
+      rect:
+        serializedVersion: 2
+        x: 286
+        y: 77
+        width: 18
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_174
+      rect:
+        serializedVersion: 2
+        x: 308
+        y: 77
+        width: 15
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_175
+      rect:
+        serializedVersion: 2
+        x: 327
+        y: 77
+        width: 18
+        height: 31
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_176
+      rect:
+        serializedVersion: 2
+        x: 349
+        y: 77
+        width: 17
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_177
+      rect:
+        serializedVersion: 2
+        x: 370
+        y: 77
+        width: 14
+        height: 29
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_178
+      rect:
+        serializedVersion: 2
+        x: 388
+        y: 77
+        width: 13
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_179
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 48
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_180
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 13
+        width: 21
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_181
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 13
+        width: 21
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_182
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 13
+        width: 21
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_183
+      rect:
+        serializedVersion: 2
+        x: 138
+        y: 13
+        width: 21
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_184
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 13
+        width: 21
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_185
+      rect:
+        serializedVersion: 2
+        x: 188
+        y: 13
+        width: 21
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_186
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 13
+        width: 21
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_187
+      rect:
+        serializedVersion: 2
+        x: 238
+        y: 13
+        width: 21
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_188
+      rect:
+        serializedVersion: 2
+        x: 263
+        y: 13
+        width: 21
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_189
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 13
+        width: 21
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_190
+      rect:
+        serializedVersion: 2
+        x: 313
+        y: 13
+        width: 21
+        height: 25
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: fftamaincharactersprites_191
+      rect:
+        serializedVersion: 2
+        x: 338
+        y: 13
+        width: 21
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
