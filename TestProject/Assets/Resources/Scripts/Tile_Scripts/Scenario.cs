@@ -858,9 +858,9 @@ public class Scenario : MonoBehaviour {
             game_object.GetComponent<Character_Script>().character_num = char_num;
             game_object.GetComponent<Character_Script>().curr_tile = tile_grid.getTile(19 - game_object.GetComponent<Character_Script>().character_num, 19);// [19-game_object.GetComponent<Character_Script>().character_num,19,0];
             game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.setObj(game_object);
-            game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x,
-                game_object.GetComponent<Character_Script>().curr_tile.position.y + 1.45f + .25f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height,
-                game_object.GetComponent<Character_Script>().curr_tile.position.z);
+            game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x - (.1f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height),
+                game_object.GetComponent<Character_Script>().curr_tile.position.y + 0.7f + .25f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height,
+                game_object.GetComponent<Character_Script>().curr_tile.position.z - (.08f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height));
             // .25f* game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height+.015f
             //game_object.GetComponent<Character_Script>().curr_tile.position.y + 0.5f,
             //(float)(game_object.GetComponent<Character_Script>().curr_tile.position.y + (game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f,
@@ -1010,7 +1010,7 @@ public class Scenario : MonoBehaviour {
                 {
                     if (tile.Equals(clicked_tile))
                     {
-                        curr_player.GetComponent<Character_Script>().Act(clicked_tile);
+                        curr_player.GetComponent<Character_Script>().StartCoroutine(curr_player.GetComponent<Character_Script>().Act(clicked_tile));
 
                         /*
                         if (clicked_tile.GetComponent<Tile_Data>().node.traversible && curr_player.GetComponent<Character_Script>().state == Character_Script.States.Moving)

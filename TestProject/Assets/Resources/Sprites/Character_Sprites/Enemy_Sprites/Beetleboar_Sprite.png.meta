@@ -1,0 +1,2383 @@
+fileFormatVersion: 2
+guid: ddc59082f98445a4093be3e0ff036f09
+timeCreated: 1500491021
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: Beetleboar_Sprite_0
+    21300002: Beetleboar_Sprite_1
+    21300004: Beetleboar_Sprite_2
+    21300006: Beetleboar_Sprite_3
+    21300008: Beetleboar_Sprite_4
+    21300010: Beetleboar_Sprite_5
+    21300012: Beetleboar_Sprite_6
+    21300014: Beetleboar_Sprite_7
+    21300016: Beetleboar_Sprite_8
+    21300018: Beetleboar_Sprite_9
+    21300020: Beetleboar_Sprite_10
+    21300022: Beetleboar_Sprite_11
+    21300024: Beetleboar_Sprite_12
+    21300026: Beetleboar_Sprite_13
+    21300028: Beetleboar_Sprite_14
+    21300030: Beetleboar_Sprite_15
+    21300032: Beetleboar_Sprite_16
+    21300034: Beetleboar_Sprite_17
+    21300036: Beetleboar_Sprite_18
+    21300038: Beetleboar_Sprite_19
+    21300040: Beetleboar_Sprite_20
+    21300042: Beetleboar_Sprite_21
+    21300044: Beetleboar_Sprite_22
+    21300046: Beetleboar_Sprite_23
+    21300048: Beetleboar_Sprite_24
+    21300050: Beetleboar_Sprite_25
+    21300052: Beetleboar_Sprite_26
+    21300054: Beetleboar_Sprite_27
+    21300056: Beetleboar_Sprite_28
+    21300058: Beetleboar_Sprite_29
+    21300060: Beetleboar_Sprite_30
+    21300062: Beetleboar_Sprite_31
+    21300064: Beetleboar_Sprite_32
+    21300066: Beetleboar_Sprite_33
+    21300068: Beetleboar_Sprite_34
+    21300070: Beetleboar_Sprite_35
+    21300072: Beetleboar_Sprite_36
+    21300074: Beetleboar_Sprite_37
+    21300076: Beetleboar_Sprite_38
+    21300078: Beetleboar_Sprite_39
+    21300080: Beetleboar_Sprite_40
+    21300082: Beetleboar_Sprite_41
+    21300084: Beetleboar_Sprite_42
+    21300086: Beetleboar_Sprite_43
+    21300088: Beetleboar_Sprite_44
+    21300090: Beetleboar_Sprite_45
+    21300092: Beetleboar_Sprite_46
+    21300094: Beetleboar_Sprite_47
+    21300096: Beetleboar_Sprite_48
+    21300098: Beetleboar_Sprite_49
+    21300100: Beetleboar_Sprite_50
+    21300102: Beetleboar_Sprite_51
+    21300104: Beetleboar_Sprite_52
+    21300106: Beetleboar_Sprite_53
+    21300108: Beetleboar_Sprite_54
+    21300110: Beetleboar_Sprite_55
+    21300112: Beetleboar_Sprite_56
+    21300114: Beetleboar_Sprite_57
+    21300116: Beetleboar_Sprite_58
+    21300118: Beetleboar_Sprite_59
+    21300120: Beetleboar_Sprite_60
+    21300122: Beetleboar_Sprite_61
+    21300124: Beetleboar_Sprite_62
+    21300126: Beetleboar_Sprite_63
+    21300128: Beetleboar_Sprite_64
+    21300130: Beetleboar_Sprite_65
+    21300132: Beetleboar_Sprite_66
+    21300134: Beetleboar_Sprite_67
+    21300136: Beetleboar_Sprite_68
+    21300138: Beetleboar_Sprite_69
+    21300140: Beetleboar_Sprite_70
+    21300142: Beetleboar_Sprite_71
+    21300144: Beetleboar_Sprite_72
+    21300146: Beetleboar_Sprite_73
+    21300148: Beetleboar_Sprite_74
+    21300150: Beetleboar_Sprite_75
+    21300152: Beetleboar_Sprite_76
+    21300154: Beetleboar_Sprite_77
+    21300156: Beetleboar_Sprite_78
+    21300158: Beetleboar_Sprite_79
+    21300160: Beetleboar_Sprite_80
+    21300162: Beetleboar_Sprite_81
+    21300164: Beetleboar_Sprite_82
+    21300166: Beetleboar_Sprite_83
+    21300168: Beetleboar_Sprite_84
+    21300170: Beetleboar_Sprite_85
+    21300172: Beetleboar_Sprite_86
+    21300174: Beetleboar_Sprite_87
+    21300176: Beetleboar_Sprite_88
+    21300178: Beetleboar_Sprite_89
+    21300180: Beetleboar_Sprite_90
+    21300182: Beetleboar_Sprite_91
+    21300184: Beetleboar_Sprite_92
+    21300186: Beetleboar_Sprite_93
+    21300188: Beetleboar_Sprite_94
+    21300190: Beetleboar_Sprite_95
+    21300192: Beetleboar_Sprite_96
+    21300194: Beetleboar_Sprite_97
+    21300196: Beetleboar_Sprite_98
+    21300198: Beetleboar_Sprite_99
+    21300200: Beetleboar_Sprite_100
+    21300202: Beetleboar_Sprite_101
+    21300204: Beetleboar_Sprite_102
+    21300206: Beetleboar_Sprite_103
+    21300208: Beetleboar_Sprite_104
+    21300210: Beetleboar_Sprite_105
+    21300212: Beetleboar_Sprite_106
+    21300214: Beetleboar_Sprite_107
+    21300216: Beetleboar_Sprite_108
+    21300218: Beetleboar_Sprite_109
+    21300220: Beetleboar_Sprite_110
+    21300222: Beetleboar_Sprite_111
+    21300224: Beetleboar_Sprite_112
+    21300226: Beetleboar_Sprite_113
+    21300228: Beetleboar_Sprite_114
+    21300230: Beetleboar_Sprite_115
+    21300232: Beetleboar_Sprite_116
+    21300234: Beetleboar_Sprite_117
+    21300236: Beetleboar_Sprite_118
+    21300238: Beetleboar_Sprite_119
+    21300240: Beetleboar_Sprite_120
+    21300242: Beetleboar_Sprite_121
+    21300244: Beetleboar_Sprite_122
+    21300246: Beetleboar_Sprite_123
+    21300248: Beetleboar_Sprite_124
+    21300250: Beetleboar_Sprite_125
+    21300252: Beetleboar_Sprite_126
+    21300254: Beetleboar_Sprite_127
+    21300256: Beetleboar_Sprite_128
+    21300258: Beetleboar_Sprite_129
+    21300260: Beetleboar_Sprite_130
+    21300262: Beetleboar_Sprite_131
+    21300264: Beetleboar_Sprite_132
+    21300266: Beetleboar_Sprite_133
+    21300268: Beetleboar_Sprite_134
+    21300270: Beetleboar_Sprite_135
+    21300272: Beetleboar_Sprite_136
+    21300274: Beetleboar_Sprite_137
+    21300276: Beetleboar_Sprite_138
+    21300278: Beetleboar_Sprite_139
+    21300280: Beetleboar_Sprite_140
+    21300282: Beetleboar_Sprite_141
+    21300284: Beetleboar_Sprite_142
+    21300286: Beetleboar_Sprite_143
+    21300288: Beetleboar_Sprite_144
+    21300290: Beetleboar_Sprite_145
+    21300292: Beetleboar_Sprite_146
+    21300294: Beetleboar_Sprite_147
+    21300296: Beetleboar_Sprite_148
+    21300298: Beetleboar_Sprite_149
+    21300300: Beetleboar_Sprite_150
+    21300302: Beetleboar_Sprite_151
+    21300304: Beetleboar_Sprite_152
+    21300306: Beetleboar_Sprite_153
+    21300308: Beetleboar_Sprite_154
+    21300310: Beetleboar_Sprite_155
+    21300312: Beetleboar_Sprite_156
+    21300314: Beetleboar_Sprite_157
+    21300316: Beetleboar_Sprite_158
+    21300318: Beetleboar_Sprite_159
+    21300320: Beetleboar_Sprite_160
+    21300322: Beetleboar_Sprite_161
+    21300324: Beetleboar_Sprite_162
+    21300326: Beetleboar_Sprite_163
+    21300328: Beetleboar_Sprite_164
+    21300330: Beetleboar_Sprite_165
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  allowsAlphaSplitting: 0
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_0
+      rect:
+        serializedVersion: 2
+        x: 6
+        y: 571
+        width: 40
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_1
+      rect:
+        serializedVersion: 2
+        x: 56
+        y: 569
+        width: 39
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_2
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 567
+        width: 43
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_3
+      rect:
+        serializedVersion: 2
+        x: 151
+        y: 568
+        width: 42
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_4
+      rect:
+        serializedVersion: 2
+        x: 197
+        y: 566
+        width: 46
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_5
+      rect:
+        serializedVersion: 2
+        x: 267
+        y: 567
+        width: 40
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_6
+      rect:
+        serializedVersion: 2
+        x: 317
+        y: 565
+        width: 39
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_7
+      rect:
+        serializedVersion: 2
+        x: 363
+        y: 563
+        width: 43
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_8
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 564
+        width: 42
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_9
+      rect:
+        serializedVersion: 2
+        x: 458
+        y: 562
+        width: 46
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_10
+      rect:
+        serializedVersion: 2
+        x: 536
+        y: 565
+        width: 40
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_11
+      rect:
+        serializedVersion: 2
+        x: 586
+        y: 563
+        width: 39
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_12
+      rect:
+        serializedVersion: 2
+        x: 632
+        y: 561
+        width: 43
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_13
+      rect:
+        serializedVersion: 2
+        x: 681
+        y: 562
+        width: 42
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_14
+      rect:
+        serializedVersion: 2
+        x: 727
+        y: 560
+        width: 46
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_15
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 522
+        width: 39
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_16
+      rect:
+        serializedVersion: 2
+        x: 55
+        y: 520
+        width: 41
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_17
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 519
+        width: 44
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_18
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 521
+        width: 43
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_19
+      rect:
+        serializedVersion: 2
+        x: 197
+        y: 525
+        width: 45
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_20
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 518
+        width: 39
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_21
+      rect:
+        serializedVersion: 2
+        x: 316
+        y: 516
+        width: 41
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_22
+      rect:
+        serializedVersion: 2
+        x: 363
+        y: 515
+        width: 44
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_23
+      rect:
+        serializedVersion: 2
+        x: 411
+        y: 517
+        width: 43
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_24
+      rect:
+        serializedVersion: 2
+        x: 458
+        y: 521
+        width: 45
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_25
+      rect:
+        serializedVersion: 2
+        x: 537
+        y: 516
+        width: 39
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_26
+      rect:
+        serializedVersion: 2
+        x: 585
+        y: 514
+        width: 41
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_27
+      rect:
+        serializedVersion: 2
+        x: 632
+        y: 513
+        width: 44
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_28
+      rect:
+        serializedVersion: 2
+        x: 680
+        y: 515
+        width: 43
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_29
+      rect:
+        serializedVersion: 2
+        x: 727
+        y: 519
+        width: 45
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_30
+      rect:
+        serializedVersion: 2
+        x: 11
+        y: 473
+        width: 37
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_31
+      rect:
+        serializedVersion: 2
+        x: 56
+        y: 475
+        width: 40
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_32
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 473
+        width: 40
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_33
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 473
+        width: 42
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_34
+      rect:
+        serializedVersion: 2
+        x: 197
+        y: 474
+        width: 47
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_35
+      rect:
+        serializedVersion: 2
+        x: 272
+        y: 469
+        width: 37
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_36
+      rect:
+        serializedVersion: 2
+        x: 317
+        y: 471
+        width: 40
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_37
+      rect:
+        serializedVersion: 2
+        x: 364
+        y: 469
+        width: 40
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_38
+      rect:
+        serializedVersion: 2
+        x: 411
+        y: 469
+        width: 42
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_39
+      rect:
+        serializedVersion: 2
+        x: 458
+        y: 470
+        width: 47
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_40
+      rect:
+        serializedVersion: 2
+        x: 541
+        y: 467
+        width: 37
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_41
+      rect:
+        serializedVersion: 2
+        x: 586
+        y: 469
+        width: 40
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_42
+      rect:
+        serializedVersion: 2
+        x: 633
+        y: 467
+        width: 40
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_43
+      rect:
+        serializedVersion: 2
+        x: 680
+        y: 467
+        width: 42
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_44
+      rect:
+        serializedVersion: 2
+        x: 727
+        y: 468
+        width: 47
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_45
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 425
+        width: 41
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_46
+      rect:
+        serializedVersion: 2
+        x: 54
+        y: 425
+        width: 44
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_47
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 424
+        width: 42
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_48
+      rect:
+        serializedVersion: 2
+        x: 150
+        y: 424
+        width: 45
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_49
+      rect:
+        serializedVersion: 2
+        x: 197
+        y: 426
+        width: 45
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_50
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 421
+        width: 41
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_51
+      rect:
+        serializedVersion: 2
+        x: 315
+        y: 421
+        width: 44
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_52
+      rect:
+        serializedVersion: 2
+        x: 365
+        y: 420
+        width: 42
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_53
+      rect:
+        serializedVersion: 2
+        x: 411
+        y: 420
+        width: 45
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_54
+      rect:
+        serializedVersion: 2
+        x: 458
+        y: 422
+        width: 45
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_55
+      rect:
+        serializedVersion: 2
+        x: 537
+        y: 419
+        width: 41
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_56
+      rect:
+        serializedVersion: 2
+        x: 584
+        y: 419
+        width: 44
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_57
+      rect:
+        serializedVersion: 2
+        x: 634
+        y: 418
+        width: 42
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_58
+      rect:
+        serializedVersion: 2
+        x: 680
+        y: 418
+        width: 45
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_59
+      rect:
+        serializedVersion: 2
+        x: 727
+        y: 420
+        width: 45
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_60
+      rect:
+        serializedVersion: 2
+        x: 7
+        y: 376
+        width: 45
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_61
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 380
+        width: 26
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_62
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 375
+        width: 45
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_63
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 376
+        width: 23
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_64
+      rect:
+        serializedVersion: 2
+        x: 268
+        y: 372
+        width: 45
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_65
+      rect:
+        serializedVersion: 2
+        x: 329
+        y: 376
+        width: 26
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_66
+      rect:
+        serializedVersion: 2
+        x: 363
+        y: 371
+        width: 45
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_67
+      rect:
+        serializedVersion: 2
+        x: 421
+        y: 372
+        width: 23
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_68
+      rect:
+        serializedVersion: 2
+        x: 537
+        y: 370
+        width: 45
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_69
+      rect:
+        serializedVersion: 2
+        x: 598
+        y: 374
+        width: 26
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_70
+      rect:
+        serializedVersion: 2
+        x: 632
+        y: 369
+        width: 45
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_71
+      rect:
+        serializedVersion: 2
+        x: 690
+        y: 370
+        width: 23
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_72
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 302
+        width: 40
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_73
+      rect:
+        serializedVersion: 2
+        x: 59
+        y: 300
+        width: 39
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_74
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 298
+        width: 43
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_75
+      rect:
+        serializedVersion: 2
+        x: 154
+        y: 299
+        width: 42
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_76
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 297
+        width: 46
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_77
+      rect:
+        serializedVersion: 2
+        x: 273
+        y: 304
+        width: 40
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_78
+      rect:
+        serializedVersion: 2
+        x: 323
+        y: 302
+        width: 39
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_79
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 300
+        width: 43
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_80
+      rect:
+        serializedVersion: 2
+        x: 418
+        y: 301
+        width: 42
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_81
+      rect:
+        serializedVersion: 2
+        x: 464
+        y: 299
+        width: 46
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_82
+      rect:
+        serializedVersion: 2
+        x: 539
+        y: 305
+        width: 40
+        height: 42
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_83
+      rect:
+        serializedVersion: 2
+        x: 589
+        y: 303
+        width: 39
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_84
+      rect:
+        serializedVersion: 2
+        x: 635
+        y: 301
+        width: 43
+        height: 46
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_85
+      rect:
+        serializedVersion: 2
+        x: 684
+        y: 302
+        width: 42
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_86
+      rect:
+        serializedVersion: 2
+        x: 730
+        y: 300
+        width: 46
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_87
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 253
+        width: 39
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_88
+      rect:
+        serializedVersion: 2
+        x: 58
+        y: 251
+        width: 41
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_89
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 250
+        width: 44
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_90
+      rect:
+        serializedVersion: 2
+        x: 153
+        y: 252
+        width: 43
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_91
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 256
+        width: 45
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_92
+      rect:
+        serializedVersion: 2
+        x: 274
+        y: 255
+        width: 39
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_93
+      rect:
+        serializedVersion: 2
+        x: 322
+        y: 253
+        width: 41
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_94
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 252
+        width: 44
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_95
+      rect:
+        serializedVersion: 2
+        x: 417
+        y: 254
+        width: 43
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_96
+      rect:
+        serializedVersion: 2
+        x: 464
+        y: 258
+        width: 45
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_97
+      rect:
+        serializedVersion: 2
+        x: 540
+        y: 256
+        width: 39
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_98
+      rect:
+        serializedVersion: 2
+        x: 588
+        y: 254
+        width: 41
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_99
+      rect:
+        serializedVersion: 2
+        x: 635
+        y: 253
+        width: 44
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_100
+      rect:
+        serializedVersion: 2
+        x: 683
+        y: 255
+        width: 43
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_101
+      rect:
+        serializedVersion: 2
+        x: 730
+        y: 259
+        width: 45
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_102
+      rect:
+        serializedVersion: 2
+        x: 14
+        y: 204
+        width: 37
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_103
+      rect:
+        serializedVersion: 2
+        x: 59
+        y: 206
+        width: 40
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_104
+      rect:
+        serializedVersion: 2
+        x: 106
+        y: 204
+        width: 40
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_105
+      rect:
+        serializedVersion: 2
+        x: 153
+        y: 204
+        width: 42
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_106
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 205
+        width: 47
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_107
+      rect:
+        serializedVersion: 2
+        x: 278
+        y: 206
+        width: 37
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_108
+      rect:
+        serializedVersion: 2
+        x: 323
+        y: 208
+        width: 40
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_109
+      rect:
+        serializedVersion: 2
+        x: 370
+        y: 206
+        width: 40
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_110
+      rect:
+        serializedVersion: 2
+        x: 417
+        y: 206
+        width: 42
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_111
+      rect:
+        serializedVersion: 2
+        x: 464
+        y: 207
+        width: 47
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_112
+      rect:
+        serializedVersion: 2
+        x: 544
+        y: 207
+        width: 37
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_113
+      rect:
+        serializedVersion: 2
+        x: 589
+        y: 209
+        width: 40
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_114
+      rect:
+        serializedVersion: 2
+        x: 636
+        y: 207
+        width: 40
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_115
+      rect:
+        serializedVersion: 2
+        x: 683
+        y: 207
+        width: 42
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_116
+      rect:
+        serializedVersion: 2
+        x: 730
+        y: 208
+        width: 47
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_117
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 156
+        width: 41
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_118
+      rect:
+        serializedVersion: 2
+        x: 57
+        y: 156
+        width: 44
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_119
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 155
+        width: 42
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_120
+      rect:
+        serializedVersion: 2
+        x: 153
+        y: 155
+        width: 45
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_121
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 157
+        width: 45
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_122
+      rect:
+        serializedVersion: 2
+        x: 274
+        y: 158
+        width: 41
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_123
+      rect:
+        serializedVersion: 2
+        x: 321
+        y: 158
+        width: 44
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_124
+      rect:
+        serializedVersion: 2
+        x: 371
+        y: 157
+        width: 42
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_125
+      rect:
+        serializedVersion: 2
+        x: 417
+        y: 157
+        width: 45
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_126
+      rect:
+        serializedVersion: 2
+        x: 464
+        y: 159
+        width: 45
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_127
+      rect:
+        serializedVersion: 2
+        x: 540
+        y: 159
+        width: 41
+        height: 41
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_128
+      rect:
+        serializedVersion: 2
+        x: 587
+        y: 159
+        width: 44
+        height: 40
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_129
+      rect:
+        serializedVersion: 2
+        x: 637
+        y: 158
+        width: 42
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_130
+      rect:
+        serializedVersion: 2
+        x: 683
+        y: 158
+        width: 45
+        height: 44
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_131
+      rect:
+        serializedVersion: 2
+        x: 730
+        y: 160
+        width: 45
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_132
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 107
+        width: 45
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_133
+      rect:
+        serializedVersion: 2
+        x: 71
+        y: 111
+        width: 26
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_134
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 106
+        width: 45
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_135
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 107
+        width: 23
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_136
+      rect:
+        serializedVersion: 2
+        x: 274
+        y: 109
+        width: 45
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_137
+      rect:
+        serializedVersion: 2
+        x: 335
+        y: 113
+        width: 26
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_138
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 108
+        width: 45
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_139
+      rect:
+        serializedVersion: 2
+        x: 427
+        y: 109
+        width: 23
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_140
+      rect:
+        serializedVersion: 2
+        x: 540
+        y: 110
+        width: 45
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_141
+      rect:
+        serializedVersion: 2
+        x: 601
+        y: 114
+        width: 26
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_142
+      rect:
+        serializedVersion: 2
+        x: 635
+        y: 109
+        width: 45
+        height: 38
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_143
+      rect:
+        serializedVersion: 2
+        x: 693
+        y: 110
+        width: 23
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_144
+      rect:
+        serializedVersion: 2
+        x: 4
+        y: 40
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_145
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 40
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_146
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 40
+        width: 32
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_147
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 40
+        width: 31
+        height: 48
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_148
+      rect:
+        serializedVersion: 2
+        x: 8
+        y: 17
+        width: 7
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_149
+      rect:
+        serializedVersion: 2
+        x: 17
+        y: 17
+        width: 4
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_150
+      rect:
+        serializedVersion: 2
+        x: 22
+        y: 17
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_151
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 14
+        width: 6
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_152
+      rect:
+        serializedVersion: 2
+        x: 38
+        y: 17
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_153
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 17
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_154
+      rect:
+        serializedVersion: 2
+        x: 9
+        y: 5
+        width: 8
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_155
+      rect:
+        serializedVersion: 2
+        x: 18
+        y: 3
+        width: 5
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_156
+      rect:
+        serializedVersion: 2
+        x: 24
+        y: 3
+        width: 5
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_157
+      rect:
+        serializedVersion: 2
+        x: 30
+        y: 5
+        width: 5
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_158
+      rect:
+        serializedVersion: 2
+        x: 36
+        y: 5
+        width: 5
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_159
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 5
+        width: 5
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_160
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 3
+        width: 5
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_161
+      rect:
+        serializedVersion: 2
+        x: 60
+        y: 5
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_162
+      rect:
+        serializedVersion: 2
+        x: 68
+        y: 5
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_163
+      rect:
+        serializedVersion: 2
+        x: 76
+        y: 5
+        width: 5
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_164
+      rect:
+        serializedVersion: 2
+        x: 82
+        y: 5
+        width: 5
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_Sprite_165
+      rect:
+        serializedVersion: 2
+        x: 88
+        y: 5
+        width: 9
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

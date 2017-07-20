@@ -8,6 +8,7 @@ self_effect: Enabler Attack false
 target_effect: Damage WPD
 activation_type: active
 origin: innate
+orient: target
 trigger: NUL
 enabled: true
 animation: NUL
@@ -22,6 +23,7 @@ self_effect: Move 4
 target_effect: NUL
 activation_type: active
 origin: innate
+orient: target
 trigger: NUL
 enabled: true
 animation: NUL
@@ -36,6 +38,7 @@ self_effect: Heal 10; Pass
 target_effect: NUL
 activation_type: active
 origin: innate
+orient: select
 trigger: NUL
 enabled: true
 animation: NUL
@@ -50,6 +53,7 @@ self_effect: Move 1
 target_effect: NUL
 activation_type: active
 origin: innate
+orient: target
 trigger: NUL
 enabled: true
 animation: NUL
@@ -64,6 +68,7 @@ self_effect: Pass
 target_effect: NUL
 activation_type: active
 origin: innate
+orient: select
 trigger: NUL
 enabled: true
 animation: NUL
@@ -78,6 +83,7 @@ self_effect: NUL
 target_effect: Damage WPD
 activation_type: active
 origin: innate
+orient: target
 trigger: NUL
 enabled: true
 animation: NUL
@@ -92,6 +98,7 @@ self_effect: NUL
 target_effect: Damage WPD
 activation_type: active
 origin: innate
+orient: target
 trigger: NUL
 enabled: true
 animation: NUL

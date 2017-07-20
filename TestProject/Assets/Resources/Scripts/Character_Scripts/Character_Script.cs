@@ -9,7 +9,7 @@ public class Character_Script : MonoBehaviour {
     public class Action
     {
         public static string PLAYER_ACTIONS_FILE = "Assets/Resources/Actions/Action_List.txt";
-        public static int HEADINGS = 13;
+        public static int HEADINGS = 14;
         public enum Activation_Types { Active, Passive, Reactive }
         public enum Origin_Types { Innate, Soul, Weapon }
         public enum Accepted_Shortcuts { AUM, AUC, APM, APC, MPM, MPC, CAM, CAC, SPD, STR, CRD, SPT, DEX, VIT, LVL, WPR, WPD, ARM, WGT, MOC, DST, NUL }
@@ -61,6 +61,8 @@ public class Character_Script : MonoBehaviour {
         public Origin_Types origin;
         //if the action is enabled or not
         public bool enabled;
+        //Whether the ability lets you select orientation
+        public string orient;
         public String animation;
 
         public static Action Parse(String[] input)
@@ -146,6 +148,9 @@ public class Character_Script : MonoBehaviour {
                             break;
                         case "trigger":
                             act.trigger = values.Trim();
+                            break;
+                        case "orient":
+                            act.orient = values.Trim();
                             break;
                         case "enabled":
                             if (values.Trim() == "True" ||
@@ -473,6 +478,9 @@ public class Character_Script : MonoBehaviour {
                                 }
                                 else if (eff.type.ToString() == Effect.Types.Pass.ToString())
                                 {
+                                    //character.curr_action = this;
+                                    //character.StartCoroutine(character.Act(null));
+                                    //Debug.Log("TEST 2");
                                     character.StartCoroutine(character.End_Turn());
                                 }
                             }
@@ -704,7 +712,7 @@ public class Character_Script : MonoBehaviour {
             return true;
         }
 
-        public void Enact(Character_Script character, GameObject target_tile)
+        public IEnumerator Enact(Character_Script character, GameObject target_tile)
         {
             if (Check_Valid(character, target_tile))
             {
@@ -738,6 +746,7 @@ public class Character_Script : MonoBehaviour {
                                     }
                                 }
                             }
+                            character.state = States.Idle;
                         }
                         else if (eff.type.ToString() == Effect.Types.Heal.ToString())
                         {
@@ -751,6 +760,7 @@ public class Character_Script : MonoBehaviour {
                             {
                                 target_character.GetComponent<Character_Script>().aura_curr = target_character.GetComponent<Character_Script>().aura_max;
                             }
+                            character.state = States.Idle;
                         }
                         else if (eff.type.ToString() == Effect.Types.Status.ToString())
                         {
@@ -783,6 +793,7 @@ public class Character_Script : MonoBehaviour {
                                     }
                                 }
                             }
+                            character.state = States.Idle;
                         }
                         else if (eff.type.ToString() == Effect.Types.Pass.ToString())
                         {
@@ -822,6 +833,7 @@ public class Character_Script : MonoBehaviour {
                                     character.GetComponent<SpriteRenderer>().color = Color.red;
                                 }
                             }
+                            character.state = States.Idle;
                         }
                         else if (eff.type.ToString() == Effect.Types.Heal.ToString())
                         {
@@ -834,6 +846,7 @@ public class Character_Script : MonoBehaviour {
                             {
                                 character.GetComponent<Character_Script>().aura_curr = character.GetComponent<Character_Script>().aura_max;
                             }
+                            character.state = States.Idle;
                         }
                         else if (eff.type.ToString() == Effect.Types.Status.ToString())
                         {
@@ -861,6 +874,7 @@ public class Character_Script : MonoBehaviour {
                                     }
                                 }
                             }
+                            character.state = States.Idle;
                         }
                         else if (eff.type.ToString() == Effect.Types.Pass.ToString())
                         {
@@ -873,19 +887,22 @@ public class Character_Script : MonoBehaviour {
                 //character.state = States.Idle;
                 character.controller.curr_scenario.CleanReachable();
                 character.controller.curr_scenario.ResetReachable();
-                if (character.action_curr <= 0)
+                if (orient == "target")
                 {
-                    character.StartCoroutine(character.End_Turn());
-                }
-                else
-                {
-                    character.controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
-                    character.Find_Action("Move").Select(character);
+                    character.Choose_Orientation(target_tile);
                 }
                 if (character.action_curr > character.action_max)
                 {
                     character.action_curr = character.action_max;
                 }
+                //character.state = States.Idle;
+
+                while (character.state != States.Idle)
+                {
+                    //Debug.Log("State " + character.state.ToString());
+                    yield return new WaitForEndOfFrame();
+                }
+
             }
         }
 
@@ -928,7 +945,7 @@ public class Character_Script : MonoBehaviour {
     //public int AP_RECOVERY = 10;
     public int SPEED = 6;
     public int character_id;
-    public enum States { Moving, Attacking, Idle, Dead, Blinking, Walking }
+    public enum States { Moving, Attacking, Idle, Dead, Blinking, Walking, Orienting }
     public enum Weapons { Sword, Rifle, Spear, Sniper, Pistol, Claws, Orb, Hammer }
     public enum Armors { Light, Medium, Heavy }
     public enum Character_Stats { aura_max, action_max, canister_max, strength, coordination, spirit, dexterity, vitality, speed };
@@ -1208,6 +1225,81 @@ public class Character_Script : MonoBehaviour {
         //gameObject.SetActive(true);
     }
 
+    public IEnumerator Choose_Orientation()
+    {
+        States prev_state = state;
+        while (!Input.GetMouseButton(0))
+        {
+            state = States.Orienting;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            //deprecated 2d raycast physics
+            //hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+            if (Physics.Raycast(ray, out hit, 100))
+            {
+                Tile_Data tile_data = hit.transform.GetComponent<Tile_Data>();
+                if (tile_data != null)
+                {
+                    if (tile_data.node.id[0] >= curr_tile.GetComponent<Tile_Data>().node.id[0] &&
+                        tile_data.node.id[1] < curr_tile.GetComponent<Tile_Data>().node.id[1])
+                    {
+                        orientation = 0;
+                    }
+                    if (tile_data.node.id[0] > curr_tile.GetComponent<Tile_Data>().node.id[0] &&
+                        tile_data.node.id[1] >= curr_tile.GetComponent<Tile_Data>().node.id[1])
+                    {
+                        orientation = 1;
+                    }
+                    if (tile_data.node.id[0] <= curr_tile.GetComponent<Tile_Data>().node.id[0] &&
+                        tile_data.node.id[1] > curr_tile.GetComponent<Tile_Data>().node.id[1])
+                    {
+                        orientation = 2;
+                    }
+                    if (tile_data.node.id[0] < curr_tile.GetComponent<Tile_Data>().node.id[0] &&
+                        tile_data.node.id[1] <= curr_tile.GetComponent<Tile_Data>().node.id[1])
+                    {
+                        orientation = 3;
+                    }
+                }
+            }
+            Orient();
+            yield return new WaitForEndOfFrame();
+        }
+        state = prev_state;
+    }
+
+    public void Choose_Orientation(GameObject target)
+    {
+        States prev_state = state;
+        state = States.Orienting;
+            Tile_Data tile_data = target.GetComponent<Tile_Data>();
+                if (tile_data != null)
+                {
+                    if (tile_data.node.id[0] >= curr_tile.GetComponent<Tile_Data>().node.id[0] &&
+                        tile_data.node.id[1] < curr_tile.GetComponent<Tile_Data>().node.id[1])
+                    {
+                        orientation = 0;
+                    }
+                    if (tile_data.node.id[0] > curr_tile.GetComponent<Tile_Data>().node.id[0] &&
+                        tile_data.node.id[1] >= curr_tile.GetComponent<Tile_Data>().node.id[1])
+                    {
+                        orientation = 1;
+                    }
+                    if (tile_data.node.id[0] <= curr_tile.GetComponent<Tile_Data>().node.id[0] &&
+                        tile_data.node.id[1] > curr_tile.GetComponent<Tile_Data>().node.id[1])
+                    {
+                        orientation = 2;
+                    }
+                    if (tile_data.node.id[0] < curr_tile.GetComponent<Tile_Data>().node.id[0] &&
+                        tile_data.node.id[1] <= curr_tile.GetComponent<Tile_Data>().node.id[1])
+                    {
+                        orientation = 3;
+                    }
+                }
+        Orient();
+        state = prev_state;
+    }
+
     public void Orient()
     {
         //Flip sprite based on orientation
@@ -1304,11 +1396,17 @@ public class Character_Script : MonoBehaviour {
 
     public IEnumerator End_Turn()
     {
-        while(state == States.Walking)
+        if (curr_action.orient == "select")
+        {
+            StartCoroutine(Choose_Orientation());
+        }
+        controller.curr_scenario.ResetReachable();
+        controller.curr_scenario.CleanReachable();
+        while(state == States.Walking ||  state == States.Orienting)
         {
             yield return new WaitForEndOfFrame();
         }
-        state = States.Idle;
+
         Debug.Log("Character " + character_name + " Passed");
         curr_action = null;
         reaction_curr = reaction_max;
@@ -1326,9 +1424,9 @@ public class Character_Script : MonoBehaviour {
                 act.enabled = true;
             }
         }
-        controller.curr_scenario.CleanReachable();
         controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
         controller.curr_scenario.NextPlayer();
+        state = States.Idle;
     }
 
     public Action Find_Action(String name)
@@ -1347,9 +1445,24 @@ public class Character_Script : MonoBehaviour {
         return null;
     }
 
-    public void Act(Transform target_tile)
+    public IEnumerator Act(Transform target_tile)
     {
-        curr_action.Enact(this, target_tile.gameObject);
+        StartCoroutine(curr_action.Enact(this, target_tile.gameObject));
+        while(state != States.Idle)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+        if (action_curr <= 0)
+        {
+            StartCoroutine(End_Turn());
+        }
+        else
+        {
+            controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
+            Find_Action("Move").Select(this);
+        }
+        //curr_action.Enact(this, target_tile.gameObject);
+
     }
 
     public void Equip(Equipment e)
@@ -1567,87 +1680,97 @@ public class Character_Script : MonoBehaviour {
         //action_curr -= action_cost;
         //action_cost = 0;
 
-        if (gameObject.CompareTag("Player"))
+        
+        //Tile_Data.Node temp_tile = clicked_tile.GetComponent<Tile_Data>().node;
+        //Tile_Data.Node prev_tile = curr_tile.GetComponent<Tile_Data>().node;
+        //Stack<Tile_Data.Node> path = new Stack<Tile_Data.Node>();
+
+        //Construct a stack that is a path from the clicked tile to the source.
+        while(!(temp_tile.id[0] == curr_tile.GetComponent<Tile_Data>().node.id[0] && temp_tile.id[1] == curr_tile.GetComponent<Tile_Data>().node.id[1]))
         {
-            //Tile_Data.Node temp_tile = clicked_tile.GetComponent<Tile_Data>().node;
-            //Tile_Data.Node prev_tile = curr_tile.GetComponent<Tile_Data>().node;
-            //Stack<Tile_Data.Node> path = new Stack<Tile_Data.Node>();
-
-            //Construct a stack that is a path from the clicked tile to the source.
-            while(!(temp_tile.id[0] == curr_tile.GetComponent<Tile_Data>().node.id[0] && temp_tile.id[1] == curr_tile.GetComponent<Tile_Data>().node.id[1]))
-            {
-                path.Push(temp_tile);
-                //Look at the parent tile.
-                temp_tile = temp_tile.parent;
-            }
+            path.Push(temp_tile);
+            //Look at the parent tile.
+            temp_tile = temp_tile.parent;
+        }
             
-            //distances.Push(distance);
-            //Debug.Log("temp_tile.id[0]: " + temp_tile.id[0]);
-            //Debug.Log("temp_tile.id[1]: " + temp_tile.id[1]);
-            //Debug.Log("curr_tile.id[0]: " + curr_tile.GetComponent<Tile_Data>().node.id[0]);
-            //Debug.Log("curr_tile.id[0]: " + curr_tile.GetComponent<Tile_Data>().node.id[1]);
-            //Navigate the path by popping tiles out of the stack.
-            while (path.Count != 0)
+        //distances.Push(distance);
+        //Debug.Log("temp_tile.id[0]: " + temp_tile.id[0]);
+        //Debug.Log("temp_tile.id[1]: " + temp_tile.id[1]);
+        //Debug.Log("curr_tile.id[0]: " + curr_tile.GetComponent<Tile_Data>().node.id[0]);
+        //Debug.Log("curr_tile.id[0]: " + curr_tile.GetComponent<Tile_Data>().node.id[1]);
+        //Navigate the path by popping tiles out of the stack.
+        while (path.Count != 0)
+        {
+
+            temp_tile = path.Pop();
+            //transform.position = new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x, (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z);
+            //
+            //yield return new WaitForSeconds(.3f);
+            float elapsedTime = 0;
+            float duration = .3f;
+            //print("duration: " +duration);
+            while (elapsedTime < duration)
             {
-
-                temp_tile = path.Pop();
-                //transform.position = new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x, (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z);
-                //
-                //yield return new WaitForSeconds(.3f);
-
-                float elapsedTime = 0;
-                float duration = .3f;
-                //print("duration: " +duration);
-                while (elapsedTime < duration)
+                if(prev_tile.id[0] == temp_tile.id[0] && prev_tile.id[1] > temp_tile.id[1])
                 {
-                    if(prev_tile.id[0] == temp_tile.id[0] && prev_tile.id[1] > temp_tile.id[1])
-                    {
-                        orientation = 0;
-                    }
-                    else if (prev_tile.id[0] < temp_tile.id[0] && prev_tile.id[1] == temp_tile.id[1])
-                    {
-                        orientation = 1;
-                    }
-                    else if (prev_tile.id[0] == temp_tile.id[0] && prev_tile.id[1] < temp_tile.id[1])
-                    {
-                        orientation = 2;
-                    }
-                    else if (prev_tile.id[0] > temp_tile.id[0] && prev_tile.id[1] == temp_tile.id[1])
-                    {
-                        orientation = 3;
-                    }
-                    Orient();
-                    transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x-(.1f* controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height), 
-                        (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + 0.25f * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 1.145f),
-                        controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z- (.08f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height)), 
-                        new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x -(.1f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height), 
-                        (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + 0.25f* (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 1.145f),
-                        controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z- (.08f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height)), 
-                        elapsedTime/duration);
-                    //(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f
-                    elapsedTime += Time.deltaTime;
-                    /*if (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sortingOrder > curr_tile.GetComponent<SpriteRenderer>().sortingOrder)
-                    {
-                        gameObject.GetComponent<SpriteRenderer>().sortingOrder = controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sortingOrder + 1;
-                    }
-                    else
-                    {
-                        gameObject.GetComponent<SpriteRenderer>().sortingOrder = curr_tile.GetComponent<SpriteRenderer>().sortingOrder+1;
-                    }*/
-                    yield return new WaitForEndOfFrame();
+                    orientation = 0;
                 }
-                //gameObject.GetComponent<SpriteRenderer>().sortingOrder = controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sortingOrder + 1;
-                prev_tile = temp_tile;
-
-
-
-                //    new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x, (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z);
-                //WaitForSeconds(1);
+                else if (prev_tile.id[0] < temp_tile.id[0] && prev_tile.id[1] == temp_tile.id[1])
+                {
+                    orientation = 1;
+                }
+                else if (prev_tile.id[0] == temp_tile.id[0] && prev_tile.id[1] < temp_tile.id[1])
+                {
+                    orientation = 2;
+                }
+                else if (prev_tile.id[0] > temp_tile.id[0] && prev_tile.id[1] == temp_tile.id[1])
+                {
+                    orientation = 3;
+                }
+                Orient();
+                if (CompareTag("Player"))
+                {
+                    transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x - (.1f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height),
+                        (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + 0.25f * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 1.145f),
+                        controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z - (.08f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height)),
+                        new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x - (.1f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height),
+                        (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + 0.25f * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 1.145f),
+                        controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z - (.08f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height)),
+                        elapsedTime / duration);
+                }
+                if (CompareTag("Monster"))
+                {
+                    transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x - (.1f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height),
+                        (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + 0.25f * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 0.7f),
+                        controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z - (.08f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height)),
+                        new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x - (.1f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height),
+                        (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + 0.25f * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 0.7f),
+                        controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z - (.08f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height)),
+                        elapsedTime / duration);
+                }
+                //(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f
+                elapsedTime += Time.deltaTime;
+                /*if (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sortingOrder > curr_tile.GetComponent<SpriteRenderer>().sortingOrder)
+                {
+                   gameObject.GetComponent<SpriteRenderer>().sortingOrder = controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sortingOrder + 1;
+                }
+                else
+                {
+                    gameObject.GetComponent<SpriteRenderer>().sortingOrder = curr_tile.GetComponent<SpriteRenderer>().sortingOrder+1;
+                }*/
+                yield return new WaitForEndOfFrame();
             }
+            //gameObject.GetComponent<SpriteRenderer>().sortingOrder = controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sortingOrder + 1;
+            prev_tile = temp_tile;
+
+
+
+            //    new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x, (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z);
+            //WaitForSeconds(1);
+        }
             //transform.position = new Vector3(curr_tile.position.x, (float)(curr_tile.position.y + (curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z);
             
-        }
-        state = States.Moving;
+        state = States.Idle;
 
     }
 	
