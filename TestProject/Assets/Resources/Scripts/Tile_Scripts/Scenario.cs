@@ -467,6 +467,8 @@ public class Scenario : MonoBehaviour {
     public GameObject curr_player;
     public GameObject highlighted_player;
     public GameObject cursor;
+    public List<GameObject> cursors;
+    public String cursor_type;
     public int turn_index;
     public int curr_character_num;
     public ArrayList characters;
@@ -828,6 +830,7 @@ public class Scenario : MonoBehaviour {
         characters = new ArrayList();
 
         cursor = GameObject.FindGameObjectWithTag("Cursor");
+        cursors = new List<GameObject>();
         GameObject[] objects = GameObject.FindGameObjectsWithTag("Player");
 
         //set starting positions for players
@@ -1096,7 +1099,141 @@ public class Scenario : MonoBehaviour {
 
                 //update cursor location
                 selected_tile = hit.transform;
-                cursor.transform.position = new Vector3(selected_tile.position.x, selected_tile.position.y + 0.025f + .25f * selected_tile.GetComponent<Tile_Data>().node.height, selected_tile.position.z);
+                Update_Cursor(selected_tile);
+            }
+        }
+    }
+
+    public void Update_Cursor(Transform selected_tile)
+    {
+        if (curr_player.GetComponent<Character_Script>().curr_action != null)
+        {
+
+            //Update cursor type to match current Ability
+            if (cursor_type != curr_player.GetComponent<Character_Script>().curr_action.area)
+            {
+                //Destroy existing cursors
+                foreach (GameObject game_object in cursors)
+                {
+                    //reachable_tile_objects.Remove(game_object);
+                    Destroy(game_object);
+                }
+                cursors = new List<GameObject>();
+                cursor_type = curr_player.GetComponent<Character_Script>().curr_action.area;
+
+                //Recreate cursors based on type
+                if (curr_player.GetComponent<Character_Script>().curr_action == null ||
+                    curr_player.GetComponent<Character_Script>().curr_action.area == "Target" ||
+                    curr_player.GetComponent<Character_Script>().curr_action.area == "Self")
+                {
+                    //1 cursor
+                    cursors.Add(Instantiate(cursor));
+                }
+                else if (curr_player.GetComponent<Character_Script>().curr_action.area.Contains("Cross"))
+                {
+                    String[] area_effect = curr_player.GetComponent<Character_Script>().curr_action.area.Split(' ');
+                    int size = 0;
+                    int.TryParse(area_effect[2], out size);
+                    //4*length of cross +1 cursors 
+                    for (int a = 0; a < 4 * size + 1; a++)
+                    {
+                        cursors.Add(Instantiate(cursor));
+                    }
+                }
+                else if (curr_player.GetComponent<Character_Script>().curr_action.area.Contains("Ring"))
+                {
+                    String[] area_effect = curr_player.GetComponent<Character_Script>().curr_action.area.Split(' ');
+                    int ringsize = 0;
+                    int gapsize = 0;
+                    int.TryParse(area_effect[2], out ringsize);
+                    int.TryParse(area_effect[3], out gapsize);
+                    //Area of outer square - area of inner square
+                    for (int a = 0; a < (((ringsize*2+1) * (ringsize*2+1)) - ((gapsize*2+1) * (gapsize*2+1))); a++)
+                    {
+                        cursors.Add(Instantiate(cursor));
+                    }
+                }
+            }
+
+            //Update cursor positions
+            if (curr_player.GetComponent<Character_Script>().curr_action == null ||
+                curr_player.GetComponent<Character_Script>().curr_action.area == "Target" ||
+                curr_player.GetComponent<Character_Script>().curr_action.area == "Self")
+            {
+                cursors[0].transform.position = new Vector3(selected_tile.position.x, selected_tile.position.y + 0.025f + .25f * selected_tile.GetComponent<Tile_Data>().node.height, selected_tile.position.z);
+            }
+            else if (curr_player.GetComponent<Character_Script>().curr_action.area.Contains("Cross"))
+            {
+                String[] area_effect = curr_player.GetComponent<Character_Script>().curr_action.area.Split(' ');
+                int x = selected_tile.GetComponent<Tile_Data>().x_index;
+                int y = selected_tile.GetComponent<Tile_Data>().y_index;
+                int size = 0;
+                int curs_index = 0;
+                int.TryParse(area_effect[2], out size);
+                for (int i = -size; i <= size; i++)
+                {
+                    Transform tile = tile_grid.getTile(x + i, y);
+                    if (tile != null)
+                    {
+                        cursors[curs_index].transform.position = new Vector3(tile.position.x, tile.position.y + 0.025f + .25f * tile.GetComponent<Tile_Data>().node.height, tile.position.z);
+                        curs_index++;
+                        //avoid duplicates
+                    }else
+                    {
+                        cursors[curs_index].transform.position = new Vector3(-10, -10, -10);
+                        curs_index++;
+                    }
+                    if (i != 0)
+                    {
+                        tile = tile_grid.getTile(x, y + i);
+                        if (tile != null)
+                        {
+                            cursors[curs_index].transform.position = new Vector3(tile.position.x, tile.position.y + 0.025f + .25f * tile.GetComponent<Tile_Data>().node.height, tile.position.z);
+                            curs_index++;
+                        }else
+                        {
+                            cursors[curs_index].transform.position = new Vector3(-10, -10, -10);
+                            curs_index++;
+                        }
+                    }
+                    
+                    
+                }
+            }
+            else if (curr_player.GetComponent<Character_Script>().curr_action.area.Contains("Ring"))
+            {
+                String[] area_effect = curr_player.GetComponent<Character_Script>().curr_action.area.Split(' ');
+                int x = selected_tile.GetComponent<Tile_Data>().x_index;
+                int y = selected_tile.GetComponent<Tile_Data>().y_index;
+                int ringsize = 0;
+                int gapsize = 0;
+                int curs_index = 0;
+                int.TryParse(area_effect[2], out ringsize);
+                int.TryParse(area_effect[3], out gapsize);
+                for (int i = -ringsize; i <= ringsize; i++)
+                {
+                    for (int j = -ringsize; j <= ringsize; j++)
+                    {
+                        if (Math.Abs(i) > gapsize || Math.Abs(j) > gapsize)
+                        {
+                            Transform tile = tile_grid.getTile(x + i, y + j);
+                            if (tile != null)
+                            {
+                                cursors[curs_index].transform.position = new Vector3(tile.position.x, tile.position.y + 0.025f + .25f * tile.GetComponent<Tile_Data>().node.height, tile.position.z);
+                                curs_index++;
+                            }else
+                            {
+                                cursors[curs_index].transform.position = new Vector3(-10, -10, -10);
+                                curs_index++;
+                            }
+                        }
+                    }
+
+                }
+            }
+            else
+            {
+                cursors[0].transform.position = new Vector3(selected_tile.position.x, selected_tile.position.y + 0.025f + .25f * selected_tile.GetComponent<Tile_Data>().node.height, selected_tile.position.z);
             }
         }
     }
