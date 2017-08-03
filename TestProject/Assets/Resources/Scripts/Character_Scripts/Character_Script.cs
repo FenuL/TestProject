@@ -1021,10 +1021,11 @@ public class Character_Script : MonoBehaviour {
                     effects = new Effect[2];
                     effects[0] = new Effect(Character_Stats.speed, 1);
                     effects[1] = new Effect(Character_Stats.dexterity, 1);
-                    actions = new String[3];
+                    actions = new String[4];
                     actions[0] = "Blink";
                     actions[1] = "Cross";
                     actions[2] = "Ring";
+                    actions[3] = "Cone";
                     break;
                 case "Medium":
                     name = Armors.Medium.ToString();
@@ -1033,9 +1034,10 @@ public class Character_Script : MonoBehaviour {
                     effects = new Effect[2];
                     effects[0] = new Effect(Character_Stats.strength, 1);
                     effects[1] = new Effect(Character_Stats.coordination, 1);
-                    actions = new String[2];
+                    actions = new String[3];
                     actions[0] = "Cross";
                     actions[1] = "Ring";
+                    actions[2] = "Cone";
                     break;
                 case "Heavy":
                     name = Armors.Heavy.ToString();
@@ -1044,10 +1046,11 @@ public class Character_Script : MonoBehaviour {
                     effects = new Effect[2];
                     effects[0] = new Effect(Character_Stats.vitality, 1);
                     effects[1] = new Effect(Character_Stats.spirit, 1);
-                    actions = new String[3];
+                    actions = new String[4];
                     actions[0] = "Channel";
                     actions[1] = "Cross";
                     actions[2] = "Ring";
+                    actions[3] = "Cone";
                     break;
             }
         }
@@ -1065,10 +1068,11 @@ public class Character_Script : MonoBehaviour {
                     effects = new Effect[2];
                     effects[0] = new Effect(Character_Stats.speed, 1);
                     effects[1] = new Effect(Character_Stats.dexterity, 1);
-                    actions = new String[3];
+                    actions = new String[4];
                     actions[0] = "Blink";
                     actions[1] = "Cross";
                     actions[2] = "Ring";
+                    actions[3] = "Cone";
                     break;
                 case Armors.Medium:
                     name = Armors.Medium.ToString();
@@ -1077,9 +1081,10 @@ public class Character_Script : MonoBehaviour {
                     effects = new Effect[2];
                     effects[0] = new Effect(Character_Stats.strength, 1);
                     effects[1] = new Effect(Character_Stats.coordination, 1);
-                    actions = new String[2];
+                    actions = new String[3];
                     actions[0] = "Cross";
                     actions[1] = "Ring";
+                    actions[2] = "Cone";
                     break;
                 case Armors.Heavy:
                     name = Armors.Heavy.ToString();
@@ -1088,10 +1093,11 @@ public class Character_Script : MonoBehaviour {
                     effects = new Effect[2];
                     effects[0] = new Effect(Character_Stats.vitality, 1);
                     effects[1] = new Effect(Character_Stats.spirit, 1);
-                    actions = new String[3];
+                    actions = new String[4];
                     actions[0] = "Channel";
                     actions[1] = "Cross";
                     actions[2] = "Ring";
+                    actions[3] = "Cone";
                     break;
             }
         }
@@ -1731,20 +1737,20 @@ public class Character_Script : MonoBehaviour {
                 if (CompareTag("Player"))
                 {
                     transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x - (.1f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height),
-                        (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + 0.25f * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 1.145f),
+                        (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 1.145f),
                         controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z - (.08f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height)),
                         new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x - (.1f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height),
-                        (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + 0.25f * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 1.145f),
+                        (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 1.145f),
                         controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z - (.08f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height)),
                         elapsedTime / duration);
                 }
                 if (CompareTag("Monster"))
                 {
                     transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x - (.1f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height),
-                        (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + 0.25f * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 0.7f),
+                        (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 0.7f),
                         controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z - (.08f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height)),
                         new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x - (.1f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height),
-                        (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + 0.25f * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 0.7f),
+                        (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 0.7f),
                         controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z - (.08f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height)),
                         elapsedTime / duration);
                 }

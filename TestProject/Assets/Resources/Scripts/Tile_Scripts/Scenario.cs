@@ -25,6 +25,8 @@ public class Tile_Grid : ScriptableObject{
     //Starting coordinates for the grid;
     public static float START_X = 0;
     public static float START_Y = 3.5f;
+    //Scale for the tiles
+    public static float tile_scale = 0.5f;
 
     //Prefabs
 	public GameObject tile_prefab;
@@ -149,7 +151,7 @@ public class Tile_Grid : ScriptableObject{
                 else
                 {
          
-                    string file = "Objects/Tiles/Test3x" + tile_heights[x,y];
+                    string file = "Objects/Tiles/Object-3x3x" + tile_heights[x,y];
                     /*int XOFFSET=0;
                     int YOFFSET=0;
                     int ZOFFSET=0;
@@ -235,7 +237,7 @@ public class Tile_Grid : ScriptableObject{
                     float NEWSCALE = 4f;
                     //GameObject instance = ((GameObject)Instantiate(tile3d, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity));
                     GameObject instance = ((GameObject)Instantiate(tile3d, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y), (float)(NEWSTARTY), (float)(NEWSTARTZ - NEWTILELENGTH * x)), Quaternion.identity));
-                    instance.transform.localScale = new Vector3(.25f,.25f,.25f);
+                    instance.transform.localScale = new Vector3(tile_scale,tile_scale,tile_scale);
                     //Add a collider to the tile (TEMPORARY)
                     BoxCollider collider = instance.AddComponent<BoxCollider>();
                     //collider.size = new Vector3(NEWTILELENGTH*NEWSCALE,tile_heights[x,y]*NEWTILEHEIGHT*(NEWSCALE/2),NEWTILEWIDTH*NEWSCALE);
@@ -274,7 +276,7 @@ public class Tile_Grid : ScriptableObject{
 
                         //instantiate the object
                         //Instantiate(object_prefab, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity);
-                        tiles[x, y].GetComponent<Tile_Data>().node.setObj((GameObject) Instantiate(object_prefab, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y), (float)(NEWSTARTY+0.66f + .25f * tile_heights[x, y]), (float)(NEWSTARTZ - NEWTILELENGTH * x)), Quaternion.identity));
+                        tiles[x, y].GetComponent<Tile_Data>().node.setObj((GameObject) Instantiate(object_prefab, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y), (float)(NEWSTARTY+0.66f + .5f * tile_heights[x, y]), (float)(NEWSTARTZ - NEWTILELENGTH * x)), Quaternion.identity));
                         //Instantiate(object_prefab, new Vector3((float)(START_X - (x) * (TILE_WIDTH / 200) + (y) * (TILE_WIDTH / 200)), (float)(START_Y - (x) * (TILE_LENGTH / 200) - (y) * (TILE_LENGTH / 200) + tile_heights[x, y] * TILE_HEIGHT / 100.0 + .35f), 0), Quaternion.identity);
                     }
 
@@ -842,7 +844,7 @@ public class Scenario : MonoBehaviour {
             game_object.GetComponent<Character_Script>().curr_tile = tile_grid.getTile(char_num, 0);
             game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.setObj(game_object);
             game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x- (.1f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height),
-                game_object.GetComponent<Character_Script>().curr_tile.position.y+ 1.145f + .25f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height,
+                game_object.GetComponent<Character_Script>().curr_tile.position.y+ 1.145f + Tile_Grid.tile_scale * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height,
                 game_object.GetComponent<Character_Script>().curr_tile.position.z - (.08f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height));
                  //game_object.GetComponent<Character_Script>().curr_tile.position.y + (float)(game_object.GetComponent<SpriteRenderer> ().sprite.rect.height / game_object.GetComponent<SpriteRenderer> ().sprite.pixelsPerUnit + 0.15f),
                  //(float)(game_object.GetComponent<Character_Script>().curr_tile.position.y + (game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f,
@@ -862,7 +864,7 @@ public class Scenario : MonoBehaviour {
             game_object.GetComponent<Character_Script>().curr_tile = tile_grid.getTile(19 - game_object.GetComponent<Character_Script>().character_num, 19);// [19-game_object.GetComponent<Character_Script>().character_num,19,0];
             game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.setObj(game_object);
             game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x - (.1f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height),
-                game_object.GetComponent<Character_Script>().curr_tile.position.y + 0.7f + .25f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height,
+                game_object.GetComponent<Character_Script>().curr_tile.position.y + 0.7f + Tile_Grid.tile_scale * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height,
                 game_object.GetComponent<Character_Script>().curr_tile.position.z - (.08f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height));
             // .25f* game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height+.015f
             //game_object.GetComponent<Character_Script>().curr_tile.position.y + 0.5f,
@@ -1153,6 +1155,17 @@ public class Scenario : MonoBehaviour {
                         cursors.Add(Instantiate(cursor));
                     }
                 }
+                else if (curr_player.GetComponent<Character_Script>().curr_action.area.Contains("Cone"))
+                {
+                    String[] area_effect = curr_player.GetComponent<Character_Script>().curr_action.area.Split(' ');
+                    int conesize = 0;
+                    int.TryParse(area_effect[2], out conesize);
+                    //Area of outer square - area of inner square
+                    for (int a = 0; a < (conesize*conesize); a++)
+                    {
+                        cursors.Add(Instantiate(cursor));
+                    }
+                }
             }
 
             //Update cursor positions
@@ -1160,7 +1173,7 @@ public class Scenario : MonoBehaviour {
                 curr_player.GetComponent<Character_Script>().curr_action.area == "Target" ||
                 curr_player.GetComponent<Character_Script>().curr_action.area == "Self")
             {
-                cursors[0].transform.position = new Vector3(selected_tile.position.x, selected_tile.position.y + 0.025f + .25f * selected_tile.GetComponent<Tile_Data>().node.height, selected_tile.position.z);
+                cursors[0].transform.position = new Vector3(selected_tile.position.x, selected_tile.position.y + 0.025f + Tile_Grid.tile_scale * selected_tile.GetComponent<Tile_Data>().node.height, selected_tile.position.z);
             }
             else if (curr_player.GetComponent<Character_Script>().curr_action.area.Contains("Cross"))
             {
@@ -1175,7 +1188,7 @@ public class Scenario : MonoBehaviour {
                     Transform tile = tile_grid.getTile(x + i, y);
                     if (tile != null)
                     {
-                        cursors[curs_index].transform.position = new Vector3(tile.position.x, tile.position.y + 0.025f + .25f * tile.GetComponent<Tile_Data>().node.height, tile.position.z);
+                        cursors[curs_index].transform.position = new Vector3(tile.position.x, tile.position.y + 0.025f + Tile_Grid.tile_scale * tile.GetComponent<Tile_Data>().node.height, tile.position.z);
                         curs_index++;
                         //avoid duplicates
                     }else
@@ -1188,7 +1201,7 @@ public class Scenario : MonoBehaviour {
                         tile = tile_grid.getTile(x, y + i);
                         if (tile != null)
                         {
-                            cursors[curs_index].transform.position = new Vector3(tile.position.x, tile.position.y + 0.025f + .25f * tile.GetComponent<Tile_Data>().node.height, tile.position.z);
+                            cursors[curs_index].transform.position = new Vector3(tile.position.x, tile.position.y + 0.025f + Tile_Grid.tile_scale * tile.GetComponent<Tile_Data>().node.height, tile.position.z);
                             curs_index++;
                         }else
                         {
@@ -1219,7 +1232,7 @@ public class Scenario : MonoBehaviour {
                             Transform tile = tile_grid.getTile(x + i, y + j);
                             if (tile != null)
                             {
-                                cursors[curs_index].transform.position = new Vector3(tile.position.x, tile.position.y + 0.025f + .25f * tile.GetComponent<Tile_Data>().node.height, tile.position.z);
+                                cursors[curs_index].transform.position = new Vector3(tile.position.x, tile.position.y + 0.025f + Tile_Grid.tile_scale * tile.GetComponent<Tile_Data>().node.height, tile.position.z);
                                 curs_index++;
                             }else
                             {
@@ -1231,9 +1244,49 @@ public class Scenario : MonoBehaviour {
 
                 }
             }
+            else if (curr_player.GetComponent<Character_Script>().curr_action.area.Contains("Cone"))
+            {
+                String[] area_effect = curr_player.GetComponent<Character_Script>().curr_action.area.Split(' ');
+                int x = selected_tile.GetComponent<Tile_Data>().x_index;
+                int y = selected_tile.GetComponent<Tile_Data>().y_index;
+                int conesize = 0;
+                int conerow = 1;
+                int orientation = curr_player.GetComponent<Character_Script>().orientation;
+                int curs_index = 0;
+                int.TryParse(area_effect[2], out conesize);
+                if(orientation == 0)
+                {
+                    for (int i = 0; i < conesize; i++)
+                    {
+                        for (int j = 0; j < conerow; j++)
+                        {
+                            Transform tile = tile_grid.getTile(x + i, y + j);
+                            if (tile != null)
+                            {
+                                cursors[curs_index].transform.position = new Vector3(tile.position.x, tile.position.y + 0.025f + Tile_Grid.tile_scale * tile.GetComponent<Tile_Data>().node.height, tile.position.z);
+                                curs_index++;
+                            }
+                        }
+
+                    }
+                }
+                else if (orientation == 1)
+                {
+
+                }
+                else if (orientation == 2)
+                {
+
+                }
+                else if (orientation == 3)
+                {
+
+                }
+                
+            }
             else
             {
-                cursors[0].transform.position = new Vector3(selected_tile.position.x, selected_tile.position.y + 0.025f + .25f * selected_tile.GetComponent<Tile_Data>().node.height, selected_tile.position.z);
+                cursors[0].transform.position = new Vector3(selected_tile.position.x, selected_tile.position.y + 0.025f + Tile_Grid.tile_scale * selected_tile.GetComponent<Tile_Data>().node.height, selected_tile.position.z);
             }
         }
     }
@@ -1351,7 +1404,7 @@ public class Scenario : MonoBehaviour {
             reachable_tile_objects.Add((GameObject)Instantiate(tile_grid.reachable_prefab, new Vector3(tile.position.x,
                                                            //tile.position.y+0.08f,
                                                            //(float)(tile.position.y + (tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) - .24f,
-                                                           tile.position.y+.015f+.25f*tile.GetComponent<Tile_Data>().node.height,
+                                                           tile.position.y+.015f+ Tile_Grid.tile_scale * tile.GetComponent<Tile_Data>().node.height,
                                                            tile.position.z),
                                                            Quaternion.identity));
 
