@@ -474,12 +474,13 @@ public class Scenario : MonoBehaviour {
     public int turn_index;
     public int curr_character_num;
     public ArrayList characters;
+    public ArrayList tile_objects;
     public Character_Script[] player_character_data;
     public Character_Script[] monster_character_data;
     public List<GameObject> turn_order;
     public Transform clicked_tile;
     public Transform selected_tile;
-    List<Transform> reachable_tiles;
+    public List<Transform> reachable_tiles;
     List<GameObject> reachable_tile_objects;
     public int curr_round;
 
@@ -876,6 +877,13 @@ public class Scenario : MonoBehaviour {
             char_num++;
         }
 
+        //Get Objects
+        /*objects = GameObject.FindGameObjectsWithTag("Object");
+        foreach (GameObject game_object in objects)
+        {
+            tile_objects.Add(game_object);
+        }*/
+
         foreach (GameObject game_object in characters)
         {
 
@@ -897,7 +905,7 @@ public class Scenario : MonoBehaviour {
             game_object.GetComponent<Character_Script>().vitality = character_data[game_object.GetComponent<Character_Script>().character_id].vitality;
             game_object.GetComponent<Character_Script>().speed = (int)character_data[game_object.GetComponent<Character_Script>().character_id].speed;
             game_object.GetComponent<Character_Script>().canister_max = character_data[game_object.GetComponent<Character_Script>().character_id].canister_max;
-
+            game_object.GetComponent<Character_Script>().orientation = 2;
             //game_object.GetComponent<Character_Script>().Equip(character_data[game_object.GetComponent<Character_Script>().character_id].weapon);
             //game_object.GetComponent<Character_Script>().Equip(character_data[game_object.GetComponent<Character_Script>().character_id].armor);
             game_object.GetComponent<Character_Script>().weapon = character_data[game_object.GetComponent<Character_Script>().character_id].weapon;
@@ -977,134 +985,6 @@ public class Scenario : MonoBehaviour {
         }
     }
 
-    void playerInput()
-    {
-        //player selection
-        if (Input.GetKeyDown("1"))
-        {
-            curr_character_num = 0;
-        }
-        else if (Input.GetKeyDown("2"))
-        {
-            curr_character_num = 1;
-        }
-        else if (Input.GetKeyDown("3"))
-        {
-            curr_character_num = 2;
-        }
-        else if (Input.GetKeyDown("4"))
-        {
-            curr_character_num = 3;
-        }
-        if (Input.GetKeyDown("k"))
-        {
-            curr_player.GetComponent<Character_Script>().Die();
-            NextPlayer();
-        }
-
-
-        //check for mouse clicks
-        if (Input.GetMouseButtonDown(0))
-        {
-            //cursor.GetComponent<Animator>().SetBool("Clicked", true);
-            clicked_tile = selected_tile;
-            if (curr_player.GetComponent<Character_Script>().state != Character_Script.States.Idle ||
-                curr_player.GetComponent<Character_Script>().state != Character_Script.States.Dead)
-            {
-                foreach (Transform tile in reachable_tiles)
-                {
-                    if (tile.Equals(clicked_tile))
-                    {
-                        curr_player.GetComponent<Character_Script>().StartCoroutine(curr_player.GetComponent<Character_Script>().Act(clicked_tile));
-
-                        /*
-                        if (clicked_tile.GetComponent<Tile_Data>().node.traversible && curr_player.GetComponent<Character_Script>().state == Character_Script.States.Moving)
-                        {
-                            //Have to do this instead of calling coroutine directly because Scenario is not attached to any object.
-                            //So it can't be a Monobehaviour, which is where the method comes from.
-                            curr_player.GetComponent<Character_Script>().MoveTo(clicked_tile);
-                            //StartCoroutine(curr_player.GetComponent<Character_Script>().Move(clicked_tile));
-                            CleanReachable();
-                            //NextPlayer();
-                        }
-                        if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Attacking)
-                        {
-                            foreach (GameObject character in characters)
-                            {
-                                if (character.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().x_index == clicked_tile.GetComponent<Tile_Data>().x_index &&
-                                    character.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().y_index == clicked_tile.GetComponent<Tile_Data>().y_index)
-                                {
-                                    curr_player.GetComponent<Character_Script>().Attack(character);
-                                    //NextPlayer();
-                                    break;
-                                }
-                            }
-                        }
-                        if (clicked_tile.GetComponent<Tile_Data>().node.traversible && curr_player.GetComponent<Character_Script>().state == Character_Script.States.Blinking)
-                        {
-                            curr_player.GetComponent<Character_Script>().Blink(clicked_tile);
-                            //NextPlayer();
-                        }*/
-                    }
-                }
-            }
-
-        }
-
-        //check for mouse button up
-        if (Input.GetMouseButtonUp(0))
-        {
-            //cursor.GetComponent<Animator>().SetBool("Clicked", false);
-        }
-
-        //Next player button
-        if (Input.GetKeyDown(KeyCode.RightArrow))
-        {
-            NextPlayer();
-        }
-
-        //Prev player button
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            PrevPlayer();
-        }
-    }
-
-    public void checkMousePos()
-    {
-        //create a ray at the mouse position, point it towards the grid. See if it hits a collider.
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        //deprecated 2d raycast physics
-        //hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-        if (Physics.Raycast(ray, out hit, 100))
-        {
-            Tile_Data tile_data = hit.transform.GetComponent<Tile_Data>();
-            if (tile_data != null)
-            {
-                //If the tile is not traversible we know it is occupied, check for a character there
-                //this is done to print stats of the current highlighted character
-                if (!tile_data.node.traversible)
-                {
-                    foreach (GameObject character in characters)
-                    {
-                        if (character != null && character.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().x_index == tile_data.x_index && character.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().y_index == tile_data.y_index)
-                        {
-                            highlighted_player = character;
-                        }
-                    }
-                }
-                else
-                {
-                    highlighted_player = null;
-                }
-
-                //update cursor location
-                selected_tile = hit.transform;
-                Update_Cursor(selected_tile);
-            }
-        }
-    }
 
     public void Update_Cursor(Transform selected_tile)
     {
@@ -1300,10 +1180,19 @@ public class Scenario : MonoBehaviour {
            
             if (curr_player != null)
             {
-                playerInput();
-                checkMousePos();
                 checkForVictory();
             }
+
+            //update all characters
+            foreach (GameObject character in characters)
+            {
+                character.GetComponent<Character_Script>().Update();
+            }
+
+            /*foreach (GameObject obj in tile_objects)
+            {
+                obj.GetComponent<Object_Script>().Update();
+            }*/
         }         
     }
 

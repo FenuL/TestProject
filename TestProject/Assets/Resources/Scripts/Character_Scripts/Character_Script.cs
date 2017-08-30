@@ -971,6 +971,7 @@ public class Character_Script : MonoBehaviour {
     public double speed { get; set; }
     public int level { get; set; }
     public int orientation { get; set; }
+    public int camera_offset { get; set; }
     public Weapon weapon { get; set; }
     public Armor armor { get; set; }
     public Accessory[] accessories { get; set; }
@@ -980,6 +981,7 @@ public class Character_Script : MonoBehaviour {
     public States state { get; set; }
     public Game_Controller controller { get; set; }
     public Transform curr_tile { get; set; }
+    public bool ending_turn = false;
 
     public class Equipment
     {
@@ -1308,6 +1310,25 @@ public class Character_Script : MonoBehaviour {
 
     public void Orient()
     {
+        //Reset orientation if it's above or below bound
+        if (orientation > 3 )
+        {
+            orientation = 0;
+        }
+        if (orientation < 0)
+        {
+            orientation = 3;
+        }
+        if (camera_offset > 3)
+        {
+            camera_offset = 0;
+        }
+        if (camera_offset < 0)
+        {
+            camera_offset = 3;
+        }
+
+
         //Flip sprite based on orientation
         //Debug.Log("Current orientation: " + orientation);
         if (orientation < 2)
@@ -1402,6 +1423,7 @@ public class Character_Script : MonoBehaviour {
 
     public IEnumerator End_Turn()
     {
+        ending_turn = true;
         if (curr_action.orient == "select")
         {
             StartCoroutine(Choose_Orientation());
@@ -1431,8 +1453,9 @@ public class Character_Script : MonoBehaviour {
             }
         }
         controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
-        controller.curr_scenario.NextPlayer();
+        ending_turn = false;
         state = States.Idle;
+        controller.curr_scenario.NextPlayer();
     }
 
     public Action Find_Action(String name)
@@ -1719,19 +1742,19 @@ public class Character_Script : MonoBehaviour {
             {
                 if(prev_tile.id[0] == temp_tile.id[0] && prev_tile.id[1] > temp_tile.id[1])
                 {
-                    orientation = 0;
+                    orientation = (0 + camera_offset)%4;
                 }
                 else if (prev_tile.id[0] < temp_tile.id[0] && prev_tile.id[1] == temp_tile.id[1])
                 {
-                    orientation = 1;
+                    orientation = (1 + camera_offset)%4;
                 }
                 else if (prev_tile.id[0] == temp_tile.id[0] && prev_tile.id[1] < temp_tile.id[1])
                 {
-                    orientation = 2;
+                    orientation = (2 + camera_offset)%4;
                 }
                 else if (prev_tile.id[0] > temp_tile.id[0] && prev_tile.id[1] == temp_tile.id[1])
                 {
-                    orientation = 3;
+                    orientation = (3 + camera_offset)%4;
                 }
                 Orient();
                 if (CompareTag("Player"))
@@ -1786,7 +1809,7 @@ public class Character_Script : MonoBehaviour {
     }
 
 	// Update is called once per frame
-	void Update () {
+	public void Update () {
 
         if (aura_curr < 0) {
 			aura_curr = 0;
@@ -1799,5 +1822,14 @@ public class Character_Script : MonoBehaviour {
         {
             action_curr = action_max;
         }
+
+        //Change sprite facing to match current camera angle
+        Vector3 rot = transform.rotation.eulerAngles;
+        rot.y = rot.y + controller.main_camera.GetComponent<Camera_Controller>().rotationAmount * Time.deltaTime * 2;
+        if (rot.y > 360)
+            rot.y -= 360;
+        else if (rot.y < 360)
+            rot.y += 360;
+        transform.eulerAngles = rot;
     }
 }

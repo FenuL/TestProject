@@ -8,7 +8,7 @@ public class Camera_Controller : MonoBehaviour {
 	float HOR_SPD = .2f;
 	float VER_SPD = .4f;
     int CAMERA_HEIGHT = 20;
-    float rotationAmount = 0;
+    public float rotationAmount = 0;
     GUIStyle style;
 
     Character_Script curr_player;
@@ -142,33 +142,21 @@ public class Camera_Controller : MonoBehaviour {
         //transform.Translate(horizontal_speed* Input.GetAxis("Mouse Y"),vertical_speed* Input.GetAxis("Mouse X"),0);
 
         //Camera Scrolling
-        if (transform.position.x >= -80)
+        if (Input.mousePosition.x <= HOR_BORDER)
         {
-            if (Input.mousePosition.x <= HOR_BORDER)
-            {
-                transform.Translate(-HOR_SPD, 0, 0);// (transform.position.x-1,transform.position.y, transform.position.z);
-            }
+            transform.Translate(-HOR_SPD, 0, 0);// (transform.position.x-1,transform.position.y, transform.position.z);
         }
-        if (transform.position.x <= -10)
+        if (Input.mousePosition.x >= Screen.width - HOR_BORDER)
         {
-            if (Input.mousePosition.x >= Screen.width - HOR_BORDER)
-            {
-                transform.Translate(HOR_SPD, 0, 0);
-            }
+            transform.Translate(HOR_SPD, 0, 0);
         }
-        if (transform.position.z <= -10)
+        if (Input.mousePosition.y >= Screen.height - VER_BORDER)
         {
-            if (Input.mousePosition.y >= Screen.height - VER_BORDER)
-            {
-                transform.Translate(0, 0, VER_SPD);
-            }
+            transform.Translate(0, 0, VER_SPD);
         }
-        if (transform.position.z >= -80)
+        if (Input.mousePosition.y <= VER_BORDER)
         {
-            if (Input.mousePosition.y <= VER_BORDER)
-            {
-                transform.Translate(0, 0, -VER_SPD);// (transform.position.x-1,transform.position.y, transform.position.z);
-            }
+            transform.Translate(0, 0, -VER_SPD);// (transform.position.x-1,transform.position.y, transform.position.z);
         }
         transform.position = new Vector3(transform.position.x, CAMERA_HEIGHT, transform.position.z);
 
@@ -182,26 +170,10 @@ public class Camera_Controller : MonoBehaviour {
             this.GetComponent<Camera>().orthographicSize++;
         }
 
-        //Camera Turning
-        
-        if (Input.GetKeyDown(KeyCode.Q))
-        {
-            Debug.Log("x:" + transform.rotation.x + ", y:" + transform.rotation.y + "z:" + transform.rotation.z + ", w:" + transform.rotation.w);
-
-            //transform.rotation = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w);
-            //transform.RotateAround(transform.position, Vector3.up, -90f);
-            rotationAmount -= 90;
-        }
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            Debug.Log("x:" + transform.rotation.x + ", y:" + transform.rotation.y + "z:" + transform.rotation.z + ", w:" + transform.rotation.w);
-            //transform.rotation = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w);
-            //transform.RotateAround(transform.position, Vector3.up, 90f);
-            rotationAmount += 90;
-        }
+        //Camera turning
         Vector3 rot = transform.rotation.eulerAngles;
-        rot.y = rot.y + rotationAmount * Time.deltaTime *2;
-        rotationAmount = rotationAmount - rotationAmount * Time.deltaTime *2;
+        rot.y = rot.y + rotationAmount * Time.deltaTime * 2;
+        rotationAmount = rotationAmount - rotationAmount * Time.deltaTime * 2;
         if (rot.y > 360)
             rot.y -= 360;
         else if (rot.y < 360)

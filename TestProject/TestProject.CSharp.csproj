@@ -74,6 +74,7 @@
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Player_Scripts\Player_Script.cs" />
     <Compile Include="Assets\Resources\Scripts\ExpressionParser.cs" />
     <Compile Include="Assets\Resources\Scripts\Game_Controller.cs" />
+    <Compile Include="Assets\Resources\Scripts\Object_Script.cs" />
     <Compile Include="Assets\Resources\Scripts\Tile_Scripts\Scenario.cs" />
     <Compile Include="Assets\Resources\Scripts\Tile_Scripts\Tile_Data.cs" />
   </ItemGroup>
