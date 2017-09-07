@@ -13,12 +13,6 @@ public class Object_Script : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
         //Change sprite facing to match current camera angle
-        Vector3 rot = transform.rotation.eulerAngles;
-        rot.y = rot.y + controller.main_camera.GetComponent<Camera_Controller>().rotationAmount * Time.deltaTime * 2;
-        if (rot.y > 360)
-            rot.y -= 360;
-        else if (rot.y < 360)
-            rot.y += 360;
-        transform.eulerAngles = rot;
+        transform.eulerAngles = new Vector3(0, Camera.main.transform.rotation.eulerAngles.y, 0);
     }
 }

@@ -972,6 +972,7 @@ public class Character_Script : MonoBehaviour {
     public int level { get; set; }
     public int orientation { get; set; }
     public int camera_offset { get; set; }
+    public bool rotate { get; set; }
     public Weapon weapon { get; set; }
     public Armor armor { get; set; }
     public Accessory[] accessories { get; set; }
@@ -1379,7 +1380,6 @@ public class Character_Script : MonoBehaviour {
         all_actions = controller.all_actions;
         actions.Add(Find_Action("Move"));
         actions.Add(Find_Action("Attack"));
-        actions.Add(Find_Action("Wait"));
         foreach (Weapons weps in Enum.GetValues(typeof(Weapons)))
         {
             if (wep.TrimStart() == weps.ToString())
@@ -1398,6 +1398,7 @@ public class Character_Script : MonoBehaviour {
                 break;
             }
         }
+        actions.Add(Find_Action("Wait"));
         //foreach (string s in acc)
         //{
         //    foreach (Weapons weps in Enum.GetValues(typeof(Weapons)))
@@ -1759,23 +1760,39 @@ public class Character_Script : MonoBehaviour {
                 Orient();
                 if (CompareTag("Player"))
                 {
-                    transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x - (.1f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height),
+                    transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x,
+                        (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 1.1f),
+                        controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z),
+                        new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x,
+                        (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 1.1f),
+                        controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z),
+                        elapsedTime / duration);
+                    /*transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x - (.1f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height),
                         (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 1.145f),
                         controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z - (.08f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height)),
                         new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x - (.1f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height),
                         (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 1.145f),
                         controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z - (.08f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height)),
                         elapsedTime / duration);
+                    */
                 }
                 if (CompareTag("Monster"))
                 {
-                    transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x - (.1f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height),
+                    transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x,
+                        (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 0.55f),
+                        controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z),
+                        new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x,
+                        (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 0.55f),
+                        controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z),
+                        elapsedTime / duration);
+                    /*transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x - (.1f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height),
                         (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 0.7f),
                         controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z - (.08f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height)),
                         new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x - (.1f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height),
                         (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 0.7f),
                         controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z - (.08f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height)),
                         elapsedTime / duration);
+                        */
                 }
                 //(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f
                 elapsedTime += Time.deltaTime;
@@ -1824,12 +1841,22 @@ public class Character_Script : MonoBehaviour {
         }
 
         //Change sprite facing to match current camera angle
-        Vector3 rot = transform.rotation.eulerAngles;
-        rot.y = rot.y + controller.main_camera.GetComponent<Camera_Controller>().rotationAmount * Time.deltaTime * 2;
-        if (rot.y > 360)
-            rot.y -= 360;
-        else if (rot.y < 360)
-            rot.y += 360;
-        transform.eulerAngles = rot;
+        transform.eulerAngles = new Vector3(0,Camera.main.transform.rotation.eulerAngles.y,0);
+
+        //flip the orientation if rotation hits a certain angle
+        float rotation = Camera.main.GetComponent<Camera_Controller>().rotationAmount;
+        if (rotate && rotation < 50 && rotation > 0) {
+            camera_offset -= 1;
+            orientation -= 1;
+            //transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+            Orient();
+            rotate = false;
+        }else if (rotate && rotation > -40 && rotation < 0 )
+        {
+            camera_offset += 1;
+            orientation += 1;
+            Orient();
+            rotate = false;
+        }
     }
 }

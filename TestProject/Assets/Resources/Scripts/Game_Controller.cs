@@ -199,8 +199,9 @@ public class Game_Controller : MonoBehaviour {
             {
                 //cursor.GetComponent<Animator>().SetBool("Clicked", true);
                 curr_scenario.clicked_tile = curr_scenario.selected_tile;
-                if (character.state != Character_Script.States.Idle ||
-                    character.state != Character_Script.States.Dead)
+                if ((character.state != Character_Script.States.Idle ||
+                    character.state != Character_Script.States.Dead) &&
+                    !action_menu.GetComponent<Action_Menu_Script>().isOpen)
                 {
                     foreach (Transform tile in curr_scenario.reachable_tiles)
                     {
@@ -240,29 +241,47 @@ public class Game_Controller : MonoBehaviour {
 
             //transform.rotation = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w);
             //transform.RotateAround(transform.position, Vector3.up, -90f);
-            main_camera.GetComponent<Camera_Controller>().rotationAmount -= 90;
+            //main_camera.transform.RotateAround(curr_scenario.selected_tile.transform.position, Vector3.up, 90* Time.deltaTime);
+            //main_camera.GetComponent<Camera_Controller>().targetRotation *= Quaternion.AngleAxis(90, main_camera.transform.forward);
+            if (! main_camera.GetComponent<Camera_Controller>().rotating)
+            {
+                main_camera.GetComponent<Camera_Controller>().rotating = true;
+                main_camera.GetComponent<Camera_Controller>().rotationAmount -= 90;
+                foreach (GameObject chara in curr_scenario.characters)
+                {
+                    chara.GetComponent<Character_Script>().rotate = true;
+                    //chara.GetComponent<Character_Script>().camera_offset += 1;
+                    //chara.GetComponent<Character_Script>().orientation += 1;
+                    //chara.GetComponent<Character_Script>().Orient();
+                }
+            }
+
+            //main_camera.GetComponent<Camera_Controller>().rotationAmount -= 90;
             //update orientation based on camera
             //Debug.Log(curr_scenario.curr_player.GetComponent<Character_Script>().orientation);
-            foreach (GameObject chara in curr_scenario.characters)
-            {
-                chara.GetComponent<Character_Script>().camera_offset += 1;
-                chara.GetComponent<Character_Script>().orientation += 1;
-                chara.GetComponent<Character_Script>().Orient();
-            }
+            
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
             //Debug.Log("x:" + main_camera.transform.rotation.x + ", y:" + main_camera.transform.rotation.y + "z:" + main_camera.transform.rotation.z + ", w:" + main_camera.transform.rotation.w);
             //transform.rotation = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w);
             //transform.RotateAround(transform.position, Vector3.up, 90f);
-            main_camera.GetComponent<Camera_Controller>().rotationAmount += 90;
-            //Debug.Log(curr_scenario.curr_player.GetComponent<Character_Script>().orientation);
-            foreach (GameObject chara in curr_scenario.characters)
+            if (!main_camera.GetComponent<Camera_Controller>().rotating)
             {
-                chara.GetComponent<Character_Script>().camera_offset -= 1;
-                chara.GetComponent<Character_Script>().orientation -= 1;
-                chara.GetComponent<Character_Script>().Orient();
+                main_camera.GetComponent<Camera_Controller>().rotating = true;
+                main_camera.GetComponent<Camera_Controller>().rotationAmount += 90;
+                foreach (GameObject chara in curr_scenario.characters)
+                {
+                    chara.GetComponent<Character_Script>().rotate = true;
+                    //chara.GetComponent<Character_Script>().camera_offset -= 1;
+                    //chara.GetComponent<Character_Script>().orientation -= 1;
+                    //chara.GetComponent<Character_Script>().Orient();
+                }
             }
+
+            //main_camera.GetComponent<Camera_Controller>().rotationAmount += 90;
+            //Debug.Log(curr_scenario.curr_player.GetComponent<Character_Script>().orientation);
+            
         }
         
 

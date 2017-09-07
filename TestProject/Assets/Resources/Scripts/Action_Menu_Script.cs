@@ -28,6 +28,7 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
         //container = transform.FindChild("Action Menu").GetComponent<RectTransform>();
         //resetActions();
         isOpen = false;
+        this.GetComponent<RectTransform>().position = new Vector3(Screen.width/2,20,0);
 	}
 	
 	// Update is called once per frame
@@ -57,6 +58,9 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
         Transform button;
         double ap_cost;
         double mp_cost;
+        //Center the action menu based on available actions
+        container.GetComponent<RectTransform>().position = new Vector3(Screen.width/2+200 - 50f* controller.curr_scenario.curr_player.GetComponent<Character_Script>().actions.Count/2, this.GetComponent<RectTransform>().position.y+15, 0);
+
         foreach (Character_Script.Action a in controller.curr_scenario.curr_player.GetComponent<Character_Script>().actions)
         {
             button = container.GetComponent<RectTransform>().GetChild(x);
@@ -66,7 +70,7 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
             //TODO FIX THIS SHIT
             //set the button name and text correctly
             button.name = a.name;
-            button.FindChild("Text").GetComponent<Text>().text = a.name;
+            button.FindChild("Text").GetComponent<Text>().text =  "\n"+a.name + "\n"+ (button_num + 1)+ ".";
             button.GetComponent<Button>().onClick.RemoveAllListeners();
 
             //check if the cost of the action is too high

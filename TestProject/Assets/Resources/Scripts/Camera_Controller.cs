@@ -4,11 +4,13 @@ using System.Collections;
 public class Camera_Controller : MonoBehaviour {
 
     int HOR_BORDER = 40;
-    int VER_BORDER = 20;
+    int VER_BORDER = 10;
 	float HOR_SPD = .2f;
 	float VER_SPD = .4f;
     int CAMERA_HEIGHT = 20;
+    float CAMERA_TURN_SPEED = 4;
     public float rotationAmount = 0;
+    public bool rotating;
     GUIStyle style;
 
     Character_Script curr_player;
@@ -129,11 +131,29 @@ public class Camera_Controller : MonoBehaviour {
 
     }
 
+    public IEnumerator Pan(Vector3 endPos)
+    {
+        float elapsedTime = 0;
+        float duration = 0.2f;
+        Vector3 startPos = this.transform.position;
+        while (elapsedTime < duration)
+        {
+            this.transform.position = Vector3.Lerp(startPos, endPos, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return 0;
+        }
+    }
+
+    public void PanTo(Vector3 endPos)
+    {
+        StartCoroutine(Pan(endPos));
+    }
+
 	// Use this for initialization
 	void Start () {
 		//Screen.SetResolution(resolution_x, resolution_y, true);
 		controller = Game_Controller.controller;
-
+        rotating = false;
     }
 
 	// Update is called once per frame
@@ -171,14 +191,23 @@ public class Camera_Controller : MonoBehaviour {
         }
 
         //Camera turning
-        Vector3 rot = transform.rotation.eulerAngles;
+        /*Vector3 rot = transform.rotation.eulerAngles;
         rot.y = rot.y + rotationAmount * Time.deltaTime * 2;
         rotationAmount = rotationAmount - rotationAmount * Time.deltaTime * 2;
         if (rot.y > 360)
             rot.y -= 360;
         else if (rot.y < 360)
             rot.y += 360;
-        transform.eulerAngles = rot;
+        transform.eulerAngles = rot;*/
+
+        //Handle turning
+        float rot = rotationAmount * CAMERA_TURN_SPEED * Time.deltaTime;
+        transform.RotateAround(transform.position + Camera.main.transform.forward * 35, Vector3.up, rot);
+        rotationAmount -= rotationAmount * CAMERA_TURN_SPEED * Time.deltaTime;
+        if (rotationAmount > -15 && rotationAmount < 15)
+        {
+            rotating = false;
+        }
 
         /*if (transform.position.x >= -4) {
             if (Input.mousePosition.x <= 20) {

@@ -150,8 +150,9 @@ public class Tile_Grid : ScriptableObject{
                 //3d logic
                 else
                 {
-         
-                    string file = "Objects/Tiles/Object-3x3x" + tile_heights[x,y];
+
+                    string file = "Objects/Tiles/Proto" + tile_heights[x,y] + "H";
+                    //string file = "Objects/Tiles/Object-3x3x" + tile_heights[x, y];
                     /*int XOFFSET=0;
                     int YOFFSET=0;
                     int ZOFFSET=0;
@@ -234,7 +235,7 @@ public class Tile_Grid : ScriptableObject{
                     float NEWTILEWIDTH = 1.5f;
                     float NEWTILELENGTH = 1.5f;
                     float NEWTILEHEIGHT = 1f;
-                    float NEWSCALE = 4f;
+                    float NEWSCALE = 2f;
                     //GameObject instance = ((GameObject)Instantiate(tile3d, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity));
                     GameObject instance = ((GameObject)Instantiate(tile3d, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y), (float)(NEWSTARTY), (float)(NEWSTARTZ - NEWTILELENGTH * x)), Quaternion.identity));
                     instance.transform.localScale = new Vector3(tile_scale,tile_scale,tile_scale);
@@ -242,7 +243,8 @@ public class Tile_Grid : ScriptableObject{
                     BoxCollider collider = instance.AddComponent<BoxCollider>();
                     //collider.size = new Vector3(NEWTILELENGTH*NEWSCALE,tile_heights[x,y]*NEWTILEHEIGHT*(NEWSCALE/2),NEWTILEWIDTH*NEWSCALE);
                     collider.size = new Vector3(NEWTILELENGTH * NEWSCALE, 0, NEWTILEWIDTH * NEWSCALE);
-                    collider.center = new Vector3(0, 10, 0);
+                    //collider.center = new Vector3(0, 10, 0);
+                    collider.center = new Vector3(0, tile_heights[x, y], 0);
 
                     //Generate the tile data for the tile
                     instance.AddComponent<Tile_Data>();
@@ -844,12 +846,15 @@ public class Scenario : MonoBehaviour {
             game_object.GetComponent<Character_Script>().character_num = char_num;
             game_object.GetComponent<Character_Script>().curr_tile = tile_grid.getTile(char_num, 0);
             game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.setObj(game_object);
-            game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x- (.1f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height),
-                game_object.GetComponent<Character_Script>().curr_tile.position.y+ 1.145f + Tile_Grid.tile_scale * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height,
-                game_object.GetComponent<Character_Script>().curr_tile.position.z - (.08f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height));
-                 //game_object.GetComponent<Character_Script>().curr_tile.position.y + (float)(game_object.GetComponent<SpriteRenderer> ().sprite.rect.height / game_object.GetComponent<SpriteRenderer> ().sprite.pixelsPerUnit + 0.15f),
-                 //(float)(game_object.GetComponent<Character_Script>().curr_tile.position.y + (game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f,
-                 //game_object.GetComponent<Character_Script>().curr_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);
+            game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x,
+            game_object.GetComponent<Character_Script>().curr_tile.position.y+ 1.0f + Tile_Grid.tile_scale * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height,
+            game_object.GetComponent<Character_Script>().curr_tile.position.z);
+            //game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x- (.1f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height),
+            //game_object.GetComponent<Character_Script>().curr_tile.position.y+ 1.145f + Tile_Grid.tile_scale * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height,
+            //game_object.GetComponent<Character_Script>().curr_tile.position.z - (.08f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height));
+            //game_object.GetComponent<Character_Script>().curr_tile.position.y + (float)(game_object.GetComponent<SpriteRenderer> ().sprite.rect.height / game_object.GetComponent<SpriteRenderer> ().sprite.pixelsPerUnit + 0.15f),
+            //(float)(game_object.GetComponent<Character_Script>().curr_tile.position.y + (game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f,
+            //game_object.GetComponent<Character_Script>().curr_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);
             game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.traversible = false;
             //game_object.GetComponent<Character_Script>().FindReachable(tile_grid, game_object.GetComponent<Character_Script>().action_max, game_object.GetComponent<Character_Script>().dexterity);
             //game_object.GetComponent<SpriteRenderer>().sortingOrder = game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sortingOrder + 1;
@@ -864,6 +869,9 @@ public class Scenario : MonoBehaviour {
             game_object.GetComponent<Character_Script>().character_num = char_num;
             game_object.GetComponent<Character_Script>().curr_tile = tile_grid.getTile(19 - game_object.GetComponent<Character_Script>().character_num, 19);// [19-game_object.GetComponent<Character_Script>().character_num,19,0];
             game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.setObj(game_object);
+            //game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x,
+            //    game_object.GetComponent<Character_Script>().curr_tile.position.y + 0.55f + Tile_Grid.tile_scale * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height,
+            //    game_object.GetComponent<Character_Script>().curr_tile.position.z );
             game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x - (.1f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height),
                 game_object.GetComponent<Character_Script>().curr_tile.position.y + 0.7f + Tile_Grid.tile_scale * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height,
                 game_object.GetComponent<Character_Script>().curr_tile.position.z - (.08f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height));
@@ -1344,7 +1352,7 @@ public class Scenario : MonoBehaviour {
         //MarkReachable ();
 
         //Center camera on player
-        Camera.main.transform.position = curr_player.transform.position - Camera.main.transform.forward * 35;
+        Camera.main.GetComponent<Camera_Controller>().PanTo(curr_player.transform.position - Camera.main.transform.forward * 35);
 
     }
 
@@ -1374,7 +1382,7 @@ public class Scenario : MonoBehaviour {
         //MarkReachable ();
 
         //Center camera on player
-        Camera.main.transform.position = curr_player.transform.position - Camera.main.transform.forward * 25;
+        Camera.main.GetComponent<Camera_Controller>().PanTo(curr_player.transform.position - Camera.main.transform.forward * 35);
     }
 
     public void NextRound()
