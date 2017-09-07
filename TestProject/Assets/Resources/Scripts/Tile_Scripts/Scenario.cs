@@ -151,7 +151,7 @@ public class Tile_Grid : ScriptableObject{
                 else
                 {
 
-                    string file = "Objects/Tiles/Proto" + tile_heights[x,y] + "H";
+                    string file = "Objects/Tiles/Tile-" + tile_heights[x,y];
                     //string file = "Objects/Tiles/Object-3x3x" + tile_heights[x, y];
                     /*int XOFFSET=0;
                     int YOFFSET=0;
