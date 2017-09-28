@@ -51,6 +51,15 @@ public class Tile_Data : MonoBehaviour{
         node = new Node(height, mod, index);
 	}
 
+    //USed to copy tile data over to another game object
+    public void instantiate(Tile_Data tile)
+    {
+        x_index = tile.x_index;
+        y_index = tile.y_index;
+        tile_sprite_index = tile.tile_sprite_index;
+        node = tile.node;
+    }
+
 	// Use this for initialization
 	void Start () {
 		reachable = true;
@@ -220,6 +229,11 @@ public class Tile_Data : MonoBehaviour{
         public void addNode(Node n)
         {
             nodes.Add(n);
+        }
+
+        public void Remove_Node(Node n)
+        {
+            nodes.Remove(n);
         }
 
         public void printGraph()
@@ -838,7 +852,8 @@ public class Tile_Data : MonoBehaviour{
                     
                     if(e != null)
                     {
-                        if (!e.node2.visited && 
+                        if (e.node2 != null &&
+                            !e.node2.visited && 
                             current.weight + e.cost <= cost_limit && 
                             (! e.node2.obj || e.node2.obj.tag == start.obj.tag) && 
                             current.distance < distace_limit)

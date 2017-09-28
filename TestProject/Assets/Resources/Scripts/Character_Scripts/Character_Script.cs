@@ -420,12 +420,12 @@ public class Character_Script : MonoBehaviour {
                                     character.state = States.Attacking;
                                     character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
                                 }
-                                else if (eff.type.ToString() == Effect.Types.Elevator.ToString())
+                                else if (eff.type.ToString() == Effect.Types.Elevate.ToString())
                                 {
                                     character.state = States.Attacking;
                                     character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
                                 }
-                                else if (eff.type.ToString() == Effect.Types.Enabler.ToString())
+                                else if (eff.type.ToString() == Effect.Types.Enable.ToString())
                                 {
                                     character.state = States.Attacking;
                                     character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
@@ -466,12 +466,12 @@ public class Character_Script : MonoBehaviour {
                                     character.state = States.Attacking;
                                     character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
                                 }
-                                else if (eff.type.ToString() == Effect.Types.Elevator.ToString())
+                                else if (eff.type.ToString() == Effect.Types.Elevate.ToString())
                                 {
                                     character.state = States.Attacking;
                                     character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
                                 }
-                                else if (eff.type.ToString() == Effect.Types.Enabler.ToString())
+                                else if (eff.type.ToString() == Effect.Types.Enable.ToString())
                                 {
                                     character.state = States.Attacking;
                                     character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
@@ -524,6 +524,102 @@ public class Character_Script : MonoBehaviour {
                         but.GetComponent<Image>().color = Color.red;
                     }
                 }
+            }
+        }
+
+        public List <GameObject> Get_Target_Tiles(Character_Script character, GameObject target_tile)
+        {
+            List<GameObject> targets = new List<GameObject>();
+            String[] area_effect = area.Split(' ');
+            if (area_effect[0] == "Self")
+            {
+                targets.Add(character.curr_tile.gameObject);
+            }
+            else if (area_effect[0] == "Target")
+            {
+                if (target_tile != null)
+                {
+                    targets.Add(target_tile);
+                }
+            }
+            else if (area_effect[0] == "Cross")
+            {
+                int x = 0;
+                int y = 0;
+                if (area_effect[1] == "Self")
+                {
+                    x = character.curr_tile.GetComponent<Tile_Data>().x_index;
+                    y = character.curr_tile.GetComponent<Tile_Data>().y_index;
+                }
+                if (area_effect[1] == "Target")
+                {
+                    x = target_tile.GetComponent<Tile_Data>().x_index;
+                    y = target_tile.GetComponent<Tile_Data>().y_index;
+                }
+                int size = 0;
+                int.TryParse(area_effect[2], out size);
+                for (int i = -size; i <= size; i++)
+                {
+                    Transform target = character.controller.curr_scenario.tile_grid.getTile(x + i, y);
+                    if (target != null)
+                    {
+                        targets.Add(target.gameObject);
+                        //avoid duplicates
+                        if (i != 0)
+                        {
+                            target = character.controller.curr_scenario.tile_grid.getTile(x, y + i);
+                            if (target != null)
+                            {
+                                
+                                targets.Add(target.gameObject);
+                            }
+                        }
+                    }
+                }
+
+            }
+            else if (area_effect[0] == "Ring")
+            {
+                int x = 0;
+                int y = 0;
+                if (area_effect[1] == "Self")
+                {
+                    x = character.curr_tile.GetComponent<Tile_Data>().x_index;
+                    y = character.curr_tile.GetComponent<Tile_Data>().y_index;
+                }
+                if (area_effect[1] == "Target")
+                {
+                    x = target_tile.GetComponent<Tile_Data>().x_index;
+                    y = target_tile.GetComponent<Tile_Data>().y_index;
+                }
+                int ringsize = 0;
+                int gapsize = 0;
+                int.TryParse(area_effect[2], out ringsize);
+                int.TryParse(area_effect[3], out gapsize);
+                for (int i = -ringsize; i <= ringsize; i++)
+                {
+                    for (int j = -ringsize; j <= ringsize; j++)
+                    {
+                        if (Math.Abs(i) > gapsize || Math.Abs(j) > gapsize)
+                        {
+                            Transform target = character.controller.curr_scenario.tile_grid.getTile(x + i, y + j);
+                            if (target != null)
+                            {
+                                
+                                targets.Add(target.gameObject);
+                            }
+                        }
+                    }
+
+                }
+            }
+            if (targets.Count > 0)
+            {
+                return targets;
+            }
+            else
+            {
+                return null;
             }
         }
 
@@ -665,10 +761,10 @@ public class Character_Script : MonoBehaviour {
                             return false;
                         }
                     }
-                    else if (eff.type.ToString() == Effect.Types.Elevator.ToString())
+                    else if (eff.type.ToString() == Effect.Types.Elevate.ToString())
                     {
                     }
-                    else if (eff.type.ToString() == Effect.Types.Enabler.ToString())
+                    else if (eff.type.ToString() == Effect.Types.Enable.ToString())
                     {
                     }
                     else if (eff.type.ToString() == Effect.Types.Pass.ToString())
@@ -697,10 +793,10 @@ public class Character_Script : MonoBehaviour {
                     else if (eff.type.ToString() == Effect.Types.Status.ToString())
                     {
                     }
-                    else if (eff.type.ToString() == Effect.Types.Elevator.ToString())
+                    else if (eff.type.ToString() == Effect.Types.Elevate.ToString())
                     {
                     }
-                    else if (eff.type.ToString() == Effect.Types.Enabler.ToString())
+                    else if (eff.type.ToString() == Effect.Types.Enable.ToString())
                     {
                     }
                     else if (eff.type.ToString() == Effect.Types.Pass.ToString())
@@ -767,12 +863,19 @@ public class Character_Script : MonoBehaviour {
 
 
                         }
-                        else if (eff.type.ToString() == Effect.Types.Elevator.ToString())
+                        else if (eff.type.ToString() == Effect.Types.Elevate.ToString())
                         {
-
+                            List<GameObject> targets = Get_Target_Tiles(character, target_tile);
+                            foreach (GameObject target in targets)
+                            {
+                                Debug.Log("Character " + character.character_name + " Elevated Tile: (" + target.GetComponent<Tile_Data>().node.id[0] + "," + target.GetComponent<Tile_Data>().node.id[1] + "); By " + Convert_To_Double(eff.value[0], character) + " and Using " + ap_cost + " AP");
+                                character.controller.curr_scenario.tile_grid.Elevate(target.transform, (int)(Convert_To_Double(eff.value[0], character)));
+                                                     
+                            }
+                            character.state = States.Idle;
 
                         }
-                        else if (eff.type.ToString() == Effect.Types.Enabler.ToString())
+                        else if (eff.type.ToString() == Effect.Types.Enable.ToString())
                         {
                             Character_Script target_character = target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>();
                             foreach (Action act in target_character.GetComponent<Character_Script>().actions)
@@ -851,10 +954,10 @@ public class Character_Script : MonoBehaviour {
                         else if (eff.type.ToString() == Effect.Types.Status.ToString())
                         {
                         }
-                        else if (eff.type.ToString() == Effect.Types.Elevator.ToString())
+                        else if (eff.type.ToString() == Effect.Types.Elevate.ToString())
                         {
                         }
-                        else if (eff.type.ToString() == Effect.Types.Enabler.ToString())
+                        else if (eff.type.ToString() == Effect.Types.Enable.ToString())
                         {
                             foreach (Action act in character.GetComponent<Character_Script>().actions)
                             {
@@ -910,7 +1013,7 @@ public class Character_Script : MonoBehaviour {
 
     public class Effect
     {
-        public enum Types { Move, Damage, Heal, Status, Elevator, Enabler, Pass }
+        public enum Types { Move, Damage, Heal, Status, Elevate, Enable, Pass }
 
         public Types type { get; set; }
         public String[] value { get; set; }
@@ -971,7 +1074,9 @@ public class Character_Script : MonoBehaviour {
     public double speed { get; set; }
     public int level { get; set; }
     public int orientation { get; set; }
-    public int camera_offset { get; set; }
+    public int camera_orientation_offset { get; set; }
+    public Vector3 camera_position_offset { get; set; }
+    public float height_offset { get; set; }
     public bool rotate { get; set; }
     public Weapon weapon { get; set; }
     public Armor armor { get; set; }
@@ -1024,11 +1129,13 @@ public class Character_Script : MonoBehaviour {
                     effects = new Effect[2];
                     effects[0] = new Effect(Character_Stats.speed, 1);
                     effects[1] = new Effect(Character_Stats.dexterity, 1);
-                    actions = new String[4];
+                    actions = new String[6];
                     actions[0] = "Blink";
                     actions[1] = "Cross";
                     actions[2] = "Ring";
                     actions[3] = "Cone";
+                    actions[4] = "Raise";
+                    actions[5] = "Lower";
                     break;
                 case "Medium":
                     name = Armors.Medium.ToString();
@@ -1037,10 +1144,12 @@ public class Character_Script : MonoBehaviour {
                     effects = new Effect[2];
                     effects[0] = new Effect(Character_Stats.strength, 1);
                     effects[1] = new Effect(Character_Stats.coordination, 1);
-                    actions = new String[3];
+                    actions = new String[5];
                     actions[0] = "Cross";
                     actions[1] = "Ring";
                     actions[2] = "Cone";
+                    actions[3] = "Raise";
+                    actions[4] = "Lower";
                     break;
                 case "Heavy":
                     name = Armors.Heavy.ToString();
@@ -1049,11 +1158,13 @@ public class Character_Script : MonoBehaviour {
                     effects = new Effect[2];
                     effects[0] = new Effect(Character_Stats.vitality, 1);
                     effects[1] = new Effect(Character_Stats.spirit, 1);
-                    actions = new String[4];
+                    actions = new String[6];
                     actions[0] = "Channel";
                     actions[1] = "Cross";
                     actions[2] = "Ring";
                     actions[3] = "Cone";
+                    actions[4] = "Raise";
+                    actions[5] = "Lower";
                     break;
             }
         }
@@ -1071,11 +1182,13 @@ public class Character_Script : MonoBehaviour {
                     effects = new Effect[2];
                     effects[0] = new Effect(Character_Stats.speed, 1);
                     effects[1] = new Effect(Character_Stats.dexterity, 1);
-                    actions = new String[4];
+                    actions = new String[6];
                     actions[0] = "Blink";
                     actions[1] = "Cross";
                     actions[2] = "Ring";
                     actions[3] = "Cone";
+                    actions[4] = "Raise";
+                    actions[5] = "Lower";
                     break;
                 case Armors.Medium:
                     name = Armors.Medium.ToString();
@@ -1084,10 +1197,12 @@ public class Character_Script : MonoBehaviour {
                     effects = new Effect[2];
                     effects[0] = new Effect(Character_Stats.strength, 1);
                     effects[1] = new Effect(Character_Stats.coordination, 1);
-                    actions = new String[3];
+                    actions = new String[5];
                     actions[0] = "Cross";
                     actions[1] = "Ring";
                     actions[2] = "Cone";
+                    actions[3] = "Raise";
+                    actions[4] = "Lower";
                     break;
                 case Armors.Heavy:
                     name = Armors.Heavy.ToString();
@@ -1096,11 +1211,13 @@ public class Character_Script : MonoBehaviour {
                     effects = new Effect[2];
                     effects[0] = new Effect(Character_Stats.vitality, 1);
                     effects[1] = new Effect(Character_Stats.spirit, 1);
-                    actions = new String[4];
+                    actions = new String[6];
                     actions[0] = "Channel";
                     actions[1] = "Cross";
                     actions[2] = "Ring";
                     actions[3] = "Cone";
+                    actions[4] = "Raise";
+                    actions[5] = "Lower";
                     break;
             }
         }
@@ -1320,15 +1437,39 @@ public class Character_Script : MonoBehaviour {
         {
             orientation = 3;
         }
-        if (camera_offset > 3)
+        if (camera_orientation_offset > 3)
         {
-            camera_offset = 0;
+            camera_orientation_offset = 0;
         }
-        if (camera_offset < 0)
+        if (camera_orientation_offset < 0)
         {
-            camera_offset = 3;
+            camera_orientation_offset = 3;
         }
-
+        //Debug.Log("Name: " + name + " , Height: " + this.gameObject.GetComponent<SpriteRenderer>().sprite.rect.height + ", Scale: " + this.gameObject.transform.localScale.x + " , Pixels: " + this.gameObject.GetComponent<SpriteRenderer>().sprite.pixelsPerUnit);
+        float offset = (height_offset) / 3.5f;
+            //this.gameObject.GetComponent<SpriteRenderer>().sprite.rect.width / this.gameObject.transform.localScale.x / this.gameObject.GetComponent<SpriteRenderer>().sprite.pixelsPerUnit * 10;
+        //Debug.Log("Name: " + name + ", Offset: " + offset + " , Height offset: " + height_offset );
+        //Update the location modifier based on camera offset
+        if (camera_orientation_offset == 0)
+        {
+            
+            //camera_position_offset = new Vector3(this.gameObject.GetComponent<SpriteRenderer>().sprite.rect.height/ this.gameObject.transform.localScale.x);
+            
+            camera_position_offset = new Vector3(-offset, 0.00f, -offset);
+        }
+        else if (camera_orientation_offset == 1)
+        {
+            camera_position_offset = new Vector3(offset, 0.00f, -offset);
+        }
+        else if (camera_orientation_offset == 2)
+        {
+            camera_position_offset = new Vector3(offset, 0.00f, offset);
+        }
+        else if (camera_orientation_offset == 3)
+        {
+            camera_position_offset = new Vector3(-offset, 0.00f, offset);
+        }
+        
 
         //Flip sprite based on orientation
         //Debug.Log("Current orientation: " + orientation);
@@ -1349,6 +1490,22 @@ public class Character_Script : MonoBehaviour {
         {
             string object_name = this.gameObject.name;
             this.gameObject.GetComponent<Animator>().runtimeAnimatorController = Resources.Load("Animations/Controllers/" + object_name + "/" + object_name + "_Override_W") as AnimatorOverrideController;
+        }
+    }
+
+    public IEnumerator Turn()
+    {
+        float elapsedTime = 0;
+        float duration = .3f;
+        Vector3 start = transform.position;
+        Vector3 target = curr_tile.position + camera_position_offset + new Vector3(0, height_offset + Tile_Grid.tile_scale * (curr_tile.GetComponent<Tile_Data>().node.height), 0);
+        while (elapsedTime < duration)
+        {
+            transform.position = Vector3.Lerp(start,
+                target,
+                elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
         }
     }
 
@@ -1743,29 +1900,29 @@ public class Character_Script : MonoBehaviour {
             {
                 if(prev_tile.id[0] == temp_tile.id[0] && prev_tile.id[1] > temp_tile.id[1])
                 {
-                    orientation = (0 + camera_offset)%4;
+                    orientation = (0 + camera_orientation_offset) %4;
                 }
                 else if (prev_tile.id[0] < temp_tile.id[0] && prev_tile.id[1] == temp_tile.id[1])
                 {
-                    orientation = (1 + camera_offset)%4;
+                    orientation = (1 + camera_orientation_offset) %4;
                 }
                 else if (prev_tile.id[0] == temp_tile.id[0] && prev_tile.id[1] < temp_tile.id[1])
                 {
-                    orientation = (2 + camera_offset)%4;
+                    orientation = (2 + camera_orientation_offset) %4;
                 }
                 else if (prev_tile.id[0] > temp_tile.id[0] && prev_tile.id[1] == temp_tile.id[1])
                 {
-                    orientation = (3 + camera_offset)%4;
+                    orientation = (3 + camera_orientation_offset) %4;
                 }
                 Orient();
                 if (CompareTag("Player"))
                 {
                     transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x,
-                        (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 1.1f),
-                        controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z),
+                        (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + height_offset),
+                        controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z) + camera_position_offset,
                         new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x,
-                        (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 1.1f),
-                        controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z),
+                        (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + height_offset),
+                        controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z) + camera_position_offset,
                         elapsedTime / duration);
                     /*transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x - (.1f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height),
                         (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 1.145f),
@@ -1779,11 +1936,11 @@ public class Character_Script : MonoBehaviour {
                 if (CompareTag("Monster"))
                 {
                     transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x,
-                        (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 0.55f),
-                        controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z),
+                        (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + height_offset),
+                        controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z) + camera_position_offset,
                         new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x,
-                        (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 0.55f),
-                        controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z),
+                        (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + height_offset),
+                        controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z) + camera_position_offset,
                         elapsedTime / duration);
                     /*transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x - (.1f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height),
                         (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 0.7f),
@@ -1839,24 +1996,32 @@ public class Character_Script : MonoBehaviour {
         {
             action_curr = action_max;
         }
-
+        float rotation = Camera.main.GetComponent<Camera_Controller>().rotationAmount;
         //Change sprite facing to match current camera angle
-        transform.eulerAngles = new Vector3(0,Camera.main.transform.rotation.eulerAngles.y,0);
 
         //flip the orientation if rotation hits a certain angle
-        float rotation = Camera.main.GetComponent<Camera_Controller>().rotationAmount;
+
         if (rotate && rotation < 50 && rotation > 0) {
-            camera_offset -= 1;
+            camera_orientation_offset -= 1;
             orientation -= 1;
             //transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z);
             Orient();
+            StartCoroutine(Turn());
             rotate = false;
-        }else if (rotate && rotation > -40 && rotation < 0 )
+            
+        }
+        else if (rotate && rotation > -40 && rotation < 0 )
         {
-            camera_offset += 1;
+            camera_orientation_offset += 1;
             orientation += 1;
             Orient();
+            StartCoroutine(Turn());
             rotate = false;
+            
         }
+        float rot = rotation * 4 * Time.deltaTime;
+        transform.RotateAround(curr_tile.position, Vector3.up, rot);
+        transform.eulerAngles = new Vector3(0,Camera.main.transform.rotation.eulerAngles.y,0);
+        //rotationAmount -= rotationAmount * CAMERA_TURN_SPEED * Time.deltaTime;
     }
 }

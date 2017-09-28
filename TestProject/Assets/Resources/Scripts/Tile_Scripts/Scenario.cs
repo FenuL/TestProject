@@ -79,6 +79,156 @@ public class Tile_Grid : ScriptableObject{
         navmesh = new Tile_Data.Graph();
     }
 
+    /*public IEnumerator Raise()
+    {
+        float elapsedTime = 0;
+        float duration = .3f;
+        Vector3 start = transform.position;
+        Vector3 target = curr_tile.position + camera_position_offset + new Vector3(0, height_offset + Tile_Grid.tile_scale * (curr_tile.GetComponent<Tile_Data>().node.height), 0);
+        while (elapsedTime < duration)
+        {
+            transform.position = Vector3.Lerp(start,
+                target,
+                elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+    }*/
+
+    public void Elevate(Transform target, int height)
+    {
+        //Modify tile height
+        Tile_Data tile = target.GetComponent<Tile_Data>();
+        tile.node.height += height;
+        if (tile.node.height < 1)
+        {
+            tile.node.height = 1;
+        }
+        if (tile.node.height > 10)
+        {
+            tile.node.height = 10;
+        }
+
+        //Modify object
+        string file = "Objects/Tiles/Tile-" + tile.node.height;
+        GameObject tile3d = Resources.Load(file, typeof(GameObject)) as GameObject;
+        float NEWTILEWIDTH = 1.5f;
+        float NEWTILELENGTH = 1.5f;
+        float NEWTILEHEIGHT = 1f;
+        float NEWSCALE = 2f;
+        GameObject instance;
+        //If the shift is positive, we create the tile lower and raise it up.
+        if (height > 0)
+        {
+            instance = ((GameObject)Instantiate(tile3d, target.position - new Vector3(), Quaternion.identity));
+            instance.transform.localScale = new Vector3(tile_scale, tile_scale, tile_scale);
+            if (tile.node.obj != null)
+            {
+                if (tile.node.obj.GetComponent<Character_Script>() != null)
+                {
+                    tile.node.obj.transform.position = instance.transform.position + tile.node.obj.GetComponent<Character_Script>().camera_position_offset + new Vector3(0, tile_scale * tile.node.height + tile.node.obj.GetComponent<Character_Script>().height_offset, 0);
+                    tile.node.obj.GetComponent<Character_Script>().curr_tile = instance.transform;
+                }
+            }
+        }
+        else
+        {
+            //if the shift is negative, we create the tile higher and lower it. 
+            instance = ((GameObject)Instantiate(tile3d, target.position + new Vector3(), Quaternion.identity));
+            instance.transform.localScale = new Vector3(tile_scale, tile_scale, tile_scale);
+            if (tile.node.obj != null)
+            {
+
+                tile.node.obj.transform.position = instance.transform.position + tile.node.obj.GetComponent<Character_Script>().camera_position_offset + new Vector3(0, tile_scale * tile.node.height + tile.node.obj.GetComponent<Character_Script>().height_offset, 0);
+                tile.node.obj.GetComponent<Character_Script>().curr_tile = instance.transform;
+                //instance.transform.GetComponent<Tile_Data>().node.obj = tile.node.obj;
+                //Debug.Log(instance.transform.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().name);
+            }
+        }
+
+        //Add a collider to the tile (TEMPORARY)
+        BoxCollider collider = instance.AddComponent<BoxCollider>();
+        collider.size = new Vector3(NEWTILELENGTH * NEWSCALE, 0, NEWTILEWIDTH * NEWSCALE);
+        collider.center = new Vector3(0, tile_heights[tile.node.id[0], tile.node.id[1]] + height, 0);
+
+        //Generate the tile data for the tile
+        instance.AddComponent<Tile_Data>();
+        instance.GetComponent<Tile_Data>().instantiate(tile);
+
+        //Store the instantiated tile in our Tile Tranform Grid;
+        tiles[tile.node.id[0], tile.node.id[1]] = instance.transform;
+
+        //Modify navmesh
+        foreach (Tile_Data.Edge e in instance.GetComponent<Tile_Data>().node.edges)
+        {
+            //Modify local edges
+            if (e != null)
+            {
+                int height_diff = e.node1.height - e.node2.height;
+                if (height_diff >= -1)
+                {
+                    e.cost = 1;
+                }
+                else if (height_diff == -2)
+                {
+                    e.cost = 3;
+                }
+                else if (height_diff == -3)
+                {
+                    e.cost = 5;
+                }
+                else if (height_diff < -3)
+                {
+                    e.cost = 25;
+                }
+                else
+                {
+                    e.cost = 1;
+                }
+                e.cost = e.cost + e.node2.modifier;
+                //Debug.Log("Edge between (" + e.node1.id[0] + "," + e.node1.id[1] + ") and (" + e.node2.id[0] + "," + e.node2.id[1] + ") has cost " + e.cost);
+                //modify edges of adjacent nodes
+                foreach (Tile_Data.Edge edge in e.node2.edges)
+                {
+                    if (edge != null)
+                    {
+                        if (edge.node2 == e.node1)
+                        {
+                            height_diff = edge.node1.height - edge.node2.height;
+                            if (height_diff >= -1)
+                            {
+                                edge.cost = 1;
+                            }
+                            else if (height_diff == -2)
+                            {
+                                edge.cost = 3;
+                            }
+                            else if (height_diff == -3)
+                            {
+                                edge.cost = 5;
+                            }
+                            else if (height_diff < -3)
+                            {
+                                edge.cost = 25;
+                            }
+                            else
+                            {
+                                edge.cost = 1;
+                            }
+                            edge.node2 = instance.GetComponent<Tile_Data>().node;
+                            //Debug.Log("Edge between (" + edge.node1.id[0] + ", " + edge.node1.id[1] + ") and(" + edge.node2.id[0] + ", " + edge.node2.id[1] + ") has cost " + edge.cost);
+                        }
+                    }
+                }
+            }
+        }
+
+        //Destroy old object 
+        tile.node.obj = null;
+        //tile.node = null;
+        Destroy(tile.gameObject);
+    }
+
     public void Instantiate()
     {
         int tile_number = 0;
@@ -274,7 +424,8 @@ public class Tile_Grid : ScriptableObject{
 
                         //set the right sprite;
                         sprite.sprite = (Sprite)object_sprite_sheet[object_sprite_ids[x, y] - 1];
-                        sprite.sortingOrder = tile_number;
+                        //sprite.sortingOrder = tile_number;
+                        sprite.sortingOrder = 5000;
 
                         //instantiate the object
                         //Instantiate(object_prefab, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity);
@@ -843,12 +994,14 @@ public class Scenario : MonoBehaviour {
         foreach (GameObject game_object in objects)
         {
             characters.Add(game_object);
+            game_object.GetComponent<Character_Script>().height_offset = (game_object.GetComponent<SpriteRenderer>().sprite.rect.height * game_object.transform.localScale.y / game_object.GetComponent<SpriteRenderer>().sprite.pixelsPerUnit / 2);
+            float offset = (game_object.GetComponent<Character_Script>().height_offset) / 3.5f;
             game_object.GetComponent<Character_Script>().character_num = char_num;
             game_object.GetComponent<Character_Script>().curr_tile = tile_grid.getTile(char_num, 0);
             game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.setObj(game_object);
-            game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x,
-            game_object.GetComponent<Character_Script>().curr_tile.position.y+ 1.0f + Tile_Grid.tile_scale * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height,
-            game_object.GetComponent<Character_Script>().curr_tile.position.z);
+            game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x - offset,
+            game_object.GetComponent<Character_Script>().curr_tile.position.y + game_object.GetComponent<Character_Script>().height_offset + Tile_Grid.tile_scale * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height,
+            game_object.GetComponent<Character_Script>().curr_tile.position.z - offset);
             //game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x- (.1f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height),
             //game_object.GetComponent<Character_Script>().curr_tile.position.y+ 1.145f + Tile_Grid.tile_scale * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height,
             //game_object.GetComponent<Character_Script>().curr_tile.position.z - (.08f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height));
@@ -866,15 +1019,18 @@ public class Scenario : MonoBehaviour {
         foreach (GameObject game_object in objects)
         {
             characters.Add(game_object);
+            game_object.GetComponent<Character_Script>().height_offset = (game_object.GetComponent<SpriteRenderer>().sprite.rect.height * game_object.transform.localScale.y / game_object.GetComponent<SpriteRenderer>().sprite.pixelsPerUnit / 2);
+            float offset = (game_object.GetComponent<Character_Script>().height_offset) / 3.5f;
+            game_object.GetComponent<Character_Script>().camera_position_offset = new Vector3(-offset, 0.00f, -offset);
             game_object.GetComponent<Character_Script>().character_num = char_num;
             game_object.GetComponent<Character_Script>().curr_tile = tile_grid.getTile(19 - game_object.GetComponent<Character_Script>().character_num, 19);// [19-game_object.GetComponent<Character_Script>().character_num,19,0];
             game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.setObj(game_object);
-            //game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x,
-            //    game_object.GetComponent<Character_Script>().curr_tile.position.y + 0.55f + Tile_Grid.tile_scale * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height,
-            //    game_object.GetComponent<Character_Script>().curr_tile.position.z );
-            game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x - (.1f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height),
-                game_object.GetComponent<Character_Script>().curr_tile.position.y + 0.7f + Tile_Grid.tile_scale * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height,
-                game_object.GetComponent<Character_Script>().curr_tile.position.z - (.08f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height));
+            game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x-offset,
+                game_object.GetComponent<Character_Script>().curr_tile.position.y + game_object.GetComponent<Character_Script>().height_offset + Tile_Grid.tile_scale * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height,
+                game_object.GetComponent<Character_Script>().curr_tile.position.z -offset);
+            //game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x - (.1f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height),
+            //    game_object.GetComponent<Character_Script>().curr_tile.position.y + 0.7f + Tile_Grid.tile_scale * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height,
+            //    game_object.GetComponent<Character_Script>().curr_tile.position.z - (.08f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height));
             // .25f* game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height+.015f
             //game_object.GetComponent<Character_Script>().curr_tile.position.y + 0.5f,
             //(float)(game_object.GetComponent<Character_Script>().curr_tile.position.y + (game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f,
@@ -904,6 +1060,9 @@ public class Scenario : MonoBehaviour {
                 character_data = monster_character_data;
             }
             //TODO FIX THIS
+            game_object.GetComponent<Character_Script>().height_offset = (game_object.GetComponent<SpriteRenderer>().sprite.rect.height * game_object.transform.localScale.y / game_object.GetComponent<SpriteRenderer>().sprite.pixelsPerUnit / 2);
+            float offset = (game_object.GetComponent<Character_Script>().height_offset) / 3.5f;
+            game_object.GetComponent<Character_Script>().camera_position_offset = new Vector3(-offset, 0.00f, -offset);
             game_object.GetComponent<Character_Script>().character_name = character_data[game_object.GetComponent<Character_Script>().character_id].character_name;
             game_object.GetComponent<Character_Script>().level = character_data[game_object.GetComponent<Character_Script>().character_id].level;
             game_object.GetComponent<Character_Script>().strength = character_data[game_object.GetComponent<Character_Script>().character_id].strength;

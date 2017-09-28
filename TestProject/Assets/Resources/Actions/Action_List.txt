@@ -4,7 +4,7 @@ mp_cost: 0
 range: WPR
 area: Target
 falloff: 0
-self_effect: Enabler Attack false
+self_effect: Enable Attack false
 target_effect: Damage WPD+5
 activation_type: active
 origin: innate
@@ -91,7 +91,7 @@ animation: NUL
 name: Ring
 ap_cost: 1
 mp_cost: 5
-range: 1
+range: WPR
 area: Ring Target 1 0
 falloff: .5
 self_effect: NUL
@@ -111,6 +111,36 @@ area: Cone Self 2
 falloff: .5
 self_effect: NUL
 target_effect: Damage WPD+5
+activation_type: active
+origin: innate
+orient: target
+trigger: NUL
+enabled: true
+animation: NUL
+=================
+name: Raise
+ap_cost: 1
+mp_cost: 5
+range: WPR
+area: Cross Target 1
+falloff: .5
+self_effect: NUL
+target_effect: Elevate 2
+activation_type: active
+origin: innate
+orient: target
+trigger: NUL
+enabled: true
+animation: NUL
+=================
+name: Lower
+ap_cost: 1
+mp_cost: 5
+range: WPR
+area: Cross Target 1
+falloff: .5
+self_effect: NUL
+target_effect: Elevate -2
 activation_type: active
 origin: innate
 orient: target
