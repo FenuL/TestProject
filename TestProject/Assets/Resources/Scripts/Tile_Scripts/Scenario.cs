@@ -158,6 +158,8 @@ public class Tile_Grid : ScriptableObject{
         //Store the instantiated tile in our Tile Tranform Grid;
         tiles[tile.node.id[0], tile.node.id[1]] = instance.transform;
 
+        
+
         //Modify navmesh
         foreach (Tile_Data.Edge e in instance.GetComponent<Tile_Data>().node.edges)
         {
@@ -224,8 +226,6 @@ public class Tile_Grid : ScriptableObject{
         }
 
         //Destroy old object 
-        tile.node.obj = null;
-        //tile.node = null;
         Destroy(tile.gameObject);
     }
 

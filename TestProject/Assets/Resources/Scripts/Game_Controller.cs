@@ -234,8 +234,8 @@ public class Game_Controller : MonoBehaviour {
         }
 
         //Camera Turning
-
-        if (Input.GetKeyDown(KeyCode.Q))
+        //Debug.Log(curr_scenario.curr_player.GetComponent<Character_Script>().state);
+        if (Input.GetKeyDown(KeyCode.Q) && curr_scenario.curr_player.GetComponent<Character_Script>().state != Character_Script.States.Walking)
         {
             //Debug.Log("x:" + main_camera.transform.rotation.x + ", y:" + main_camera.transform.rotation.y + "z:" + main_camera.transform.rotation.z + ", w:" + main_camera.transform.rotation.w);
 
@@ -261,7 +261,7 @@ public class Game_Controller : MonoBehaviour {
             //Debug.Log(curr_scenario.curr_player.GetComponent<Character_Script>().orientation);
             
         }
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.E) && curr_scenario.curr_player.GetComponent<Character_Script>().state != Character_Script.States.Walking)
         {
             //Debug.Log("x:" + main_camera.transform.rotation.x + ", y:" + main_camera.transform.rotation.y + "z:" + main_camera.transform.rotation.z + ", w:" + main_camera.transform.rotation.w);
             //transform.rotation = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w);
