@@ -49,7 +49,9 @@ public class Character_Script : MonoBehaviour {
         //Affects the number of tiles away the skill can target.
         public String range;
         //Area affected by the skill in number of tiles (1 range is single target)
-        public String area;
+        //public String area;
+        public String center;
+        public float[,] area;
         //falloff on the skill effect over the area (affects Damage and Elevetaion). 
         public String falloff;
         public List<Effect> self_effect;
@@ -65,9 +67,11 @@ public class Character_Script : MonoBehaviour {
         public string orient;
         public String animation;
 
-        public static Action Parse(String[] input)
+        public static Action Parse(List<String> input)
         {
             Action act = new Action();
+            int area_x_index = 0;
+            int area_y_index = 0;
             foreach (String s in input)
             {
                 if (s != null)
@@ -88,11 +92,24 @@ public class Character_Script : MonoBehaviour {
                         case "range":
                             act.range = values.Trim();
                             break;
-                        case "area":
-                            act.area = values.TrimStart().TrimEnd();
+                        case "center":
+                            act.center = values.TrimStart().Split(' ')[0];
+                            int x;
+                            int y;
+                            int.TryParse(values.Split(' ')[2].Split('x')[0], out x);
+                            int.TryParse(values.Split(' ')[2].Split('x')[1], out y);
+                            act.area = new float[x, y];
                             break;
-                        case "falloff":
-                            act.falloff = values.Trim();
+                        case "area":
+                            foreach (String num in values.TrimStart().TrimEnd().Split(' '))
+                            {
+                                float number = 0;
+                                float.TryParse(num, out number);
+                                act.area[area_x_index, area_y_index] = number;
+                                area_y_index++;
+                            }
+                            area_y_index = 0;
+                            area_x_index++;
                             break;
                         case "self_effect":
                             act.self_effect = new List<Effect>();
@@ -176,7 +193,7 @@ public class Character_Script : MonoBehaviour {
         public static List<Action> Load_Actions()
         {
             string[] lines = System.IO.File.ReadAllLines(PLAYER_ACTIONS_FILE);
-            string[] subset = new String[HEADINGS];
+            List<String> subset = new List<String>();
             string line = "";
             List<Action> actions = new List<Action>();
             for (int i = 0; i < lines.Length; i++)
@@ -184,12 +201,12 @@ public class Character_Script : MonoBehaviour {
                 line = lines[i];
                 if(!lines[i].Contains("==="))
                 {
-                    subset[i % (HEADINGS)] = lines[i];
+                    subset.Add(lines[i]);
                 }
                 else
                 {
                     actions.Add(Parse(subset));
-                    subset = new String[HEADINGS];
+                    subset = new List<String>();
                 }
 
             }
@@ -527,88 +544,42 @@ public class Character_Script : MonoBehaviour {
             }
         }
 
-        public List <GameObject> Get_Target_Tiles(Character_Script character, GameObject target_tile)
+        public List <Target> Get_Target_Tiles(Character_Script character, GameObject target_tile)
         {
-            List<GameObject> targets = new List<GameObject>();
-            String[] area_effect = area.Split(' ');
-            if (area_effect[0] == "Self")
+            List<Target> targets = new List<Target>();
+            //String[] area_effect = center.Split(' ');
+            int startX = 0;
+            int startY = 0;
+            //Set the center of the ability
+            if (center == "Self")
             {
-                targets.Add(character.curr_tile.gameObject);
+                startX = character.curr_tile.GetComponent<Tile_Data>().x_index;
+                startY = character.curr_tile.GetComponent<Tile_Data>().y_index;
             }
-            else if (area_effect[0] == "Target")
+            else if (center == "Target")
             {
                 if (target_tile != null)
                 {
-                    targets.Add(target_tile);
+                    startX = target_tile.GetComponent<Tile_Data>().x_index;
+                    startY = target_tile.GetComponent<Tile_Data>().y_index;
                 }
             }
-            else if (area_effect[0] == "Cross")
+            //Set the start of the loop
+            startX -= (area.GetLength(0) / 2);
+            startY -= (area.GetLength(1) / 2);
+            //Loop through the area and find valid targets
+            for (int x = 0; x< area.GetLength(0); x++)
             {
-                int x = 0;
-                int y = 0;
-                if (area_effect[1] == "Self")
-                {
-                    x = character.curr_tile.GetComponent<Tile_Data>().x_index;
-                    y = character.curr_tile.GetComponent<Tile_Data>().y_index;
-                }
-                if (area_effect[1] == "Target")
-                {
-                    x = target_tile.GetComponent<Tile_Data>().x_index;
-                    y = target_tile.GetComponent<Tile_Data>().y_index;
-                }
-                int size = 0;
-                int.TryParse(area_effect[2], out size);
-                for (int i = -size; i <= size; i++)
-                {
-                    Transform target = character.controller.curr_scenario.tile_grid.getTile(x + i, y);
-                    if (target != null)
+                for(int y = 0; y< area.GetLength(1); y++){
+                    if (area[x,y] != 0)
                     {
-                        targets.Add(target.gameObject);
-                    }
-                    //avoid duplicates
-                    if (i != 0)
-                    {
-                        target = character.controller.curr_scenario.tile_grid.getTile(x, y + i);
+                        Transform target = character.controller.curr_scenario.tile_grid.getTile(startX + x, startY + y);
                         if (target != null)
                         {
-                            targets.Add(target.gameObject);
+                            Target tar = new Target(target.gameObject, area[x, y]);
+                            targets.Add(tar);
                         }
                     }
-                }
-
-            }
-            else if (area_effect[0] == "Ring")
-            {
-                int x = 0;
-                int y = 0;
-                if (area_effect[1] == "Self")
-                {
-                    x = character.curr_tile.GetComponent<Tile_Data>().x_index;
-                    y = character.curr_tile.GetComponent<Tile_Data>().y_index;
-                }
-                if (area_effect[1] == "Target")
-                {
-                    x = target_tile.GetComponent<Tile_Data>().x_index;
-                    y = target_tile.GetComponent<Tile_Data>().y_index;
-                }
-                int ringsize = 0;
-                int gapsize = 0;
-                int.TryParse(area_effect[2], out ringsize);
-                int.TryParse(area_effect[3], out gapsize);
-                for (int i = -ringsize; i <= ringsize; i++)
-                {
-                    for (int j = -ringsize; j <= ringsize; j++)
-                    {
-                        if (Math.Abs(i) > gapsize || Math.Abs(j) > gapsize)
-                        {
-                            Transform target = character.controller.curr_scenario.tile_grid.getTile(x + i, y + j);
-                            if (target != null)
-                            {
-                                targets.Add(target.gameObject);
-                            }
-                        }
-                    }
-
                 }
             }
             if (targets.Count > 0)
@@ -621,97 +592,58 @@ public class Character_Script : MonoBehaviour {
             }
         }
 
-        public List<GameObject> Get_Targets(Character_Script character, GameObject target_tile)
+        public class Target
         {
-            List<GameObject> targets = new List<GameObject>();
-            String[] area_effect = area.Split(' ');
-            if (area_effect[0] == "Self")
+            public GameObject game_object;
+            public float modifier;
+
+            public Target(GameObject new_target, float new_modifier)
             {
-                targets.Add(character.curr_tile.GetComponent<Tile_Data>().node.obj);
+                game_object = new_target;
+                modifier = new_modifier;
             }
-            else if (area_effect[0] == "Target")
+        }
+
+        public List<Target> Get_Targets(Character_Script character, GameObject target_tile)
+        {
+            List<Target> targets = new List<Target>();
+            int startX = 0;
+            int startY = 0;
+            //Set the center of the ability
+            if (center == "Self")
             {
-                if (target_tile.GetComponent<Tile_Data>().node.obj != null)
+                startX = character.curr_tile.GetComponent<Tile_Data>().x_index;
+                startY = character.curr_tile.GetComponent<Tile_Data>().y_index;
+            }
+            else if (center == "Target")
+            {
+                if (target_tile != null)
                 {
-                    targets.Add(target_tile.GetComponent<Tile_Data>().node.obj);
+                    startX = target_tile.GetComponent<Tile_Data>().x_index;
+                    startY = target_tile.GetComponent<Tile_Data>().y_index;
                 }
             }
-            else if (area_effect[0] == "Cross")
+            //Set the start of the loop
+            startX -= area.GetLength(0) / 2;
+            startY -= area.GetLength(1) / 2;
+
+            //Loop through the area and find valid targets
+            for (int x = 0; x < area.GetLength(0); x++)
             {
-                int x = 0;
-                int y = 0;
-                if (area_effect[1] == "Self")
+                for (int y = 0; y < area.GetLength(1); y++)
                 {
-                    x = character.curr_tile.GetComponent<Tile_Data>().x_index;
-                    y = character.curr_tile.GetComponent<Tile_Data>().y_index;
-                }
-                if (area_effect[1] == "Target")
-                {
-                    x = target_tile.GetComponent<Tile_Data>().x_index;
-                    y = target_tile.GetComponent<Tile_Data>().y_index;
-                }
-                int size = 0;
-                int.TryParse(area_effect[2], out size);
-                for (int i = -size; i <= size; i++)
-                {
-                    Transform target = character.controller.curr_scenario.tile_grid.getTile(x + i, y);
-                    if (target != null)
+                    if (area[x, y] != 0)
                     {
-                        if (target.GetComponent<Tile_Data>().node.obj != null)
-                        {
-                            targets.Add(target.GetComponent<Tile_Data>().node.obj);
-                        }
-                    }
-                    //avoid duplicates
-                    if (i != 0)
-                    {
-                        target = character.controller.curr_scenario.tile_grid.getTile(x, y + i);
+                        Transform target = character.controller.curr_scenario.tile_grid.getTile(startX + x, startY + y);
                         if (target != null)
                         {
                             if (target.GetComponent<Tile_Data>().node.obj != null)
                             {
-                                targets.Add(target.GetComponent<Tile_Data>().node.obj);
+                                Target tar = new Target(target.GetComponent<Tile_Data>().node.obj, area[x, y]);
+                                targets.Add(tar);
                             }
                         }
                     }
-                }
-
-            }
-            else if (area_effect[0] == "Ring")
-            {
-                int x = 0;
-                int y = 0;
-                if (area_effect[1] == "Self")
-                {
-                    x = character.curr_tile.GetComponent<Tile_Data>().x_index;
-                    y = character.curr_tile.GetComponent<Tile_Data>().y_index;
-                }
-                if (area_effect[1] == "Target")
-                {
-                    x = target_tile.GetComponent<Tile_Data>().x_index;
-                    y = target_tile.GetComponent<Tile_Data>().y_index;
-                }
-                int ringsize = 0;
-                int gapsize = 0;
-                int.TryParse(area_effect[2], out ringsize);
-                int.TryParse(area_effect[3], out gapsize);
-                for (int i = -ringsize; i <= ringsize; i++)
-                {
-                    for (int j = -ringsize; j <= ringsize; j++)
-                    {
-                        if (Math.Abs(i) > gapsize || Math.Abs(j) > gapsize)
-                        {
-                            Transform target = character.controller.curr_scenario.tile_grid.getTile(x + i, y + j);
-                            if (target != null)
-                            {
-                                if (target.GetComponent<Tile_Data>().node.obj != null)
-                                {
-                                    targets.Add(target.GetComponent<Tile_Data>().node.obj);
-                                }
-                            }
-                        }
-                    }
-
                 }
             }
             if (targets.Count > 0)
@@ -821,18 +753,20 @@ public class Character_Script : MonoBehaviour {
                         }
                         else if (eff.type.ToString() == Effect.Types.Damage.ToString())
                         {
-                            List<GameObject> targets = Get_Targets(character, target_tile);
-                            foreach (GameObject target in targets)
+                            List<Target> targets = Get_Targets(character, target_tile);
+                            foreach (Target target in targets)
                             {
-                                Character_Script target_character = target.GetComponent<Character_Script>();
-                                Debug.Log("Character " + character.character_name + " Attacked: " + target_character.GetComponent<Character_Script>().character_name + "; Dealing " + Calculate_Damage(Convert_To_Double(eff.value[0], character), target_character) + " damage and Using " + ap_cost + " AP");
+                                Character_Script target_character = target.game_object.GetComponent<Character_Script>();
+                                int damage = (int)(Calculate_Damage(Convert_To_Double(eff.value[0], character), target_character)*target.modifier);
+                                Game_Controller.CreateFloatingText(damage.ToString(), target_character.transform);
+                                Debug.Log("Character " + character.character_name + " Attacked: " + target_character.GetComponent<Character_Script>().character_name + "; Dealing " + damage + " damage and Using " + ap_cost + " AP");
                                 if (target_character.GetComponent<Character_Script>().aura_curr == 0)
                                 {
                                     target_character.GetComponent<Character_Script>().Die();
                                 }
                                 else
                                 {
-                                    target_character.GetComponent<Character_Script>().aura_curr -= Calculate_Damage(Convert_To_Double(eff.value[0], character), target_character);
+                                    target_character.GetComponent<Character_Script>().aura_curr -= damage;
                                     if (target_character.GetComponent<Character_Script>().aura_curr < 0)
                                     {
                                         target_character.GetComponent<Character_Script>().aura_curr = 0;
@@ -863,11 +797,12 @@ public class Character_Script : MonoBehaviour {
                         }
                         else if (eff.type.ToString() == Effect.Types.Elevate.ToString())
                         {
-                            List<GameObject> targets = Get_Target_Tiles(character, target_tile);
-                            foreach (GameObject target in targets)
+                            List<Target> targets = Get_Target_Tiles(character, target_tile);
+                            foreach (Target target in targets)
                             {
-                                Debug.Log("Character " + character.character_name + " Elevated Tile: (" + target.GetComponent<Tile_Data>().node.id[0] + "," + target.GetComponent<Tile_Data>().node.id[1] + "); By " + Convert_To_Double(eff.value[0], character) + " and Using " + ap_cost + " AP");
-                                character.controller.curr_scenario.tile_grid.Elevate(target.transform, (int)(Convert_To_Double(eff.value[0], character)));
+                                int elevation = (int)(Convert_To_Double(eff.value[0], character) * target.modifier);
+                                Debug.Log("Character " + character.character_name + " Elevated Tile: (" + target.game_object.GetComponent<Tile_Data>().node.id[0] + "," + target.game_object.GetComponent<Tile_Data>().node.id[1] + "); By " + elevation + " and Using " + ap_cost + " AP");
+                                character.controller.curr_scenario.tile_grid.Elevate(target.game_object.transform, elevation);
                                                      
                             }
                             character.state = States.Idle;
@@ -1642,19 +1577,22 @@ public class Character_Script : MonoBehaviour {
 
     public IEnumerator Act(Transform target_tile)
     {
-        StartCoroutine(curr_action.Enact(this, target_tile.gameObject));
-        while(state != States.Idle)
+        if (curr_action != null)
         {
-            yield return new WaitForEndOfFrame();
-        }
-        if (action_curr <= 0)
-        {
-            StartCoroutine(End_Turn());
-        }
-        else
-        {
-            controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
-            Find_Action("Move").Select(this);
+            StartCoroutine(curr_action.Enact(this, target_tile.gameObject));
+            while (state != States.Idle)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+            if (action_curr <= 0 && controller.curr_scenario.curr_player.GetComponent<Character_Script>().character_num == character_num)
+            {
+                StartCoroutine(End_Turn());
+            }
+            else
+            {
+                controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
+                Find_Action("Move").Select(this);
+            }
         }
         //curr_action.Enact(this, target_tile.gameObject);
 
@@ -1819,14 +1757,21 @@ public class Character_Script : MonoBehaviour {
         //Debug.Log("Characters remaining: " + controller.curr_scenario.characters.Count);
         controller.curr_scenario.characters.Remove(transform.gameObject);
         controller.curr_scenario.turn_order.Remove(transform.gameObject);
-        controller.curr_scenario.curr_character_num -= 1;
-        if (controller.curr_scenario.curr_character_num < 0)
+        if (character_num == controller.curr_scenario.curr_player.GetComponent<Character_Script>().character_num)
         {
-            controller.curr_scenario.curr_character_num = controller.curr_scenario.characters.Count - 1;
+            controller.curr_scenario.NextPlayer();
+        }
+        else
+        {
+            /*controller.curr_scenario.curr_character_num -= 1;
+            if (controller.curr_scenario.curr_character_num < 0)
+            {
+                controller.curr_scenario.curr_character_num = controller.curr_scenario.characters.Count - 1;
+            }*/
         }
 
         //remove the character from the board
-        gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0);
+        //gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0);
         Destroy(this.gameObject);
 
     }

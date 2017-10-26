@@ -73,6 +73,7 @@
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Player_Scripts\Equipment.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Player_Scripts\Player_Script.cs" />
     <Compile Include="Assets\Resources\Scripts\ExpressionParser.cs" />
+    <Compile Include="Assets\Resources\Scripts\FloatingText.cs" />
     <Compile Include="Assets\Resources\Scripts\Game_Controller.cs" />
     <Compile Include="Assets\Resources\Scripts\Object_Script.cs" />
     <Compile Include="Assets\Resources\Scripts\Tile_Scripts\Scenario.cs" />
@@ -80,6 +81,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Resources\Actions\Action_List.txt" />
+    <None Include="Assets\Resources\Actions\Action_List2.txt" />
     <None Include="Assets\Resources\Characters\Monster_Characters\Monster_Character_Data.txt" />
     <None Include="Assets\Resources\Characters\Player_Characters\Player_Character_Data.txt" />
     <None Include="Assets\Resources\Maps\New Text Document.txt" />

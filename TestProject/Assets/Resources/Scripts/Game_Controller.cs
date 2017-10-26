@@ -10,6 +10,8 @@ public class Game_Controller : MonoBehaviour {
     //public static string STARTING_SCENARIO = "Assets/Resources/Maps/falls_map.txt";
 
     public static Game_Controller controller;
+    public static FloatingText popup;
+    public static GameObject canvas;
     public Scenario curr_scenario;
     public ArrayList avail_scenarios;
     public GameObject main_camera;
@@ -74,6 +76,8 @@ public class Game_Controller : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
+        canvas = GameObject.Find("Canvas");
+        popup = Resources.Load<FloatingText>("Prefabs/Object Prefabs/PopupTextParent");
         main_camera = GameObject.FindGameObjectWithTag("MainCamera");
         all_actions = Character_Script.Action.Load_Actions();
         curr_scenario = new Scenario(STARTING_SCENARIO);
@@ -86,6 +90,15 @@ public class Game_Controller : MonoBehaviour {
         //MarkReachable ();
     }
 	
+    public static void CreateFloatingText(string text, Transform location)
+    {
+        FloatingText instance = Instantiate(popup);
+        Vector2 screen_position = Camera.main.WorldToScreenPoint(new Vector3(location.position.x + UnityEngine.Random.Range(-.5f, .5f), location.position.y + UnityEngine.Random.Range(1.5f,1.7f), location.position.z));
+        instance.transform.SetParent(canvas.transform, false);
+        instance.transform.position = screen_position;
+        instance.SetText(text);
+    }
+
 	// Update is called once per frame
 	void Update () {
         curr_scenario.Update();

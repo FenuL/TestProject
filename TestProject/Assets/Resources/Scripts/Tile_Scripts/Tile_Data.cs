@@ -179,7 +179,7 @@ public class Tile_Data : MonoBehaviour{
             }
             else if (height_diff == -3)
             {
-                cost = 5;
+                cost = 7;
             }
             else if (height_diff < -3)
             {
@@ -852,10 +852,12 @@ public class Tile_Data : MonoBehaviour{
                     
                     if(e != null)
                     {
+
                         if (e.node2 != null &&
                             !e.node2.visited && 
                             current.weight + e.cost <= cost_limit && 
-                            (! e.node2.obj || e.node2.obj.tag == start.obj.tag) && 
+                            start.obj != null &&
+                            (e.node2.obj == null || e.node2.obj.tag == start.obj.tag) && 
                             current.distance < distace_limit)
                         {
                             //Debug.Log("Cost:" + e.cost);
