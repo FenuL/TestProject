@@ -41,14 +41,16 @@ public class Tile_Grid : ScriptableObject{
 
     public int grid_width;
     public int grid_length;
-    int[,] tile_sprite_ids;
+    Material[] materials;
+    double[] modifiers;
+    int[,] tile_mat_ids;
     int[,] object_sprite_ids;
     int[,] character_sprite_ids;
     int[,] tile_heights;
     Transform[,] tiles;
     public Tile_Data.Graph navmesh { get; set; }
 
-    public Tile_Grid(int width, int length, int[,] new_tile_sprite_ids, int[,] new_object_sprite_ids, int[,] new_character_sprite_ids)
+    public Tile_Grid(int width, int length, Material[] new_materials, double[] new_modifiers, int[,] new_tile_mat_ids, int[,] new_object_sprite_ids, int[,] new_character_sprite_ids)
     {
         //Load the prefabs
         tile_prefab = Resources.Load(TILE_PREFAB_SRC, typeof(GameObject)) as GameObject;
@@ -61,8 +63,10 @@ public class Tile_Grid : ScriptableObject{
 
         //Set the variables
         grid_width = width;
-        grid_length = length; 
-        tile_sprite_ids = new_tile_sprite_ids;
+        grid_length = length;
+        modifiers = new_modifiers;
+        materials = new_materials;
+        tile_mat_ids = new_tile_mat_ids;
         object_sprite_ids = new_object_sprite_ids;
         character_sprite_ids = new_character_sprite_ids;
         tile_heights = new int[width, length];
@@ -70,7 +74,7 @@ public class Tile_Grid : ScriptableObject{
         {
             for (int y =0; y<length; y++)
             {
-                tile_heights[x, y] = tile_sprite_ids[x, y] /10 +1;
+                tile_heights[x, y] = tile_mat_ids[x, y] /10 +1;
             }
         }
 
@@ -153,6 +157,9 @@ public class Tile_Grid : ScriptableObject{
         collider.size = new Vector3(NEWTILELENGTH * NEWSCALE, 0, NEWTILEWIDTH * NEWSCALE);
         collider.center = new Vector3(0, tile.node.height, 0);
 
+        //Change material
+        instance.GetComponentInChildren<Renderer>().material = materials[tile_mat_ids[tile.node.id[0], tile.node.id[1]] % 10];
+
         //Generate the tile data for the tile
         instance.AddComponent<Tile_Data>();
         instance.GetComponent<Tile_Data>().instantiate(tile);
@@ -160,7 +167,6 @@ public class Tile_Grid : ScriptableObject{
         //Store the instantiated tile in our Tile Tranform Grid;
         tiles[tile.node.id[0], tile.node.id[1]] = instance.transform;
 
-        
 
         //Modify navmesh
         foreach (Tile_Data.Edge e in instance.GetComponent<Tile_Data>().node.edges)
@@ -240,342 +246,87 @@ public class Tile_Grid : ScriptableObject{
             {
                 //Set the correct sprite for the tile
                 sprite = tile_prefab.GetComponent<SpriteRenderer>();
-                sprite.sprite = (Sprite)tile_sprite_sheet[tile_sprite_ids[x, y]];
+                sprite.sprite = (Sprite)tile_sprite_sheet[tile_mat_ids[x, y]];
                 sprite.sortingOrder = tile_number;
                 tile_number++;
 
                 //Instantiate the tile object.
-                if (SceneManager.GetActiveScene().name == "isometric grid")
+                string file = "Objects/Tiles/" + tile_heights[x, y] + "TCanvas";
+                //string file = "Objects/Tiles/Object-3x3x" + tile_heights[x, y];
+
+                GameObject tile3d = Resources.Load(file, typeof(GameObject)) as GameObject;
+                int NEWSTARTX = 0;
+                int NEWSTARTY = 0;
+                int NEWSTARTZ = 0;
+                float NEWTILEWIDTH = 1.5f;
+                float NEWTILELENGTH = 1.5f;
+                float NEWTILEHEIGHT = 1f;
+                float NEWSCALE = 2f;
+                //GameObject instance = ((GameObject)Instantiate(tile3d, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity));
+                GameObject instance = ((GameObject)Instantiate(tile3d, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y), (float)(NEWSTARTY), (float)(NEWSTARTZ - NEWTILELENGTH * x)), Quaternion.identity));
+                instance.transform.localScale = new Vector3(tile_scale, tile_scale, tile_scale);
+
+                //Add a collider to the tile (TEMPORARY)
+                BoxCollider collider = instance.AddComponent<BoxCollider>();
+                //collider.size = new Vector3(NEWTILELENGTH*NEWSCALE,tile_heights[x,y]*NEWTILEHEIGHT*(NEWSCALE/2),NEWTILEWIDTH*NEWSCALE);
+                collider.size = new Vector3(NEWTILELENGTH * NEWSCALE, 0, NEWTILEWIDTH * NEWSCALE);
+                //collider.center = new Vector3(0, 10, 0);
+                collider.center = new Vector3(0, tile_heights[x, y], 0);
+
+                //Set the material
+                instance.GetComponentInChildren<Renderer>().material = materials[tile_mat_ids[x, y] % 10];
+
+                //Generate the tile data for the tile
+                instance.AddComponent<Tile_Data>();
+                instance.GetComponent<Tile_Data>().instantiate(x, y, tile_heights[x, y], tile_mat_ids[x, y], modifiers);
+
+                //Store the instantiated tile in our Tile Tranform Grid;
+                tiles[x, y] = instance.transform;
+
+                //Add a node to the navmesh
+                navmesh.addNode(tiles[x, y].GetComponent<Tile_Data>().node);
+
+                //Connect the new node to previous nodes in the mesh
+                if (x > 0)
                 {
-                    Transform instance = ((GameObject)Instantiate(tile_prefab, new Vector3((float)(START_X - (x) * (TILE_WIDTH / 200) + (y) * (TILE_WIDTH / 200)), (float)(START_Y - (x) * (TILE_LENGTH / 200) - (y) * (TILE_LENGTH / 200)), 0), Quaternion.identity)).transform;
-                    instance.gameObject.GetComponent<PolygonCollider2D>().offset.Set(0, .20f * tile_heights[x, y] + 3);
-
-                    //Destroy the animator on the tile if necessary
-                    if (tile_sprite_ids[x, y] - 1 != 5)
-                    {
-                        Destroy(instance.gameObject.GetComponent<Animator>());
-                    }
-
-                    //Generate the tile data for the tile
-                    instance.GetComponent<Tile_Data>().instantiate(x, y, tile_heights[x, y], tile_sprite_ids[x, y]);
-
-                    //Store the instantiated tile in our Tile Tranform Grid;
-                    tiles[x, y] = instance;
-
-                    //Add a node to the navmesh
-                    navmesh.addNode(tiles[x, y].GetComponent<Tile_Data>().node);
-
-                    //Connect the new node to previous nodes in the mesh
-                    if (x > 0)
-                    {
-                        tiles[x, y].GetComponent<Tile_Data>().node.addEdge(tiles[x - 1, y].GetComponent<Tile_Data>().node, 3);
-                    }
-                    if (y > 0)
-                    {
-                        tiles[x, y].GetComponent<Tile_Data>().node.addEdge(tiles[x, y - 1].GetComponent<Tile_Data>().node, 0);
-                    }
-
-                    //If there is an object on the tile, mark it non traversible
-                    if (object_sprite_ids[x, y] == 0)
-                    {
-                        tiles[x, y].GetComponent<Tile_Data>().node.traversible = true;
-                    }
-                    else
-                    {
-                        tiles[x, y].GetComponent<Tile_Data>().node.traversible = false;
-                    }
-
-                    //create OBJECTS on top of tiles
-                    if (object_sprite_ids[x, y] != 0)
-                    {
-                        //pull up the object prefab
-                        sprite = object_prefab.GetComponent<SpriteRenderer>();
-
-                        //set the right sprite;
-                        sprite.sprite = (Sprite)object_sprite_sheet[object_sprite_ids[x, y] - 1];
-                        sprite.sortingOrder = tile_number;
-
-                        //instantiate the object
-                        Instantiate(object_prefab, new Vector3((float)(START_X - (x) * (TILE_WIDTH / 200) + (y) * (TILE_WIDTH / 200)), (float)(START_Y - (x) * (TILE_LENGTH / 200) - (y) * (TILE_LENGTH / 200) + tile_heights[x, y] * TILE_HEIGHT / 100.0 + .35f), 0), Quaternion.identity);
-                    }
+                    tiles[x, y].GetComponent<Tile_Data>().node.addEdge(tiles[x - 1, y].GetComponent<Tile_Data>().node, 3);
                 }
-                //3d logic
+                if (y > 0)
+                {
+                    tiles[x, y].GetComponent<Tile_Data>().node.addEdge(tiles[x, y - 1].GetComponent<Tile_Data>().node, 0);
+                }
+
+                //create OBJECTS on top of tiles
+                if (object_sprite_ids[x, y] != 0)
+                {
+                    //pull up the object prefab
+                    sprite = object_prefab.GetComponent<SpriteRenderer>();
+
+                    //set the right sprite;
+                    sprite.sprite = (Sprite)object_sprite_sheet[object_sprite_ids[x, y] - 1];
+                    //sprite.sortingOrder = tile_number;
+                    sprite.sortingOrder = 5000;
+
+                    //instantiate the object
+                    //Instantiate(object_prefab, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity);
+                    tiles[x, y].GetComponent<Tile_Data>().node.setObj((GameObject)Instantiate(object_prefab, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y), (float)(NEWSTARTY + 0.66f + .5f * tile_heights[x, y]), (float)(NEWSTARTZ - NEWTILELENGTH * x)), Quaternion.identity));
+                    //Instantiate(object_prefab, new Vector3((float)(START_X - (x) * (TILE_WIDTH / 200) + (y) * (TILE_WIDTH / 200)), (float)(START_Y - (x) * (TILE_LENGTH / 200) - (y) * (TILE_LENGTH / 200) + tile_heights[x, y] * TILE_HEIGHT / 100.0 + .35f), 0), Quaternion.identity);
+                }
+
+                //If there is an object on the tile, mark it non traversible
+                if (object_sprite_ids[x, y] == 0)
+                {
+                    tiles[x, y].GetComponent<Tile_Data>().node.traversible = true;
+                }
                 else
                 {
-
-                    string file = "Objects/Tiles/" + tile_heights[x,y] + "TCanvas";
-                    //string file = "Objects/Tiles/Object-3x3x" + tile_heights[x, y];
-                    /*int XOFFSET=0;
-                    int YOFFSET=0;
-                    int ZOFFSET=0;
-                    float COLLXOFFSET = 0;
-                    float COLLYOFFSET = 0;
-                    float COLLZOFFSET = 0;
-                    if (tile_heights[x,y] == 1)
-                    {
-                        XOFFSET = 0;
-                        YOFFSET = 0;
-                        ZOFFSET = 0;
-                        COLLXOFFSET = 1;
-                        COLLYOFFSET = 2.5f;
-                        COLLZOFFSET = -2;
-                    }
-                    else if (tile_heights[x, y] == 2)
-                    {
-                        XOFFSET = 0;
-                        YOFFSET = 1;
-                        ZOFFSET = -30;
-                        COLLXOFFSET = 1;
-                        COLLYOFFSET = 2;
-                        COLLZOFFSET = 28;
-                    }
-                    else if (tile_heights[x, y] == 3)
-                    {
-                        XOFFSET = 2;
-                        YOFFSET = 5;
-                        ZOFFSET = -3;
-                        COLLXOFFSET = -1;
-                        COLLYOFFSET = -1.5f;
-                        COLLZOFFSET = 1;
-                    }
-                    else if (tile_heights[x, y] == 4)
-                    {
-                        XOFFSET = 2;
-                        YOFFSET = 2;
-                        ZOFFSET = -3;
-                        COLLXOFFSET = -1;
-                        COLLYOFFSET = 2;
-                        COLLZOFFSET = 1;
-                    }
-                    else if (tile_heights[x, y] == 5)
-                    {
-                        XOFFSET = 0;
-                        YOFFSET = 2;
-                        ZOFFSET = -3;
-                        COLLXOFFSET = 1;
-                        COLLYOFFSET = 2.5f;
-                        COLLZOFFSET = 1;
-                    }
-                    else if (tile_heights[x, y] == 6)
-                    {
-                        XOFFSET = 2;
-                        YOFFSET = 2;
-                        ZOFFSET = -1;
-                        COLLXOFFSET = -1;
-                        COLLYOFFSET = 3;
-                        COLLZOFFSET = -1;
-                    }
-                    else if (tile_heights[x, y] == 7)
-                    {
-                        XOFFSET = 0;
-                        YOFFSET = 2;
-                        ZOFFSET = -1;
-                        COLLXOFFSET = 1;
-                        COLLYOFFSET = 3.5f;
-                        COLLZOFFSET = -1;
-                    }
-                    else if (tile_heights[x, y] == 8)
-                    {
-                        XOFFSET = 2;
-                        YOFFSET = 10;
-                        ZOFFSET = -2;
-                    }*/
-                    GameObject tile3d = Resources.Load(file, typeof(GameObject)) as GameObject;
-                    int NEWSTARTX = 0;
-                    int NEWSTARTY = 0;
-                    int NEWSTARTZ = 0;
-                    float NEWTILEWIDTH = 1.5f;
-                    float NEWTILELENGTH = 1.5f;
-                    float NEWTILEHEIGHT = 1f;
-                    float NEWSCALE = 2f;
-                    //GameObject instance = ((GameObject)Instantiate(tile3d, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity));
-                    GameObject instance = ((GameObject)Instantiate(tile3d, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y), (float)(NEWSTARTY), (float)(NEWSTARTZ - NEWTILELENGTH * x)), Quaternion.identity));
-                    instance.transform.localScale = new Vector3(tile_scale,tile_scale,tile_scale);
-                    //Add a collider to the tile (TEMPORARY)
-                    BoxCollider collider = instance.AddComponent<BoxCollider>();
-                    //collider.size = new Vector3(NEWTILELENGTH*NEWSCALE,tile_heights[x,y]*NEWTILEHEIGHT*(NEWSCALE/2),NEWTILEWIDTH*NEWSCALE);
-                    collider.size = new Vector3(NEWTILELENGTH * NEWSCALE, 0, NEWTILEWIDTH * NEWSCALE);
-                    //collider.center = new Vector3(0, 10, 0);
-                    collider.center = new Vector3(0, tile_heights[x, y], 0);
-
-                    //Generate the tile data for the tile
-                    instance.AddComponent<Tile_Data>();
-                    instance.GetComponent<Tile_Data>().instantiate(x, y, tile_heights[x, y], tile_sprite_ids[x, y]);
-
-                    //Store the instantiated tile in our Tile Tranform Grid;
-                    tiles[x, y] = instance.transform;
-
-                    //Add a node to the navmesh
-                    navmesh.addNode(tiles[x, y].GetComponent<Tile_Data>().node);
-
-                    //Connect the new node to previous nodes in the mesh
-                    if (x > 0)
-                    {
-                        tiles[x, y].GetComponent<Tile_Data>().node.addEdge(tiles[x - 1, y].GetComponent<Tile_Data>().node, 3);
-                    }
-                    if (y > 0)
-                    {
-                        tiles[x, y].GetComponent<Tile_Data>().node.addEdge(tiles[x, y - 1].GetComponent<Tile_Data>().node, 0);
-                    }
-
-                    //create OBJECTS on top of tiles
-                    if (object_sprite_ids[x, y] != 0)
-                    {
-                        //pull up the object prefab
-                        sprite = object_prefab.GetComponent<SpriteRenderer>();
-
-                        //set the right sprite;
-                        sprite.sprite = (Sprite)object_sprite_sheet[object_sprite_ids[x, y] - 1];
-                        //sprite.sortingOrder = tile_number;
-                        sprite.sortingOrder = 5000;
-
-                        //instantiate the object
-                        //Instantiate(object_prefab, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity);
-                        tiles[x, y].GetComponent<Tile_Data>().node.setObj((GameObject) Instantiate(object_prefab, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y), (float)(NEWSTARTY+0.66f + .5f * tile_heights[x, y]), (float)(NEWSTARTZ - NEWTILELENGTH * x)), Quaternion.identity));
-                        //Instantiate(object_prefab, new Vector3((float)(START_X - (x) * (TILE_WIDTH / 200) + (y) * (TILE_WIDTH / 200)), (float)(START_Y - (x) * (TILE_LENGTH / 200) - (y) * (TILE_LENGTH / 200) + tile_heights[x, y] * TILE_HEIGHT / 100.0 + .35f), 0), Quaternion.identity);
-                    }
-
-                    //If there is an object on the tile, mark it non traversible
-                    if (object_sprite_ids[x, y] == 0)
-                    {
-                        tiles[x, y].GetComponent<Tile_Data>().node.traversible = true;
-                    }
-                    else
-                    {
-                        tiles[x, y].GetComponent<Tile_Data>().node.traversible = false;
-                    }
+                    tiles[x, y].GetComponent<Tile_Data>().node.traversible = false;
                 }
+
             }
         }
         sprite.sortingOrder = 0;
     }
-
-	/*public Tile_Grid(string[] lines, Transform tile_prefab, Sprite[] newTileSprites, Transform item_prefab, Sprite[] newItemSpriteSheet){
-		tile = tile_prefab;
-		tile_sprite_sheet = newTileSprites;
-		item = item_prefab;
-		item_sprite_sheet = newItemSpriteSheet;
-		//read the height map
-		int tile_sprite;
-		int item_sprite;
-		int tile_number = 0;
-		int row_num = 0;
-		int col_num = 0;
-		int i = 0;
-		double start_x_pos = 0;
-		double start_y_pos = 3.5;
-        navmesh = new Tile_Data.Graph();
-		foreach (string line in lines){
-			string[] elements = line.Split(';');
-			foreach (string e in elements){
-				if (row_num == 1) { 
-					if (col_num == 0){
-						if (int.TryParse(e, out map_width)){
-
-						}
-					}
-					else if (col_num == 1) {
-						if (int.TryParse(e, out map_height)){
-
-						}
-					}
-				}
-				else if (row_num >= 3 && row_num < map_height+3){
-					//print ("string " + e);
-					//string[] str = e.Split (',');
-					//i = 0;
-					//foreach (string s in str) {
-					    if (int.TryParse(e, out tile_sprite)){
-							//print ("Tile " + (row_num-3) + "," + col_num + "," + i + " sprite = " + s);
-							tile_sprites[row_num-3,col_num] = tile_sprite;
-							//tile_sprites[row_num-tile_grid_height-4,col_num,i] = tile_sprite;
-					//	    i++;
-					//		if (i >= MAX_TILES){
-					//			break;
-					//		}
-					//	}
-					}
-					//print ("i = " + i);
-					tile_heights[row_num-3,col_num] = tile_sprite/10+1;
-				}
-				else if(row_num >= map_height+4){
-					if (int.TryParse(e, out item_sprite)){
-						//TODO FIX TILE OBJECTS
-						item_sprites[row_num-map_height-4,col_num] = item_sprite;
-						//tile_sprites[row_num-tile_grid_height-4,col_num] = tile_sprite;
-						//print("line_num:" + line_num);
-						//print ("line_num - tile_grid_height - 4 = " + (line_num-tile_grid_height-4));
-						//print ("num_num:" + num_num);
-						//tiles[row_num-tile_grid_height-4,col_num].setTileSpriteIndex(tile_sprite);
-					}
-				}
-				col_num++;
-			}
-			col_num = 0;
-			row_num++;
-		}
-
-		for (int x = 0; x < map_width; x++){
-			for (int y = 0; y < map_height; y++){
-				//for (int z=0; z < tile_heights[x,y]; z++){
-					//Set the correct sprite for the tile
-					sprite = tile.GetComponent<SpriteRenderer>();
-					sprite.sprite = tile_sprite_sheet[tile_sprites[x,y]-1];
- 
-					//Instantiate the tile object. Destroy the collider on the prefab if the tile is not on top of the stack.
-					Transform instance= (Transform)Instantiate(tile, new Vector3((float)(start_x_pos - (x) * (TILE_WIDTH/200) + (y) * (TILE_WIDTH/200)), (float)(start_y_pos - (x) * (TILE_LENGTH/200) - (y) * (TILE_LENGTH/200)), 0), Quaternion.identity);
-				    instance.gameObject.GetComponent<PolygonCollider2D>().offset.Set(0,.20f*tile_heights[x,y]+3);
-				    //if (z != tile_heights[x,y]-1){
-					//	Destroy (instance.gameObject.GetComponent<PolygonCollider2D>());
-					//}
-					if (tile_sprites[x,y]-1 != 5){
-						Destroy (instance.gameObject.GetComponent<Animator>());
-					}
-					instance.GetComponent<Tile_Data>().instantiate(x,y,tile_heights[x,y],tile_sprites[x,y]);
-                    
-
-					//else {
-					//	instance = Instantiate(tile, new Vector3((float)(start_x_pos - (x) * (TILE_WIDTH/200) + (y) * (TILE_WIDTH/200)), (float)(start_y_pos - (x) * (TILE_LENGTH/200) - (y) * (TILE_LENGTH/200)+z*TILE_HEIGHT/100.0), 0), Quaternion.identity);
-					//}
-					//Increase the tile draw order so other tiles are drawn correctly.
-					//if (sprite)
-					//{
-					tile_number++;
-					sprite.sortingOrder = tile_number;
-					//}
-					tiles[x,y] = instance;
-                    navmesh.addNode(tiles[x,y].GetComponent<Tile_Data>().node);
-                    if (x > 0)
-                    {
-                        tiles[x,y].GetComponent<Tile_Data>().node.addEdge(tiles[x - 1, y].GetComponent<Tile_Data>().node, 3);
-                    }
-                    if (y > 0)
-                    {
-                        tiles[x,y].GetComponent<Tile_Data>().node.addEdge(tiles[x, y - 1].GetComponent<Tile_Data>().node, 0);
-                    }
-
-                if (item_sprites[x,y] == 0){
-						tiles[x,y].GetComponent<Tile_Data>().node.traversible = true;
-					}
-					else{
-						tiles[x,y].GetComponent<Tile_Data>().node.traversible = false;
-					}
-				//}
-				//create OBJECTS on top of tiles
-				if (item_sprites[x,y] != 0) {
-					sprite = item.GetComponent<SpriteRenderer>();
-					sprite.sprite = item_sprite_sheet[item_sprites[x,y]-1];
-					sprite.sortingOrder = tile_number;
-					Instantiate(item, new Vector3((float)(start_x_pos - (x) * (TILE_WIDTH/200) + (y) * (TILE_WIDTH/200)), (float)(start_y_pos - (x) * (TILE_LENGTH/200) - (y) * (TILE_LENGTH/200)+tile_heights[x,y]*TILE_HEIGHT/100.0+.35f), 0), Quaternion.identity);
-
-					//print (sprite.sortingOrder);
-					//Instantiate(new Transform())
-				}
-			}
-		}
-		sprite.sortingOrder = 0;
-
-	}*/
 
 	public Transform[,] getTiles(){
 		return tiles;
@@ -657,7 +408,9 @@ public class Scenario : MonoBehaviour {
         //30 is the default grid size;
         int grid_width=30;
         int grid_length=30;
-        int[,] tile_sprite_ids = new int[grid_width, grid_length];
+        Material[] materials = new Material[10];
+        double[] tile_modifiers = new double[10];
+        int[,] tile_mat_ids = new int[grid_width, grid_length];
         int[,] object_sprite_ids = new int[grid_width, grid_length];
         int[,] character_sprite_ids = new int[grid_width, grid_length];
         //Read through the file line by line, looking for specific headings
@@ -798,8 +551,24 @@ public class Scenario : MonoBehaviour {
                     }
                     i += 2;
                     break;
+                case "[Tiles]":
+                    //build materials
+                    materials = new Material[10];
+                    for (int j = i + 1; j < i + 10 + 1; j++)
+                    {
+                        string[] entries = lines[j].Split(' ');
+                        materials[(j-i-1)] = (Material)Resources.Load("Objects/Materials/TileMat0" + (j-i-1));
+                        materials[(j-i-1)].mainTexture = (Texture)Resources.Load("Textures/" + entries[1]);
+                        double modifier;
+                        if (double.TryParse(entries[2], out modifier))
+                        {
+                            tile_modifiers[j - i - 1] = modifier;
+                        }
+                    }
+
+                    break;
                 case "[Tile Map]":
-                    tile_sprite_ids = new int[grid_width, grid_length];
+                    tile_mat_ids = new int[grid_width, grid_length];
                     for( int k = i+1; k<i+grid_length+1; k++)
                     {
                         string[] entries = lines[k].Split(';');
@@ -808,7 +577,7 @@ public class Scenario : MonoBehaviour {
                             int sprite;
                             if (int.TryParse(entries[l], out sprite))
                             {
-                                tile_sprite_ids[k-i-1, l] = sprite;
+                                tile_mat_ids[k-i-1, l] = sprite;
                             }
                         }
                     }
@@ -848,7 +617,7 @@ public class Scenario : MonoBehaviour {
                     break;
             }
             //Resume new scenario creation
-            tile_grid = new Tile_Grid(grid_width, grid_length, tile_sprite_ids, object_sprite_ids, character_sprite_ids);
+            tile_grid = new Tile_Grid(grid_width, grid_length, materials, tile_modifiers, tile_mat_ids, object_sprite_ids, character_sprite_ids);
             tile_grid.tile_prefab.GetComponent<SpriteRenderer>().color = new Color(255f, 255f, 255f, 1f);
 
             curr_round = 0;
@@ -1219,8 +988,18 @@ public class Scenario : MonoBehaviour {
             }
             else if (curr_player.GetComponent<Character_Script>().curr_action.area.Length > 1)
             {
-                int startX = selected_tile.GetComponent<Tile_Data>().x_index;
-                int startY = selected_tile.GetComponent<Tile_Data>().y_index;
+                int startX = 0;
+                int startY = 0;
+                if (curr_player.GetComponent<Character_Script>().curr_action.center == "Target")
+                {
+                    startX = selected_tile.GetComponent<Tile_Data>().x_index;
+                    startY = selected_tile.GetComponent<Tile_Data>().y_index;
+                }
+                else if (curr_player.GetComponent<Character_Script>().curr_action.center == "Self")
+                {
+                    startX = curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().x_index;
+                    startY = curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().y_index;
+                }
                 startX -= area_width / 2;
                 startY -= area_length / 2;
                 int curs_index = 0;

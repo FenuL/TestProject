@@ -80,7 +80,7 @@ public class Camera_Controller : MonoBehaviour {
                     {
                         if (eff.type.ToString() == "Damage")
                         {
-                            int damage_dealt = Character_Script.Calculate_Damage(curr_player.curr_action.Convert_To_Double(eff.value[0], curr_player), highlighted_player);
+                            int damage_dealt = Character_Script.Calculate_Damage(curr_player.curr_action.Convert_To_Double(eff.value[0], curr_player), highlighted_player.gameObject);
                             int new_aura = highlighted_player.aura_curr - damage_dealt;
                             if (new_aura < 0)
                             {

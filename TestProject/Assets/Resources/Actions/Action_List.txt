@@ -82,7 +82,7 @@ area: 0 .6 0
 area: .6 1 .6
 area: 0 .6 0
 self_effect: NUL
-target_effect: Damage WPD+5
+target_effect: Damage 1
 activation_type: active
 origin: innate
 orient: target
@@ -110,7 +110,7 @@ animation: NUL
 name: Cone
 ap_cost: 1
 mp_cost: 5
-range: 1
+range: WPR
 center: Self 5x5
 area: 0 1 1 1 0
 area: 1 0 1 0 1 

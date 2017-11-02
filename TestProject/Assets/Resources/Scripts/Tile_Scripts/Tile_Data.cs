@@ -33,20 +33,11 @@ public class Tile_Data : MonoBehaviour{
         node.weight = -1;
     }
 
-	public void instantiate(int x, int y, int height, int sprite){
+	public void instantiate(int x, int y, int height, int sprite, double[] modifiers){
 		x_index = x;
 		y_index = y;
 		tile_sprite_index = sprite;
-        double mod = 0;
-        switch (tile_sprite_index)
-        {
-            case 13:
-                mod = 0.5;
-                break;
-            case 6:
-                mod = 1;
-                break;
-        }
+        double mod = modifiers[sprite %10];
         int[] index = { x_index, y_index };
         node = new Node(height, mod, index);
 	}

@@ -756,22 +756,30 @@ public class Character_Script : MonoBehaviour {
                             List<Target> targets = Get_Targets(character, target_tile);
                             foreach (Target target in targets)
                             {
-                                Character_Script target_character = target.game_object.GetComponent<Character_Script>();
-                                int damage = (int)(Calculate_Damage(Convert_To_Double(eff.value[0], character), target_character)*target.modifier);
-                                Game_Controller.CreateFloatingText(damage.ToString(), target_character.transform);
-                                Debug.Log("Character " + character.character_name + " Attacked: " + target_character.GetComponent<Character_Script>().character_name + "; Dealing " + damage + " damage and Using " + ap_cost + " AP");
-                                if (target_character.GetComponent<Character_Script>().aura_curr == 0)
+                                if (target.game_object.GetComponent<Character_Script>())
                                 {
-                                    target_character.GetComponent<Character_Script>().Die();
+                                    Character_Script target_character = target.game_object.GetComponent<Character_Script>();
+                                    int damage = (int)(Calculate_Damage(Convert_To_Double(eff.value[0], character), target_character.gameObject) * target.modifier);
+                                    Game_Controller.CreateFloatingText(damage.ToString(), target_character.transform);
+                                    Debug.Log("Character " + character.character_name + " Attacked: " + target_character.character_name + "; Dealing " + damage + " damage and Using " + ap_cost + " AP");
+                                    if (target_character.aura_curr == 0)
+                                    {
+                                        target_character.Die();
+                                    }
+                                    else
+                                    {
+                                        target_character.aura_curr -= damage;
+                                        if (target_character.aura_curr < 0)
+                                        {
+                                            target_character.aura_curr = 0;
+                                            target_character.GetComponent<SpriteRenderer>().color = Color.red;
+                                        }
+                                    }
                                 }
                                 else
                                 {
-                                    target_character.GetComponent<Character_Script>().aura_curr -= damage;
-                                    if (target_character.GetComponent<Character_Script>().aura_curr < 0)
-                                    {
-                                        target_character.GetComponent<Character_Script>().aura_curr = 0;
-                                        target_character.GetComponent<SpriteRenderer>().color = Color.red;
-                                    }
+                                    int damage = (int)(Calculate_Damage(Convert_To_Double(eff.value[0], character), target.game_object) * target.modifier);
+                                    Debug.Log("Character " + character.character_name + " Attacked: OBJECT" + "; Dealing " + damage + " damage and Using " + ap_cost + " AP");
                                 }
                             }
                             character.state = States.Idle;
@@ -862,7 +870,7 @@ public class Character_Script : MonoBehaviour {
                             }
                             else
                             {
-                                character.GetComponent<Character_Script>().aura_curr -= Calculate_Damage(Convert_To_Double(eff.value[0], character), character);
+                                character.GetComponent<Character_Script>().aura_curr -= Calculate_Damage(Convert_To_Double(eff.value[0], character), character.gameObject);
                                 if (character.GetComponent<Character_Script>().aura_curr < 0)
                                 {
                                     character.GetComponent<Character_Script>().aura_curr = 0;
@@ -1666,10 +1674,15 @@ public class Character_Script : MonoBehaviour {
         }
     }
 
-    public static int Calculate_Damage(double damage, Character_Script target)
+    public static int Calculate_Damage(double damage, GameObject target)
     {
         //Debug.Log("Damage: " + damage + ", Armor: " + target.armor.armor);
-        int dmg = (int)(damage - target.armor.armor);
+        int dmg = (int)damage;
+        Character_Script character = target.GetComponent<Character_Script>();
+        if (character != null)
+        {
+            dmg = (int)(damage - character.armor.armor);
+        }
         if (dmg < 0)
         {
             dmg = 0;
