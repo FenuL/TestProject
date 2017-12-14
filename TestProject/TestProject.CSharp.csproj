@@ -63,18 +63,33 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Resources\Scripts\Action_Menu_Script.cs" />
-    <Compile Include="Assets\Resources\Scripts\Camera_Controller.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Action_Scripts\Action.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Action_Scripts\Action_Effect.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Action_Scripts\Target.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Character_Script.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Condition.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Accepted_Shortcuts.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Character_States.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Character_Stats.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Conditions.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Scenario_Objectives.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Equipment_Scripts\Accessory.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Equipment_Scripts\Armor.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Equipment_Scripts\Equipment.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Equipment_Scripts\Weapon.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Monster_Scripts\Monster_Script.cs" />
-    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Player_Scripts\Equipment.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Player_Scripts\Player_Script.cs" />
     <Compile Include="Assets\Resources\Scripts\ExpressionParser.cs" />
-    <Compile Include="Assets\Resources\Scripts\FloatingText.cs" />
     <Compile Include="Assets\Resources\Scripts\Game_Controller.cs" />
-    <Compile Include="Assets\Resources\Scripts\Object_Script.cs" />
-    <Compile Include="Assets\Resources\Scripts\Tile_Scripts\Scenario.cs" />
-    <Compile Include="Assets\Resources\Scripts\Tile_Scripts\Tile_Data.cs" />
+    <Compile Include="Assets\Resources\Scripts\Scenario_Scripts\Edge.cs" />
+    <Compile Include="Assets\Resources\Scripts\Scenario_Scripts\Graph.cs" />
+    <Compile Include="Assets\Resources\Scripts\Scenario_Scripts\Scenario.cs" />
+    <Compile Include="Assets\Resources\Scripts\Scenario_Scripts\Tile.cs" />
+    <Compile Include="Assets\Resources\Scripts\Scenario_Scripts\Tile_Grid.cs" />
+    <Compile Include="Assets\Resources\Scripts\UI_Scripts\Action_Menu_Script.cs" />
+    <Compile Include="Assets\Resources\Scripts\UI_Scripts\Camera_Controller.cs" />
+    <Compile Include="Assets\Resources\Scripts\UI_Scripts\FloatingText.cs" />
+    <Compile Include="Assets\Resources\Scripts\UI_Scripts\Object_Script.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Resources\Actions\Action_List.txt" />

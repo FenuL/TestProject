@@ -4,997 +4,66 @@ using System.Collections.Generic;
 using System;
 using UnityEngine.UI;
 
+/// <summary>
+/// Script for handling Character interaction. Should be attached to every Character object. 
+/// </summary>
 public class Character_Script : MonoBehaviour {
-
-    public class Action
-    {
-        public static string PLAYER_ACTIONS_FILE = "Assets/Resources/Actions/Action_List.txt";
-        public static int HEADINGS = 14;
-        public enum Activation_Types { Active, Passive, Reactive }
-        public enum Origin_Types { Innate, Soul, Weapon }
-        public enum Accepted_Shortcuts { AUM, AUC, APM, APC, MPM, MPC, CAM, CAC, SPD, STR, CRD, SPT, DEX, VIT, LVL, WPR, WPD, ARM, WGT, MOC, DST, NUL }
-        
-        /// <summary>
-        /// AUM = Char Aura MAX
-        /// AUC = Char Aura Current
-        /// APM = Action Point Max
-        /// APC = Action Point Curr
-        /// MPM = Mana Point Max
-        /// MPC = Mana Point Curr
-        /// CAM = Char Canister Max
-        /// CAC = Char Canister Current
-        /// SPD = Char Speed
-        /// STR = Char Strength
-        /// CRD = Char Coordination
-        /// SPT = Char Spirit
-        /// DEX = Char Dexterity
-        /// VIT = Char Vitality
-        /// LVL = Char Level
-        /// WPR = Weapon Range
-        /// WPD = Weapon Damage
-        /// WPN = Weapon
-        /// ARM = Armor Value
-        /// WGT = Character Weight
-        /// MOC = Movement Cost
-        /// DST = Distance between self and target
-        /// NUL = Null
-        /// </summary>
-
-        //Action name
-        public String name;
-        //Cost in AP
-        public String ap_cost;
-        //Cost in MP
-        public String mp_cost;
-        //Affects the number of tiles away the skill can target.
-        public String range;
-        //Area affected by the skill in number of tiles (1 range is single target)
-        //public String area;
-        public String center;
-        public float[,] area;
-        //falloff on the skill effect over the area (affects Damage and Elevetaion). 
-        public String falloff;
-        public List<Effect> self_effect;
-        public List<Effect> target_effect;
-        public Activation_Types type;
-        //what triggers the action if it is a reactive action
-        public String trigger;
-        //Where the skill originates (for disabling purposes later)
-        public Origin_Types origin;
-        //if the action is enabled or not
-        public bool enabled;
-        //Whether the ability lets you select orientation
-        public string orient;
-        public String animation;
-
-        public static Action Parse(List<String> input)
-        {
-            Action act = new Action();
-            int area_x_index = 0;
-            int area_y_index = 0;
-            foreach (String s in input)
-            {
-                if (s != null)
-                {
-                    String category = s.Split(':')[0];
-                    String values = s.Split(':')[1];
-                    switch (category)
-                    {
-                        case "name":
-                            act.name = values.TrimStart().TrimEnd();
-                            break;
-                        case "ap_cost":
-                            act.ap_cost = values.Trim();
-                            break;
-                        case "mp_cost":
-                            act.mp_cost = values.Trim();
-                            break;
-                        case "range":
-                            act.range = values.Trim();
-                            break;
-                        case "center":
-                            act.center = values.TrimStart().Split(' ')[0];
-                            int x;
-                            int y;
-                            int.TryParse(values.Split(' ')[2].Split('x')[0], out x);
-                            int.TryParse(values.Split(' ')[2].Split('x')[1], out y);
-                            act.area = new float[x, y];
-                            break;
-                        case "area":
-                            foreach (String num in values.TrimStart().TrimEnd().Split(' '))
-                            {
-                                float number = 0;
-                                float.TryParse(num, out number);
-                                act.area[area_x_index, area_y_index] = number;
-                                area_y_index++;
-                            }
-                            area_y_index = 0;
-                            area_x_index++;
-                            break;
-                        case "self_effect":
-                            act.self_effect = new List<Effect>();
-                            if (!values.Contains("NUL"))
-                            {
-                                foreach (String value in values.TrimStart().TrimEnd().Split(';'))
-                                {
-                                    act.self_effect.Add(new Effect(value));
-                                }
-                            }
-                            break;
-                        case "target_effect":
-                            act.target_effect = new List<Effect>();
-                            if (!values.Contains("NUL"))
-                            {
-                                foreach (String value in values.TrimStart().TrimEnd().Split(';'))
-                                {
-                                    act.target_effect.Add(new Effect(value));
-                                }
-                            }
-                            break;
-                        case "activation_type":
-                            if (values.Trim() == "Reactive" ||
-                                values.Trim() == "reactive")
-                            {
-                                act.type = Activation_Types.Reactive;
-                            }
-                            else if (values.Trim() == "Passive" ||
-                                values.Trim() == "passive")
-                            {
-                                act.type = Activation_Types.Passive;
-                            }
-                            else
-                            {
-                                act.type = Activation_Types.Active;
-                            }
-                            break;
-                        case "origin":
-                            if (values.Trim() == "Weapon" ||
-                                values.Trim() == "weapon")
-                            {
-                                act.origin = Origin_Types.Weapon;
-                            }
-                            else if (values.Trim() == "Soul" ||
-                                values.Trim() == "soul")
-                            {
-                                act.origin = Origin_Types.Soul;
-                            }
-                            else
-                            {
-                                act.origin = Origin_Types.Innate;
-                            }
-                            break;
-                        case "trigger":
-                            act.trigger = values.Trim();
-                            break;
-                        case "orient":
-                            act.orient = values.Trim();
-                            break;
-                        case "enabled":
-                            if (values.Trim() == "True" ||
-                                values.Trim() == "true" ||
-                                values.Trim() == "TRUE")
-                            {
-                                act.enabled = true;
-                            }
-                            else
-                            {
-                                act.enabled = false;
-                            }
-                            break;
-                        case "animation":
-                            act.animation = values.Trim();
-                            break;
-                    }
-                }
-            }
-            return act;
-        }
-
-        public static List<Action> Load_Actions()
-        {
-            string[] lines = System.IO.File.ReadAllLines(PLAYER_ACTIONS_FILE);
-            List<String> subset = new List<String>();
-            string line = "";
-            List<Action> actions = new List<Action>();
-            for (int i = 0; i < lines.Length; i++)
-            {
-                line = lines[i];
-                if(!lines[i].Contains("==="))
-                {
-                    subset.Add(lines[i]);
-                }
-                else
-                {
-                    actions.Add(Parse(subset));
-                    subset = new List<String>();
-                }
-
-            }
-            return actions;
-        }
-
-        public double Convert_To_Double(string input, Character_Script obj)
-        {
-            double output = 0.0;
-            if (double.TryParse(input, out output))
-            {
-                return output;
-            }
-            else
-            {
-                //Remove acronyms from equation
-                Array values = Enum.GetValues(typeof(Accepted_Shortcuts));
-                foreach (Accepted_Shortcuts val in values)
-                {
-                    if (input.Contains(val.ToString()))
-                    {
-                        if (val.ToString() == "AUM")
-                        {
-                            input = input.Replace(val.ToString(), ""+obj.aura_max );
-                        }
-                        else if (val.ToString() == "AUC")
-                        {
-                            input = input.Replace(val.ToString(), "" + obj.aura_curr);
-                        }
-                        else if (val.ToString() == "APM")
-                        {
-                            input = input.Replace(val.ToString(), "" + obj.action_max);
-                        }
-                        else if (val.ToString() == "APC")
-                        {
-                            input = input.Replace(val.ToString(), "" + obj.action_curr);
-                        }
-                        else if (val.ToString() == "MPM")
-                        {
-                            input = input.Replace(val.ToString(), "" + obj.mana_max);
-                        }
-                        else if (val.ToString() == "MPC")
-                        {
-                            input = input.Replace(val.ToString(), "" + obj.mana_curr);
-                        }
-                        else if (val.ToString() == "CAM")
-                        {
-                            input = input.Replace(val.ToString(), "" + obj.canister_max);
-                        }
-                        else if (val.ToString() == "CAC")
-                        {
-                            input = input.Replace(val.ToString(), "" + obj.canister_curr);
-                        }
-                        else if (val.ToString() == "SPD")
-                        {
-                            input = input.Replace(val.ToString(), "" + obj.speed);
-                        }
-                        else if (val.ToString() == "STR")
-                        {
-                            input = input.Replace(val.ToString(), "" + obj.strength);
-                        }
-                        else if (val.ToString() == "CRD")
-                        {
-                            input = input.Replace(val.ToString(), "" + obj.coordination);
-                        }
-                        else if (val.ToString() == "SPT")
-                        {
-                            input = input.Replace(val.ToString(), "" + obj.spirit);
-                        }
-                        else if (val.ToString() == "DEX")
-                        {
-                            input = input.Replace(val.ToString(), "" + obj.dexterity);
-                        }
-                        else if (val.ToString() == "VIT")
-                        {
-                            input = input.Replace(val.ToString(), "" + obj.vitality);
-                        }
-                        else if (val.ToString() == "LVL")
-                        {
-                            input = input.Replace(val.ToString(), "" + obj.level);
-                        }
-                        else if (val.ToString() == "WPR")
-                        {
-                            input = input.Replace(val.ToString(), "" + obj.weapon.range);
-                        }
-                        else if (val.ToString() == "WPD")
-                        {
-                            input = input.Replace(val.ToString(), "" + obj.weapon.attack);
-                        }
-                        else if (val.ToString() == "WPN")
-                        {
-                            input = input.Replace(val.ToString(), "" + obj.weapon.name);
-                        }
-                        else if (val.ToString() == "ARM")
-                        {
-                            input = input.Replace(val.ToString(), "" + obj.armor.armor);
-                        }
-                        else if (val.ToString() == "WGT")
-                        {
-                            input = input.Replace(val.ToString(), "" + obj.armor.weight);
-                        }
-                        else if (val.ToString() == "MOC")
-                        {
-                            input = input.Replace(val.ToString(), "" + obj.action_curr);
-                        }
-                        else if (val.ToString() == "DST")
-                        {
-                            input = input.Replace(val.ToString(), "" + obj.aura_max);
-                        }
-                        else if (val.ToString() == "NUL")
-                        {
-                            input = input.Replace(val.ToString(), "" + 0.0);
-                        }
-                    }
-                }
-                //try to convert to double after converting
-                if (double.TryParse(input, out output))
-                {
-                    return output;
-                }
-                else if (input.Contains("+") ||
-                    input.Contains("/") ||
-                    input.Contains("*") ||
-                    input.Contains("-") ||
-                    input.Contains("^") ||
-                    input.Contains("(") ||
-                    input.Contains(")"))
-                {
-                    return Parse_Equation(input);
-                }
-                return -1.0;
-            }
-
-        }
-
-        public double Parse_Equation(string input)
-        {
-            //Debug.Log("Parsing: " + input);
-            //base case, can we convert to double?
-            double output;
-            if(double.TryParse(input, out output))
-            {
-                return output;
-            }
-            //otherwise, we have work to do
-            else
-            {
-                //Order of operations is reversed because it's a stack.
-                //resolve parentheses
-                if (input.Contains("(") || input.Contains(")"))
-                {
-                    string[] split = input.Split(new char[] { '(' }, 2);
-                    string[] split2 = split[1].Split(new char[] { ')' }, 2);
-                    double result = Parse_Equation(split2[0]);
-                    return Parse_Equation("" + split[0] + result + split2[1]);
-                }
-                //resolve addition
-                if (input.Contains("+"))
-                {
-                    string[] split = input.Split(new char[] { '+' }, 2 );
-                    return Parse_Equation(""+(Parse_Equation(split[0]) + Parse_Equation(split[1])));
-                }
-                //resolve subtraction
-                if (input.Contains("-"))
-                {
-                    string[] split = input.Split(new char[] { '-' }, 2);
-                    return Parse_Equation("" + (Parse_Equation(split[0]) - Parse_Equation(split[1])));
-                }
-                //resolve multiplication
-                if (input.Contains("*"))
-                {
-                    string[] split = input.Split(new char[] { '*' }, 2);
-                    return Parse_Equation("" + (Parse_Equation(split[0]) * Parse_Equation(split[1])));
-                }
-                //resolve division
-                if (input.Contains("/"))
-                {
-                    string[] split = input.Split(new char[] { '/' }, 2);
-                    return Parse_Equation("" + (Parse_Equation(split[0]) / Parse_Equation(split[1])));
-                }
-                //resolve exponents
-                if (input.Contains("^"))
-                {
-                    string[] split = input.Split(new char[] { '^' }, 2);
-                    return Parse_Equation("" + (Mathf.Pow((float)Parse_Equation(split[0]), (float)Parse_Equation(split[1]))));
-                }
-            }
-            return output;
-        }
-
-        public void Select(Character_Script character)
-        {
-
-            //Check to see if action is enabled
-            //Debug.Log("Name: " + name + " is enabled: " + enabled);
-            if (this.enabled)
-            {
-                //Debug.Log("AP cost: " + (int)Convert_To_Double(cost, character));
-                //Check to see if player can afford action:
-                if (character.action_curr >= (int)Convert_To_Double(ap_cost, character))
-                {
-                    //Debug.Log("Enough action points");
-                    if (character.mana_curr >= (int)Convert_To_Double(mp_cost, character))
-                    {
-                        //Debug.Log("Enough mana points");
-                        character.curr_action = this;
-                        if (target_effect != null)
-                        {
-                            foreach (Effect eff in target_effect)
-                            {
-                                if (eff.type.ToString() == Effect.Types.Move.ToString())
-                                {
-                                    character.state = States.Moving;
-                                    character.controller.curr_scenario.FindReachable((int)character.speed, (int)Convert_To_Double(range, character));
-                                }
-                                else if (eff.type.ToString() == Effect.Types.Damage.ToString())
-                                {
-                                    character.state = States.Attacking;
-                                    character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
-                                }
-                                else if (eff.type.ToString() == Effect.Types.Heal.ToString())
-                                {
-                                    character.state = States.Attacking;
-                                    character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
-                                }
-                                else if (eff.type.ToString() == Effect.Types.Status.ToString())
-                                {
-                                    character.state = States.Attacking;
-                                    character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
-                                }
-                                else if (eff.type.ToString() == Effect.Types.Elevate.ToString())
-                                {
-                                    character.state = States.Attacking;
-                                    character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
-                                }
-                                else if (eff.type.ToString() == Effect.Types.Enable.ToString())
-                                {
-                                    character.state = States.Attacking;
-                                    character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
-                                }
-                            }
-                        }
-                        if (self_effect != null)
-                        {
-                            foreach (Effect eff in self_effect)
-                            {
-                                if (eff.type.ToString() == Effect.Types.Move.ToString())
-                                {
-                                    if (Convert_To_Double(eff.value[0], character) != 4)
-                                    {
-                                        character.state = States.Moving;
-                                        //Debug.Log("Speed: " + character.speed);
-                                        character.controller.curr_scenario.FindReachable((int)character.speed, (int)Convert_To_Double(range, character));
-                                    }
-                                    else
-                                    {
-                                        character.state = States.Blinking;
-                                        character.controller.curr_scenario.FindReachable((int)character.speed * 2, (int)Convert_To_Double(range, character));
-                                    }
-                                }
-                                else if (eff.type.ToString() == Effect.Types.Damage.ToString())
-                                {
-                                    character.state = States.Attacking;
-                                    character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
-                                }
-                                else if (eff.type.ToString() == Effect.Types.Heal.ToString())
-                                {
-                                    character.state = States.Attacking;
-                                    character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
-
-                                }
-                                else if (eff.type.ToString() == Effect.Types.Status.ToString())
-                                {
-                                    character.state = States.Attacking;
-                                    character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
-                                }
-                                else if (eff.type.ToString() == Effect.Types.Elevate.ToString())
-                                {
-                                    character.state = States.Attacking;
-                                    character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
-                                }
-                                else if (eff.type.ToString() == Effect.Types.Enable.ToString())
-                                {
-                                    character.state = States.Attacking;
-                                    character.controller.curr_scenario.FindReachable(character.action_curr, (int)Convert_To_Double(range, character));
-                                }
-                                else if (eff.type.ToString() == Effect.Types.Pass.ToString())
-                                {
-                                    //character.curr_action = this;
-                                    //character.StartCoroutine(character.Act(null));
-                                    //Debug.Log("TEST 2");
-                                    character.StartCoroutine(character.End_Turn());
-                                }
-                            }
-                        }
-                    }
-                    //Select the action in the action menu
-                    foreach (Transform but in character.controller.action_menu.GetComponent<Action_Menu_Script>().buttons)
-                    {
-                        if (but.name == name)
-                        {
-                            but.GetComponent<Image>().color = Color.blue;
-                        }
-                        else if (but.GetComponent<Image>().color == Color.blue)
-                        {
-                            but.GetComponent<Image>().color = Color.white;
-                        }
-                    }
-                    character.controller.curr_scenario.CleanReachable();
-                    character.controller.curr_scenario.MarkReachable();
-                    character.curr_action = this;
-                }
-                else
-                {
-                    Debug.Log("NOT Enough Action Points");
-                    foreach (Transform but in character.controller.action_menu.GetComponent<Action_Menu_Script>().buttons)
-                    {
-                        if (but.name == name)
-                        {
-                            but.GetComponent<Image>().color = Color.red;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                Debug.Log("Action is disabled");
-                foreach (Transform but in character.controller.action_menu.GetComponent<Action_Menu_Script>().buttons)
-                {
-                    if (but.name == name)
-                    {
-                        but.GetComponent<Image>().color = Color.red;
-                    }
-                }
-            }
-        }
-
-        public List <Target> Get_Target_Tiles(Character_Script character, GameObject target_tile)
-        {
-            List<Target> targets = new List<Target>();
-            //String[] area_effect = center.Split(' ');
-            int startX = 0;
-            int startY = 0;
-            //Set the center of the ability
-            if (center == "Self")
-            {
-                startX = character.curr_tile.GetComponent<Tile_Data>().x_index;
-                startY = character.curr_tile.GetComponent<Tile_Data>().y_index;
-            }
-            else if (center == "Target")
-            {
-                if (target_tile != null)
-                {
-                    startX = target_tile.GetComponent<Tile_Data>().x_index;
-                    startY = target_tile.GetComponent<Tile_Data>().y_index;
-                }
-            }
-            //Set the start of the loop
-            startX -= (area.GetLength(0) / 2);
-            startY -= (area.GetLength(1) / 2);
-            //Loop through the area and find valid targets
-            for (int x = 0; x< area.GetLength(0); x++)
-            {
-                for(int y = 0; y< area.GetLength(1); y++){
-                    if (area[x,y] != 0)
-                    {
-                        Transform target = character.controller.curr_scenario.tile_grid.getTile(startX + x, startY + y);
-                        if (target != null)
-                        {
-                            Target tar = new Target(target.gameObject, area[x, y]);
-                            targets.Add(tar);
-                        }
-                    }
-                }
-            }
-            if (targets.Count > 0)
-            {
-                return targets;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        public class Target
-        {
-            public GameObject game_object;
-            public float modifier;
-
-            public Target(GameObject new_target, float new_modifier)
-            {
-                game_object = new_target;
-                modifier = new_modifier;
-            }
-        }
-
-        public List<Target> Get_Targets(Character_Script character, GameObject target_tile)
-        {
-            List<Target> targets = new List<Target>();
-            int startX = 0;
-            int startY = 0;
-            //Set the center of the ability
-            if (center == "Self")
-            {
-                startX = character.curr_tile.GetComponent<Tile_Data>().x_index;
-                startY = character.curr_tile.GetComponent<Tile_Data>().y_index;
-            }
-            else if (center == "Target")
-            {
-                if (target_tile != null)
-                {
-                    startX = target_tile.GetComponent<Tile_Data>().x_index;
-                    startY = target_tile.GetComponent<Tile_Data>().y_index;
-                }
-            }
-            //Set the start of the loop
-            startX -= area.GetLength(0) / 2;
-            startY -= area.GetLength(1) / 2;
-
-            //Loop through the area and find valid targets
-            for (int x = 0; x < area.GetLength(0); x++)
-            {
-                for (int y = 0; y < area.GetLength(1); y++)
-                {
-                    if (area[x, y] != 0)
-                    {
-                        Transform target = character.controller.curr_scenario.tile_grid.getTile(startX + x, startY + y);
-                        if (target != null)
-                        {
-                            if (target.GetComponent<Tile_Data>().node.obj != null)
-                            {
-                                Target tar = new Target(target.GetComponent<Tile_Data>().node.obj, area[x, y]);
-                                targets.Add(tar);
-                            }
-                        }
-                    }
-                }
-            }
-            if (targets.Count > 0)
-            {
-                return targets;
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        public bool Check_Valid(Character_Script character, GameObject target_tile)
-        {
-            if (target_effect != null)
-            {
-                foreach (Effect eff in target_effect)
-                {
-                    if (eff.type.ToString() == Effect.Types.Move.ToString())
-                    {
-
-                        //target_character.MoveTo(target_tile.transform);
-                    }
-                    else if (eff.type.ToString() == Effect.Types.Damage.ToString())
-                    {
-                        if (Get_Targets(character, target_tile) == null)
-                        {
-                            Debug.Log("Invalid tile selected");
-                            return false;
-                        }
-                    }
-                    else if (eff.type.ToString() == Effect.Types.Heal.ToString())
-                    {
-                        if (target_tile.GetComponent<Tile_Data>().node.obj == null)
-                        {
-                            Debug.Log("Invalid tile selected");
-                            return false;
-                        }
-                    }
-                    else if (eff.type.ToString() == Effect.Types.Status.ToString())
-                    {
-                        if (target_tile.GetComponent<Tile_Data>().node.obj == null)
-                        {
-                            Debug.Log("Invalid tile selected");
-                            return false;
-                        }
-                    }
-                    else if (eff.type.ToString() == Effect.Types.Elevate.ToString())
-                    {
-                    }
-                    else if (eff.type.ToString() == Effect.Types.Enable.ToString())
-                    {
-                    }
-                    else if (eff.type.ToString() == Effect.Types.Pass.ToString())
-                    {
-                    }
-                }
-            }
-            if (self_effect != null)
-            {
-                foreach (Effect eff in self_effect)
-                {
-                    if (eff.type.ToString() == Effect.Types.Move.ToString())
-                    {
-                        if (target_tile.GetComponent<Tile_Data>().node.obj != null)
-                        {
-                            Debug.Log("Invalid tile selected");
-                            return false;
-                        }
-                    }
-                    else if (eff.type.ToString() == Effect.Types.Damage.ToString())
-                    {
-                    }
-                    else if (eff.type.ToString() == Effect.Types.Heal.ToString())
-                    {
-                    }
-                    else if (eff.type.ToString() == Effect.Types.Status.ToString())
-                    {
-                    }
-                    else if (eff.type.ToString() == Effect.Types.Elevate.ToString())
-                    {
-                    }
-                    else if (eff.type.ToString() == Effect.Types.Enable.ToString())
-                    {
-                    }
-                    else if (eff.type.ToString() == Effect.Types.Pass.ToString())
-                    {
-                    }
-                }
-            }
-            //Debug.Log("Valid tile selected");
-            return true;
-        }
-
-        public IEnumerator Enact(Character_Script character, GameObject target_tile)
-        {
-            if (Check_Valid(character, target_tile))
-            {
-                if (target_effect != null)
-                {
-                    foreach (Effect eff in target_effect)
-                    {
-                        if (eff.type.ToString() == Effect.Types.Move.ToString())
-                        {
-
-                            //target_character.MoveTo(target_tile.transform);
-                        }
-                        else if (eff.type.ToString() == Effect.Types.Damage.ToString())
-                        {
-                            List<Target> targets = Get_Targets(character, target_tile);
-                            foreach (Target target in targets)
-                            {
-                                if (target.game_object.GetComponent<Character_Script>())
-                                {
-                                    Character_Script target_character = target.game_object.GetComponent<Character_Script>();
-                                    int damage = (int)(Calculate_Damage(Convert_To_Double(eff.value[0], character), target_character.gameObject) * target.modifier);
-                                    Game_Controller.CreateFloatingText(damage.ToString(), target_character.transform);
-                                    Debug.Log("Character " + character.character_name + " Attacked: " + target_character.character_name + "; Dealing " + damage + " damage and Using " + ap_cost + " AP");
-                                    if (target_character.aura_curr == 0)
-                                    {
-                                        target_character.Die();
-                                    }
-                                    else
-                                    {
-                                        target_character.aura_curr -= damage;
-                                        if (target_character.aura_curr < 0)
-                                        {
-                                            target_character.aura_curr = 0;
-                                            target_character.GetComponent<SpriteRenderer>().color = Color.red;
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    int damage = (int)(Calculate_Damage(Convert_To_Double(eff.value[0], character), target.game_object) * target.modifier);
-                                    Debug.Log("Character " + character.character_name + " Attacked: OBJECT" + "; Dealing " + damage + " damage and Using " + ap_cost + " AP");
-                                }
-                            }
-                            character.state = States.Idle;
-                        }
-                        else if (eff.type.ToString() == Effect.Types.Heal.ToString())
-                        {
-                            Character_Script target_character = target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>();
-                            if (target_character.GetComponent<Character_Script>().aura_curr == 0)
-                            {
-                                target_character.GetComponent<SpriteRenderer>().color = Color.white;
-                            }
-                            target_character.GetComponent<Character_Script>().aura_curr += (int)Convert_To_Double(eff.value[0], character);
-                            if (target_character.GetComponent<Character_Script>().aura_curr > target_character.GetComponent<Character_Script>().aura_max)
-                            {
-                                target_character.GetComponent<Character_Script>().aura_curr = target_character.GetComponent<Character_Script>().aura_max;
-                            }
-                            character.state = States.Idle;
-                        }
-                        else if (eff.type.ToString() == Effect.Types.Status.ToString())
-                        {
-
-
-                        }
-                        else if (eff.type.ToString() == Effect.Types.Elevate.ToString())
-                        {
-                            List<Target> targets = Get_Target_Tiles(character, target_tile);
-                            foreach (Target target in targets)
-                            {
-                                int elevation = (int)(Convert_To_Double(eff.value[0], character) * target.modifier);
-                                Debug.Log("Character " + character.character_name + " Elevated Tile: (" + target.game_object.GetComponent<Tile_Data>().node.id[0] + "," + target.game_object.GetComponent<Tile_Data>().node.id[1] + "); By " + elevation + " and Using " + ap_cost + " AP");
-                                character.controller.curr_scenario.tile_grid.Elevate(target.game_object.transform, elevation);
-                                                     
-                            }
-                            character.state = States.Idle;
-
-                        }
-                        else if (eff.type.ToString() == Effect.Types.Enable.ToString())
-                        {
-                            Character_Script target_character = target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>();
-                            foreach (Action act in target_character.GetComponent<Character_Script>().actions)
-                            {
-                                //Debug.Log("act.name: " + act.name + ", eff.value: " + eff.value[0]);
-                                if (act.name == eff.value[0])
-                                {
-                                    //Debug.Log("MATCH");
-                                    if (eff.value[1] == "false")
-                                    {
-                                        //Debug.Log("Skill " + act.name + " is disabled.");
-                                        act.enabled = false;
-                                    }
-                                    if (eff.value[1] == "true")
-                                    {
-                                        //Debug.Log("Skill " + act.name + " is enabled.");
-                                        act.enabled = true;
-                                    }
-                                }
-                            }
-                            character.state = States.Idle;
-                        }
-                        else if (eff.type.ToString() == Effect.Types.Pass.ToString())
-                        {
-                            Character_Script target_character = target_tile.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>();
-                            target_character.StartCoroutine(target_character.End_Turn());
-                        }
-                    }
-                }
-                if (self_effect != null)
-                {
-                    foreach (Effect eff in self_effect)
-                    {
-                        if (eff.type.ToString() == Effect.Types.Move.ToString())
-                        {
-                            //value 0 for movement is movement type 1 is standard movement
-                            Debug.Log("Character " + character.name + " Moved from: " + character.curr_tile.GetComponent<Tile_Data>().x_index + "," + character.curr_tile.GetComponent<Tile_Data>().y_index + " to: " + target_tile.GetComponent<Tile_Data>().x_index + "," + target_tile.GetComponent<Tile_Data>().y_index + " Using " + target_tile.GetComponent<Tile_Data>().node.weight + " Speed.");
-                            character.GetComponent<Character_Script>().MoveTo(target_tile.transform);
-                            character.curr_tile.GetComponent<Tile_Data>().node.traversible = true;
-                            character.curr_tile.GetComponent<Tile_Data>().node.obj = null;
-                            character.curr_tile = target_tile.transform;
-                            character.curr_tile.GetComponent<Tile_Data>().node.traversible = false;
-                            character.curr_tile.GetComponent<Tile_Data>().node.obj = character.gameObject;
-
-                        }
-                        else if (eff.type.ToString() == Effect.Types.Damage.ToString())
-                        {
-                            if (character.GetComponent<Character_Script>().aura_curr == 0)
-                            {
-                                character.GetComponent<Character_Script>().Die();
-                            }
-                            else
-                            {
-                                character.GetComponent<Character_Script>().aura_curr -= Calculate_Damage(Convert_To_Double(eff.value[0], character), character.gameObject);
-                                if (character.GetComponent<Character_Script>().aura_curr < 0)
-                                {
-                                    character.GetComponent<Character_Script>().aura_curr = 0;
-                                    character.GetComponent<SpriteRenderer>().color = Color.red;
-                                }
-                            }
-                            character.state = States.Idle;
-                        }
-                        else if (eff.type.ToString() == Effect.Types.Heal.ToString())
-                        {
-                            if (character.GetComponent<Character_Script>().aura_curr == 0)
-                            {
-                                character.GetComponent<SpriteRenderer>().color = Color.white;
-                            }
-                            character.GetComponent<Character_Script>().aura_curr += (int)Convert_To_Double(eff.value[0], character);
-                            if (character.GetComponent<Character_Script>().aura_curr > character.GetComponent<Character_Script>().aura_max)
-                            {
-                                character.GetComponent<Character_Script>().aura_curr = character.GetComponent<Character_Script>().aura_max;
-                            }
-                            character.state = States.Idle;
-                        }
-                        else if (eff.type.ToString() == Effect.Types.Status.ToString())
-                        {
-                        }
-                        else if (eff.type.ToString() == Effect.Types.Elevate.ToString())
-                        {
-                        }
-                        else if (eff.type.ToString() == Effect.Types.Enable.ToString())
-                        {
-                            foreach (Action act in character.GetComponent<Character_Script>().actions)
-                            {
-                                //Debug.Log("act.name: " + act.name + ", eff.value: " + eff.value[0]);
-                                if (act.name == eff.value[0])
-                                {
-                                    //Debug.Log("MATCH");
-                                    if (eff.value[1] == "false")
-                                    {
-                                        //Debug.Log("Skill " + act.name + " is disabled.");
-                                        act.enabled = false;
-                                    }
-                                    if (eff.value[1] == "true")
-                                    {
-                                        //Debug.Log("Skill " + act.name + " is enabled.");
-                                        act.enabled = true;
-                                    }
-                                }
-                            }
-                            character.state = States.Idle;
-                        }
-                        else if (eff.type.ToString() == Effect.Types.Pass.ToString())
-                        {
-                            character.StartCoroutine(character.End_Turn());
-                        }
-                    }
-                }
-                character.action_curr -= (int)character.curr_action.Convert_To_Double(ap_cost, character);
-                character.mana_curr -= (int)character.curr_action.Convert_To_Double(mp_cost, character);
-                //character.state = States.Idle;
-                character.controller.curr_scenario.CleanReachable();
-                character.controller.curr_scenario.ResetReachable();
-                if (orient == "target")
-                {
-                    character.Choose_Orientation(target_tile);
-                }
-                if (character.action_curr > character.action_max)
-                {
-                    character.action_curr = character.action_max;
-                }
-                //character.state = States.Idle;
-
-                while (character.state != States.Idle)
-                {
-                    //Debug.Log("State " + character.state.ToString());
-                    yield return new WaitForEndOfFrame();
-                }
-
-            }
-        }
-
-    }
-
-    public class Effect
-    {
-        public enum Types { Move, Damage, Heal, Status, Elevate, Enable, Pass }
-
-        public Types type { get; set; }
-        public String[] value { get; set; }
-
-        public Effect(String input)
-        {
-            String type_string= input.TrimStart().Split(' ')[0];
-            value = new String[input.Split(' ').Length];
-            Array types = Enum.GetValues(typeof(Types));
-
-            foreach (Types ty in types)
-            {
-                if (type_string.Contains(ty.ToString()))
-                {
-                    type = ty;
-                }
-            }
-            int x = 0;
-            while (x < input.Split(' ').Length - 1)
-            {
-                value[x] = input.Split(' ')[x+1];
-                x++;
-            }
-        }
-    }
-
     //Constants
-    public int AURA_MULTIPLIER = 10;
-    public int MP_MULTIPLIER = 5;
-    public int MP_RECOVERY = 5;
-    public int AP_MAX = 2;
+    private int AURA_MULTIPLIER = 10;
+    private int MP_MULTIPLIER = 5;
+    private int MP_RECOVERY = 5;
+    private int AP_MAX = 2;
     //public int AP_RECOVERY = 10;
-    public int SPEED = 6;
-    public int character_id;
-    public enum States { Moving, Attacking, Idle, Dead, Blinking, Walking, Orienting }
-    public enum Weapons { Sword, Rifle, Spear, Sniper, Pistol, Claws, Orb, Hammer }
-    public enum Armors { Light, Medium, Heavy }
-    public enum Character_Stats { aura_max, action_max, canister_max, strength, coordination, spirit, dexterity, vitality, speed };
+    private int SPEED = 6;
 
-    //Variables
+    /// <summary>
+    /// Constants:
+    /// int AURA_MULTIPLIER - Used to calculate Maximum Aura.
+    /// MP_MULTIPLIER - Used to calculate Maximum Mana.
+    /// MP_RECOVERY - Amount of MP gained each turn.
+    /// AP_MAX - The maximum amount of Action Points for the Character.
+    /// SPEED - The default speed for Characters.
+    /// 
+    /// Variables
+    /// int character_id - The ID of the Character for saving/loading purposes and for lookup in the player/monster_stats array.
+    /// int character_num - The number of the Character for turn order in the current Scenario
+    /// string character_name - The name of the Character
+    /// int aura_max - The maximum Aura for the Character. Essentially HP.
+    /// int aura_curr - The current Aura for the Character. If the Character hits 0 he/she is killable.
+    /// int action_max - The maximum Action Points for the Character.
+    /// int action_curr - The current number of Action Points for the Character. If this hits 0, the Turn ends.
+    /// int mana_max - The maximum amount of Mana for the Character. Used to cast powerful Actions.
+    /// int mana_curr - The current amount of Mana for the Character. Character can't use Actions that cost more than his/her current_mana.
+    /// int reaction_max - The maximum amount of Reactions for the Character. 
+    /// int reaction_curr - The current number of Reactions for the Character. If this hits 0 the Character can't use Reaction type Actions.
+    /// int canister_max - The maximum amount of Mana Canisters that the Character can carry.
+    /// int canister_curr - The current number of Mana Canisters for the Character. If this hits 0 the Character won't be able to rapidly recover Mana.
+    /// int strength  - The Character's Strength stat. Influences damage with Melee Weapons.
+    /// int coordination - The Character's Coordination stat. Influences damage with Ranged Weapons.
+    /// int spirit - The Character's Spirit stat. Influences Maximum MP.
+    /// int dexterity - The Character's Dexterity stat. Used for determining turn order.
+    /// int vitality - The Character's Vitality stat. Used to determine Maximum Aura. 
+    /// double speed - The distance a Character can traverse with a Move.
+    /// int level - The level for the Character. Leveling can raise your other stats.
+    /// int orientation - The direction the Character sprite is looking. Influences the Object's Animator.
+    /// int camera_orientation_offset - The direction of the Camera looking at the Character can affect their Orientation.
+    /// Vector3 camera_position_offset - The offset of the Character Sprite so that it looks right for the Camera.
+    /// float height_offset - The offset for the Character Sprite so that is looks right on top of Tiles.
+    /// bool rotate - If the Character needs to rotate. TODO FIND A DIFFERENT WORKAROUND.
+    /// Weapon weapon - The Character's Equipped Weapon.
+    /// Armor armor - The Character's Equipped Armor.
+    /// Accessory[] accessories - The Character's Equipped Accessories.
+    /// static List<Action> all_actions - The List of all possible Actions.
+    /// List<Action> actions - The list of all the Character's Actions. A subset of all_actions derived from the Character's Equipment.
+    /// Action curr_action - The Character's currently Selected Action.
+    /// Character_States state - The Character's current State. Typically altered by their Action.
+    /// Dictionary<Conditions., List<Condition>> conditions - The List of Conditions currently afflicting the Character.
+    /// Game_Controller controller - The Game Controller that handles overarching game processes.
+    /// Transform curr_tile - The current Tile Object the Character is on top of.
+    /// bool ending_turn - If the Character's turn is ending. Used to prevent the screen from scrolling until other Coroutines are complete. TODO, FIND A DIFFERENT WORKAROUND
+    /// </summary>
+    /// TODO: Change Scenario Character Loading so we can set these to private.
+    public int character_id;
     public int character_num { get; set; }
     public string character_name { get; set; }
     public int aura_max { get; set; }
@@ -1025,305 +94,331 @@ public class Character_Script : MonoBehaviour {
     public static List<Action> all_actions { get; set; }
     public List<Action> actions { get; set; }
     public Action curr_action { get; set; }
-    public States state { get; set; }
+    public Character_States state { get; set; }
+    public Dictionary<Conditions, List<Condition>> conditions { get; set; }
     public Game_Controller controller { get; set; }
     public Transform curr_tile { get; set; }
     public bool ending_turn = false;
 
-    public class Equipment
-    {
-        public string name;
-        public enum Equipment_Type { Weapon, Armor, Accessory };
-        public Equipment_Type type;
-        public String[] actions;
-        public Effect[] effects; 
-        public int durability;
-        public double weight;
-        public int armor;
-        public SpriteRenderer sprite;
-
-        public class Effect
-        {
-            public Character_Stats stat;
-            public int effect;
-
-            public Effect(Character_Stats st, int eff)
-            {
-                stat = st;
-                effect = eff;
-            }
-        }
-    }
-
-    public class Armor: Equipment
-    {
-        public Armor(string str)
-        {
-            type = Equipment_Type.Armor;
-            durability = 100;
-            switch (str)
-            {
-                case "Light":
-                    name = Armors.Light.ToString();
-                    armor = -1;
-                    weight = 0;
-                    effects = new Effect[2];
-                    effects[0] = new Effect(Character_Stats.speed, 1);
-                    effects[1] = new Effect(Character_Stats.dexterity, 1);
-                    actions = new String[6];
-                    actions[0] = "Blink";
-                    actions[1] = "Cross";
-                    actions[2] = "Ring";
-                    actions[3] = "Cone";
-                    actions[4] = "Raise";
-                    actions[5] = "Lower";
-                    break;
-                case "Medium":
-                    name = Armors.Medium.ToString();
-                    armor = 2;
-                    weight = 1;
-                    effects = new Effect[2];
-                    effects[0] = new Effect(Character_Stats.strength, 1);
-                    effects[1] = new Effect(Character_Stats.coordination, 1);
-                    actions = new String[5];
-                    actions[0] = "Cross";
-                    actions[1] = "Ring";
-                    actions[2] = "Cone";
-                    actions[3] = "Raise";
-                    actions[4] = "Lower";
-                    break;
-                case "Heavy":
-                    name = Armors.Heavy.ToString();
-                    armor = 5;
-                    weight = 2;
-                    effects = new Effect[2];
-                    effects[0] = new Effect(Character_Stats.vitality, 1);
-                    effects[1] = new Effect(Character_Stats.spirit, 1);
-                    actions = new String[6];
-                    actions[0] = "Channel";
-                    actions[1] = "Cross";
-                    actions[2] = "Ring";
-                    actions[3] = "Cone";
-                    actions[4] = "Raise";
-                    actions[5] = "Lower";
-                    break;
-            }
-        }
-
-        public Armor(Armors ar)
-        {
-            type = Equipment_Type.Armor;
-            durability = 100;
-            switch (ar)
-            {
-                case Armors.Light:
-                    name = Armors.Light.ToString();
-                    armor = -1;
-                    weight = 0;
-                    effects = new Effect[2];
-                    effects[0] = new Effect(Character_Stats.speed, 1);
-                    effects[1] = new Effect(Character_Stats.dexterity, 1);
-                    actions = new String[6];
-                    actions[0] = "Blink";
-                    actions[1] = "Cross";
-                    actions[2] = "Ring";
-                    actions[3] = "Cone";
-                    actions[4] = "Raise";
-                    actions[5] = "Lower";
-                    break;
-                case Armors.Medium:
-                    name = Armors.Medium.ToString();
-                    armor = 2;
-                    weight = 1;
-                    effects = new Effect[2];
-                    effects[0] = new Effect(Character_Stats.strength, 1);
-                    effects[1] = new Effect(Character_Stats.coordination, 1);
-                    actions = new String[5];
-                    actions[0] = "Cross";
-                    actions[1] = "Ring";
-                    actions[2] = "Cone";
-                    actions[3] = "Raise";
-                    actions[4] = "Lower";
-                    break;
-                case Armors.Heavy:
-                    name = Armors.Heavy.ToString();
-                    armor = 5;
-                    weight = 2;
-                    effects = new Effect[2];
-                    effects[0] = new Effect(Character_Stats.vitality, 1);
-                    effects[1] = new Effect(Character_Stats.spirit, 1);
-                    actions = new String[6];
-                    actions[0] = "Channel";
-                    actions[1] = "Cross";
-                    actions[2] = "Ring";
-                    actions[3] = "Cone";
-                    actions[4] = "Raise";
-                    actions[5] = "Lower";
-                    break;
-            }
-        }
-    }
-
-    public class Accessory : Equipment
-    {
-        public Accessory()
-        {
-            type = Equipment_Type.Accessory;
-            durability = 100;
-        }
-    }
-
-    public class Weapon: Equipment{
-        public int range;
-        public int attack;
-        public bool ranged;
-
-        public Weapon(string str)
-        {
-            type = Equipment_Type.Weapon;
-            durability = 100;
-            switch (str)
-            {
-                case "Sword":
-                    name = Weapons.Sword.ToString();
-                    range = 1;
-                    attack = 2;
-                    weight = 0.5;
-                    ranged = false;
-                    break;
-                case "Rifle":
-                    name = Weapons.Rifle.ToString();
-                    range = 4;
-                    attack = 3;
-                    ranged = true;
-                    weight = 1;
-                    break;
-                case "Spear":
-                    name = Weapons.Spear.ToString();
-                    range = 2;
-                    attack = 2;
-                    ranged = false;
-                    weight = 1;
-                    break;
-                case "Sniper":
-                    name = Weapons.Sniper.ToString();
-                    range = 6;
-                    attack = 5;
-                    ranged = true;
-                    weight = 3;
-                    break;
-                case "Pistol":
-                    name = Weapons.Pistol.ToString();
-                    range = 3;
-                    attack = 2;
-                    ranged = true;
-                    weight = 0.5;
-                    break;
-                case "Claws":
-                    name = Weapons.Claws.ToString();
-                    range = 1;
-                    attack = 10;
-                    ranged = false;
-                    weight = 4;
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        public Weapon(Weapons wep)
-        {
-            type = Equipment_Type.Weapon;
-            durability = 100;
-            switch (wep)
-            {
-                case Weapons.Sword:
-                    name = Weapons.Sword.ToString();
-                    range = 1;
-                    attack = 2;
-                    weight = 0.5;
-                    ranged = false;
-                    break;
-                case Weapons.Rifle:
-                    name = Weapons.Rifle.ToString();
-                    range = 4;
-                    attack = 3;
-                    ranged = true;
-                    weight = 1;
-                    break;
-                case Weapons.Spear:
-                    name = Weapons.Spear.ToString();
-                    range = 2;
-                    attack = 2;
-                    ranged = false;
-                    weight = 1;
-                    break;
-                case Weapons.Sniper:
-                    name = Weapons.Sniper.ToString();
-                    range = 6;
-                    attack = 5;
-                    ranged = true;
-                    weight = 3;
-                    break;
-                case Weapons.Pistol:
-                    name = Weapons.Pistol.ToString();
-                    range = 3;
-                    attack = 2;
-                    ranged = true;
-                    weight = 0.5;
-                    break;
-                case Weapons.Claws:
-                    name = Weapons.Claws.ToString();
-                    range = 1;
-                    attack = 10;
-                    ranged = false;
-                    weight = 4;
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
     //Methods
-	// Use this for initialization
-	void Start ()
+    /// <summary>
+    /// Constructor for the class
+    /// </summary>
+    /// <param name="nm">Character name</param>
+    /// <param name="lvl">Character level</param>
+    /// <param name="str">Character Strength</param>
+    /// <param name="crd">Character Coordination</param>
+    /// <param name="spt">Character Spirit</param>
+    /// <param name="dex">Character Dexterity</param>
+    /// <param name="vit">Character Vitality</param>
+    /// <param name="spd">Character Speed</param>
+    /// <param name="can">Character Canisters</param>
+    /// <param name="wep">Character Weapon</param>
+    /// <param name="arm">Character Armor</param>
+    public Character_Script(string nm, int lvl, int str, int crd, int spt, int dex, int vit, int spd, int can, string wep, string arm)
+    {
+        controller = Game_Controller.controller;
+        character_name = nm.TrimStart();
+        level = lvl;
+        strength = str;
+        coordination = crd;
+        spirit = spt;
+        dexterity = dex;
+        vitality = vit;
+        speed = spd;
+        aura_max = vitality * AURA_MULTIPLIER;
+        aura_curr = aura_max;
+        action_max = AP_MAX;
+        action_curr = action_max;
+        mana_max = spirit * MP_MULTIPLIER;
+        mana_curr = MP_RECOVERY;
+        reaction_max = AP_MAX;
+        reaction_curr = reaction_max;
+        curr_action = null;
+        actions = new List<Action>();
+        canister_max = can;
+        orientation = 2;
+        canister_curr = canister_max;
+        conditions = new Dictionary<Conditions, List<Condition>>();
+        state = Character_States.Idle;
+        all_actions = controller.all_actions;
+        actions.Add(Find_Action("Move"));
+        actions.Add(Find_Action("Attack"));
+        foreach (Equipment.Weapon_Types weps in Enum.GetValues(typeof(Equipment.Weapon_Types)))
+        {
+            if (wep.TrimStart() == weps.ToString())
+            {
+                Weapon w = new Weapon(weps);
+                Equip(w);
+                break;
+            }
+        }
+        foreach (Equipment.Armor_Types arms in Enum.GetValues(typeof(Equipment.Armor_Types)))
+        {
+            if (arm.TrimStart() == arms.ToString())
+            {
+                Armor a = new Armor(arms);
+                Equip(a);
+                break;
+            }
+        }
+        actions.Add(Find_Action("Wait"));
+        //foreach (string s in acc)
+        //{
+        //    foreach (Equipment.Weapon_Types weps in Enum.GetValues(typeof(Equipment.Weapon_Types)))
+        //    {
+        //        if (wep == weps.ToString())
+        //        {
+        //            Weapon w = new Weapon(weps);
+        //            Equip(w);
+        //            break;
+        //        }
+        //    }
+        //}
+    }
+
+    /// <summary>
+    /// Default Class Constructor for Inheritance purposes.
+    /// </summary>
+    public Character_Script()
+    {
+
+    }
+
+    /// <summary>
+    /// Use this for initialization
+    /// </summary>
+    void Start ()
     {
         //gameObject.SetActive(true);
     }
 
+    /// <summary>
+    /// Start the Character Turn:
+    ///     Selects Move as the default action
+    ///     Updates Conditions.
+    /// </summary>
+    public void Start_Turn()
+    {
+        controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
+        Find_Action("Move").Select(this);
+
+        //Center camera on player
+        Camera.main.GetComponent<Camera_Controller>().PanTo(transform.position - Camera.main.transform.forward * 35);
+
+        Update_Conditions();
+
+    }
+
+    /// <summary>
+    /// Coroutine to End the Character's Turn:
+    ///     Resets and Cleans reachable_tiles
+    ///     Resets current Action
+    ///     Increases AP and MP
+    ///     Increases reaction points.
+    ///     Progresses Conditions
+    ///     Sets Character state to Idle
+    ///     Moves to the Next_Player()
+    /// </summary>
+    /// <returns></returns>
+    public IEnumerator End_Turn()
+    {
+        ending_turn = true;
+        if (curr_action.orient == "select")
+        {
+            StartCoroutine(Choose_Orientation());
+        }
+        controller.curr_scenario.Reset_Reachable();
+        controller.curr_scenario.Clean_Reachable();
+        while (state == Character_States.Walking || state == Character_States.Orienting)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+
+        Debug.Log("Character " + character_name + " Passed");
+        curr_action = null;
+        reaction_curr = reaction_max;
+        action_curr = action_max;
+        mana_curr += MP_RECOVERY;
+        if (mana_curr > mana_max)
+        {
+            mana_curr = mana_max;
+        }
+        //TODO Fix this later
+        foreach (Action act in actions)
+        {
+            if (!act.enabled)
+            {
+                act.enabled = true;
+            }
+        }
+        controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
+        Progress_Conditions();
+        ending_turn = false;
+        state = Character_States.Idle;
+        controller.curr_scenario.Next_Player();
+    }
+
+    /// <summary>
+    /// Add a new condition to the conditions list
+    /// If it is a cleanser we trigger it immediately
+    /// </summary>
+    /// <param name="condition">The new Condition to add.</param>
+    public void Add_Condition(Condition condition)
+    {
+        //Check if the condition type is a cleanser
+        if (condition.type == Conditions.Clarity)
+        {
+            Remove_Condition(Conditions.Confuse);
+            Remove_Condition(Conditions.Blind);
+        }
+        else if (condition.type == Conditions.Cleanse)
+        {
+            Remove_Condition(Conditions.Immobilize);
+            Remove_Condition(Conditions.Daze);
+            Remove_Condition(Conditions.Stun);
+            Remove_Condition(Conditions.Freeze);
+            Remove_Condition(Conditions.Petrify);
+        }
+        else if (condition.type == Conditions.Cure)
+        {
+            Remove_Condition(Conditions.Bleed);
+            Remove_Condition(Conditions.Burn);
+            Remove_Condition(Conditions.Corrupt);
+            Remove_Condition(Conditions.Frostbite);
+            Remove_Condition(Conditions.Drain);
+        }
+        else if (condition.type == Conditions.Restore)
+        {
+            Remove_Condition(Conditions.Weakness);
+            Remove_Condition(Conditions.Vulnerability);
+            Remove_Condition(Conditions.Slow);
+            Remove_Condition(Conditions.Poison);
+        }
+        else if (condition.type == Conditions.Purify)
+        {
+            Remove_Condition(Conditions.Bleed);
+            Remove_Condition(Conditions.Burn);
+            Remove_Condition(Conditions.Corrupt);
+            Remove_Condition(Conditions.Frostbite);
+            Remove_Condition(Conditions.Drain);
+            Remove_Condition(Conditions.Immobilize);
+            Remove_Condition(Conditions.Daze);
+            Remove_Condition(Conditions.Stun);
+            Remove_Condition(Conditions.Confuse);
+            Remove_Condition(Conditions.Blind);
+            Remove_Condition(Conditions.Freeze);
+            Remove_Condition(Conditions.Petrify);
+            Remove_Condition(Conditions.Weakness);
+            Remove_Condition(Conditions.Vulnerability);
+            Remove_Condition(Conditions.Slow);
+            Remove_Condition(Conditions.Poison);
+        }
+        //If the condition is not a cleanser, we add it to the list
+        else
+        {
+            //Check if we already have a condition of this type
+            //if we do, get the current list and add a new stack to it.
+            //If we don't create a new list and add it to the condition dictionary;
+            List<Condition> condi_list;
+            if (conditions.TryGetValue(condition.type, out condi_list))
+            {
+                condi_list.Add(condition);
+            }
+            else
+            {
+                condi_list = new List<Condition>();
+                condi_list.Add(condition);
+                conditions.Add(condition.type, condi_list);
+            }
+        }
+
+    }
+
+    /// <summary>
+    /// Remove all stacks of a specified condition
+    /// </summary>
+    /// <param name="condition">The Condition type to remove.</param>
+    public void Remove_Condition(Conditions condition)
+    {
+        conditions.Remove(condition);
+    }
+
+    /// <summary>
+    /// Trigger condition effects. 
+    /// Used at the start of a turn.
+    /// TODO FINISH IMPLEMENTATION
+    /// </summary>
+    public void Update_Conditions()
+    {
+        foreach (List<Condition> condi_list in conditions.Values){
+            foreach (Condition condi in condi_list)
+            {
+                //TODO ADD effects for conditions.
+            }
+        }
+    }
+
+    /// <summary>
+    /// Decrease Condition timer and remove them if the duration hits 0;
+    /// Called at the end of a player's Turn.
+    /// </summary>
+    public void Progress_Conditions()
+    {
+        foreach (List<Condition> condi_list in conditions.Values)
+        {
+            foreach (Condition condi in condi_list)
+            {
+                //Decrease the duration and remove the condition if it hits 0
+                if (condi.Progress() <= 0)
+                {
+                    condi_list.Remove(condi);
+                }
+                //If there are no more stacks we remove the condi list from the dictionary
+                if (condi_list.Count == 0 )
+                {
+                    conditions.Remove(condi.type);
+                }
+            }
+        }
+    }
+
+    /// <summary>
+    /// Coroutine for letting the player select the character orientation
+    /// </summary>
+    /// <returns>The status of the Coroutine.</returns>
     public IEnumerator Choose_Orientation()
     {
-        States prev_state = state;
+        Character_States prev_state = state;
         while (!Input.GetMouseButton(0))
         {
-            state = States.Orienting;
+            state = Character_States.Orienting;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             //deprecated 2d raycast physics
             //hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
             if (Physics.Raycast(ray, out hit, 100))
             {
-                Tile_Data tile_data = hit.transform.GetComponent<Tile_Data>();
+                Tile tile_data = hit.transform.GetComponent<Tile>();
                 if (tile_data != null)
                 {
-                    if (tile_data.node.id[0] >= curr_tile.GetComponent<Tile_Data>().node.id[0] &&
-                        tile_data.node.id[1] < curr_tile.GetComponent<Tile_Data>().node.id[1])
+                    if (tile_data.index[0] >= curr_tile.GetComponent<Tile>().index[0] &&
+                        tile_data.index[1] < curr_tile.GetComponent<Tile>().index[1])
                     {
                         orientation = 0 + camera_orientation_offset;
                     }
-                    if (tile_data.node.id[0] > curr_tile.GetComponent<Tile_Data>().node.id[0] &&
-                        tile_data.node.id[1] >= curr_tile.GetComponent<Tile_Data>().node.id[1])
+                    if (tile_data.index[0] > curr_tile.GetComponent<Tile>().index[0] &&
+                        tile_data.index[1] >= curr_tile.GetComponent<Tile>().index[1])
                     {
                         orientation = 1 + camera_orientation_offset;
                     }
-                    if (tile_data.node.id[0] <= curr_tile.GetComponent<Tile_Data>().node.id[0] &&
-                        tile_data.node.id[1] > curr_tile.GetComponent<Tile_Data>().node.id[1])
+                    if (tile_data.index[0] <= curr_tile.GetComponent<Tile>().index[0] &&
+                        tile_data.index[1] > curr_tile.GetComponent<Tile>().index[1])
                     {
                         orientation = 2 + camera_orientation_offset;
                     }
-                    if (tile_data.node.id[0] < curr_tile.GetComponent<Tile_Data>().node.id[0] &&
-                        tile_data.node.id[1] <= curr_tile.GetComponent<Tile_Data>().node.id[1])
+                    if (tile_data.index[0] < curr_tile.GetComponent<Tile>().index[0] &&
+                        tile_data.index[1] <= curr_tile.GetComponent<Tile>().index[1])
                     {
                         orientation = 3 + camera_orientation_offset;
                     }
@@ -1344,30 +439,34 @@ public class Character_Script : MonoBehaviour {
         state = prev_state;
     }
 
+    /// <summary>
+    /// Points character to a specific target
+    /// </summary>
+    /// <param name="target">The Target for the Character to Orient towards.</param>
     public void Choose_Orientation(GameObject target)
     {
-        States prev_state = state;
-        state = States.Orienting;
-        Tile_Data tile_data = target.GetComponent<Tile_Data>();
+        Character_States prev_state = state;
+        state = Character_States.Orienting;
+        Tile tile_data = target.GetComponent<Tile>();
         if (tile_data != null)
         {
-            if (tile_data.node.id[0] >= curr_tile.GetComponent<Tile_Data>().node.id[0] &&
-                tile_data.node.id[1] < curr_tile.GetComponent<Tile_Data>().node.id[1])
+            if (tile_data.index[0] >= curr_tile.GetComponent<Tile>().index[0] &&
+                tile_data.index[1] < curr_tile.GetComponent<Tile>().index[1])
             {
                 orientation = 0;
             }
-            if (tile_data.node.id[0] > curr_tile.GetComponent<Tile_Data>().node.id[0] &&
-                tile_data.node.id[1] >= curr_tile.GetComponent<Tile_Data>().node.id[1])
+            if (tile_data.index[0] > curr_tile.GetComponent<Tile>().index[0] &&
+                tile_data.index[1] >= curr_tile.GetComponent<Tile>().index[1])
             {
                 orientation = 1;
             }
-            if (tile_data.node.id[0] <= curr_tile.GetComponent<Tile_Data>().node.id[0] &&
-                tile_data.node.id[1] > curr_tile.GetComponent<Tile_Data>().node.id[1])
+            if (tile_data.index[0] <= curr_tile.GetComponent<Tile>().index[0] &&
+                tile_data.index[1] > curr_tile.GetComponent<Tile>().index[1])
             {
                 orientation = 2;
             }
-            if (tile_data.node.id[0] < curr_tile.GetComponent<Tile_Data>().node.id[0] &&
-                tile_data.node.id[1] <= curr_tile.GetComponent<Tile_Data>().node.id[1])
+            if (tile_data.index[0] < curr_tile.GetComponent<Tile>().index[0] &&
+                tile_data.index[1] <= curr_tile.GetComponent<Tile>().index[1])
             {
                 orientation = 3;
             }
@@ -1377,6 +476,9 @@ public class Character_Script : MonoBehaviour {
         state = prev_state;
     }
 
+    /// <summary>
+    /// Function that actually updates character's sprite based on their Orientation
+    /// </summary>
     public void Orient()
     {
         //Reset orientation if it's above or below bound
@@ -1396,10 +498,12 @@ public class Character_Script : MonoBehaviour {
         {
             camera_orientation_offset = 3;
         }
-        //Debug.Log("Name: " + name + " , Height: " + this.gameObject.GetComponent<SpriteRenderer>().sprite.rect.height + ", Scale: " + this.gameObject.transform.localScale.x + " , Pixels: " + this.gameObject.GetComponent<SpriteRenderer>().sprite.pixelsPerUnit);
+        /*Debug.Log("Name: " + name + 
+            " , Height: " + this.gameObject.GetComponent<SpriteRenderer>().sprite.rect.height + 
+            ", Scale: " + this.gameObject.transform.localScale.x + 
+            " , Pixels: " + this.gameObject.GetComponent<SpriteRenderer>().sprite.pixelsPerUnit);*/
         float offset = (height_offset) / 3.5f;
-            //this.gameObject.GetComponent<SpriteRenderer>().sprite.rect.width / this.gameObject.transform.localScale.x / this.gameObject.GetComponent<SpriteRenderer>().sprite.pixelsPerUnit * 10;
-        //Debug.Log("Name: " + name + ", Offset: " + offset + " , Height offset: " + height_offset );
+
         //Update the location modifier based on camera offset
         if (camera_orientation_offset == 0)
         {
@@ -1435,21 +539,29 @@ public class Character_Script : MonoBehaviour {
         if (orientation == 2 || orientation == 1)
         {
             string object_name = this.gameObject.name;
-            this.gameObject.GetComponent<Animator>().runtimeAnimatorController = Resources.Load("Animations/Controllers/"+object_name+"/"+object_name+ "_Override_S") as AnimatorOverrideController;
+            string controller_name = "Animations/Controllers/" + object_name + "/" + object_name + "_Override_S";
+            this.gameObject.GetComponent<Animator>().runtimeAnimatorController = Resources.Load(controller_name) as AnimatorOverrideController;
         }
         else if (orientation == 3 || orientation == 0)
         {
             string object_name = this.gameObject.name;
-            this.gameObject.GetComponent<Animator>().runtimeAnimatorController = Resources.Load("Animations/Controllers/" + object_name + "/" + object_name + "_Override_W") as AnimatorOverrideController;
+            string controller_name = "Animations/Controllers/" + object_name + "/" + object_name + "_Override_W";
+            this.gameObject.GetComponent<Animator>().runtimeAnimatorController = Resources.Load(controller_name) as AnimatorOverrideController;
         }
     }
 
+    /// <summary>
+    /// Coroutine to run when the screen turns to update the character angle
+    /// </summary>
+    /// <returns></returns>
     public IEnumerator Turn()
     {
         float elapsedTime = 0;
         float duration = .3f;
         Vector3 start = transform.position;
-        Vector3 target = curr_tile.position + camera_position_offset + new Vector3(0, height_offset + Tile_Grid.tile_scale * (curr_tile.GetComponent<Tile_Data>().node.height), 0);
+        Vector3 target = curr_tile.position + 
+            camera_position_offset + 
+            new Vector3(0, height_offset + Tile_Grid.TILE_SCALE * (curr_tile.GetComponent<Tile>().height), 0);
         while (elapsedTime < duration)
         {
             transform.position = Vector3.Lerp(start,
@@ -1460,113 +572,24 @@ public class Character_Script : MonoBehaviour {
         }
     }
 
-    public Character_Script(string nm, int lvl, int str, int crd, int spt, int dex, int vit, int spd, int can, string wep, string arm)
-    {
-        controller = Game_Controller.controller;
-        character_name = nm.TrimStart();
-        level = lvl;
-        strength = str;
-        coordination = crd;
-        spirit = spt;
-        dexterity = dex;
-        vitality = vit;
-        speed = spd;
-        aura_max = vitality * AURA_MULTIPLIER;
-        aura_curr = aura_max;
-        action_max = AP_MAX;
-        action_curr = action_max;
-        mana_max = spirit * MP_MULTIPLIER;
-        mana_curr = MP_RECOVERY;
-        reaction_max = AP_MAX;
-        reaction_curr = reaction_max;
-        curr_action = null;
-        actions = new List<Action>();
-        canister_max = can;
-        orientation = 2;
-        canister_curr = canister_max;
-        state = States.Idle;
-        all_actions = controller.all_actions;
-        actions.Add(Find_Action("Move"));
-        actions.Add(Find_Action("Attack"));
-        foreach (Weapons weps in Enum.GetValues(typeof(Weapons)))
-        {
-            if (wep.TrimStart() == weps.ToString())
-            {
-                Weapon w = new Weapon(weps);
-                Equip(w);
-                break;
-            }
-        }
-        foreach (Armors arms in Enum.GetValues(typeof(Armors)))
-        {
-            if (arm.TrimStart() == arms.ToString())
-            {
-                Armor a = new Armor(arms);
-                Equip(a);
-                break;
-            }
-        }
-        actions.Add(Find_Action("Wait"));
-        //foreach (string s in acc)
-        //{
-        //    foreach (Weapons weps in Enum.GetValues(typeof(Weapons)))
-        //    {
-        //        if (wep == weps.ToString())
-        //        {
-        //            Weapon w = new Weapon(weps);
-        //            Equip(w);
-        //            break;
-        //        }
-        //    }
-        //}
-    }
-
+    /// <summary>
+    /// Check to see if the character is not walking. Used for delaying the end of turn.
+    /// </summary>
+    /// <returns>True if the Character's state is Walking. False otherwise.</returns>
     public bool Not_Walking()
     {
-        if (state != States.Walking)
+        if (state != Character_States.Walking)
         {
             return true;
         }
         return false;
     }
 
-    public IEnumerator End_Turn()
-    {
-        ending_turn = true;
-        if (curr_action.orient == "select")
-        {
-            StartCoroutine(Choose_Orientation());
-        }
-        controller.curr_scenario.ResetReachable();
-        controller.curr_scenario.CleanReachable();
-        while(state == States.Walking ||  state == States.Orienting)
-        {
-            yield return new WaitForEndOfFrame();
-        }
-
-        Debug.Log("Character " + character_name + " Passed");
-        curr_action = null;
-        reaction_curr = reaction_max;
-        action_curr = action_max;
-        mana_curr += MP_RECOVERY;
-        if (mana_curr > mana_max)
-        {
-            mana_curr = mana_max;
-        }
-        //TODO Fix this later
-        foreach (Action act in actions)
-        {
-            if (!act.enabled)
-            {
-                act.enabled = true;
-            }
-        }
-        controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
-        ending_turn = false;
-        state = States.Idle;
-        controller.curr_scenario.NextPlayer();
-    }
-
+    /// <summary>
+    /// Find a specific Action from the character's list of actions
+    /// </summary>
+    /// <param name="name">The name of the Action to look for.</param>
+    /// <returns>The Action if it is found, null otherwise.</returns>
     public Action Find_Action(String name)
     {
         if (all_actions != null)
@@ -1583,12 +606,17 @@ public class Character_Script : MonoBehaviour {
         return null;
     }
 
+    /// <summary>
+    /// Coroutine to perform an Action.
+    /// </summary>
+    /// <param name="target_tile">The target for the Action.</param>
+    /// <returns>The current status of the Coroutine.</returns>
     public IEnumerator Act(Transform target_tile)
     {
         if (curr_action != null)
         {
             StartCoroutine(curr_action.Enact(this, target_tile.gameObject));
-            while (state != States.Idle)
+            while (state != Character_States.Idle)
             {
                 yield return new WaitForEndOfFrame();
             }
@@ -1606,6 +634,10 @@ public class Character_Script : MonoBehaviour {
 
     }
 
+    /// <summary>
+    /// Equip a piece of Equipment to trigger it's Equipment_Effects
+    /// </summary>
+    /// <param name="e">The Equipment to Equip</param>
     public void Equip(Equipment e)
     {
         switch (e.type)
@@ -1624,7 +656,7 @@ public class Character_Script : MonoBehaviour {
         }
         if (e.effects != null)
         {
-            foreach (Equipment.Effect eff in e.effects)
+            foreach (Equipment.Equip_Effect eff in e.effects)
             {
                 switch (eff.stat)
                 {
@@ -1674,22 +706,10 @@ public class Character_Script : MonoBehaviour {
         }
     }
 
-    public static int Calculate_Damage(double damage, GameObject target)
-    {
-        //Debug.Log("Damage: " + damage + ", Armor: " + target.armor.armor);
-        int dmg = (int)damage;
-        Character_Script character = target.GetComponent<Character_Script>();
-        if (character != null)
-        {
-            dmg = (int)(damage - character.armor.armor);
-        }
-        if (dmg < 0)
-        {
-            dmg = 0;
-        }
-        return dmg;
-    }
-
+    /// <summary>
+    /// Create random character stats
+    /// DEPRECATED
+    /// </summary>
     public void Randomize(){
         //Randomize stats
 		strength = UnityEngine.Random.Range (1,7);
@@ -1707,48 +727,48 @@ public class Character_Script : MonoBehaviour {
         actions = new List<Action>();
         canister_max = UnityEngine.Random.Range(0, 3);
         canister_curr = canister_max;
-		state = States.Idle;
+		state = Character_States.Idle;
 
         //Randomize Equipment
         int w = UnityEngine.Random.Range(0, 5);
         Weapon wep;
         if (w == 0)
         {
-            wep = new Weapon(Weapons.Sword);
+            wep = new Weapon(Equipment.Weapon_Types.Sword);
         } else if (w == 1)
         {
-            wep = new Weapon(Weapons.Rifle);
+            wep = new Weapon(Equipment.Weapon_Types.Rifle);
         }
         else if (w == 2)
         {
-            wep = new Weapon(Weapons.Spear);
+            wep = new Weapon(Equipment.Weapon_Types.Spear);
         }
         else if (w == 3)
         {
-            wep = new Weapon(Weapons.Sniper);
+            wep = new Weapon(Equipment.Weapon_Types.Sniper);
         }
         else if (w == 4)
         {
-            wep = new Weapon(Weapons.Pistol);
+            wep = new Weapon(Equipment.Weapon_Types.Pistol);
         }
         else
         {
-            wep = new Weapon(Weapons.Claws);
+            wep = new Weapon(Equipment.Weapon_Types.Claws);
         }
         Equip(wep);
         int a = UnityEngine.Random.Range(0, 3);
         Armor ar;
         if (a == 0)
         {
-            ar = new Armor(Armors.Light);
+            ar = new Armor(Equipment.Armor_Types.Light);
         }
         else if (a == 1)
         {
-            ar = new Armor(Armors.Medium);
+            ar = new Armor(Equipment.Armor_Types.Medium);
         }
         else
         {
-            ar = new Armor(Armors.Heavy);
+            ar = new Armor(Equipment.Armor_Types.Heavy);
         }
         Equip(ar);
 		level = 1;
@@ -1758,12 +778,16 @@ public class Character_Script : MonoBehaviour {
         //FindReachable(controller.GetComponent<Game_Controller>().tile_grid,dexterity);
 	}
 
+    /// <summary>
+    /// What happens when a character Dies
+    /// TODO fix turn order glitches
+    /// </summary>
     public void Die()
     {
-        state = States.Dead;
+        state = Character_States.Dead;
         //reset the tile traversible state and empty the tile
-        curr_tile.GetComponent<Tile_Data>().node.traversible = true;
-        curr_tile.GetComponent<Tile_Data>().node.obj = null;
+        curr_tile.GetComponent<Tile>().traversible = true;
+        curr_tile.GetComponent<Tile>().obj = null;
 
         //remove the character from the turn order and character list
         Debug.Log("Character num: " + character_num + " has died");
@@ -1772,7 +796,7 @@ public class Character_Script : MonoBehaviour {
         controller.curr_scenario.turn_order.Remove(transform.gameObject);
         if (character_num == controller.curr_scenario.curr_player.GetComponent<Character_Script>().character_num)
         {
-            controller.curr_scenario.NextPlayer();
+            controller.curr_scenario.Next_Player();
         }
         else
         {
@@ -1789,58 +813,50 @@ public class Character_Script : MonoBehaviour {
 
     }
 
-    public IEnumerator Move_Over_Time(Tile_Data.Node prev_tile, Tile_Data.Node temp_tile)
-    {
-        float elapsedTime = 0;
-        float duration = 2;
-        while (elapsedTime < duration)
-        {
-            transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x, 
-                (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + 
-                (controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z), 
-                new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x, 
-                (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + 
-                (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z), 
-                elapsedTime/duration);
-            elapsedTime += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
-    }
-
-    //This is a wrapper script for Move. We can't call Move from Scenario because it is not attached to any object in Unity.
-    //Since it was created using New rather than AddComponent() it exists in the C backend but Unity doesn't know it.
+    /// <summary>
+    /// This is a wrapper script for the Move Coroutine. 
+    /// We can't call Move from Scenario because it is not attached to any object in Unity.
+    /// Since it was created using New rather than AddComponent() it exists in the C backend but Unity doesn't know it.
+    /// TODO ADD CHARACTER_SCRIPT TO SCENARIO.
+    /// </summary>
+    /// <param name="clicked_tile"></param>
     public void MoveTo(Transform clicked_tile)
     {
-        state = States.Walking;
+        state = Character_States.Walking;
         StartCoroutine(Move(clicked_tile));
-        //while (state == States.Walking)
+        //while (state == Character_States.Walking)
         //{
         //    Debug.Log("Walking");
         //}
-        //clicked_tile.GetComponent<Tile_Data>().node.obj = this.gameObject;
+        //clicked_tile.GetComponent<Tile>().obj = this.gameObject;
     }
 
+    /// <summary>
+    /// Coroutine to perform a Move Action. 
+    /// </summary>
+    /// <param name="clicked_tile">The Tile for the Character to Move to.</param>
+    /// <returns>The current status of the Coroutine</returns>
     public IEnumerator Move(Transform clicked_tile)
     {
-        state = States.Walking;
-        Stack<Tile_Data.Node> path = new Stack<Tile_Data.Node>();
-        //path = controller.navmesh.shortestPath(curr_tile.GetComponent<Tile_Data>().node, clicked_tile.GetComponent<Tile_Data>().node, action_curr, SPEED);
-        //Tile_Data.Node temp_tile;
+        state = Character_States.Walking;
+        Stack<Tile> path = new Stack<Tile>();
+        //path = controller.navmesh.shortestPath(curr_tile.GetComponent<Tile>().node, clicked_tile.GetComponent<Tile>().node, action_curr, SPEED);
+        //Tile.Node temp_tile;
         //temp_tile = path.Pop();
-        //Tile_Data.Node prev_tile;
-        Tile_Data.Node temp_tile = clicked_tile.GetComponent<Tile_Data>().node;
-        Tile_Data.Node prev_tile = curr_tile.GetComponent<Tile_Data>().node;
+        //Tile.Node prev_tile;
+        Tile temp_tile = clicked_tile.GetComponent<Tile>();
+        Tile prev_tile = curr_tile.GetComponent<Tile>();
         
         //action_curr -= action_cost;
         //action_cost = 0;
 
         
-        //Tile_Data.Node temp_tile = clicked_tile.GetComponent<Tile_Data>().node;
-        //Tile_Data.Node prev_tile = curr_tile.GetComponent<Tile_Data>().node;
-        //Stack<Tile_Data.Node> path = new Stack<Tile_Data.Node>();
+        //Tile.Node temp_tile = clicked_tile.GetComponent<Tile>().node;
+        //Tile.Node prev_tile = curr_tile.GetComponent<Tile>().node;
+        //Stack<Tile.Node> path = new Stack<Tile.Node>();
 
         //Construct a stack that is a path from the clicked tile to the source.
-        while(!(temp_tile.id[0] == curr_tile.GetComponent<Tile_Data>().node.id[0] && temp_tile.id[1] == curr_tile.GetComponent<Tile_Data>().node.id[1]))
+        while(!(temp_tile.index[0] == curr_tile.GetComponent<Tile>().index[0] && temp_tile.index[1] == curr_tile.GetComponent<Tile>().index[1]))
         {
             path.Push(temp_tile);
             //Look at the parent tile.
@@ -1848,43 +864,43 @@ public class Character_Script : MonoBehaviour {
         }
             
         //distances.Push(distance);
-        //Debug.Log("temp_tile.id[0]: " + temp_tile.id[0]);
-        //Debug.Log("temp_tile.id[1]: " + temp_tile.id[1]);
-        //Debug.Log("curr_tile.id[0]: " + curr_tile.GetComponent<Tile_Data>().node.id[0]);
-        //Debug.Log("curr_tile.id[0]: " + curr_tile.GetComponent<Tile_Data>().node.id[1]);
+        //Debug.Log("temp_tile.index[0]: " + temp_tile.index[0]);
+        //Debug.Log("temp_tile.index[1]: " + temp_tile.index[1]);
+        //Debug.Log("curr_tile.index[0]: " + curr_tile.GetComponent<Tile>().index[0]);
+        //Debug.Log("curr_tile.index[0]: " + curr_tile.GetComponent<Tile>().index[1]);
         //Navigate the path by popping tiles out of the stack.
         while (path.Count != 0)
         {
 
             temp_tile = path.Pop();
-            //transform.position = new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x, (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z);
+            //transform.position = new Vector3(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.x, (float)(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.y + (controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z);
             //
             //yield return new WaitForSeconds(.3f);
             float elapsedTime = 0;
             float duration = .3f;
             //print("duration: " +duration);
-            Vector3 start = new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x,
-                            (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + Tile_Grid.tile_scale * (prev_tile.height) + height_offset),
-                            controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z) + camera_position_offset;
-            Vector3 end = new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x,
-                            (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + Tile_Grid.tile_scale * (temp_tile.height) + height_offset),
-                            controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z) +camera_position_offset;
+            Vector3 start = new Vector3(controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.x,
+                            (float)(controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.y + Tile_Grid.TILE_SCALE * (prev_tile.height) + height_offset),
+                            controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.z) + camera_position_offset;
+            Vector3 end = new Vector3(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.x,
+                            (float)(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.y + Tile_Grid.TILE_SCALE * (temp_tile.height) + height_offset),
+                            controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.z) +camera_position_offset;
 
             while (elapsedTime < duration)
             {
-                if(prev_tile.id[0] == temp_tile.id[0] && prev_tile.id[1] > temp_tile.id[1])
+                if(prev_tile.index[0] == temp_tile.index[0] && prev_tile.index[1] > temp_tile.index[1])
                 {
                     orientation = (0 + camera_orientation_offset) %4;
                 }
-                else if (prev_tile.id[0] < temp_tile.id[0] && prev_tile.id[1] == temp_tile.id[1])
+                else if (prev_tile.index[0] < temp_tile.index[0] && prev_tile.index[1] == temp_tile.index[1])
                 {
                     orientation = (1 + camera_orientation_offset) %4;
                 }
-                else if (prev_tile.id[0] == temp_tile.id[0] && prev_tile.id[1] < temp_tile.id[1])
+                else if (prev_tile.index[0] == temp_tile.index[0] && prev_tile.index[1] < temp_tile.index[1])
                 {
                     orientation = (2 + camera_orientation_offset) %4;
                 }
-                else if (prev_tile.id[0] > temp_tile.id[0] && prev_tile.id[1] == temp_tile.id[1])
+                else if (prev_tile.index[0] > temp_tile.index[0] && prev_tile.index[1] == temp_tile.index[1])
                 {
                     orientation = (3 + camera_orientation_offset) %4;
                 }
@@ -1898,12 +914,12 @@ public class Character_Script : MonoBehaviour {
                     Vector3 setRelCenter = end - center;
                     transform.position = Vector3.Slerp(riseRelCenter, setRelCenter, elapsedTime / duration);
                     transform.position += center;
-                    /*transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x,
-                            (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + Tile_Grid.tile_scale * (prev_tile.height) + height_offset),
-                            controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z) + camera_position_offset,
-                            new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x,
-                            (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + Tile_Grid.tile_scale * (temp_tile.height) + height_offset),
-                            controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z) + camera_position_offset,
+                    /*transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.x,
+                            (float)(controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.y + Tile_Grid.TILE_SCALE * (prev_tile.height) + height_offset),
+                            controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.z) + camera_position_offset,
+                            new Vector3(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.x,
+                            (float)(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.y + Tile_Grid.TILE_SCALE * (temp_tile.height) + height_offset),
+                            controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.z) + camera_position_offset,
                             elapsedTime / duration);*/
                 }
                 else if (prev_tile.height + 2 <= temp_tile.height)
@@ -1915,12 +931,12 @@ public class Character_Script : MonoBehaviour {
                     Vector3 setRelCenter = end - center;
                     transform.position = Vector3.Slerp(riseRelCenter, setRelCenter, elapsedTime/duration);
                     transform.position += center;
-                    /*transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x,
-                            (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + Tile_Grid.tile_scale * (prev_tile.height) + height_offset),
-                            controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z) + camera_position_offset,
-                            new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x,
-                            (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + Tile_Grid.tile_scale * (temp_tile.height) + height_offset),
-                            controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z) + camera_position_offset,
+                    /*transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.x,
+                            (float)(controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.y + Tile_Grid.TILE_SCALE * (prev_tile.height) + height_offset),
+                            controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.z) + camera_position_offset,
+                            new Vector3(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.x,
+                            (float)(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.y + Tile_Grid.TILE_SCALE * (temp_tile.height) + height_offset),
+                            controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.z) + camera_position_offset,
                             elapsedTime / duration);
                             */
                 }
@@ -1932,12 +948,12 @@ public class Character_Script : MonoBehaviour {
                     Vector3 setRelCenter = end - center;
                     transform.position = Vector3.Slerp(riseRelCenter, setRelCenter, elapsedTime / duration);
                     transform.position += center;
-                    /*transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x,
-                            (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + Tile_Grid.tile_scale * (temp_tile.height) + height_offset),
-                            controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z) + camera_position_offset,
-                            new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x,
-                            (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + Tile_Grid.tile_scale * (temp_tile.height) + height_offset),
-                            controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z) + camera_position_offset,
+                    /*transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.x,
+                            (float)(controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.y + Tile_Grid.TILE_SCALE * (temp_tile.height) + height_offset),
+                            controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.z) + camera_position_offset,
+                            new Vector3(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.x,
+                            (float)(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.y + Tile_Grid.TILE_SCALE * (temp_tile.height) + height_offset),
+                            controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.z) + camera_position_offset,
                             elapsedTime / duration);*/
                 }
                 else if (prev_tile.height > temp_tile.height)
@@ -1948,65 +964,65 @@ public class Character_Script : MonoBehaviour {
                     Vector3 setRelCenter = end - center;
                     transform.position = Vector3.Slerp(riseRelCenter, setRelCenter, elapsedTime / duration);
                     transform.position += center;
-                    /*transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x,
-                        (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + Tile_Grid.tile_scale * (prev_tile.height) + height_offset),
-                        controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z) + camera_position_offset,
-                        new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x,
-                        (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + Tile_Grid.tile_scale * (temp_tile.height) + height_offset),
-                        controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z) + camera_position_offset,
+                    /*transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.x,
+                        (float)(controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.y + Tile_Grid.TILE_SCALE * (prev_tile.height) + height_offset),
+                        controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.z) + camera_position_offset,
+                        new Vector3(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.x,
+                        (float)(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.y + Tile_Grid.TILE_SCALE * (temp_tile.height) + height_offset),
+                        controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.z) + camera_position_offset,
                         elapsedTime / duration);*/
                 }
                 else
                 {
-                    transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x,
-                        (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + Tile_Grid.tile_scale * (prev_tile.height) + height_offset),
-                        controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z) + camera_position_offset,
-                        new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x,
-                        (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + Tile_Grid.tile_scale * (temp_tile.height) + height_offset),
-                        controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z) + camera_position_offset,
+                    transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.x,
+                        (float)(controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.y + Tile_Grid.TILE_SCALE * (prev_tile.height) + height_offset),
+                        controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.z) + camera_position_offset,
+                        new Vector3(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.x,
+                        (float)(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.y + Tile_Grid.TILE_SCALE * (temp_tile.height) + height_offset),
+                        controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.z) + camera_position_offset,
                         elapsedTime / duration);
                 }
                 /*if (CompareTag("Player"))
                 {
-                    transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x,
-                        (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + height_offset),
-                        controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z) + camera_position_offset,
-                        new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x,
-                        (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + height_offset),
-                        controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z) + camera_position_offset,
+                    transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.x,
+                        (float)(controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.y + Tile_Grid.TILE_SCALE * (controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<Tile>().height) + height_offset),
+                        controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.z) + camera_position_offset,
+                        new Vector3(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.x,
+                        (float)(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.y + Tile_Grid.TILE_SCALE * (controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<Tile>().height) + height_offset),
+                        controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.z) + camera_position_offset,
                         elapsedTime / duration);
-                    transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x - (.1f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height),
-                        (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 1.145f),
-                        controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z - (.08f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height)),
-                        new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x - (.1f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height),
-                        (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 1.145f),
-                        controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z - (.08f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height)),
+                    transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.x - (.1f * controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<Tile>().height),
+                        (float)(controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.y + Tile_Grid.TILE_SCALE * (controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<Tile>().height) + 1.145f),
+                        controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.z - (.08f * controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<Tile>().height)),
+                        new Vector3(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.x - (.1f * controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<Tile>().height),
+                        (float)(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.y + Tile_Grid.TILE_SCALE * (controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<Tile>().height) + 1.145f),
+                        controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.z - (.08f * controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<Tile>().height)),
                         elapsedTime / duration);
                     
                 }
                 if (CompareTag("Monster"))
                 {
-                    transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x,
-                        (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + height_offset),
-                        controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z) + camera_position_offset,
-                        new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x,
-                        (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + height_offset),
-                        controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z) + camera_position_offset,
+                    transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.x,
+                        (float)(controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.y + Tile_Grid.TILE_SCALE * (controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<Tile>().height) + height_offset),
+                        controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.z) + camera_position_offset,
+                        new Vector3(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.x,
+                        (float)(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.y + Tile_Grid.TILE_SCALE * (controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<Tile>().height) + height_offset),
+                        controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.z) + camera_position_offset,
                         elapsedTime / duration);
-                    transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.x - (.1f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height),
-                        (float)(controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 0.7f),
-                        controller.curr_scenario.tile_grid.getTiles()[prev_tile.id[0], prev_tile.id[1]].position.z - (.08f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height)),
-                        new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x - (.1f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height),
-                        (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + Tile_Grid.tile_scale * (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height) + 0.7f),
-                        controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.z - (.08f * controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<Tile_Data>().node.height)),
+                    transform.position = Vector3.Lerp(new Vector3(controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.x - (.1f * controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<Tile>().height),
+                        (float)(controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.y + Tile_Grid.TILE_SCALE * (controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<Tile>().height) + 0.7f),
+                        controller.curr_scenario.tile_grid.tiles[prev_tile.index[0], prev_tile.index[1]].position.z - (.08f * controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<Tile>().height)),
+                        new Vector3(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.x - (.1f * controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<Tile>().height),
+                        (float)(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.y + Tile_Grid.TILE_SCALE * (controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<Tile>().height) + 0.7f),
+                        controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.z - (.08f * controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<Tile>().height)),
                         elapsedTime / duration);
                         
                 }*/
-                //(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f
+                //(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f
                 elapsedTime += Time.deltaTime;
-                /*if (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sortingOrder > curr_tile.GetComponent<SpriteRenderer>().sortingOrder)
+                /*if (controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<SpriteRenderer>().sortingOrder > curr_tile.GetComponent<SpriteRenderer>().sortingOrder)
                 {
-                   gameObject.GetComponent<SpriteRenderer>().sortingOrder = controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sortingOrder + 1;
+                   gameObject.GetComponent<SpriteRenderer>().sortingOrder = controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<SpriteRenderer>().sortingOrder + 1;
                 }
                 else
                 {
@@ -2014,27 +1030,26 @@ public class Character_Script : MonoBehaviour {
                 }*/
                 yield return new WaitForEndOfFrame();
             }
-            //gameObject.GetComponent<SpriteRenderer>().sortingOrder = controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sortingOrder + 1;
+            //gameObject.GetComponent<SpriteRenderer>().sortingOrder = controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<SpriteRenderer>().sortingOrder + 1;
             prev_tile = temp_tile;
 
 
 
-            //    new Vector3(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.x, (float)(controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].position.y + (controller.curr_scenario.tile_grid.getTiles()[temp_tile.id[0], temp_tile.id[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z);
+            //    new Vector3(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.x, (float)(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.y + (controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z);
             //WaitForSeconds(1);
         }
             //transform.position = new Vector3(curr_tile.position.x, (float)(curr_tile.position.y + (curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z);
             
-        state = States.Idle;
-
-    }
-	
-    public Character_Script()
-    {
+        state = Character_States.Idle;
 
     }
 
-	// Update is called once per frame
-	public void Update () {
+    /// <summary>
+    /// Update is called once per frame:
+    ///     Checks if the Aura, AP and MP are within acceptable bounds.
+    ///     Turns the Character towards the Camera.
+    /// </summary>
+    public void Update () {
 
         if (aura_curr < 0) {
 			aura_curr = 0;

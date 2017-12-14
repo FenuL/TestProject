@@ -5,391 +5,90 @@ using System.Collections.Generic;
 using System;
 using UnityEngine.SceneManagement;
 
-public class Tile_Grid : ScriptableObject{
-    //Constants
-    public static string TILE_SPRITESHEET_FILE = "Sprites/Tile Sprites/tile_spritesheetv3_transparent";
-    public static string OBJECT_SPRITESHEET_FILE = "Sprites/Object Sprites/object_spritesheet_transparent";
-    public static string TILE_PREFAB_SRC = "Prefabs/Tile Prefabs/tile prefab";
-    public static string OBJECT_PREFAB_SRC = "Prefabs/Object Prefabs/object_prefab";
-    public static string REACHABLE_PREFAB_SRC = "Prefabs/Tile Prefabs/Reachable";
-
-    //Tile size in pixels
-    public static float TILE_LENGTH = 43;
-	public static float TILE_WIDTH = 85;
-	public static float TILE_HEIGHT = 20;
-    //Grid size restriction in number of tiles
-	public static int MAX_WIDTH = 40;
-	public static int MAX_HEIGHT = 40;
-    public static int MIN_WIDTH = 5;
-    public static int MIN_HEIGHT = 5;
-    //Starting coordinates for the grid;
-    public static float START_X = 0;
-    public static float START_Y = 3.5f;
-    //Scale for the tiles
-    public static float tile_scale = 0.5f;
-
-    //Prefabs
-	public GameObject tile_prefab;
-    public GameObject object_prefab;
-    public GameObject reachable_prefab;
-
-    //Spritesheets
-    Sprite[] tile_sprite_sheet;
-	Sprite[] object_sprite_sheet;
-
-    SpriteRenderer sprite;
-
-    public int grid_width;
-    public int grid_length;
-    Material[] materials;
-    double[] modifiers;
-    int[,] tile_mat_ids;
-    int[,] object_sprite_ids;
-    int[,] character_sprite_ids;
-    int[,] tile_heights;
-    Transform[,] tiles;
-    public Tile_Data.Graph navmesh { get; set; }
-
-    public Tile_Grid(int width, int length, Material[] new_materials, double[] new_modifiers, int[,] new_tile_mat_ids, int[,] new_object_sprite_ids, int[,] new_character_sprite_ids)
-    {
-        //Load the prefabs
-        tile_prefab = Resources.Load(TILE_PREFAB_SRC, typeof(GameObject)) as GameObject;
-        object_prefab = Resources.Load(OBJECT_PREFAB_SRC, typeof(GameObject)) as GameObject;
-        reachable_prefab = Resources.Load(REACHABLE_PREFAB_SRC, typeof(GameObject)) as GameObject;
-
-        //Load the spritesheets
-        tile_sprite_sheet = Resources.LoadAll<Sprite>(TILE_SPRITESHEET_FILE);
-        object_sprite_sheet = Resources.LoadAll<Sprite>(OBJECT_SPRITESHEET_FILE);
-
-        //Set the variables
-        grid_width = width;
-        grid_length = length;
-        modifiers = new_modifiers;
-        materials = new_materials;
-        tile_mat_ids = new_tile_mat_ids;
-        object_sprite_ids = new_object_sprite_ids;
-        character_sprite_ids = new_character_sprite_ids;
-        tile_heights = new int[width, length];
-        for(int x =0; x<width; x++)
-        {
-            for (int y =0; y<length; y++)
-            {
-                tile_heights[x, y] = tile_mat_ids[x, y] /10 +1;
-            }
-        }
-
-        //Generate the Tile transforms and navmesh
-        tiles = new Transform[width, length];
-        navmesh = new Tile_Data.Graph();
-    }
-
-    /*public IEnumerator Raise()
-    {
-        float elapsedTime = 0;
-        float duration = .3f;
-        Vector3 start = transform.position;
-        Vector3 target = curr_tile.position + camera_position_offset + new Vector3(0, height_offset + Tile_Grid.tile_scale * (curr_tile.GetComponent<Tile_Data>().node.height), 0);
-        while (elapsedTime < duration)
-        {
-            transform.position = Vector3.Lerp(start,
-                target,
-                elapsedTime / duration);
-            elapsedTime += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
-    }*/
-
-    public void Elevate(Transform target, int height)
-    {
-        //Modify tile height
-        Tile_Data tile = target.GetComponent<Tile_Data>();
-        tile.node.height += height;
-        tile_heights[tile.node.id[0], tile.node.id[1]] += height;
-
-        if (tile.node.height < 1)
-        {
-            tile.node.height = 1;
-        }
-        if (tile.node.height > 30)
-        {
-            tile.node.height = 30;
-        }
-
-        //Modify object
-        string file = "Objects/Tiles/" + tile.node.height + "TCanvas";
-        GameObject tile3d = Resources.Load(file, typeof(GameObject)) as GameObject;
-        float NEWTILEWIDTH = 1.5f;
-        float NEWTILELENGTH = 1.5f;
-        float NEWTILEHEIGHT = 1f;
-        float NEWSCALE = 2f;
-        GameObject instance;
-        //If the shift is positive, we create the tile lower and raise it up.
-        if (height > 0)
-        {
-            instance = ((GameObject)Instantiate(tile3d, target.position - new Vector3(), Quaternion.identity));
-            instance.transform.localScale = new Vector3(tile_scale, tile_scale, tile_scale);
-            if (tile.node.obj != null)
-            {
-                if (tile.node.obj.GetComponent<Character_Script>() != null)
-                {
-                    tile.node.obj.transform.position = instance.transform.position + tile.node.obj.GetComponent<Character_Script>().camera_position_offset + new Vector3(0, tile_scale * tile.node.height + tile.node.obj.GetComponent<Character_Script>().height_offset, 0);
-                    tile.node.obj.GetComponent<Character_Script>().curr_tile = instance.transform;
-                }
-            }
-        }
-        else
-        {
-            //if the shift is negative, we create the tile higher and lower it. 
-            instance = ((GameObject)Instantiate(tile3d, target.position + new Vector3(), Quaternion.identity));
-            instance.transform.localScale = new Vector3(tile_scale, tile_scale, tile_scale);
-            if (tile.node.obj != null)
-            {
-
-                tile.node.obj.transform.position = instance.transform.position + tile.node.obj.GetComponent<Character_Script>().camera_position_offset + new Vector3(0, tile_scale * tile.node.height + tile.node.obj.GetComponent<Character_Script>().height_offset, 0);
-                tile.node.obj.GetComponent<Character_Script>().curr_tile = instance.transform;
-                //instance.transform.GetComponent<Tile_Data>().node.obj = tile.node.obj;
-                //Debug.Log(instance.transform.GetComponent<Tile_Data>().node.obj.GetComponent<Character_Script>().name);
-            }
-        }
-
-        //Add a collider to the tile (TEMPORARY)
-        BoxCollider collider = instance.AddComponent<BoxCollider>();
-        collider.size = new Vector3(NEWTILELENGTH * NEWSCALE, 0, NEWTILEWIDTH * NEWSCALE);
-        collider.center = new Vector3(0, tile.node.height, 0);
-
-        //Change material
-        instance.GetComponentInChildren<Renderer>().material = materials[tile_mat_ids[tile.node.id[0], tile.node.id[1]] % 10];
-
-        //Generate the tile data for the tile
-        instance.AddComponent<Tile_Data>();
-        instance.GetComponent<Tile_Data>().instantiate(tile);
-
-        //Store the instantiated tile in our Tile Tranform Grid;
-        tiles[tile.node.id[0], tile.node.id[1]] = instance.transform;
-
-
-        //Modify navmesh
-        foreach (Tile_Data.Edge e in instance.GetComponent<Tile_Data>().node.edges)
-        {
-            //Modify local edges
-            if (e != null)
-            {
-                int height_diff = e.node1.height - e.node2.height;
-                if (height_diff >= -1)
-                {
-                    e.cost = 1;
-                }
-                else if (height_diff == -2)
-                {
-                    e.cost = 3;
-                }
-                else if (height_diff == -3)
-                {
-                    e.cost = 7;
-                }
-                else if (height_diff < -3)
-                {
-                    e.cost = 25;
-                }
-                else
-                {
-                    e.cost = 1;
-                }
-                e.cost = e.cost + e.node2.modifier;
-                //Debug.Log("Edge between (" + e.node1.id[0] + "," + e.node1.id[1] + ") and (" + e.node2.id[0] + "," + e.node2.id[1] + ") has cost " + e.cost);
-                //modify edges of adjacent nodes
-                foreach (Tile_Data.Edge edge in e.node2.edges)
-                {
-                    if (edge != null)
-                    {
-                        if (edge.node2 == e.node1)
-                        {
-                            height_diff = edge.node1.height - edge.node2.height;
-                            if (height_diff >= -1)
-                            {
-                                edge.cost = 1;
-                            }
-                            else if (height_diff == -2)
-                            {
-                                edge.cost = 3;
-                            }
-                            else if (height_diff == -3)
-                            {
-                                edge.cost = 7;
-                            }
-                            else if (height_diff < -3)
-                            {
-                                edge.cost = 25;
-                            }
-                            else
-                            {
-                                edge.cost = 1;
-                            }
-                            edge.node2 = instance.GetComponent<Tile_Data>().node;
-                            //Debug.Log("Edge between (" + edge.node1.id[0] + ", " + edge.node1.id[1] + ") and(" + edge.node2.id[0] + ", " + edge.node2.id[1] + ") has cost " + edge.cost);
-                        }
-                    }
-                }
-            }
-        }
-
-        //Destroy old object 
-        Destroy(tile.gameObject);
-    }
-
-    public void Instantiate()
-    {
-        int tile_number = 0;
-        for (int x = 0; x < grid_width; x++)
-        {
-            for (int y = 0; y < grid_length; y++)
-            {
-                //Set the correct sprite for the tile
-                sprite = tile_prefab.GetComponent<SpriteRenderer>();
-                sprite.sprite = (Sprite)tile_sprite_sheet[tile_mat_ids[x, y]];
-                sprite.sortingOrder = tile_number;
-                tile_number++;
-
-                //Instantiate the tile object.
-                string file = "Objects/Tiles/" + tile_heights[x, y] + "TCanvas";
-                //string file = "Objects/Tiles/Object-3x3x" + tile_heights[x, y];
-
-                GameObject tile3d = Resources.Load(file, typeof(GameObject)) as GameObject;
-                int NEWSTARTX = 0;
-                int NEWSTARTY = 0;
-                int NEWSTARTZ = 0;
-                float NEWTILEWIDTH = 1.5f;
-                float NEWTILELENGTH = 1.5f;
-                float NEWTILEHEIGHT = 1f;
-                float NEWSCALE = 2f;
-                //GameObject instance = ((GameObject)Instantiate(tile3d, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity));
-                GameObject instance = ((GameObject)Instantiate(tile3d, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y), (float)(NEWSTARTY), (float)(NEWSTARTZ - NEWTILELENGTH * x)), Quaternion.identity));
-                instance.transform.localScale = new Vector3(tile_scale, tile_scale, tile_scale);
-
-                //Add a collider to the tile (TEMPORARY)
-                BoxCollider collider = instance.AddComponent<BoxCollider>();
-                //collider.size = new Vector3(NEWTILELENGTH*NEWSCALE,tile_heights[x,y]*NEWTILEHEIGHT*(NEWSCALE/2),NEWTILEWIDTH*NEWSCALE);
-                collider.size = new Vector3(NEWTILELENGTH * NEWSCALE, 0, NEWTILEWIDTH * NEWSCALE);
-                //collider.center = new Vector3(0, 10, 0);
-                collider.center = new Vector3(0, tile_heights[x, y], 0);
-
-                //Set the material
-                instance.GetComponentInChildren<Renderer>().material = materials[tile_mat_ids[x, y] % 10];
-
-                //Generate the tile data for the tile
-                instance.AddComponent<Tile_Data>();
-                instance.GetComponent<Tile_Data>().instantiate(x, y, tile_heights[x, y], tile_mat_ids[x, y], modifiers);
-
-                //Store the instantiated tile in our Tile Tranform Grid;
-                tiles[x, y] = instance.transform;
-
-                //Add a node to the navmesh
-                navmesh.addNode(tiles[x, y].GetComponent<Tile_Data>().node);
-
-                //Connect the new node to previous nodes in the mesh
-                if (x > 0)
-                {
-                    tiles[x, y].GetComponent<Tile_Data>().node.addEdge(tiles[x - 1, y].GetComponent<Tile_Data>().node, 3);
-                }
-                if (y > 0)
-                {
-                    tiles[x, y].GetComponent<Tile_Data>().node.addEdge(tiles[x, y - 1].GetComponent<Tile_Data>().node, 0);
-                }
-
-                //create OBJECTS on top of tiles
-                if (object_sprite_ids[x, y] != 0)
-                {
-                    //pull up the object prefab
-                    sprite = object_prefab.GetComponent<SpriteRenderer>();
-
-                    //set the right sprite;
-                    sprite.sprite = (Sprite)object_sprite_sheet[object_sprite_ids[x, y] - 1];
-                    //sprite.sortingOrder = tile_number;
-                    sprite.sortingOrder = 5000;
-
-                    //instantiate the object
-                    //Instantiate(object_prefab, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity);
-                    tiles[x, y].GetComponent<Tile_Data>().node.setObj((GameObject)Instantiate(object_prefab, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y), (float)(NEWSTARTY + 0.66f + .5f * tile_heights[x, y]), (float)(NEWSTARTZ - NEWTILELENGTH * x)), Quaternion.identity));
-                    //Instantiate(object_prefab, new Vector3((float)(START_X - (x) * (TILE_WIDTH / 200) + (y) * (TILE_WIDTH / 200)), (float)(START_Y - (x) * (TILE_LENGTH / 200) - (y) * (TILE_LENGTH / 200) + tile_heights[x, y] * TILE_HEIGHT / 100.0 + .35f), 0), Quaternion.identity);
-                }
-
-                //If there is an object on the tile, mark it non traversible
-                if (object_sprite_ids[x, y] == 0)
-                {
-                    tiles[x, y].GetComponent<Tile_Data>().node.traversible = true;
-                }
-                else
-                {
-                    tiles[x, y].GetComponent<Tile_Data>().node.traversible = false;
-                }
-
-            }
-        }
-        sprite.sortingOrder = 0;
-    }
-
-	public Transform[,] getTiles(){
-		return tiles;
-	}
-
-	public Transform getTile(int x, int y){
-        if (x >= 0 && y >= 0 && x < grid_width && y < grid_length)
-        {
-            return tiles[x, y];
-        }
-        return null;
-	}
-
-	public double get_TILE_HEIGHT(){
-		return TILE_HEIGHT;
-	}
-
-    void OnApplicationQuit()
-    {
-        //reachable_prefab.GetComponent<SpriteRenderer>().sortingOrder = 0;
-        //tile_prefab.GetComponent<SpriteRenderer>().color = new Color(255f, 255f, 255f, 1f);
-    }
-}
-
+/// <summary>
+/// The Scenario class is used to generate a battle map with an objective for the Player to meet. 
+/// </summary>
 public class Scenario : MonoBehaviour {
     //Constants
-    public static string PLAYER_STATS_FILE = "Assets/Resources/Characters/Player_Characters/Player_Character_Data.txt";
-    public static string MONSTER_STATS_FILE = "Assets/Resources/Characters/Monster_Characters/Monster_Character_Data.txt";
+    /// <summary>
+    /// Constants:
+    /// static string PLAYER_STATS_FILE - File from which to draw Character stats.
+    /// static string MONSTER_STATS_FILE - File from which to draw Monster Stats.
+    /// 
+    /// Variables:
+    /// Tile_Grid tile_grid  - The tile_grid object that contains the array of Tile Objects that acts as the map for the Scenario.
+	/// Game_Controller controller - The Game Controller Object in charge of overarching game processes.
+    /// string scenario_file - The file from which the Scenario reads in its values.
+    /// int scenario_id - The ID used to separate this Scenario from others. Also used for Scenario selection from the available_scenarios list.
+    /// string scenario_sector - The sector the Scenario can appear in. Not in use yet.
+    /// string scenario_name - The Name of the Scenario.
+    /// string description - The descrition for the Scenario.
+    /// Scenario_Objectives objective - The Objective for the Scenario. Defined how to win the Scenario.
+    /// List<string> rewards - The Rewards for completing the Scenario's Objective.
+    /// string bonus_objective - The Bonus Objective for the Scenario. Defines how to earn the Bonus Rewards for the Scenario.
+    /// List<string> bonus_rewards - The Rewards for completing the Scenario's Bonus Objective.
+    /// List<int> unlocks_scenarios - Scenarios that will be added to the available_scenarios List regardless of outcome.
+    /// List<int> unlocks_scenarios_on_loss - Scenarios that will be added to the available_scenarios List if the Player does not achieve the Objective.
+    /// List<int> unlocks_scenarios_on_win - Scenarios that will be added to the available_scenarios List if the Player achieves the Objective.
+    /// List<int> unlocks_scenarios_on_bonus - Scenarios that will be added to the available_scenarios List if the Player achieves the Bonus Objective. 
+    /// GameObject curr_player - The Character that is currently Acting.
+    /// GameObject highlighted_player - The Character on the tile that is currently holding the Cursor Object.
+    /// GameObject cursor - The Cursor Object is used to select Tiles and Characters for Actions. It shows which Tile Object the player's mouse is over.
+    /// List<GameObject> cursors - The List of currently active Cursor Objects. Multiple Cursors are necessary because of AoE Actions.
+    /// String cursor_name - Stores the current Character's Action so we can tell if we need to change the number of Cursor Objects in the cursors List.
+    /// int curr_character_num - The index for the current character in the characters Array.
+    /// ArrayList characters - The list of all currently Active Characters in the scenario.
+    /// List<> tile_objects - The list of all Objects currently Active in the scenario.
+    /// Character_Script[] player_character_data - The Array of Character scripts holding data for all available player Characters. 
+    ///     Generated by the PLAYER_STATS_FILE.
+    /// Character_Script[] monster_character_data - The Array of Character scripts holding data for all available monster Characters. 
+    ///     Generated by the MONSTER_STATS_FILE.
+    /// List<GameObject> turn_order - The List of Characters sorted by Dexterity to determine turn order.
+    /// Transform clicked_tile - The Tile object curretly Clicked by the Player.
+    /// Transform selected_tile - The Tile object currently Selected by the Player. Also where the main cursor Object should be.
+    /// List<Transform> reachable_tiles - The List of tiles that are reachable for the current Character's current Action.
+    /// List<GameObject> reachable_tile_objects - The List of Objects used to mark what Tiles are Reachable.
+    /// int curr_round - The number of the current round. Not currently in Use.
+    /// </summary>
+    private static string PLAYER_STATS_FILE = "Assets/Resources/Characters/Player_Characters/Player_Character_Data.txt";
+    private static string MONSTER_STATS_FILE = "Assets/Resources/Characters/Monster_Characters/Monster_Character_Data.txt";
 
-    public enum Objectives { Vanquish, Resupply, Boss, Escort }
-    public Tile_Grid tile_grid;
-	public Game_Controller controller;
-	public string scenario_file;
-    public int scenario_id;
-    public string scenario_sector;
-    public string scenario_name;
-    public string description;
-    public Objectives objective;
-    public List<string> rewards;
-    public string bonus_objective;
-    public List<string> bonus_rewards;
-    public List<int> unlocks_scenarios;
-    public List<int> unlocks_scenarios_on_loss;
-    public List<int> unlocks_scenarios_on_win;
-    public List<int> unlocks_scenarios_on_bonus;
-    public GameObject curr_player;
-    public GameObject highlighted_player;
-    public GameObject cursor;
-    public List<GameObject> cursors;
-    public String cursor_name;
-    public int turn_index;
-    public int curr_character_num;
-    public ArrayList characters;
-    public ArrayList tile_objects;
-    public Character_Script[] player_character_data;
-    public Character_Script[] monster_character_data;
-    public List<GameObject> turn_order;
-    public Transform clicked_tile;
-    public Transform selected_tile;
-    public List<Transform> reachable_tiles;
-    List<GameObject> reachable_tile_objects;
-    public int curr_round;
+    public Tile_Grid tile_grid { get; private set; }
+	public Game_Controller controller { get; private set; }
+    public string scenario_file { get; private set; }
+    public int scenario_id { get; private set; }
+    public string scenario_sector { get; private set; }
+    public string scenario_name { get; private set; }
+    public string description { get; private set; }
+    public Scenario_Objectives objective { get; private set; }
+    public List<string> rewards { get; private set; }
+    public string bonus_objective { get; private set; }
+    public List<string> bonus_rewards { get; private set; }
+    public List<int> unlocks_scenarios { get; private set; }
+    public List<int> unlocks_scenarios_on_loss { get; private set; }
+    public List<int> unlocks_scenarios_on_win { get; private set; }
+    public List<int> unlocks_scenarios_on_bonus { get; private set; }
+    public GameObject curr_player { get; private set; }
+    public GameObject highlighted_player { get; set; }
+    public GameObject cursor { get; private set; }
+    public List<GameObject> cursors { get; private set; }
+    public String cursor_name { get; private set; }
+    public int curr_character_num { get; private set; }
+    public ArrayList characters { get; private set; }
+    public List<GameObject> tile_objects { get; private set; }
+    public Character_Script[] player_character_data { get; private set; }
+    public Character_Script[] monster_character_data { get; private set; }
+    public List<GameObject> turn_order { get; private set; }
+    public Transform clicked_tile { get; set; }
+    public Transform selected_tile { get; set; }
+    public List<Transform> reachable_tiles { get; private set; }
+    public List<GameObject> reachable_tile_objects { get; private set; }
+    public int curr_round { get; private set; }
 
+    /// <summary>
+    /// Constructor for the Class. Asks for a file from which to parse its fields.
+    /// </summary>
+    /// <param name="filename">The file from which to get its fields.</param>
     public Scenario(string filename)
     {
         controller = Game_Controller.controller;
@@ -441,7 +140,7 @@ public class Scenario : MonoBehaviour {
                     break;
                 //Objective for the scenario (see Objectives enum for list of possible objectives.)
                 case "[Objective]":
-                    foreach (Objectives obj in System.Enum.GetValues(typeof(Objectives)))
+                    foreach (Scenario_Objectives obj in System.Enum.GetValues(typeof(Scenario_Objectives)))
                     {
                         if(obj.ToString() == lines[i + 1])
                         {
@@ -618,18 +317,22 @@ public class Scenario : MonoBehaviour {
             }
             //Resume new scenario creation
             tile_grid = new Tile_Grid(grid_width, grid_length, materials, tile_modifiers, tile_mat_ids, object_sprite_ids, character_sprite_ids);
-            tile_grid.tile_prefab.GetComponent<SpriteRenderer>().color = new Color(255f, 255f, 255f, 1f);
 
             curr_round = 0;
             curr_character_num = 0;
-            turn_index = 0;
             turn_order = new List<GameObject>();
             reachable_tiles = new List<Transform>();
             reachable_tile_objects = new List<GameObject>();
+            tile_objects = new List<GameObject>();
         }
     }
 
-    Character_Script[] ReadCharacterData(string file)
+    /// <summary>
+    /// Function to read in Character data from a file. Returns a Character_Script array from the data within the file.
+    /// </summary>
+    /// <param name="file">The file from which to read in Character Scripts.</param>
+    /// <returns>Character_Script Array constructed from the given file.</returns>
+    Character_Script[] Read_Character_Data(string file)
     {
         string[] lines = System.IO.File.ReadAllLines(file);
         Character_Script[] objects = new Character_Script[lines.Length / 13];
@@ -728,7 +431,13 @@ public class Scenario : MonoBehaviour {
         return objects;
     }
 
-    public static int SortByDex(GameObject o1, GameObject o2)
+    /// <summary>
+    /// Function used to sort GameObjects by their Dexterity Stat. 
+    /// </summary>
+    /// <param name="o1">The first Object to Compare</param>
+    /// <param name="o2">The second Object to Compare</param>
+    /// <returns>1 if the first Object's Dexterity is greater, 0 if they are equal, -1 if the second Object's Dexterity is greater. </returns>
+    public static int Sort_By_Dex(GameObject o1, GameObject o2)
     {
         if (o1.GetComponent<Character_Script>().dexterity > o2.GetComponent<Character_Script>().dexterity)
         {
@@ -744,14 +453,17 @@ public class Scenario : MonoBehaviour {
         }
     }
 
-    public void LoadScenario()
+    /// <summary>
+    /// Function to Instantiate all of the relevant Scenario Tiles, Objects and Characters. Basically the Start method.
+    /// </summary>
+    public void Load_Scenario()
     {
         //Instantiate the actual tile objects
         tile_grid.Instantiate();
 
         //Load player and monster stats and come up with turn order
-        player_character_data = ReadCharacterData(PLAYER_STATS_FILE);
-        monster_character_data = ReadCharacterData(MONSTER_STATS_FILE);
+        player_character_data = Read_Character_Data(PLAYER_STATS_FILE);
+        monster_character_data = Read_Character_Data(MONSTER_STATS_FILE);
         Character_Script[] character_data;
         int char_num = 0;
         characters = new ArrayList();
@@ -761,63 +473,62 @@ public class Scenario : MonoBehaviour {
         GameObject[] objects = GameObject.FindGameObjectsWithTag("Player");
 
         //set starting positions for players
-        //TODO change this 
+        //TODO change this to read positions from the scenario file.
         foreach (GameObject game_object in objects)
         {
             characters.Add(game_object);
-            game_object.GetComponent<Character_Script>().height_offset = (game_object.GetComponent<SpriteRenderer>().sprite.rect.height * game_object.transform.localScale.y / game_object.GetComponent<SpriteRenderer>().sprite.pixelsPerUnit / 2);
+            game_object.GetComponent<Character_Script>().height_offset = (game_object.GetComponent<SpriteRenderer>().sprite.rect.height *
+                game_object.transform.localScale.y / 
+                game_object.GetComponent<SpriteRenderer>().sprite.pixelsPerUnit /
+                2);
             float offset = (game_object.GetComponent<Character_Script>().height_offset) / 3.5f;
             game_object.GetComponent<Character_Script>().character_num = char_num;
             game_object.GetComponent<Character_Script>().curr_tile = tile_grid.getTile(char_num, 0);
-            game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.setObj(game_object);
-            game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x - offset,
-            game_object.GetComponent<Character_Script>().curr_tile.position.y + game_object.GetComponent<Character_Script>().height_offset + Tile_Grid.tile_scale * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height,
-            game_object.GetComponent<Character_Script>().curr_tile.position.z - offset);
-            //game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x- (.1f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height),
-            //game_object.GetComponent<Character_Script>().curr_tile.position.y+ 1.145f + Tile_Grid.tile_scale * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height,
-            //game_object.GetComponent<Character_Script>().curr_tile.position.z - (.08f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height));
-            //game_object.GetComponent<Character_Script>().curr_tile.position.y + (float)(game_object.GetComponent<SpriteRenderer> ().sprite.rect.height / game_object.GetComponent<SpriteRenderer> ().sprite.pixelsPerUnit + 0.15f),
-            //(float)(game_object.GetComponent<Character_Script>().curr_tile.position.y + (game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f,
-            //game_object.GetComponent<Character_Script>().curr_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);
-            game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.traversible = false;
-            //game_object.GetComponent<Character_Script>().FindReachable(tile_grid, game_object.GetComponent<Character_Script>().action_max, game_object.GetComponent<Character_Script>().dexterity);
-            //game_object.GetComponent<SpriteRenderer>().sortingOrder = game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sortingOrder + 1;
+            game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().obj = game_object;
+            game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x - 
+                    offset,
+                game_object.GetComponent<Character_Script>().curr_tile.position.y + 
+                    game_object.GetComponent<Character_Script>().height_offset + 
+                    Tile_Grid.TILE_SCALE * 
+                    game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().height,
+                game_object.GetComponent<Character_Script>().curr_tile.position.z - 
+                offset);
+            game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().traversible = false;
             char_num++;
         }
         //set starting position for monsters
-        //TODO change this
+        //TODO change this to read positions from the scenario file.
         objects = GameObject.FindGameObjectsWithTag("Monster");
         foreach (GameObject game_object in objects)
         {
             characters.Add(game_object);
-            game_object.GetComponent<Character_Script>().height_offset = (game_object.GetComponent<SpriteRenderer>().sprite.rect.height * game_object.transform.localScale.y / game_object.GetComponent<SpriteRenderer>().sprite.pixelsPerUnit / 2);
+            game_object.GetComponent<Character_Script>().height_offset = (game_object.GetComponent<SpriteRenderer>().sprite.rect.height * 
+                game_object.transform.localScale.y / 
+                game_object.GetComponent<SpriteRenderer>().sprite.pixelsPerUnit / 
+                2);
             float offset = (game_object.GetComponent<Character_Script>().height_offset) / 3.5f;
             game_object.GetComponent<Character_Script>().camera_position_offset = new Vector3(-offset, 0.00f, -offset);
             game_object.GetComponent<Character_Script>().character_num = char_num;
-            game_object.GetComponent<Character_Script>().curr_tile = tile_grid.getTile(19 - game_object.GetComponent<Character_Script>().character_num, 19);// [19-game_object.GetComponent<Character_Script>().character_num,19,0];
-            game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.setObj(game_object);
-            game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x-offset,
-                game_object.GetComponent<Character_Script>().curr_tile.position.y + game_object.GetComponent<Character_Script>().height_offset + Tile_Grid.tile_scale * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height,
-                game_object.GetComponent<Character_Script>().curr_tile.position.z -offset);
-            //game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x - (.1f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height),
-            //    game_object.GetComponent<Character_Script>().curr_tile.position.y + 0.7f + Tile_Grid.tile_scale * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height,
-            //    game_object.GetComponent<Character_Script>().curr_tile.position.z - (.08f * game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height));
-            // .25f* game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.height+.015f
-            //game_object.GetComponent<Character_Script>().curr_tile.position.y + 0.5f,
-            //(float)(game_object.GetComponent<Character_Script>().curr_tile.position.y + (game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f,
-            //game_object.GetComponent<Character_Script>().curr_tile.position.z); //script.tileGrid.TILE_LENGTH+script.tileGrid.TILE_HEIGHT)/200.0), curr_tile.position.z);
-            game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node.traversible = false;
-            //game_object.GetComponent<Character_Script>().FindReachable(tile_grid, game_object.GetComponent<Character_Script>().action_max, game_object.GetComponent<Character_Script>().dexterity);
-            //game_object.GetComponent<SpriteRenderer>().sortingOrder = game_object.GetComponent<Character_Script>().curr_tile.GetComponent<SpriteRenderer>().sortingOrder + 1;
+            game_object.GetComponent<Character_Script>().curr_tile = tile_grid.getTile(19 - game_object.GetComponent<Character_Script>().character_num, 19);
+            game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().obj = game_object;
+            game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x -
+                    offset,
+                game_object.GetComponent<Character_Script>().curr_tile.position.y + 
+                    game_object.GetComponent<Character_Script>().height_offset + 
+                    Tile_Grid.TILE_SCALE * 
+                    game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().height,
+                game_object.GetComponent<Character_Script>().curr_tile.position.z -
+                    offset);
+            game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().traversible = false;
             char_num++;
         }
 
         //Get Objects
-        /*objects = GameObject.FindGameObjectsWithTag("Object");
+        objects = GameObject.FindGameObjectsWithTag("Object");
         foreach (GameObject game_object in objects)
         {
             tile_objects.Add(game_object);
-        }*/
+        }
 
         foreach (GameObject game_object in characters)
         {
@@ -831,7 +542,10 @@ public class Scenario : MonoBehaviour {
                 character_data = monster_character_data;
             }
             //TODO FIX THIS
-            game_object.GetComponent<Character_Script>().height_offset = (game_object.GetComponent<SpriteRenderer>().sprite.rect.height * game_object.transform.localScale.y / game_object.GetComponent<SpriteRenderer>().sprite.pixelsPerUnit / 2);
+            game_object.GetComponent<Character_Script>().height_offset = (game_object.GetComponent<SpriteRenderer>().sprite.rect.height * 
+                game_object.transform.localScale.y / 
+                game_object.GetComponent<SpriteRenderer>().sprite.pixelsPerUnit / 
+                2);
             float offset = (game_object.GetComponent<Character_Script>().height_offset) / 3.5f;
             game_object.GetComponent<Character_Script>().camera_position_offset = new Vector3(-offset, 0.00f, -offset);
             game_object.GetComponent<Character_Script>().character_name = character_data[game_object.GetComponent<Character_Script>().character_id].character_name;
@@ -852,17 +566,18 @@ public class Scenario : MonoBehaviour {
             game_object.GetComponent<Character_Script>().aura_curr = character_data[game_object.GetComponent<Character_Script>().character_id].aura_curr;
             game_object.GetComponent<Character_Script>().action_max = character_data[game_object.GetComponent<Character_Script>().character_id].action_max;
             game_object.GetComponent<Character_Script>().action_curr = character_data[game_object.GetComponent<Character_Script>().character_id].action_max;
-            game_object.GetComponent<Character_Script>().mana_max = character_data[game_object.GetComponent<Character_Script>().character_id].mana_max;// character_data[game_object.GetComponent<Character_Script>().character_id].action_max;
+            game_object.GetComponent<Character_Script>().mana_max = character_data[game_object.GetComponent<Character_Script>().character_id].mana_max;
             game_object.GetComponent<Character_Script>().mana_curr = character_data[game_object.GetComponent<Character_Script>().character_id].mana_curr;
             game_object.GetComponent<Character_Script>().actions = character_data[game_object.GetComponent<Character_Script>().character_id].actions;
             game_object.GetComponent<Character_Script>().canister_curr = character_data[game_object.GetComponent<Character_Script>().character_id].canister_curr;
             game_object.GetComponent<Character_Script>().state = character_data[game_object.GetComponent<Character_Script>().character_id].state;
+            game_object.GetComponent<Character_Script>().conditions = new Dictionary<Conditions, List<Condition>>();
             game_object.GetComponent<Character_Script>().controller = character_data[game_object.GetComponent<Character_Script>().character_id].controller;
             
             //game_object.GetComponent<Character_Script>().Randomize();
             turn_order.Add(game_object);
         }
-        turn_order.Sort(SortByDex);
+        turn_order.Sort(Sort_By_Dex);
         curr_character_num = characters.Count - 1;
         curr_player = turn_order[curr_character_num];
         curr_player.GetComponent<Animator>().SetBool("Selected", true);
@@ -874,11 +589,14 @@ public class Scenario : MonoBehaviour {
 
 
         //set initial values for selected and clicked tiles.
-        selected_tile = tile_grid.getTiles()[0, 0];
-        clicked_tile = tile_grid.getTiles()[0, 0];
+        selected_tile = tile_grid.tiles[0, 0];
+        clicked_tile = tile_grid.tiles[0, 0];
     }
 
-    public void unloadScenario()
+    /// <summary>
+    /// Function to remove all relevant Scenario Tiles, Objects and Characters. Used for cleaning up and switching between scenarios.
+    /// </summary>
+    public void Unload_Scenario()
     {
         //destroy the old map
         GameObject[] objects = GameObject.FindGameObjectsWithTag("Tile");
@@ -892,21 +610,24 @@ public class Scenario : MonoBehaviour {
             Destroy(game_object);
         }
 
-        tile_grid.tile_prefab.GetComponent<SpriteRenderer>().color = new Color(255f, 255f, 255f, 1f);
-
     }
 
-	// Use this for initialization
-	void Start () {
+    /// <summary>
+    /// Use this for initialization
+    /// </summary>
+    void Start () {
         controller = Game_Controller.controller;
 	}
 
-    public void checkForVictory()
+    /// <summary>
+    /// Function to check if the scenario's victory condition has been met. Called every Update. 
+    /// </summary>
+    public void Check_For_Victory()
     {
         bool victory = true;
 
         //The Goal for Vanquish is to kill all Enemies on the board.
-        if (objective == Objectives.Vanquish)
+        if (objective == Scenario_Objectives.Vanquish)
         {
 
             foreach (GameObject character in characters)
@@ -923,7 +644,10 @@ public class Scenario : MonoBehaviour {
         }
     }
 
-
+    /// <summary>
+    /// Function to update the Cursor Object to match the current Character's current Action's Area of Effect. 
+    /// </summary>
+    /// <param name="selected_tile">The tile on which the Cursor Object is currently.</param>
     public void Update_Cursor(Transform selected_tile)
     {
         if (curr_player.GetComponent<Character_Script>().curr_action != null)
@@ -983,7 +707,7 @@ public class Scenario : MonoBehaviour {
             {
                 cursors[0].transform.position = new Vector3(
                     selected_tile.position.x, 
-                    selected_tile.position.y + 0.025f + Tile_Grid.tile_scale * selected_tile.GetComponent<Tile_Data>().node.height, 
+                    selected_tile.position.y + 0.025f + Tile_Grid.TILE_SCALE * selected_tile.GetComponent<Tile>().height, 
                     selected_tile.position.z);
             }
             else if (curr_player.GetComponent<Character_Script>().curr_action.area.Length > 1)
@@ -992,13 +716,13 @@ public class Scenario : MonoBehaviour {
                 int startY = 0;
                 if (curr_player.GetComponent<Character_Script>().curr_action.center == "Target")
                 {
-                    startX = selected_tile.GetComponent<Tile_Data>().x_index;
-                    startY = selected_tile.GetComponent<Tile_Data>().y_index;
+                    startX = selected_tile.GetComponent<Tile>().index[0];
+                    startY = selected_tile.GetComponent<Tile>().index[1];
                 }
                 else if (curr_player.GetComponent<Character_Script>().curr_action.center == "Self")
                 {
-                    startX = curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().x_index;
-                    startY = curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().y_index;
+                    startX = curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[0];
+                    startY = curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[1];
                 }
                 startX -= area_width / 2;
                 startY -= area_length / 2;
@@ -1014,7 +738,7 @@ public class Scenario : MonoBehaviour {
                             {
                                 cursors[curs_index].transform.position = new Vector3(
                                     tile.position.x, 
-                                    tile.position.y + 0.025f + Tile_Grid.tile_scale * tile.GetComponent<Tile_Data>().node.height, 
+                                    tile.position.y + 0.025f + Tile_Grid.TILE_SCALE * tile.GetComponent<Tile>().height, 
                                     tile.position.z);
                                 curs_index++;
                             }
@@ -1032,20 +756,24 @@ public class Scenario : MonoBehaviour {
             {
                 cursors[0].transform.position = new Vector3(
                     selected_tile.position.x, 
-                    selected_tile.position.y + 0.025f + Tile_Grid.tile_scale * selected_tile.GetComponent<Tile_Data>().node.height, 
+                    selected_tile.position.y + 0.025f + Tile_Grid.TILE_SCALE * selected_tile.GetComponent<Tile>().height, 
                     selected_tile.position.z);
             }
         }
     }
 
-	// Update is called once per frame
+	/// <summary>
+    /// Called once per frame to:
+    ///     Check for victory.
+    ///     Update all Characters.
+    /// </summary>
 	public void Update () {
         if (scenario_id == controller.curr_scenario.scenario_id)
         {
             //if we are on this scenario and the current player has been assigned (scenario is active)
             if (curr_player != null)
             {
-                checkForVictory();
+                Check_For_Victory();
             }
 
             //update all characters
@@ -1061,14 +789,20 @@ public class Scenario : MonoBehaviour {
         }         
     }
 
-    public void FindReachable(int cost_limit, int distance_limit)
+    /// <summary>
+    /// Function to find all tiles within a certain distance and/or travel cost to the current player. 
+    /// Adds tiles to the reachable_tiles List if they are reachable. 
+    /// </summary>
+    /// <param name="cost_limit">The limit in cost for traversal. </param>
+    /// <param name="distance_limit">The limit in distance (number of tiles away) for traversal. </param>
+    public void Find_Reachable(int cost_limit, int distance_limit)
     {
         //Debug.Log("cost limit: " + cost_limit + "; distance limit: " + distance_limit);
-        tile_grid.navmesh.bfs(curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().node, cost_limit, distance_limit);
+        tile_grid.navmesh.bfs(curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>(), cost_limit, distance_limit);
 
         reachable_tiles = new List<Transform>();
-        int x_index = curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().x_index;
-        int y_index = curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().y_index;
+        int x_index = curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[0];
+        int y_index = curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[1];
         int i = -distance_limit;
         int j = -distance_limit;
         while (i <= distance_limit)
@@ -1079,27 +813,27 @@ public class Scenario : MonoBehaviour {
                 {
                     if (y_index + j >= 0 && y_index + j < tile_grid.grid_length)
                     {
-                        int h = tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile_Data>().node.height - 1;
+                        int h = tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().height - 1;
                         if (Mathf.Abs(i) + Mathf.Abs(j) <= curr_player.GetComponent<Character_Script>().speed)
                         {
-                            if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Moving )
+                            if (curr_player.GetComponent<Character_Script>().state == Character_States.Moving )
                             {
-                                //if (grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile_Data>().traversible){
-                                //    if ((Math.Abs(x_index - (x_index + i)) * (int)(armor.weight + weapon.weight) + Math.Abs(y_index - (y_index + j)) * (int)(armor.weight + weapon.weight) + (grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile_Data>().tile_height - curr_tile.GetComponent<Tile_Data>().tile_height) * 2) < action_curr)
+                                //if (grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().traversible){
+                                //    if ((Math.Abs(x_index - (x_index + i)) * (int)(armor.weight + weapon.weight) + Math.Abs(y_index - (y_index + j)) * (int)(armor.weight + weapon.weight) + (grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().tile_height - curr_tile.GetComponent<Tile>().tile_height) * 2) < action_curr)
                                 //    {
                                 //        reachable_tiles.Add(grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j));
                                 //    }
                                 //}
-                                if (tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile_Data>().node.weight <= curr_player.GetComponent<Character_Script>().speed &&
-                                    tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile_Data>().node.weight > 0 &&
-                                    tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile_Data>().node.distance <= distance_limit)
+                                if (tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight <= curr_player.GetComponent<Character_Script>().speed &&
+                                    tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight > 0 &&
+                                    tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().distance <= distance_limit)
                                 {
                                     reachable_tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
                                 }
                             }
-                            if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Blinking)
+                            if (curr_player.GetComponent<Character_Script>().state == Character_States.Blinking)
                             {
-                                if (tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile_Data>().node.traversible)
+                                if (tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().traversible)
                                 {
                                     if ((Math.Abs(x_index - (x_index + i)) + Math.Abs(y_index - (y_index + j))) < curr_player.GetComponent<Character_Script>().speed)
                                     {
@@ -1107,7 +841,7 @@ public class Scenario : MonoBehaviour {
                                     }
                                 }
                             }
-                            if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Attacking)
+                            if (curr_player.GetComponent<Character_Script>().state == Character_States.Attacking)
                             {
                                 //print ("scanned x index: " + x_index + i )
                                 //Prevent Self-Harm
@@ -1127,30 +861,36 @@ public class Scenario : MonoBehaviour {
         }
     }
 
-    public void ResetReachable()
+    /// <summary>
+    /// Empties the reachable_tiles array. Used when a character changes Action or their turn ends.
+    /// </summary>
+    public void Reset_Reachable()
     {
         foreach (Transform t in reachable_tiles)
         {
-            t.GetComponent<Tile_Data>().node.weight = -1;
-            t.GetComponent<Tile_Data>().node.parent = null;
+            t.GetComponent<Tile>().weight = -1;
+            t.GetComponent<Tile>().parent = null;
         }
         reachable_tiles = new List<Transform>();
-        CleanReachable();
+        Clean_Reachable();
     }
 
-    public void MarkReachable()
+    /// <summary>
+    /// Marks all Tiles in the reachable_tiles array with a reachable_tile_prefab object to show that it can be reached by the current Action.
+    /// </summary>
+    public void Mark_Reachable()
     {
         reachable_tile_objects = new List<GameObject>();
         foreach (Transform tile in reachable_tiles)
         {
             //tile_grid.reachable_prefab.GetComponent<SpriteRenderer>().sortingOrder = tile.GetComponent<SpriteRenderer>().sortingOrder;
-            if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Moving || curr_player.GetComponent<Character_Script>().state == Character_Script.States.Blinking)
+            if (curr_player.GetComponent<Character_Script>().state == Character_States.Moving || curr_player.GetComponent<Character_Script>().state == Character_States.Blinking)
             {
                 //Set Material to blue
                 //Debug.Log(tile_grid.reachable_prefab.GetComponent<Material>().name);
                 tile_grid.reachable_prefab.GetComponent<Renderer>().sharedMaterial.color = new Color(0, 0, 255);
             }
-            if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Attacking)
+            if (curr_player.GetComponent<Character_Script>().state == Character_States.Attacking)
             {
                 //set material to red.
                 //tile_grid.reachable_prefab.GetComponent<Renderer>().sharedMaterial.color = new Color(0, 255, 0);
@@ -1158,7 +898,7 @@ public class Scenario : MonoBehaviour {
             reachable_tile_objects.Add((GameObject)Instantiate(tile_grid.reachable_prefab, new Vector3(tile.position.x,
                                                            //tile.position.y+0.08f,
                                                            //(float)(tile.position.y + (tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) - .24f,
-                                                           tile.position.y+.015f+ Tile_Grid.tile_scale * tile.GetComponent<Tile_Data>().node.height,
+                                                           tile.position.y+.015f+ Tile_Grid.TILE_SCALE * tile.GetComponent<Tile>().height,
                                                            tile.position.z),
                                                            Quaternion.identity));
 
@@ -1168,7 +908,10 @@ public class Scenario : MonoBehaviour {
 
     }
 
-    public void CleanReachable()
+    /// <summary>
+    /// Removes all reachable_tile_prefab Objects from the board. Removes the effects of MarkReachable().
+    /// </summary>
+    public void Clean_Reachable()
     {
         //GameObject[] objects = GameObject.FindGameObjectsWithTag("Reachable");
         foreach (GameObject game_object in reachable_tile_objects)
@@ -1179,7 +922,10 @@ public class Scenario : MonoBehaviour {
         reachable_tile_objects = new List<GameObject>();
     }
 
-    public void NextPlayer()
+    /// <summary>
+    /// Move the curr_player to the next available player in the turn_order. Turn_order is sorted in order of Dexterity.
+    /// </summary>
+    public void Next_Player()
     {
         curr_character_num = curr_character_num - 1;
         if (curr_character_num < 0)
@@ -1192,9 +938,9 @@ public class Scenario : MonoBehaviour {
         }
         curr_player.GetComponent<Animator>().SetBool("Selected", false);
         curr_player = turn_order[curr_character_num];
-        if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Dead)
+        if (curr_player.GetComponent<Character_Script>().state == Character_States.Dead)
         {
-            NextPlayer();
+            Next_Player();
         }
         else
         {
@@ -1203,21 +949,16 @@ public class Scenario : MonoBehaviour {
         //curr_player.GetComponent<Character_Script>().state = Character_Script.States.Moving;
         //FindReachable(curr_player.GetComponent<Character_Script>().action_curr, curr_player.GetComponent<Character_Script>().SPEED);
 
-        CleanReachable();
+        Clean_Reachable();
 
-        //MarkReachable();
-        //curr_player.GetComponent<Character_Script>().FindReachable(tile_grid);
-        //CleanReachable();
-        controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
-        curr_player.GetComponent<Character_Script>().Find_Action("Move").Select(curr_player.GetComponent<Character_Script>());
-        //MarkReachable ();
-
-        //Center camera on player
-        Camera.main.GetComponent<Camera_Controller>().PanTo(curr_player.transform.position - Camera.main.transform.forward * 35);
-
+        //Start new player's turn
+        curr_player.GetComponent<Character_Script>().Start_Turn();
     }
 
-    public void PrevPlayer()
+    /// <summary>
+    /// Move the curr_player to the previous available character in the turn_order. Turn_order is sorted in order of Dexterity.
+    /// </summary>
+    public void Prev_Player()
     {
         curr_character_num = curr_character_num + 1;
         if (curr_character_num >= characters.Count)
@@ -1227,54 +968,31 @@ public class Scenario : MonoBehaviour {
 
         curr_player.GetComponent<Animator>().SetBool("Selected", false);
         curr_player = turn_order[curr_character_num];
-        if (curr_player.GetComponent<Character_Script>().state == Character_Script.States.Dead)
+        if (curr_player.GetComponent<Character_Script>().state == Character_States.Dead)
         {
-            PrevPlayer();
+            Prev_Player();
         }
         else
         {
             curr_player.GetComponent<Animator>().SetBool("Selected", true);
         }
 
-        CleanReachable();
+        Clean_Reachable();
 
-        controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
-        curr_player.GetComponent<Character_Script>().Find_Action("Move").Select(curr_player.GetComponent<Character_Script>());
-        //MarkReachable ();
-
-        //Center camera on player
-        Camera.main.GetComponent<Camera_Controller>().PanTo(curr_player.transform.position - Camera.main.transform.forward * 35);
+        //Start the new player's turn
+        curr_player.GetComponent<Character_Script>().Start_Turn();
     }
 
-    public void NextRound()
+    /// <summary>
+    /// Used to end the current round and start a new round. 
+    /// Increments the curr_round tracker.
+    /// </summary>
+    public void Next_Round()
     {
         curr_round += 1;
         foreach (GameObject game_object in characters)
         {
-            /*if (turn_order.Count > 0)
-            {
-                foreach (GameObject obj in turn_order)
-                {
-                    if (game_object.GetComponent<Character_Script>().dexterity > obj.GetComponent<Character_Script>().dexterity)
-                    {
-                        turn_order.Add(gameObject);
-                    }
-                    if (game_object.GetComponent<Character_Script>().dexterity == obj.GetComponent<Character_Script>().dexterity)
-                    {
-                        if (game_object.GetComponent<Character_Script>().character_num > obj.GetComponent<Character_Script>().character_num)
-                        {
-                            turn_order.Add(gameObject);
-                        }
-                        else
-                        {
-                            int index = turn_order.IndexOf(obj);
-                            turn_order.Insert(index, gameObject);
-                            turn_order.Insert(index + 1, obj);
-                        }
-                    }
-                }
-            }
-            else turn_order.Add(gameObject);*/
+            
         }
     }
 }

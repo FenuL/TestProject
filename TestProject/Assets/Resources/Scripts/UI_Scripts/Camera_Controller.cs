@@ -1,23 +1,41 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+/// <summary>
+/// Script to Control the Camera. 
+/// </summary>
 public class Camera_Controller : MonoBehaviour {
 
-    int HOR_BORDER = 40;
-    int VER_BORDER = 10;
-	float HOR_SPD = .2f;
-	float VER_SPD = .4f;
-    int CAMERA_HEIGHT = 20;
-    float CAMERA_TURN_SPEED = 4;
+    /// <summary>
+    /// Constants:
+    /// int HOR_BORDER - The Horizontal Border that if crossed will start scrolling the Camera Horizontally. 
+    /// int VER_BORDER  - The Vertical Border that if crossed will start scrolling the Camera vertically. 
+    /// float HOR_SPD - The speed at which the Camera moves horizontally. 
+    /// float VER_SPD - The speed at which the Camera moves Vertically. 
+    /// int CAMERA_HEIGHT - how far away the Camera is from the board. 
+    /// float CAMERA_TURN_SPEED - how fast the camera turns when you press Q or E.
+    /// </summary>
+    private int HOR_BORDER = 40;
+    private int VER_BORDER = 10;
+	private float HOR_SPD = .2f;
+	private float VER_SPD = .4f;
+    private int CAMERA_HEIGHT = 20;
+    private float CAMERA_TURN_SPEED = 4;
     public float rotationAmount = 0;
     public bool rotating;
     GUIStyle style;
 
-    Character_Script curr_player;
-    Character_Script highlighted_player;
+    private Character_Script curr_player;
+    private Character_Script highlighted_player;
 
     Game_Controller controller;// = Game_Controller.controller;
 
+    /// <summary>
+    /// Displays the GUI for the player. 
+    /// Creates:
+    ///     Prev and Next Buttons.
+    ///     Stat Screen and Preview Screen.
+    /// </summary>
 	void OnGUI(){
         style = new GUIStyle("TextArea");
         style.richText = true;
@@ -29,10 +47,10 @@ public class Camera_Controller : MonoBehaviour {
 			Game_Controller.controller.Save();
 		}*/
         if (GUI.Button (new Rect (10, Screen.height-160, 50, 30), "Prev")) {
-			Game_Controller.controller.curr_scenario.PrevPlayer();
+			Game_Controller.controller.curr_scenario.Prev_Player();
 		}
 		if (GUI.Button (new Rect (70, Screen.height-160, 50, 30), "Next")) {
-			Game_Controller.controller.curr_scenario.NextPlayer();
+			Game_Controller.controller.curr_scenario.Next_Player();
 		}
 
         //print (controller.curr_scenario.curr_player.GetComponent<Character_Script> ().character_name);
@@ -69,18 +87,16 @@ public class Camera_Controller : MonoBehaviour {
                   "Dex: " + curr_player.dexterity + "   Vit: " + curr_player.vitality + "   Spd: " + curr_player.speed + "\n" +
                   "Wep: " + curr_player.weapon.name + "   Armor: " + curr_player.armor.name,style);
             }
-                
-
             if (controller.curr_scenario.highlighted_player != null)
             {
                 highlighted_player = controller.curr_scenario.highlighted_player.GetComponent<Character_Script>();
                 if (curr_player.curr_action != null)
                 {
-                    foreach (Character_Script.Effect eff in curr_player.curr_action.target_effect)
+                    foreach (Action_Effect eff in curr_player.curr_action.target_effect)
                     {
                         if (eff.type.ToString() == "Damage")
                         {
-                            int damage_dealt = Character_Script.Calculate_Damage(curr_player.curr_action.Convert_To_Double(eff.value[0], curr_player), highlighted_player.gameObject);
+                            int damage_dealt = Action.Calculate_Damage(curr_player.curr_action.Convert_To_Double(eff.value[0], curr_player), highlighted_player.gameObject);
                             int new_aura = highlighted_player.aura_curr - damage_dealt;
                             if (new_aura < 0)
                             {
@@ -121,16 +137,16 @@ public class Camera_Controller : MonoBehaviour {
                               "Wep: " + highlighted_player.weapon.name + "   Armor: " + highlighted_player.armor.name,style);
                         }
                     }
-                }
-
-                
+                }   
             }
         }
-
-
-
     }
 
+    /// <summary>
+    /// Coroutine for panning the Camera to a new Target
+    /// </summary>
+    /// <param name="endPos">The end positon for the Camera. Typically a Character's position</param>
+    /// <returns>The progress of the Coroutine.</returns>
     public IEnumerator Pan(Vector3 endPos)
     {
         float elapsedTime = 0;
@@ -144,19 +160,30 @@ public class Camera_Controller : MonoBehaviour {
         }
     }
 
+    /// <summary>
+    /// Function to invoke the Pan() Coroutine from a different class. 
+    /// </summary>
+    /// <param name="endPos">The desired end position of the Camera. Typically a Character's position. </param>
     public void PanTo(Vector3 endPos)
     {
         StartCoroutine(Pan(endPos));
     }
 
-	// Use this for initialization
+    /// <summary>
+    /// Use this for initialization
+    /// </summary>
 	void Start () {
 		//Screen.SetResolution(resolution_x, resolution_y, true);
 		controller = Game_Controller.controller;
         rotating = false;
     }
 
-	// Update is called once per frame
+    /// <summary>
+    /// Update is called once per frame
+    /// Checks the Mouse Position is inside the screen borders. 
+    /// Checks for input to Scroll the Camera.
+    /// Handles turning the Camera.
+    /// </summary>
 	void Update () {
         //check mouse position and scroll camera if necessary
         //transform.Translate(horizontal_speed* Input.GetAxis("Mouse Y"),vertical_speed* Input.GetAxis("Mouse X"),0);

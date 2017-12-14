@@ -5,21 +5,46 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
+/// <summary>
+/// Script for handling the Action Menu for Characters.
+/// </summary>
 public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
 
+    /// <summary>
+    /// RectTransform container - The Transform containing the Action Menu
+    /// Game_Controller controller - The Game Controller with the information about the game. 
+    /// List<Transform> buttons - The list of buttons in the Action Menu
+    /// bool isOpen - If the Action Menu is open or not. 
+    /// </summary>
     public RectTransform container;
-    public Game_Controller controller { get; set; }
     public List<Transform> buttons;
-    public bool isOpen;
+    public Game_Controller controller { get; private set; }
+    public bool isOpen { get; private set; }
 
+    /// <summary>
+    /// Opens the Action Menu when the Mouse enters it. 
+    /// </summary>
+    /// <param name="eventData">The position of the Mouse.</param>
     public void OnPointerEnter(PointerEventData eventData)
     {
         isOpen = true;
     }
 
+    /// <summary>
+    /// Closes the Action Menu when the Mouse exits it. 
+    /// </summary>
+    /// <param name="eventData">The position of the Mouse</param>
     public void OnPointerExit(PointerEventData eventData)
     {
         isOpen = false;
+    }
+
+    /// <summary>
+    /// Used by the Game Controller to Start the Action Menu early.
+    /// </summary>
+    public void Initialize()
+    {
+        Start();
     }
 
     // Use this for initialization
@@ -30,9 +55,12 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
         isOpen = false;
         this.GetComponent<RectTransform>().position = new Vector3(Screen.width/2,20,0);
 	}
-	
-	// Update is called once per frame
-	void Update ()
+
+    /// <summary>
+    /// Update is called once per frame.
+    /// Checks if the menu is Open and adjusts the scale of the Menu accordingly. 
+    /// </summary>
+    void Update ()
     {
         //transform.position = new Vector3(controller.curr_player.transform.position.x, controller.curr_player.transform.position.y, controller.curr_player.transform.position.z);
 
@@ -50,6 +78,10 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
         }
     }
 
+    /// <summary>
+    /// Resets the Action Menu. 
+    /// Called when the player switches and we need to load a new set of Actions in the menu.
+    /// </summary>
     public void resetActions()
     {
         int button_num  = 0;
@@ -61,7 +93,7 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
         //Center the action menu based on available actions
         container.GetComponent<RectTransform>().position = new Vector3(Screen.width/2+200 - 50f* controller.curr_scenario.curr_player.GetComponent<Character_Script>().actions.Count/2, this.GetComponent<RectTransform>().position.y+15, 0);
 
-        foreach (Character_Script.Action a in controller.curr_scenario.curr_player.GetComponent<Character_Script>().actions)
+        foreach (Action a in controller.curr_scenario.curr_player.GetComponent<Character_Script>().actions)
         {
             button = container.GetComponent<RectTransform>().GetChild(x);
             buttons.Add(button);

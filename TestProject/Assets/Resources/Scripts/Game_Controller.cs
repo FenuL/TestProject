@@ -5,21 +5,36 @@ using System;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 
+/// <summary>
+/// Game Controller class. Handles overarching Game processes. 
+/// </summary>
 public class Game_Controller : MonoBehaviour {
+    /// <summary>
+    /// string STARTING_SCENARIO - the Scenario to load at the start of the game.
+    /// Game_Controller controller - Controller. Makes sure there is only one copy of this.
+    /// GameObject canvas - The Canvas to draw the UI on.
+    /// Scenario curr_scenario - The current Scenario that is Loaded.
+    /// ArrayList avail_Scenarios - The Array of currently available Scenarios.
+    /// GameObject main_camera - The Main camera object.
+    /// List<Actions> all_actions - The list of all possible Actions created by parsing the Action List File. 
+    /// Transform action_menu - the Action Menu used to select different Character Actions. 
+    /// </summary>
     public static string STARTING_SCENARIO = "Assets/Resources/Maps/tile_map.txt";
     //public static string STARTING_SCENARIO = "Assets/Resources/Maps/falls_map.txt";
 
     public static Game_Controller controller;
     public static FloatingText popup;
     public static GameObject canvas;
-    public Scenario curr_scenario;
+    public Scenario curr_scenario { get; private set; }
     public ArrayList avail_scenarios;
     public GameObject main_camera;
-    public List<Character_Script.Action> all_actions { get; set; }
-    public IList<int> keys;
+    public List<Action> all_actions { get; private set; }
     public Transform action_menu;
-	public bool initialized = false;
 
+    /// <summary>
+    /// Save the Current Game Status.
+    /// TODO: UPDATE THIS TO CURRENT STANDARDS
+    /// </summary>
 	public void Save(){
 		BinaryFormatter formatter = new BinaryFormatter ();
 		FileStream file = File.Create (Application.persistentDataPath + "/game_data.dat");
@@ -42,6 +57,10 @@ public class Game_Controller : MonoBehaviour {
 
 	}
 
+    /// <summary>
+    /// Load an existing game Save.
+    /// TODO: UPDATE THIS TO CURRENT STANDARDS
+    /// </summary>
 	public void Load(){
 		if (File.Exists (Application.persistentDataPath + "/game_data.dat")) {
 			BinaryFormatter formatter = new BinaryFormatter();
@@ -65,6 +84,9 @@ public class Game_Controller : MonoBehaviour {
 		}
 	}
 
+    /// <summary>
+    /// Ran before a Start Method. Ensures there is only ever one Game_Controller.
+    /// </summary>
 	void Awake (){
 		if (controller == null) {
 			DontDestroyOnLoad (gameObject);
@@ -74,38 +96,57 @@ public class Game_Controller : MonoBehaviour {
 		}
 	}
 
-	// Use this for initialization
+    /// <summary>
+    /// Used for initialization.
+    /// Finds the Canvas to draw the UI text on.
+    /// Finds the Main Camera.
+    /// Sets up the Action Menu
+    /// Loads the first Scenario.
+    /// </summary>
 	void Start () {
         canvas = GameObject.Find("Canvas");
         popup = Resources.Load<FloatingText>("Prefabs/Object Prefabs/PopupTextParent");
         main_camera = GameObject.FindGameObjectWithTag("MainCamera");
-        all_actions = Character_Script.Action.Load_Actions();
+        all_actions = Action.Load_Actions();
         curr_scenario = new Scenario(STARTING_SCENARIO);
         avail_scenarios = new ArrayList();
         avail_scenarios.Add(curr_scenario);
-        curr_scenario.LoadScenario();
-        action_menu.GetComponent<Action_Menu_Script>().controller = this;
-        action_menu.GetComponent<Action_Menu_Script>().isOpen = false;
+        curr_scenario.Load_Scenario();
+        action_menu.GetComponent<Action_Menu_Script>().Initialize();
         action_menu.GetComponent<Action_Menu_Script>().resetActions();
         //MarkReachable ();
     }
 	
+    /// <summary>
+    /// Creates Floating Text from the FloatingText prefab at a specified location.
+    /// </summary>
+    /// <param name="text">The text to display. </param>
+    /// <param name="location">The location to display the text. </param>
     public static void CreateFloatingText(string text, Transform location)
     {
         FloatingText instance = Instantiate(popup);
-        Vector2 screen_position = Camera.main.WorldToScreenPoint(new Vector3(location.position.x + UnityEngine.Random.Range(-.5f, .5f), location.position.y + UnityEngine.Random.Range(1.5f,1.7f), location.position.z));
+        Vector2 screen_position = Camera.main.WorldToScreenPoint(new Vector3(location.position.x + UnityEngine.Random.Range(-.5f, .5f),
+            location.position.y + UnityEngine.Random.Range(1.5f,1.7f), location.position.z));
         instance.transform.SetParent(canvas.transform, false);
         instance.transform.position = screen_position;
         instance.SetText(text);
     }
 
-	// Update is called once per frame
-	void Update () {
+    /// <summary>
+    /// Called once per frame to update the Game.
+    /// Updates the Scenario.
+    /// Checks for Input
+    /// Checks Mouse Poistion
+    /// </summary>
+    void Update () {
         curr_scenario.Update();
         Read_Input();
         checkMousePos();
     }
 
+    /// <summary>
+    /// Reads Player Input.
+    /// </summary>
     void Read_Input()
     {
         //map selection
@@ -113,15 +154,15 @@ public class Game_Controller : MonoBehaviour {
         {
             if (curr_scenario.scenario_file == "Assets/Resources/Maps/falls_map.txt")
             {
-                curr_scenario.unloadScenario();
+                curr_scenario.Unload_Scenario();
                 curr_scenario = new Scenario("Assets/Maps/tile_map.txt");
-                curr_scenario.LoadScenario();
+                curr_scenario.Load_Scenario();
             }
             else if (curr_scenario.scenario_file == "Assets/Resources/Maps/tile_map.txt")
             {
-                curr_scenario.unloadScenario();
+                curr_scenario.Unload_Scenario();
                 curr_scenario = new Scenario("Assets/Maps/falls_map.txt");
-                curr_scenario.LoadScenario();
+                curr_scenario.Load_Scenario();
             }
         }
 
@@ -202,18 +243,16 @@ public class Game_Controller : MonoBehaviour {
             if (Input.GetKeyDown("k"))
             {
                 character.Die();
-                curr_scenario.NextPlayer();
+                curr_scenario.Next_Player();
             }
-
-
 
             //check for mouse clicks
             if (Input.GetMouseButtonDown(0))
             {
                 //cursor.GetComponent<Animator>().SetBool("Clicked", true);
                 curr_scenario.clicked_tile = curr_scenario.selected_tile;
-                if ((character.state != Character_Script.States.Idle ||
-                    character.state != Character_Script.States.Dead) &&
+                if ((character.state != Character_States.Idle ||
+                    character.state != Character_States.Dead) &&
                     !action_menu.GetComponent<Action_Menu_Script>().isOpen)
                 {
                     foreach (Transform tile in curr_scenario.reachable_tiles)
@@ -237,18 +276,18 @@ public class Game_Controller : MonoBehaviour {
         //Next player button
         if (Input.GetKeyDown(KeyCode.RightArrow))
         {
-            curr_scenario.NextPlayer();
+            curr_scenario.Next_Player();
         }
 
         //Prev player button
         if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
-            curr_scenario.PrevPlayer();
+            curr_scenario.Prev_Player();
         }
 
         //Camera Turning
         //Debug.Log(curr_scenario.curr_player.GetComponent<Character_Script>().state);
-        if (Input.GetKeyDown(KeyCode.Q) && curr_scenario.curr_player.GetComponent<Character_Script>().state != Character_Script.States.Walking)
+        if (Input.GetKeyDown(KeyCode.Q) && curr_scenario.curr_player.GetComponent<Character_Script>().state != Character_States.Walking)
         {
             //Debug.Log("x:" + main_camera.transform.rotation.x + ", y:" + main_camera.transform.rotation.y + "z:" + main_camera.transform.rotation.z + ", w:" + main_camera.transform.rotation.w);
 
@@ -274,7 +313,7 @@ public class Game_Controller : MonoBehaviour {
             //Debug.Log(curr_scenario.curr_player.GetComponent<Character_Script>().orientation);
             
         }
-        if (Input.GetKeyDown(KeyCode.E) && curr_scenario.curr_player.GetComponent<Character_Script>().state != Character_Script.States.Walking)
+        if (Input.GetKeyDown(KeyCode.E) && curr_scenario.curr_player.GetComponent<Character_Script>().state != Character_States.Walking)
         {
             //Debug.Log("x:" + main_camera.transform.rotation.x + ", y:" + main_camera.transform.rotation.y + "z:" + main_camera.transform.rotation.z + ", w:" + main_camera.transform.rotation.w);
             //transform.rotation = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w);
@@ -296,10 +335,11 @@ public class Game_Controller : MonoBehaviour {
             //Debug.Log(curr_scenario.curr_player.GetComponent<Character_Script>().orientation);
             
         }
-        
-
     }
 
+    /// <summary>
+    /// Checks the Mouse position and gives a Tile if the mouse is hovering over it.
+    /// </summary>
     public void checkMousePos()
     {
         //create a ray at the mouse position, point it towards the grid. See if it hits a collider.
@@ -309,16 +349,19 @@ public class Game_Controller : MonoBehaviour {
         //hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
         if (Physics.Raycast(ray, out hit, 100))
         {
-            Tile_Data tile_data = hit.transform.GetComponent<Tile_Data>();
+            Tile tile_data = hit.transform.GetComponent<Tile>();
             if (tile_data != null)
             {
+                //tile_data.printTileData();
                 //If the tile is not traversible we know it is occupied, check for a character there
                 //this is done to print stats of the current highlighted character
-                if (!tile_data.node.traversible)
+                if (!tile_data.traversible)
                 {
                     foreach (GameObject character in curr_scenario.characters)
                     {
-                        if (character != null && character.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().x_index == tile_data.x_index && character.GetComponent<Character_Script>().curr_tile.GetComponent<Tile_Data>().y_index == tile_data.y_index)
+                        if (character != null && 
+                            character.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[0] == tile_data.index[0] && 
+                            character.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[1] == tile_data.index[1])
                         {
                             curr_scenario.highlighted_player = character;
                         }
@@ -336,18 +379,11 @@ public class Game_Controller : MonoBehaviour {
         }
     }
 
-    void Initialize(){
-
-    }
-
-
-
-
-
 }
 
-
-
+/// <summary>
+/// Used for Saving and Loading the Game. 
+/// </summary>
 [Serializable]
 class GameData
 {
@@ -357,7 +393,7 @@ class GameData
 	public GameObject curr_player;
 	public GameObject cursor;
 	public GameObject tile_grid;
-	public Tile_Data tile_data;
+	public Tile tile_data;
 	public Transform[,] tiles;
 	public Transform clicked_tile;
 	public Transform selected_tile;
