@@ -96,7 +96,8 @@ public class Camera_Controller : MonoBehaviour {
                     {
                         if (eff.type.ToString() == "Damage")
                         {
-                            int damage_dealt = Action.Calculate_Damage(curr_player.curr_action.Convert_To_Double(eff.value[0], curr_player), highlighted_player.gameObject);
+                            //TODO: This is inaccurate because it doesn't take into account the target modifier.
+                            int damage_dealt = highlighted_player.Estimate_Damage(curr_player.curr_action.Convert_To_Double(eff.value[0], curr_player), curr_player.weapon.armor_pierce);
                             int new_aura = highlighted_player.aura_curr - damage_dealt;
                             if (new_aura < 0)
                             {

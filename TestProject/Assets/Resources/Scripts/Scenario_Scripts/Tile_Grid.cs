@@ -12,6 +12,7 @@ public class Tile_Grid : ScriptableObject
     ///     static string OBJECT_SPRITESHEET_FILE - The spritesheet used to draw objects.
     ///     static string OBJECT_PREFAB_SRC - The source for the prefab used to create Objects.
     ///     static string REACHABLE_PREFAB_SRC - The source for the prefab used to dentote what tiles are reachable. 
+    ///     static string CHARACTER_PREFAB_SRC - The source for the prefab used to create Characters.
     /// 
     ///     Grid size restriction in number of tiles:
     ///     static int MAX_WIDTH - The maximum number of columns in the tile grid.
@@ -32,6 +33,7 @@ public class Tile_Grid : ScriptableObject
     ///     Prefabs:
     ///     object_prefab - Used to generate the Objects on top of the Tiles.
     ///     reachable_prefab - Used to generate the Reachable Tile Indicators.
+    ///     character_prefab - Used to generate Characters on top of the Tiles. 
     ///     
     ///     Spritesheets:
     ///     Sprite[] object_sprite_sheet - used to draw Objects on the tile grid. 
@@ -51,6 +53,7 @@ public class Tile_Grid : ScriptableObject
     //File Locations
     private static string OBJECT_SPRITESHEET_FILE = "Sprites/Object Sprites/object_spritesheet_transparent";
     private static string OBJECT_PREFAB_SRC = "Prefabs/Object Prefabs/object_prefab";
+    private static string CHARACTER_PREFAB_SRC = "Prefabs/Character_Prefab/Character_Prefab";
     private static string REACHABLE_PREFAB_SRC = "Prefabs/Tile Prefabs/Reachable";
     //Grid size restriction in number of tiles
     private static int MAX_WIDTH = 40;
@@ -78,6 +81,7 @@ public class Tile_Grid : ScriptableObject
     //Prefabs
     public GameObject object_prefab { get; private set; }
     public GameObject reachable_prefab { get; private set; }
+    public GameObject character_prefab { get; private set; }
 
     //Spritesheets
     Sprite[] object_sprite_sheet;
@@ -88,7 +92,7 @@ public class Tile_Grid : ScriptableObject
     private double[] modifiers;
     public int[,] tile_mat_ids { get; private set; }
     public int[,] object_sprite_ids { get; private set; }
-    public int[,] character_sprite_ids { get; private set; }
+    public int[,] character_ids { get; private set; }
     public int[,] tile_heights { get; private set; }
     public Transform[,] tiles { get; private set; }
     public Graph navmesh { get; private set; }
@@ -103,11 +107,12 @@ public class Tile_Grid : ScriptableObject
     /// <param name="new_tile_mat_ids">The IDs for the tile types.</param>
     /// <param name="new_object_sprite_ids">The ids for objects to put on the Tile Grid.</param>
     /// <param name="new_character_sprite_ids">The ids for Character sprites to put on the Tile Grid.</param>
-    public Tile_Grid(int width, int length, Material[] new_materials, double[] new_modifiers, int[,] new_tile_mat_ids, int[,] new_object_sprite_ids, int[,] new_character_sprite_ids)
+    public Tile_Grid(int width, int length, Material[] new_materials, double[] new_modifiers, int[,] new_tile_mat_ids, int[,] new_object_sprite_ids, int[,] new_character_ids)
     {
         //Load the prefabs
         object_prefab = Resources.Load(OBJECT_PREFAB_SRC, typeof(GameObject)) as GameObject;
         reachable_prefab = Resources.Load(REACHABLE_PREFAB_SRC, typeof(GameObject)) as GameObject;
+        character_prefab = Resources.Load(CHARACTER_PREFAB_SRC, typeof(GameObject)) as GameObject;
 
         //Load the spritesheets
         object_sprite_sheet = Resources.LoadAll<Sprite>(OBJECT_SPRITESHEET_FILE);
@@ -119,7 +124,7 @@ public class Tile_Grid : ScriptableObject
         materials = new_materials;
         tile_mat_ids = new_tile_mat_ids;
         object_sprite_ids = new_object_sprite_ids;
-        character_sprite_ids = new_character_sprite_ids;
+        character_ids = new_character_ids;
         tile_heights = new int[width, length];
         for (int x = 0; x < width; x++)
         {
@@ -279,7 +284,11 @@ public class Tile_Grid : ScriptableObject
                 float NEWTILELENGTH = 1.5f;
                 float NEWSCALE = 2f;
                 //GameObject instance = ((GameObject)Instantiate(tile3d, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity));
-                GameObject instance = ((GameObject)Instantiate(tile3d, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y), (float)(NEWSTARTY), (float)(NEWSTARTZ - NEWTILELENGTH * x)), Quaternion.identity));
+                GameObject instance = ((GameObject)Instantiate(tile3d, 
+                    new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y), 
+                        (float)(NEWSTARTY), 
+                        (float)(NEWSTARTZ - NEWTILELENGTH * x)), 
+                    Quaternion.identity));
                 instance.transform.localScale = new Vector3(tile_scale, tile_scale, tile_scale);
 
                 //Add a collider to the tile (TEMPORARY)
@@ -310,6 +319,35 @@ public class Tile_Grid : ScriptableObject
                 if (y > 0)
                 {
                     tiles[x, y].GetComponent<Tile>().addEdge(tiles[x, y - 1].GetComponent<Tile>(), 0);
+                }
+
+                //Create Characters on top of tiles
+                if (character_ids[x, y] != 0)
+                {
+
+                    //Calculate offsets
+                    float height_offset = (character_prefab.GetComponent<SpriteRenderer>().sprite.rect.height *
+                        character_prefab.transform.localScale.y /
+                        character_prefab.GetComponent<SpriteRenderer>().sprite.pixelsPerUnit /
+                        2);
+                    float offset = (height_offset) / 3.5f;
+
+                    //Instantiate the prefab
+                    GameObject character = ((GameObject)Instantiate(character_prefab,
+                        new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y),
+                            (float)(NEWSTARTY + tile_scale * tile_heights[x, y]),
+                            (float)(NEWSTARTZ - NEWTILELENGTH * x)),
+                        Quaternion.identity));
+
+                    //Set the character tile to the current tile
+                    character.GetComponent<Character_Script>().curr_tile = getTile(x, y);
+                    character.GetComponent<Character_Script>().character_id = character_ids[x, y];
+
+                    //Set the tile object to that character and set traversible to false;
+                    tiles[x, y].GetComponent<Tile>().obj = character;
+                    tiles[x, y].GetComponent<Tile>().traversible = false;
+
+
                 }
 
                 //create OBJECTS on top of tiles

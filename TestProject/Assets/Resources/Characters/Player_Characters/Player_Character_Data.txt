@@ -11,6 +11,8 @@ canister_max: 2
 weapon: Sniper
 armor: Medium
 #accessories: none, none
+animator: Larken
+scale: 7.5
 
 name: Shiz
 level: 1  
@@ -24,6 +26,8 @@ canister_max: 2
 weapon: Pistol
 armor: Medium
 #accessories: none, none
+animator: Shiz
+scale: 7.5
 
 name: En
 level: 1  
@@ -37,6 +41,8 @@ canister_max: 2
 weapon: Sword
 armor: Light
 #accessories: none, none
+animator: En
+scale: 7.5
 
 name: Magus
 level: 1  
@@ -50,6 +56,8 @@ canister_max: 3
 weapon: Rifle
 armor: Light
 #accessories: none, none
+animator: Magus
+scale: 7.5
 
 name: Morgan
 level: 2  
@@ -63,6 +71,8 @@ canister_max: 2
 weapon: Spear
 armor: Heavy
 #accessories: none, none
+animator: En
+scale: 7.5
 
 name: Guy
 level: 1  
@@ -76,4 +86,6 @@ canister_max: 1
 weapon: Sniper
 armor: Heavy
 #accessories: none, none
+animator: Magus
+scale: 7.5
 

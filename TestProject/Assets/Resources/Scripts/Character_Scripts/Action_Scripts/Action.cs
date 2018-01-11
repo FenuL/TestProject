@@ -385,29 +385,6 @@ public class Action
     }
 
     /// <summary>
-    /// Calculate the Damage done to a target.
-    /// Subtracts the Armor from the Damage done.
-    /// </summary>
-    /// <param name="damage">Damage to do to the target.</param>
-    /// <param name="target">The target to damage. Typically a Character_Script.</param>
-    /// <returns></returns>
-    public static int Calculate_Damage(double damage, GameObject target)
-    {
-        //Debug.Log("Damage: " + damage + ", Armor: " + target.armor.armor);
-        int dmg = (int)damage;
-        Character_Script character = target.GetComponent<Character_Script>();
-        if (character != null)
-        {
-            dmg = (int)(damage - character.armor.armor);
-        }
-        if (dmg < 0)
-        {
-            dmg = 0;
-        }
-        return dmg;
-    }
-
-    /// <summary>
     /// Parses a String Equation and computes it. Used by the Convert_To_Double Function to fully solve equations.
     /// </summary>
     /// <param name="input">An Equation to parse out.</param>
@@ -554,7 +531,6 @@ public class Action
                             {
                                 character.state = Character_States.Attacking;
                                 character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, character));
-
                             }
                             else if (eff.type.ToString() == Action_Effect.Types.Status.ToString())
                             {
@@ -576,6 +552,8 @@ public class Action
                                 //character.curr_action = this;
                                 //character.StartCoroutine(character.Act(null));
                                 //Debug.Log("TEST 2");
+                                //TODO Change this so the Action actually goes off before ending the turn.
+                                //Enact(character, null);
                                 character.StartCoroutine(character.End_Turn());
                             }
                         }
@@ -910,6 +888,7 @@ public class Action
                         List<Target> targets = Get_Targets(character, target_tile);
                         foreach (Target target in targets)
                         {
+                            Enact_Status(character, eff.value, target);
                         }
                     }
                     else if (eff.type.ToString() == Action_Effect.Types.Elevate.ToString())
@@ -925,7 +904,7 @@ public class Action
                         List<Target> targets = Get_Target_Tiles(character, target_tile);
                         foreach (Target target in targets)
                         {
-                            Enact_Enable(character, eff.value[0], eff.value[1], target);
+                            Enact_Enable(character, eff.value, target);
                         }
                     }
                     else if (eff.type.ToString() == Action_Effect.Types.Pass.ToString())
@@ -958,7 +937,7 @@ public class Action
                     }
                     else if (eff.type.ToString() == Action_Effect.Types.Status.ToString())
                     {
-                        Enact_Status(character, eff.value[0], target);
+                        Enact_Status(character, eff.value, target);
                     }
                     else if (eff.type.ToString() == Action_Effect.Types.Elevate.ToString())
                     {
@@ -966,31 +945,13 @@ public class Action
                     }
                     else if (eff.type.ToString() == Action_Effect.Types.Enable.ToString())
                     {
-                        Enact_Enable(character, eff.value[0], eff.value[1], target);
+                        Enact_Enable(character, eff.value, target);
                     }
                     else if (eff.type.ToString() == Action_Effect.Types.Pass.ToString())
                     {
                         Enact_Pass(character, target);
                     }
                 }
-            }
-
-            //update AP and MP
-            character.action_curr -= (int)character.curr_action.Convert_To_Double(ap_cost, character);
-            character.mana_curr -= (int)character.curr_action.Convert_To_Double(mp_cost, character);
-            //character.state = Character_Script.States.Idle;
-
-            //Update reachable tiles
-            character.controller.curr_scenario.Clean_Reachable();
-            character.controller.curr_scenario.Reset_Reachable();
-
-            if (orient == "target")
-            {
-                character.Choose_Orientation(target_tile);
-            }
-            if (character.action_curr > character.action_max)
-            {
-                character.action_curr = character.action_max;
             }
 
             while (character.state != Character_States.Idle)
@@ -1061,26 +1022,15 @@ public class Action
         if (target.game_object.GetComponent<Character_Script>())
         {
             Character_Script target_character = target.game_object.GetComponent<Character_Script>();
-            int damage = (int)(Calculate_Damage(Convert_To_Double(value, character), target_character.gameObject) * target.modifier);
-            Game_Controller.CreateFloatingText(damage.ToString(), target_character.transform);
+            int damage = (int)(Convert_To_Double(value, character) * target.modifier);
+            Debug.Log("original damage: " + Convert_To_Double(value, character));
+            Debug.Log("modifier: "+ target.modifier);
             Debug.Log("Character " + character.character_name + " Attacked: " + target_character.character_name + "; Dealing " + damage + " damage and Using " + ap_cost + " AP");
-            if (target_character.aura_curr == 0)
-            {
-                target_character.Die();
-            }
-            else
-            {
-                target_character.aura_curr -= damage;
-                if (target_character.aura_curr < 0)
-                {
-                    target_character.aura_curr = 0;
-                    target_character.GetComponent<SpriteRenderer>().color = Color.red;
-                }
-            }
+            target_character.Take_Damage(damage, character.weapon.armor_pierce);
         }
         else
         {
-            int damage = (int)(Calculate_Damage(Convert_To_Double(value, character), target.game_object) * target.modifier);
+            int damage = (int)(Convert_To_Double(value, character) * target.modifier);
             Debug.Log("Character " + character.character_name + " Attacked: OBJECT" + "; Dealing " + damage + " damage and Using " + ap_cost + " AP");
         }
         //Reset character state when actions are done
@@ -1098,17 +1048,9 @@ public class Action
         if (target.game_object.GetComponent<Character_Script>())
         {
             Character_Script target_character = target.game_object.GetComponent<Character_Script>();
-            //Set the character to unwounded if they are wounded
-            if (target_character.GetComponent<Character_Script>().aura_curr == 0)
-            {
-                target_character.GetComponent<SpriteRenderer>().color = Color.white;
-            }
-            target_character.GetComponent<Character_Script>().aura_curr += (int)Convert_To_Double(value, character);
-            //Cap Aura gain to the max
-            if (target_character.GetComponent<Character_Script>().aura_curr > target_character.GetComponent<Character_Script>().aura_max)
-            {
-                target_character.GetComponent<Character_Script>().aura_curr = target_character.GetComponent<Character_Script>().aura_max;
-            }
+            int healing = (int)(Convert_To_Double(value, character) * target.modifier);
+            Debug.Log("Character " + character.character_name + " Healed: " + target_character.character_name + "; for " + healing + " and Using " + ap_cost + " AP");
+            target_character.Recover_Damage(healing);
         }
         //Reset character state when actions are done
         character.state = Character_States.Idle;
@@ -1120,9 +1062,33 @@ public class Action
     /// <param name="character">The Character performing the Action</param>
     /// <param name="value">The equation for what Status to apply. </param>
     /// <param name="target">The Target affected by the Action. </param>
-    public void Enact_Status(Character_Script character, String value, Target target)
+    public void Enact_Status(Character_Script character, String[] values, Target target)
     {
-        //TODO ADD STUFF HERE
+        //First we need to resolve the Condition
+        //Check for a power and attribute
+        double power = 0;
+        string attribute = "";
+        if (values.Length >= 3 && values[2] != null)
+        {
+            power = Convert_To_Double(values[2],character);
+        }
+        if (values.Length == 4 && values[3] != null)
+        {
+            attribute = values[3];
+        }
+        int duration = (int)Convert_To_Double(values[1], character);
+        Condition condi = new Condition(values[0], duration, power*target.modifier, attribute);
+
+        //Now we add the Condition to the target.
+        Character_Script target_character = target.game_object.GetComponent<Character_Script>();
+        target_character.Add_Condition(condi);
+
+        Debug.Log("Character " + character.character_name + " Gave: " + target_character.character_name + 
+            " " + condi.type.ToString() + " for " + condi.duration + " turns " + " with " + condi.power + 
+            " power, for " + ap_cost + "AP") ;
+
+        //Reset character state when actions are done
+        character.state = Character_States.Idle;
     }
 
     /// <summary>
@@ -1151,10 +1117,9 @@ public class Action
     /// Function to Enact an Enable type Action. Used in the Enact() Function.
     /// </summary>
     /// <param name="character">The Character performing the Action. </param>
-    /// <param name="action_name">The name of the Action being Enabled/Disabled.</param>
-    /// <param name="value">The String with the euqation for what to do.</param>
+    /// <param name="value">The String with the euqation for what to do. Should be an action name and a bool pair.</param>
     /// <param name="target">The Target whose ability is being Enabled/Disabled.</param>
-    public void Enact_Enable(Character_Script character, String action_name, String value, Target target)
+    public void Enact_Enable(Character_Script character, String[] value, Target target)
     {
         if (target.game_object.GetComponent<Character_Script>())
         {
@@ -1162,15 +1127,15 @@ public class Action
             foreach (Action act in target_character.GetComponent<Character_Script>().actions)
             {
                 //Debug.Log("act.name: " + act.name + ", eff.value: " + eff.value[0]);
-                if (act.name == action_name)
+                if (act.name == value[0])
                 {
                     //Debug.Log("MATCH");
-                    if (value == "false" || value == "False" || value == "FALSE")
+                    if (value[1] == "false" || value[1] == "False" || value[1] == "FALSE")
                     {
                         //Debug.Log("Skill " + act.name + " is disabled.");
                         act.enabled = false;
                     }
-                    if (value == "true" || value == "True" || value == "TRUE")
+                    if (value[1] == "true" || value[1] == "True" || value[1] == "TRUE")
                     {
                         //Debug.Log("Skill " + act.name + " is enabled.");
                         act.enabled = true;

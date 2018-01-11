@@ -7,6 +7,9 @@ public enum Conditions
     Burn,
     Corrupt,
     Frostbite,
+    Hemorrage,
+    Blight,
+    Scorch, 
     Immobilize,
     Daze,
     Stun,
@@ -29,5 +32,6 @@ public enum Conditions
     Restore,
     Cleanse,
     Clarity,
-    Purify
+    Purify,
+    None
 }

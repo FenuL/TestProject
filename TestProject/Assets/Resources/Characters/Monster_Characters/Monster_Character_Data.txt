@@ -1,5 +1,4 @@
 #Monster Data
-id: 1
 name: Beetleboar
 level: 1  
 strength: 5
@@ -12,9 +11,10 @@ canister_max: 0
 weapon: Claws
 armor: Heavy
 #accessories: none, none
+animator: Beetleboar
+scale: 3.25,3.25,3.25
 
 name: King
-id: 2
 level: 3  
 strength: 7
 coordination: 1
@@ -26,4 +26,6 @@ canister_max: 0
 weapon: Claws
 armor: Heavy
 accessories: none, none
+animator: Beetleboar
+scale: 4.0,4.0,4.0
 

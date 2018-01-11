@@ -37,9 +37,11 @@ public class Action_Effect
 
         foreach (Types ty in types)
         {
+            //Debug.Log(type_string + " and " + ty.ToString());
             if (type_string.Contains(ty.ToString()))
             {
                 type = ty;
+                //Debug.Log("type:" + type);
             }
         }
         int x = 0;

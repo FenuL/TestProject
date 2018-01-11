@@ -26,8 +26,10 @@ public class Character_Script : MonoBehaviour {
     /// 
     /// Variables
     /// int character_id - The ID of the Character for saving/loading purposes and for lookup in the player/monster_stats array.
-    /// int character_num - The number of the Character for turn order in the current Scenario
+    /// int character_num - The number of the Character for turn order in the current Scenario.
     /// string character_name - The name of the Character
+    /// string animator_name - The name of the Animator attached to this Character.
+    /// float[] character_scale - The scale of the current Character.
     /// int aura_max - The maximum Aura for the Character. Essentially HP.
     /// int aura_curr - The current Aura for the Character. If the Character hits 0 he/she is killable.
     /// int action_max - The maximum Action Points for the Character.
@@ -63,39 +65,41 @@ public class Character_Script : MonoBehaviour {
     /// bool ending_turn - If the Character's turn is ending. Used to prevent the screen from scrolling until other Coroutines are complete. TODO, FIND A DIFFERENT WORKAROUND
     /// </summary>
     /// TODO: Change Scenario Character Loading so we can set these to private.
-    public int character_id;
-    public int character_num { get; set; }
-    public string character_name { get; set; }
-    public int aura_max { get; set; }
-    public int aura_curr { get; set; }
-    public int action_max { get; set; }
-    public int action_curr { get; set; }
-    public int mana_max { get; set; }
-    public int mana_curr { get; set; }
-    public int reaction_max { get; set; }
-    public int reaction_curr { get; set; }
-    public int canister_max { get; set; }
-    public int canister_curr { get; set; }
-    public int strength { get; set; }
-    public int coordination { get; set; }
-    public int spirit { get; set; }
-    public int dexterity { get; set; }
-    public int vitality { get; set; }
-    public double speed { get; set; }
-    public int level { get; set; }
-    public int orientation { get; set; }
-    public int camera_orientation_offset { get; set; }
-    public Vector3 camera_position_offset { get; set; }
-    public float height_offset { get; set; }
+    public int character_id { get; set; }
+    public int character_num { get; private set; }
+    public string character_name { get; private set; }
+    public string animator_name { get; private set; }
+    public float[] character_scale { get; private set; }
+    public int aura_max { get; private set; }
+    public int aura_curr { get; private set; }
+    public int action_max { get; private set; }
+    public int action_curr { get; private set; }
+    public int mana_max { get; private set; }
+    public int mana_curr { get; private set; }
+    public int reaction_max { get; private set; }
+    public int reaction_curr { get; private set; }
+    public int canister_max { get; private set; }
+    public int canister_curr { get; private set; }
+    public int strength { get; private set; }
+    public int coordination { get; private set; }
+    public int spirit { get; private set; }
+    public int dexterity { get; private set; }
+    public int vitality { get; private set; }
+    public double speed { get; private set; }
+    public int level { get; private set; }
+    public int orientation { get; private set; }
+    public int camera_orientation_offset { get; private set; }
+    public Vector3 camera_position_offset { get; private set; }
+    public float height_offset { get; private set; }
     public bool rotate { get; set; }
-    public Weapon weapon { get; set; }
-    public Armor armor { get; set; }
-    public Accessory[] accessories { get; set; }
-    public static List<Action> all_actions { get; set; }
-    public List<Action> actions { get; set; }
+    public Weapon weapon { get; private set; }
+    public Armor armor { get; private set; }
+    public Accessory[] accessories { get; private set; }
+    public static List<Action> all_actions { get; private set; }
+    public List<Action> actions { get; private set; }
     public Action curr_action { get; set; }
     public Character_States state { get; set; }
-    public Dictionary<Conditions, List<Condition>> conditions { get; set; }
+    public Dictionary<Conditions, List<Condition>> conditions { get; private set; }
     public Game_Controller controller { get; set; }
     public Transform curr_tile { get; set; }
     public bool ending_turn = false;
@@ -115,8 +119,9 @@ public class Character_Script : MonoBehaviour {
     /// <param name="can">Character Canisters</param>
     /// <param name="wep">Character Weapon</param>
     /// <param name="arm">Character Armor</param>
-    public Character_Script(string nm, int lvl, int str, int crd, int spt, int dex, int vit, int spd, int can, string wep, string arm)
+    public Character_Script(string nm, int lvl, int str, int crd, int spt, int dex, int vit, int spd, int can, string wep, string arm, string animator, float[] scale)
     {
+        character_scale = scale;
         controller = Game_Controller.controller;
         character_name = nm.TrimStart();
         level = lvl;
@@ -137,6 +142,7 @@ public class Character_Script : MonoBehaviour {
         curr_action = null;
         actions = new List<Action>();
         canister_max = can;
+        animator_name = animator;
         orientation = 2;
         canister_curr = canister_max;
         conditions = new Dictionary<Conditions, List<Condition>>();
@@ -186,6 +192,54 @@ public class Character_Script : MonoBehaviour {
     }
 
     /// <summary>
+    /// Populates all the relevant fields for the script given an existing one. Used to attach a Character_Script to the Character_Prefab.
+    /// </summary>
+    /// <param name="data">The Character_Script whose information we want to carry over</param>
+    /// <param name="char_id">The Id of the character in the Character_Data pool.</param>
+    /// <param name="char_num">The number of the character in the current Scenario.</param>
+    public void Instantiate(Character_Script data, int char_id, int char_num, int char_orient)
+    {
+        name = data.character_name;
+        transform.localScale = new Vector3(data.character_scale[0], data.character_scale[1], data.character_scale[2]);
+        animator_name = data.animator_name;
+        character_id = char_id;
+        character_num = char_num;
+        height_offset = (this.GetComponent<SpriteRenderer>().sprite.rect.height *
+            this.transform.localScale.y /
+            this.GetComponent<SpriteRenderer>().sprite.pixelsPerUnit /
+            2);
+        float offset = (height_offset) / 3.5f;
+        transform.position = new Vector3(transform.position.x - offset, 
+            transform.position.y + height_offset, 
+            transform.position.z - offset);
+        camera_position_offset = new Vector3(-offset, 0.00f, -offset);
+        character_name = data.character_name;
+        level = data.level;
+        strength = data.strength;
+        coordination = data.coordination;
+        spirit = data.spirit;
+        dexterity = data.dexterity;
+        vitality = data.vitality;
+        speed = (int)data.speed;
+        canister_max = data.canister_max;
+        weapon = data.weapon;
+        armor = data.armor;
+        aura_max = data.aura_max;
+        aura_curr = data.aura_curr;
+        action_max = data.action_max;
+        action_curr = data.action_max;
+        mana_max = data.mana_max;
+        mana_curr = data.mana_curr;
+        actions = data.actions;
+        canister_curr = data.canister_curr;
+        state = data.state;
+        conditions = new Dictionary<Conditions, List<Condition>>();
+        controller = data.controller;
+        orientation = char_orient;
+        Orient();
+    }
+
+    /// <summary>
     /// Use this for initialization
     /// </summary>
     void Start ()
@@ -211,14 +265,14 @@ public class Character_Script : MonoBehaviour {
     }
 
     /// <summary>
-    /// Coroutine to End the Character's Turn:
-    ///     Resets and Cleans reachable_tiles
-    ///     Resets current Action
-    ///     Increases AP and MP
-    ///     Increases reaction points.
-    ///     Progresses Conditions
-    ///     Sets Character state to Idle
-    ///     Moves to the Next_Player()
+    /// Coroutine to End the Character's Turn: 
+    ///     Resets and Cleans reachable_tiles; 
+    ///     Resets current Action; 
+    ///     Increases AP and MP; 
+    ///     Increases reaction points; 
+    ///     Progresses Conditions; 
+    ///     Sets Character state to Idle; 
+    ///     Moves to the Next_Player(); 
     /// </summary>
     /// <returns></returns>
     public IEnumerator End_Turn()
@@ -313,6 +367,13 @@ public class Character_Script : MonoBehaviour {
             Remove_Condition(Conditions.Vulnerability);
             Remove_Condition(Conditions.Slow);
             Remove_Condition(Conditions.Poison);
+            Remove_Condition(Conditions.Hemorrage);
+            Remove_Condition(Conditions.Blight);
+            Remove_Condition(Conditions.Scorch);
+        }
+        else if (condition.type == Conditions.None)
+        {
+            Debug.Log("ERROR: Condition Type not recognized.");
         }
         //If the condition is not a cleanser, we add it to the list
         else
@@ -323,7 +384,22 @@ public class Character_Script : MonoBehaviour {
             List<Condition> condi_list;
             if (conditions.TryGetValue(condition.type, out condi_list))
             {
-                condi_list.Add(condition);
+                //If we already have a condition we need to check the maximum stack size.
+                if (condi_list.Count < condition.MAX_STACKS[condition.type])
+                {
+                    condi_list.Add(condition);
+                }else
+                {
+                    //Check if our condition is the type to Upgrade
+                    if (condition.UPGRADE[condition.type] != Conditions.None)
+                    {
+                        //TODO: ADD SCALING WHEN UPGRADING CONDITIONS
+                        Add_Condition(new Condition(condition.UPGRADE[condition.type], condition.duration, condition.power*2, condition.attribute));
+                    }else
+                    {
+                        //TODO write code to replace old/worse conditions when not upgrading them.
+                    }
+                }
             }
             else
             {
@@ -342,6 +418,27 @@ public class Character_Script : MonoBehaviour {
     public void Remove_Condition(Conditions condition)
     {
         conditions.Remove(condition);
+        /*List<Condition> condi_list;
+        if (conditions.TryGetValue(condition, out condi_list))
+        {
+            conditions[condition] = null;
+        }*/
+    }
+
+    /// <summary>
+    /// Check if a Character has a certain Condition
+    /// </summary>
+    /// <param name="condition">The Condition to check for</param>
+    /// <returns>True if the Character has at least one stack of the Condition, False otherwise</returns>
+    public bool Has_Condition(Conditions condition)
+    {
+        List<Condition> condi_list;
+        if (conditions.TryGetValue(condition, out condi_list)){
+            return true;
+        }else
+        {
+            return false;
+        }
     }
 
     /// <summary>
@@ -351,12 +448,64 @@ public class Character_Script : MonoBehaviour {
     /// </summary>
     public void Update_Conditions()
     {
-        foreach (List<Condition> condi_list in conditions.Values){
-            foreach (Condition condi in condi_list)
+        //DoT Conditions
+        if (Has_Condition(Conditions.Bleed))
+        {
+            foreach (Condition condi in conditions[Conditions.Bleed])
             {
-                //TODO ADD effects for conditions.
+                Take_Damage((int)condi.power, -1);
             }
         }
+        if (Has_Condition(Conditions.Burn))
+        {
+            foreach (Condition condi in conditions[Conditions.Burn])
+            {
+                Take_Damage((int)condi.power, -1);
+            }
+        }
+        if (Has_Condition(Conditions.Corrupt))
+        {
+            foreach (Condition condi in conditions[Conditions.Corrupt])
+            {
+                Take_Damage((int)condi.power, -1);
+            }
+        }
+        if (Has_Condition(Conditions.Frostbite))
+        {
+            foreach (Condition condi in conditions[Conditions.Frostbite])
+            {
+                Take_Damage((int)condi.power, -1);
+            }
+        }
+        if (Has_Condition(Conditions.Hemorrage))
+        {
+            foreach (Condition condi in conditions[Conditions.Hemorrage])
+            {
+                Take_Damage((int)condi.power, -1);
+            }
+        }
+        if (Has_Condition(Conditions.Scorch))
+        {
+            foreach (Condition condi in conditions[Conditions.Scorch])
+            {
+                Take_Damage((int)condi.power, -1);
+            }
+        }
+        if (Has_Condition(Conditions.Blight))
+        {
+            foreach (Condition condi in conditions[Conditions.Blight])
+            {
+                Take_Damage((int)condi.power, -1);
+            }
+        }
+        //CC
+        if (Has_Condition(Conditions.Stun) ||
+            Has_Condition(Conditions.Freeze) ||
+            Has_Condition(Conditions.Petrify))
+        {
+            StartCoroutine(End_Turn());
+        }
+        //TODO ADD effects for conditions.
     }
 
     /// <summary>
@@ -365,22 +514,40 @@ public class Character_Script : MonoBehaviour {
     /// </summary>
     public void Progress_Conditions()
     {
+        //TODO can't remove elements while iterating through with foreach loop.
+        Dictionary<Conditions, List<Condition>> temp_conditions = new Dictionary<Conditions, List<Condition>>(conditions);
+        List<Condition> temp_condi_list;
         foreach (List<Condition> condi_list in conditions.Values)
         {
+            temp_condi_list = new List<Condition>(condi_list); 
             foreach (Condition condi in condi_list)
             {
+                Condition temp_condi = new Condition(condi);
                 //Decrease the duration and remove the condition if it hits 0
-                if (condi.Progress() <= 0)
+                if (temp_condi.Progress() <= 0)
                 {
-                    condi_list.Remove(condi);
+                    temp_condi_list.Remove(condi);
+                    Debug.Log("Condition stack expired: " + temp_condi.type);
                 }
+                else
+                {
+                    temp_condi_list.Remove(condi);
+                    temp_condi_list.Add(temp_condi);
+                }
+
+                temp_conditions[condi.type] = temp_condi_list;
+
                 //If there are no more stacks we remove the condi list from the dictionary
-                if (condi_list.Count == 0 )
+                if (temp_condi_list.Count == 0)
                 {
-                    conditions.Remove(condi.type);
+                    temp_conditions.Remove(condi.type);
+                    Debug.Log("Condition type ended: " + temp_condi.type);
                 }
+
             }
         }
+        conditions = temp_conditions;
+
     }
 
     /// <summary>
@@ -539,13 +706,13 @@ public class Character_Script : MonoBehaviour {
         if (orientation == 2 || orientation == 1)
         {
             string object_name = this.gameObject.name;
-            string controller_name = "Animations/Controllers/" + object_name + "/" + object_name + "_Override_S";
+            string controller_name = "Animations/Controllers/" + animator_name + "/" + animator_name + "_Override_S";
             this.gameObject.GetComponent<Animator>().runtimeAnimatorController = Resources.Load(controller_name) as AnimatorOverrideController;
         }
         else if (orientation == 3 || orientation == 0)
         {
             string object_name = this.gameObject.name;
-            string controller_name = "Animations/Controllers/" + object_name + "/" + object_name + "_Override_W";
+            string controller_name = "Animations/Controllers/" + animator_name + "/" + animator_name + "_Override_W";
             this.gameObject.GetComponent<Animator>().runtimeAnimatorController = Resources.Load(controller_name) as AnimatorOverrideController;
         }
     }
@@ -611,15 +778,35 @@ public class Character_Script : MonoBehaviour {
     /// </summary>
     /// <param name="target_tile">The target for the Action.</param>
     /// <returns>The current status of the Coroutine.</returns>
-    public IEnumerator Act(Transform target_tile)
+    public IEnumerator Act(Action action, Transform target_tile)
     {
         if (curr_action != null)
         {
-            StartCoroutine(curr_action.Enact(this, target_tile.gameObject));
+            StartCoroutine(action.Enact(this, target_tile.gameObject));
+
             while (state != Character_States.Idle)
             {
                 yield return new WaitForEndOfFrame();
             }
+
+            //update AP and MP
+            action_curr -= (int)action.Convert_To_Double(action.ap_cost, this);
+            mana_curr -= (int)action.Convert_To_Double(action.mp_cost, this);
+            //character.state = Character_Script.States.Idle;
+
+            //Update reachable tiles
+            controller.curr_scenario.Clean_Reachable();
+            controller.curr_scenario.Reset_Reachable();
+
+            if (action.orient == "target")
+            {
+                Choose_Orientation(target_tile.gameObject);
+            }
+            if (action_curr > action_max)
+            {
+                action_curr = action_max;
+            }
+
             if (action_curr <= 0 && controller.curr_scenario.curr_player.GetComponent<Character_Script>().character_num == character_num)
             {
                 StartCoroutine(End_Turn());
@@ -777,6 +964,89 @@ public class Character_Script : MonoBehaviour {
         //FindReachable(controller.tile_grid, weapon.range);
         //FindReachable(controller.GetComponent<Game_Controller>().tile_grid,dexterity);
 	}
+
+    /// <summary>
+    /// Deal damage to this character.
+    /// </summary>
+    /// <param name="amount"> The amount of damage to take. </param>
+    /// <param name="armor_penetration">The amount of armor to ignore. Set to -1 to ignore all armor.</param>
+    public void Take_Damage(int amount, int armor_penetration)
+    {
+        Debug.Log("Character " + character_name + " takes " + amount + " damage!");
+        if (aura_curr == 0)
+        {
+            Die();
+        }
+        else
+        {
+            if (armor_penetration != -1)
+            {
+                int damage_negation = armor.armor - armor_penetration;
+                if (damage_negation < 0)
+                {
+                    damage_negation = 0;
+                }
+                amount = amount - damage_negation;
+                if (amount < 0)
+                {
+                    amount = 0;
+                }
+            }
+            aura_curr -= amount;
+            if (aura_curr < 0)
+            {
+                aura_curr = 0;
+                GetComponent<SpriteRenderer>().color = Color.red;
+            }
+            Game_Controller.Create_Floating_Text(amount.ToString(), transform, Color.red);
+        }
+    }
+
+    /// <summary>
+    /// Estimates how much Damage would be taken by an attack. 
+    /// </summary>
+    /// <returns>The Damage the Character would take. </returns>
+    public int Estimate_Damage(double amount, int armor_penetration )
+    {
+        if (armor_penetration != -1)
+        {
+            int damage_negation = armor.armor - armor_penetration;
+            if (damage_negation < 0)
+            {
+                damage_negation = 0;
+            }
+            amount = amount - damage_negation;
+            if (amount < 0)
+            {
+                amount = 0;
+            }
+        }
+        if (aura_curr - amount < 0)
+        {
+            amount = aura_curr;
+        }
+        return (int)amount;
+    }
+
+    /// <summary>
+    /// Remove Damage from this Character.
+    /// </summary>
+    /// <param name="amount">The amount of Damage to remove.</param>
+    public void Recover_Damage(int amount)
+    {
+        //Set the character to unwounded if they are wounded
+        if (aura_curr == 0)
+        {
+            GetComponent<SpriteRenderer>().color = Color.white;
+        }
+        aura_curr += (int)amount;
+        //Cap Aura gain to the max
+        if (aura_curr > aura_max)
+        {
+            aura_curr = aura_max;
+        }
+        Game_Controller.Create_Floating_Text(amount.ToString(), transform, Color.green);
+    }
 
     /// <summary>
     /// What happens when a character Dies
@@ -1086,8 +1356,11 @@ public class Character_Script : MonoBehaviour {
             
         }
         float rot = rotation * 4 * Time.deltaTime;
-        transform.RotateAround(curr_tile.position, Vector3.up, rot);
-        transform.eulerAngles = new Vector3(0,Camera.main.transform.rotation.eulerAngles.y,0);
+        if (curr_tile != null)
+        {
+            transform.RotateAround(curr_tile.position, Vector3.up, rot);
+            transform.eulerAngles = new Vector3(0, Camera.main.transform.rotation.eulerAngles.y, 0);
+        }
         //rotationAmount -= rotationAmount * CAMERA_TURN_SPEED * Time.deltaTime;
     }
 }

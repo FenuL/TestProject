@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 /// <summary>
 /// Class to store conditions that can affect characters
@@ -10,13 +11,19 @@ public class Condition
     /// Conditions - The enum storing all known types of conditions
     /// Conditions type - The type of condition of this particular condition. Used as key for Character condition dictionary.
     /// int duration - The number of turns a condition remains active
+    /// int MAX_STACKS - A Dictionary of the maximum number of Conditions that can affect one target. For all Conditions.
+    /// int MAX_DURATION - A Dictionary of the maximum duration of all Conditions. 
+    /// Conditions UPGRADE - A Dictionary of what to upgrade the Condition to if stacks are exceeded.
     /// int power - The power of the condition; affects different things depending on the condition. Eg Bleed damage, or Vulnerability damage bonus.
     /// string attribute - Determines what attribute the condition affects (only relevant for Poison/Boost)
     /// </summary>
 
     public Conditions type { get; private set; }
     public int duration { get; private set; }
-    public int power { get; private set; }
+    public Dictionary<Conditions, int> MAX_STACKS { get; private set; }
+    public Dictionary<Conditions, int> MAX_DURATION { get; private set; }
+    public Dictionary<Conditions, Conditions> UPGRADE { get; private set; }
+    public double power { get; private set; }
     public string attribute { get; private set; }
 
     /// <summary>
@@ -26,11 +33,18 @@ public class Condition
     /// <param name="turn_duration">The number of turns a condition remains active</param>
     /// <param name="new_power">The power of the condition; affects different things depending on the condition. Eg Bleed damage, or Vulnerability damage bonus.</param>
     /// <param name="new_attribute">Determines what attribute the condition affects (only relevant for Poison/Boost)</param>
-    public Condition(string new_type, int turn_duration, int new_power, string new_attribute)
+    public Condition(string new_type, int turn_duration, double new_power, string new_attribute)
     {
+        Create_Dictionaries();
+
         if (new_type == Conditions.Bleed.ToString())
         {
             type = Conditions.Bleed;
+            attribute = "NA";
+        }
+        else if (new_type == Conditions.Blight.ToString())
+        {
+            type = Conditions.Blight;
             attribute = "NA";
         }
         else if (new_type == Conditions.Blind.ToString())
@@ -108,6 +122,11 @@ public class Condition
             type = Conditions.Haste;
             attribute = "NA";
         }
+        else if (new_type == Conditions.Hemorrage.ToString())
+        {
+            type = Conditions.Hemorrage;
+            attribute = "NA";
+        }
         else if (new_type == Conditions.Immobilize.ToString())
         {
             type = Conditions.Immobilize;
@@ -143,6 +162,11 @@ public class Condition
             type = Conditions.Restore;
             attribute = "NA";
         }
+        else if (new_type == Conditions.Scorch.ToString())
+        {
+            type = Conditions.Scorch;
+            attribute = "NA";
+        }
         else if (new_type == Conditions.Slow.ToString())
         {
             type = Conditions.Slow;
@@ -165,7 +189,7 @@ public class Condition
         }
         else
         {
-            type = Conditions.Weakness;
+            type = Conditions.None;
             attribute = "NA";
         }
         duration = turn_duration;
@@ -179,12 +203,83 @@ public class Condition
     /// <param name="turn_duration">The number of turns a condition remains active</param>
     /// <param name="new_power">The power of the condition; affects different things depending on the condition. Eg Bleed damage, or Vulnerability damage bonus.</param>
     /// <param name="new_attribute">Determines what attribute the condition affects (only relevant for Poison/Boost)</param>
-    public Condition(Conditions new_type, int turn_duration, int new_power, string new_attribute)
+    public Condition(Conditions new_type, int turn_duration, double new_power, string new_attribute)
     {
+        Create_Dictionaries();
         type = new_type;
         duration = turn_duration;
         power = new_power;
         attribute = new_attribute;
+    }
+
+    /// <summary>
+    /// Constructor for the class.
+    /// </summary>
+    /// <param name="condi">A Condition to copy over.</param>
+    public Condition(Condition condi)
+    {
+        type = condi.type;
+        duration = condi.duration;
+        power = condi.power;
+        attribute = condi.attribute;
+        MAX_DURATION = condi.MAX_DURATION;
+        MAX_STACKS = condi.MAX_STACKS;
+        UPGRADE = condi.UPGRADE;
+    }
+
+    /// <summary>
+    /// Creates Dictionaries for the MAX_STACKS, MAX_DURATION and UPGRADE for all conditions.
+    /// </summary>
+    public void Create_Dictionaries()
+    {
+        MAX_STACKS = new Dictionary<Conditions, int>();
+        MAX_DURATION = new Dictionary<Conditions, int>();
+        UPGRADE = new Dictionary<Conditions, Conditions>();
+        foreach (Conditions condi in Conditions.GetValues(typeof(Conditions)))
+        {
+
+            if (condi == Conditions.Bleed)
+            {
+                UPGRADE.Add(condi, Conditions.Hemorrage);
+            }
+            else if (condi == Conditions.Burn)
+            {
+                UPGRADE.Add(condi, Conditions.Scorch);
+            }
+            else if (condi == Conditions.Corrupt)
+            {
+                UPGRADE.Add(condi, Conditions.Blight);
+            }
+            else if (condi == Conditions.Frostbite)
+            {
+                UPGRADE.Add(condi, Conditions.Freeze);
+            }
+            else
+            {
+                UPGRADE.Add(condi, Conditions.None);
+            }
+
+            if (condi == Conditions.Bleed ||
+                condi == Conditions.Boost ||
+                condi == Conditions.Frostbite ||
+                condi == Conditions.Corrupt ||
+                condi == Conditions.Scorch)
+            {
+                MAX_STACKS.Add(condi, 5);
+            }
+            else if (condi == Conditions.Blight ||
+                condi == Conditions.Burn ||
+                condi == Conditions.Regen ||
+                condi == Conditions.Hemorrage)
+            {
+                MAX_STACKS.Add(condi, 3);
+            }
+            else
+            {
+                MAX_STACKS.Add(condi, 1);
+            }
+            MAX_DURATION.Add(condi, 5);
+        }
     }
 
     /// <summary>

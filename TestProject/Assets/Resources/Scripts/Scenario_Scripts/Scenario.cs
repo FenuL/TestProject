@@ -111,7 +111,7 @@ public class Scenario : MonoBehaviour {
         double[] tile_modifiers = new double[10];
         int[,] tile_mat_ids = new int[grid_width, grid_length];
         int[,] object_sprite_ids = new int[grid_width, grid_length];
-        int[,] character_sprite_ids = new int[grid_width, grid_length];
+        int[,] character_ids = new int[grid_width, grid_length];
         //Read through the file line by line, looking for specific headings
         for (int i = 0; i < lines.Length; i++)
         {
@@ -297,7 +297,7 @@ public class Scenario : MonoBehaviour {
                     }
                     break;
                 case "[Character Map]":
-                    character_sprite_ids = new int[grid_width, grid_length];
+                    character_ids = new int[grid_width, grid_length];
                     for (int k = i + 1; k < i + grid_length + 1; k++)
                     {
                         string[] entries = lines[k].Split(';');
@@ -306,7 +306,7 @@ public class Scenario : MonoBehaviour {
                             int sprite;
                             if (int.TryParse(entries[l], out sprite))
                             {
-                                character_sprite_ids[k - i - 1, l] = sprite;
+                                character_ids[k - i - 1, l] = sprite;
                             }
                         }
                     }
@@ -316,7 +316,7 @@ public class Scenario : MonoBehaviour {
                     break;
             }
             //Resume new scenario creation
-            tile_grid = new Tile_Grid(grid_width, grid_length, materials, tile_modifiers, tile_mat_ids, object_sprite_ids, character_sprite_ids);
+            tile_grid = new Tile_Grid(grid_width, grid_length, materials, tile_modifiers, tile_mat_ids, object_sprite_ids, character_ids);
 
             curr_round = 0;
             curr_character_num = 0;
@@ -335,7 +335,7 @@ public class Scenario : MonoBehaviour {
     Character_Script[] Read_Character_Data(string file)
     {
         string[] lines = System.IO.File.ReadAllLines(file);
-        Character_Script[] objects = new Character_Script[lines.Length / 13];
+        Character_Script[] objects = new Character_Script[lines.Length / 15];
 
         int count = 0;
         string name = "";
@@ -345,10 +345,12 @@ public class Scenario : MonoBehaviour {
         int spirit = 1;
         int dexterity = 1;
         int vitality = 1;
-        int speed = 12;
+        int speed = 6;
         int canister_max = 1;
         string weapon = "Sword";
         string armor = "Light";
+        string animator = "Beetleboar";
+        float[] scale = new float[3];
         foreach (string line in lines)
         {
             string[] elements = line.Split(':');
@@ -356,7 +358,7 @@ public class Scenario : MonoBehaviour {
             {
                 if (elements[0] == "name")
                 {
-                    name = elements[1];
+                    name = elements[1].Trim();
                 }
                 else if (elements[0] == "level")
                 {
@@ -410,22 +412,33 @@ public class Scenario : MonoBehaviour {
                 {
 
                 }
+                else if (elements[0] == "animator")
+                {
+                    animator = elements[1].Trim();
+                }
+                else if (elements[0] == "scale")
+                {
+                    string[] scales = elements[1].Split(',');
+                    scale = new float[3];
+                    int x = 0;
+                    foreach (string s in scales)
+                    {
+                        if (float.TryParse(s.Trim(), out scale[x]))
+                        { }
+                        x++;
+                    }
+                    if(x == 1)
+                    {
+                        scale[1] = scale[0];
+                        scale[2] = scale[0];
+                    }
+
+                }
             }
             if (elements[0] == "")
             {
-                objects[count] = new Character_Script(name, level, strength, coordination, spirit, dexterity, vitality, speed, canister_max, weapon, armor);
+                objects[count] = new Character_Script(name, level, strength, coordination, spirit, dexterity, vitality, speed, canister_max, weapon, armor, animator, scale);
                 count++;
-                name = "";
-                level = 1;
-                strength = 1;
-                coordination = 1;
-                spirit = 1;
-                dexterity = 1;
-                vitality = 1;
-                speed = 12;
-                canister_max = 1;
-                weapon = "Sword";
-                armor = "Light";
             }
         }
         return objects;
@@ -470,56 +483,34 @@ public class Scenario : MonoBehaviour {
 
         cursor = GameObject.FindGameObjectWithTag("Cursor");
         cursors = new List<GameObject>();
-        GameObject[] objects = GameObject.FindGameObjectsWithTag("Player");
+        GameObject[] objects = GameObject.FindGameObjectsWithTag("Character");
 
         //set starting positions for players
         //TODO change this to read positions from the scenario file.
         foreach (GameObject game_object in objects)
         {
             characters.Add(game_object);
-            game_object.GetComponent<Character_Script>().height_offset = (game_object.GetComponent<SpriteRenderer>().sprite.rect.height *
-                game_object.transform.localScale.y / 
-                game_object.GetComponent<SpriteRenderer>().sprite.pixelsPerUnit /
-                2);
-            float offset = (game_object.GetComponent<Character_Script>().height_offset) / 3.5f;
-            game_object.GetComponent<Character_Script>().character_num = char_num;
-            game_object.GetComponent<Character_Script>().curr_tile = tile_grid.getTile(char_num, 0);
-            game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().obj = game_object;
-            game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x - 
-                    offset,
-                game_object.GetComponent<Character_Script>().curr_tile.position.y + 
-                    game_object.GetComponent<Character_Script>().height_offset + 
-                    Tile_Grid.TILE_SCALE * 
-                    game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().height,
-                game_object.GetComponent<Character_Script>().curr_tile.position.z - 
-                offset);
-            game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().traversible = false;
-            char_num++;
-        }
-        //set starting position for monsters
-        //TODO change this to read positions from the scenario file.
-        objects = GameObject.FindGameObjectsWithTag("Monster");
-        foreach (GameObject game_object in objects)
-        {
-            characters.Add(game_object);
-            game_object.GetComponent<Character_Script>().height_offset = (game_object.GetComponent<SpriteRenderer>().sprite.rect.height * 
-                game_object.transform.localScale.y / 
-                game_object.GetComponent<SpriteRenderer>().sprite.pixelsPerUnit / 
-                2);
-            float offset = (game_object.GetComponent<Character_Script>().height_offset) / 3.5f;
-            game_object.GetComponent<Character_Script>().camera_position_offset = new Vector3(-offset, 0.00f, -offset);
-            game_object.GetComponent<Character_Script>().character_num = char_num;
-            game_object.GetComponent<Character_Script>().curr_tile = tile_grid.getTile(19 - game_object.GetComponent<Character_Script>().character_num, 19);
-            game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().obj = game_object;
-            game_object.transform.position = new Vector3(game_object.GetComponent<Character_Script>().curr_tile.position.x -
-                    offset,
-                game_object.GetComponent<Character_Script>().curr_tile.position.y + 
-                    game_object.GetComponent<Character_Script>().height_offset + 
-                    Tile_Grid.TILE_SCALE * 
-                    game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().height,
-                game_object.GetComponent<Character_Script>().curr_tile.position.z -
-                    offset);
-            game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().traversible = false;
+
+            //Get the character ID from the tile grid
+            int char_id = game_object.GetComponent<Character_Script>().character_id;
+
+            Character_Script char_data;
+            if (char_id / 10000 == 1)
+            {
+                //Player
+                char_data = player_character_data[char_id % 100 - 1];
+            }
+            else if (char_id / 10000 == 2 )
+            {
+                //Monster
+                char_data = monster_character_data[char_id % 100 -1];
+            }
+            else
+            {
+                char_data = monster_character_data[0];
+            }
+            game_object.GetComponent<Character_Script>().Instantiate(char_data, char_id, char_num, char_id/1000%10);
+            turn_order.Add(game_object);
             char_num++;
         }
 
@@ -530,53 +521,6 @@ public class Scenario : MonoBehaviour {
             tile_objects.Add(game_object);
         }
 
-        foreach (GameObject game_object in characters)
-        {
-
-            if (game_object.tag == "Player")
-            {
-                character_data = player_character_data;
-            }
-            else
-            {
-                character_data = monster_character_data;
-            }
-            //TODO FIX THIS
-            game_object.GetComponent<Character_Script>().height_offset = (game_object.GetComponent<SpriteRenderer>().sprite.rect.height * 
-                game_object.transform.localScale.y / 
-                game_object.GetComponent<SpriteRenderer>().sprite.pixelsPerUnit / 
-                2);
-            float offset = (game_object.GetComponent<Character_Script>().height_offset) / 3.5f;
-            game_object.GetComponent<Character_Script>().camera_position_offset = new Vector3(-offset, 0.00f, -offset);
-            game_object.GetComponent<Character_Script>().character_name = character_data[game_object.GetComponent<Character_Script>().character_id].character_name;
-            game_object.GetComponent<Character_Script>().level = character_data[game_object.GetComponent<Character_Script>().character_id].level;
-            game_object.GetComponent<Character_Script>().strength = character_data[game_object.GetComponent<Character_Script>().character_id].strength;
-            game_object.GetComponent<Character_Script>().coordination = character_data[game_object.GetComponent<Character_Script>().character_id].coordination;
-            game_object.GetComponent<Character_Script>().spirit = character_data[game_object.GetComponent<Character_Script>().character_id].spirit;
-            game_object.GetComponent<Character_Script>().dexterity = character_data[game_object.GetComponent<Character_Script>().character_id].dexterity;
-            game_object.GetComponent<Character_Script>().vitality = character_data[game_object.GetComponent<Character_Script>().character_id].vitality;
-            game_object.GetComponent<Character_Script>().speed = (int)character_data[game_object.GetComponent<Character_Script>().character_id].speed;
-            game_object.GetComponent<Character_Script>().canister_max = character_data[game_object.GetComponent<Character_Script>().character_id].canister_max;
-            game_object.GetComponent<Character_Script>().orientation = 2;
-            //game_object.GetComponent<Character_Script>().Equip(character_data[game_object.GetComponent<Character_Script>().character_id].weapon);
-            //game_object.GetComponent<Character_Script>().Equip(character_data[game_object.GetComponent<Character_Script>().character_id].armor);
-            game_object.GetComponent<Character_Script>().weapon = character_data[game_object.GetComponent<Character_Script>().character_id].weapon;
-            game_object.GetComponent<Character_Script>().armor = character_data[game_object.GetComponent<Character_Script>().character_id].armor;
-            game_object.GetComponent<Character_Script>().aura_max = character_data[game_object.GetComponent<Character_Script>().character_id].aura_max;
-            game_object.GetComponent<Character_Script>().aura_curr = character_data[game_object.GetComponent<Character_Script>().character_id].aura_curr;
-            game_object.GetComponent<Character_Script>().action_max = character_data[game_object.GetComponent<Character_Script>().character_id].action_max;
-            game_object.GetComponent<Character_Script>().action_curr = character_data[game_object.GetComponent<Character_Script>().character_id].action_max;
-            game_object.GetComponent<Character_Script>().mana_max = character_data[game_object.GetComponent<Character_Script>().character_id].mana_max;
-            game_object.GetComponent<Character_Script>().mana_curr = character_data[game_object.GetComponent<Character_Script>().character_id].mana_curr;
-            game_object.GetComponent<Character_Script>().actions = character_data[game_object.GetComponent<Character_Script>().character_id].actions;
-            game_object.GetComponent<Character_Script>().canister_curr = character_data[game_object.GetComponent<Character_Script>().character_id].canister_curr;
-            game_object.GetComponent<Character_Script>().state = character_data[game_object.GetComponent<Character_Script>().character_id].state;
-            game_object.GetComponent<Character_Script>().conditions = new Dictionary<Conditions, List<Condition>>();
-            game_object.GetComponent<Character_Script>().controller = character_data[game_object.GetComponent<Character_Script>().character_id].controller;
-            
-            //game_object.GetComponent<Character_Script>().Randomize();
-            turn_order.Add(game_object);
-        }
         turn_order.Sort(Sort_By_Dex);
         curr_character_num = characters.Count - 1;
         curr_player = turn_order[curr_character_num];

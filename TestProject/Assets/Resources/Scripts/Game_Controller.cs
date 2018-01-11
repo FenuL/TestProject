@@ -116,20 +116,22 @@ public class Game_Controller : MonoBehaviour {
         action_menu.GetComponent<Action_Menu_Script>().resetActions();
         //MarkReachable ();
     }
-	
+
     /// <summary>
     /// Creates Floating Text from the FloatingText prefab at a specified location.
     /// </summary>
     /// <param name="text">The text to display. </param>
     /// <param name="location">The location to display the text. </param>
-    public static void CreateFloatingText(string text, Transform location)
+    /// <param name="color">The color of the text. </param>
+    public static void Create_Floating_Text(string text, Transform location, Color color)
     {
         FloatingText instance = Instantiate(popup);
         Vector2 screen_position = Camera.main.WorldToScreenPoint(new Vector3(location.position.x + UnityEngine.Random.Range(-.5f, .5f),
             location.position.y + UnityEngine.Random.Range(1.5f,1.7f), location.position.z));
         instance.transform.SetParent(canvas.transform, false);
         instance.transform.position = screen_position;
-        instance.SetText(text);
+        instance.Set_Text(text);
+        instance.Set_Color(color);
     }
 
     /// <summary>
@@ -259,7 +261,7 @@ public class Game_Controller : MonoBehaviour {
                     {
                         if (tile.Equals(curr_scenario.clicked_tile))
                         {
-                            character.StartCoroutine(character.Act(curr_scenario.clicked_tile));
+                            character.StartCoroutine(character.Act(character.curr_action, curr_scenario.clicked_tile));
                         }
                     }
                 }

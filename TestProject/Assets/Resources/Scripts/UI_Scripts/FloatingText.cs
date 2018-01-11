@@ -25,8 +25,17 @@ public class FloatingText : MonoBehaviour {
     /// Sets the text for the Floating Text.
     /// </summary>
     /// <param name="text">What to set the Text to.</param>
-	public void SetText(string text)
+	public void Set_Text(string text)
     {
         animator.GetComponent<Text>().text = text;
+    }
+
+    /// <summary>
+    /// Sets the color for the Floating Text.
+    /// </summary>
+    /// <param name="color">What color to give the Text.</param>
+    public void Set_Color(Color color)
+    {
+        animator.GetComponent<Text>().color = color;
     }
 }
