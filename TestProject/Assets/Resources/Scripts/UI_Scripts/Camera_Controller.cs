@@ -82,63 +82,83 @@ public class Camera_Controller : MonoBehaviour {
                   "AU: " + curr_player.aura_curr + " / " + curr_player.aura_max + "\n" +
                   "AP: <color=" + action_color + ">" + actions_remaining + "</color> / " + curr_player.action_max + "\n" +
                   "MP: <color=" + mana_color + ">" + mana_remaining + "</color> / " + curr_player.mana_max + "\n" +
-                  "Can: " + curr_player.canister_curr + " / " + curr_player.canister_max + "\n" +
                   "Str: " + curr_player.strength + "   Crd: " + curr_player.coordination + "    Spt: " + curr_player.spirit + "\n" +
                   "Dex: " + curr_player.dexterity + "   Vit: " + curr_player.vitality + "   Spd: " + curr_player.speed + "\n" +
                   "Wep: " + curr_player.weapon.name + "   Armor: " + curr_player.armor.name,style);
             }
-            if (controller.curr_scenario.highlighted_player != null)
+            if (controller.curr_scenario.highlighted_obj != null)
             {
-                highlighted_player = controller.curr_scenario.highlighted_player.GetComponent<Character_Script>();
-                if (curr_player.curr_action != null)
+                highlighted_player = controller.curr_scenario.highlighted_obj.GetComponent<Character_Script>();
+                if (highlighted_player != null)
                 {
-                    foreach (Action_Effect eff in curr_player.curr_action.target_effect)
+                    if (curr_player.curr_action != null)
                     {
-                        if (eff.type.ToString() == "Damage")
+                        bool preview = false;
+                        foreach (Action_Effect eff in curr_player.curr_action.target_effect)
                         {
-                            //TODO: This is inaccurate because it doesn't take into account the target modifier.
-                            int damage_dealt = highlighted_player.Estimate_Damage(curr_player.curr_action.Convert_To_Double(eff.value[0], curr_player), curr_player.weapon.armor_pierce);
-                            int new_aura = highlighted_player.aura_curr - damage_dealt;
-                            if (new_aura < 0)
+                            if (eff.type.ToString() == "Damage")
                             {
-                                new_aura = 0;
+                                //TODO: This is inaccurate because it doesn't take into account the target modifier.
+                                int damage_dealt = highlighted_player.Estimate_Damage(curr_player.curr_action.Convert_To_Double(eff.value[0], curr_player), curr_player.weapon.armor_pierce);
+                                int new_aura = highlighted_player.aura_curr - damage_dealt;
+                                if (new_aura < 0)
+                                {
+                                    new_aura = 0;
+                                }
+                                else if (new_aura > highlighted_player.aura_curr)
+                                {
+                                    new_aura = highlighted_player.aura_curr;
+                                }
+                                GUI.TextArea(new Rect(Screen.width - 210, Screen.height - 120, 200, 110), highlighted_player.character_name + "\n" +
+                                  "AU: <color=red>" + (new_aura) + "</color> / " + highlighted_player.aura_max + "\n" +
+                                  "AP: " + highlighted_player.action_curr + " / " + highlighted_player.action_max + "\n" +
+                                  "MP: " + highlighted_player.mana_curr + " / " + highlighted_player.mana_max + "\n" +
+                                  "Str: " + highlighted_player.strength + "   Crd: " + highlighted_player.coordination + "    Spt: " + highlighted_player.spirit + "\n" +
+                                  "Dex: " + highlighted_player.dexterity + "   Vit: " + highlighted_player.vitality + "   Spd: " + highlighted_player.speed + "\n" +
+                                  "Wep: " + highlighted_player.weapon.name + "   Armor: " + highlighted_player.armor.name, style);
+                                preview = true;
+                                break;
                             }
-                            else if (new_aura > highlighted_player.aura_curr)
+                            else if (eff.type.ToString() == "Heal")
                             {
-                                new_aura = highlighted_player.aura_curr;
+                                int healing = (int)curr_player.curr_action.Convert_To_Double(eff.value[0], curr_player);
+                                int new_aura = highlighted_player.aura_curr + healing;
+                                if (new_aura < 0)
+                                {
+                                    new_aura = 0;
+                                }
+                                else if (new_aura > highlighted_player.aura_max)
+                                {
+                                    new_aura = highlighted_player.aura_max;
+                                }
+                                GUI.TextArea(new Rect(Screen.width - 210, Screen.height - 120, 200, 110), highlighted_player.character_name + "\n" +
+                                  "AU: <color=green>" + new_aura + "</color> / " + highlighted_player.aura_max + "\n" +
+                                  "AP: " + highlighted_player.action_curr + " / " + highlighted_player.action_max + "\n" +
+                                  "MP: " + highlighted_player.mana_curr + " / " + highlighted_player.mana_max + "\n" +
+                                  "Str: " + highlighted_player.strength + "   Crd: " + highlighted_player.coordination + "    Spt: " + highlighted_player.spirit + "\n" +
+                                  "Dex: " + highlighted_player.dexterity + "   Vit: " + highlighted_player.vitality + "   Spd: " + highlighted_player.speed + "\n" +
+                                  "Wep: " + highlighted_player.weapon.name + "   Armor: " + highlighted_player.armor.name, style);
+                                preview = true;
+                                break;
                             }
-                            GUI.TextArea(new Rect(Screen.width - 210, Screen.height - 120, 200, 110), highlighted_player.character_name + "\n" +
-                              "AU: <color=red>" + (new_aura) + "</color> / " + highlighted_player.aura_max + "\n" +
-                              "AP: " + highlighted_player.action_curr + " / " + highlighted_player.action_max + "\n" +
-                              "MP: " + highlighted_player.mana_curr + " / " + highlighted_player.mana_max + "\n" +
-                              "Can: " + highlighted_player.canister_curr + " / " + highlighted_player.canister_max + "\n" +
-                              "Str: " + highlighted_player.strength + "   Crd: " + highlighted_player.coordination + "    Spt: " + highlighted_player.spirit + "\n" +
-                              "Dex: " + highlighted_player.dexterity + "   Vit: " + highlighted_player.vitality + "   Spd: " + highlighted_player.speed + "\n" +
-                              "Wep: " + highlighted_player.weapon.name + "   Armor: " + highlighted_player.armor.name, style);
                         }
-                        else if (eff.type.ToString() == "Healing")
+                        if (!preview)
                         {
-                            int healing = (int)curr_player.curr_action.Convert_To_Double(eff.value[0], curr_player);
-                            int new_aura = highlighted_player.aura_curr + healing;
-                            if (new_aura < 0)
-                            {
-                                new_aura = 0;
-                            }
-                            else if (new_aura > highlighted_player.aura_max)
-                            {
-                                new_aura = highlighted_player.aura_max;
-                            }
                             GUI.TextArea(new Rect(Screen.width - 210, Screen.height - 120, 200, 110), highlighted_player.character_name + "\n" +
-                              "AU: <color=blue>" + new_aura + "</color> / " + highlighted_player.aura_max + "\n" +
-                              "AP: " + highlighted_player.action_curr + " / " + highlighted_player.action_max + "\n" +
-                              "MP: " + highlighted_player.mana_curr + " / " + highlighted_player.mana_max + "\n" +
-                              "Can: " + highlighted_player.canister_curr + " / " + highlighted_player.canister_max + "\n" +
-                              "Str: " + highlighted_player.strength + "   Crd: " + highlighted_player.coordination + "    Spt: " + highlighted_player.spirit + "\n" +
-                              "Dex: " + highlighted_player.dexterity + "   Vit: " + highlighted_player.vitality + "   Spd: " + highlighted_player.speed + "\n" +
-                              "Wep: " + highlighted_player.weapon.name + "   Armor: " + highlighted_player.armor.name,style);
+                                "AU: " + highlighted_player.aura_curr + " / " + highlighted_player.aura_max + "\n" +
+                                "AP: " + highlighted_player.action_curr + " / " + highlighted_player.action_max + "\n" +
+                                "MP: " + highlighted_player.mana_curr + " / " + highlighted_player.mana_max + "\n" +
+                                "Str: " + highlighted_player.strength + "   Crd: " + highlighted_player.coordination + "    Spt: " + highlighted_player.spirit + "\n" +
+                                "Dex: " + highlighted_player.dexterity + "   Vit: " + highlighted_player.vitality + "   Spd: " + highlighted_player.speed + "\n" +
+                                "Wep: " + highlighted_player.weapon.name + "   Armor: " + highlighted_player.armor.name, style);
                         }
                     }
-                }   
+                }
+                else
+                {
+                    //Object
+                    GUI.TextArea(new Rect(Screen.width - 210, Screen.height - 120, 200, 110), "Object \n");
+                }
             }
         }
     }
@@ -190,19 +210,27 @@ public class Camera_Controller : MonoBehaviour {
         //transform.Translate(horizontal_speed* Input.GetAxis("Mouse Y"),vertical_speed* Input.GetAxis("Mouse X"),0);
 
         //Camera Scrolling
-        if (Input.mousePosition.x <= HOR_BORDER)
+        if (Input.mousePosition.x <= HOR_BORDER ||
+            Input.GetKey(controller.controlls[Controlls.Camera_Scroll_Left][0]) ||
+            Input.GetKey(controller.controlls[Controlls.Camera_Scroll_Left][1]))
         {
             transform.Translate(-HOR_SPD, 0, 0);// (transform.position.x-1,transform.position.y, transform.position.z);
         }
-        if (Input.mousePosition.x >= Screen.width - HOR_BORDER)
+        if (Input.mousePosition.x >= Screen.width - HOR_BORDER ||
+            Input.GetKey(controller.controlls[Controlls.Camera_Scroll_Right][0]) ||
+            Input.GetKey(controller.controlls[Controlls.Camera_Scroll_Right][1]))
         {
             transform.Translate(HOR_SPD, 0, 0);
         }
-        if (Input.mousePosition.y >= Screen.height - VER_BORDER)
+        if (Input.mousePosition.y >= Screen.height - VER_BORDER ||
+            Input.GetKey(controller.controlls[Controlls.Camera_Scroll_Up][0]) ||
+            Input.GetKey(controller.controlls[Controlls.Camera_Scroll_Up][1]))
         {
             transform.Translate(0, 0, VER_SPD);
         }
-        if (Input.mousePosition.y <= VER_BORDER)
+        if (Input.mousePosition.y <= VER_BORDER ||
+            Input.GetKey(controller.controlls[Controlls.Camera_Scroll_Down][0]) ||
+            Input.GetKey(controller.controlls[Controlls.Camera_Scroll_Down][1]))
         {
             transform.Translate(0, 0, -VER_SPD);// (transform.position.x-1,transform.position.y, transform.position.z);
         }
@@ -237,6 +265,7 @@ public class Camera_Controller : MonoBehaviour {
             rotating = false;
         }
 
+        //Bound the camera
         /*if (transform.position.x >= -4) {
             if (Input.mousePosition.x <= 20) {
                 transform.Translate (-.2f, 0, 0);// (transform.position.x-1,transform.position.y, transform.position.z);

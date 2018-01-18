@@ -30,6 +30,7 @@ public class Game_Controller : MonoBehaviour {
     public GameObject main_camera;
     public List<Action> all_actions { get; private set; }
     public Transform action_menu;
+    public Dictionary<Controlls, KeyCode[]> controlls { get; private set; }
 
     /// <summary>
     /// Save the Current Game Status.
@@ -104,6 +105,7 @@ public class Game_Controller : MonoBehaviour {
     /// Loads the first Scenario.
     /// </summary>
 	void Start () {
+        controlls = createControlls();
         canvas = GameObject.Find("Canvas");
         popup = Resources.Load<FloatingText>("Prefabs/Object Prefabs/PopupTextParent");
         main_camera = GameObject.FindGameObjectWithTag("MainCamera");
@@ -115,6 +117,112 @@ public class Game_Controller : MonoBehaviour {
         action_menu.GetComponent<Action_Menu_Script>().Initialize();
         action_menu.GetComponent<Action_Menu_Script>().resetActions();
         //MarkReachable ();
+    }
+
+    /// <summary>
+    /// Method to create default Controlls.
+    /// </summary>
+    /// <returns>A dictionary with the default controlls mapped to the default keys.</returns>
+    public Dictionary<Controlls, KeyCode[]> createControlls()
+    {
+        Dictionary<Controlls, KeyCode[]> controlls = new Dictionary<Controlls, KeyCode[]>();
+        foreach (Controlls ctrl in Controlls.GetValues(typeof(Controlls)))
+        {
+            KeyCode[] keys = new KeyCode[2];
+            if (ctrl == Controlls.Ability_Hotkey_0)
+            {
+                keys[0] = KeyCode.Alpha1;
+                keys[1] = KeyCode.Keypad1;
+            }
+            else if (ctrl == Controlls.Ability_Hotkey_1)
+            {
+                keys[0] = KeyCode.Alpha2;
+                keys[1] = KeyCode.Keypad2;
+            }
+            else if (ctrl == Controlls.Ability_Hotkey_2)
+            {
+                keys[0] = KeyCode.Alpha3;
+                keys[1] = KeyCode.Keypad3;
+            }
+            else if (ctrl == Controlls.Ability_Hotkey_3)
+            {
+                keys[0] = KeyCode.Alpha4;
+                keys[1] = KeyCode.Keypad4;
+            }
+            else if (ctrl == Controlls.Ability_Hotkey_4)
+            {
+                keys[0] = KeyCode.Alpha5;
+                keys[1] = KeyCode.Keypad5;
+            }
+            else if (ctrl == Controlls.Ability_Hotkey_5)
+            {
+                keys[0] = KeyCode.Alpha6;
+                keys[1] = KeyCode.Keypad6;
+            }
+            else if (ctrl == Controlls.Ability_Hotkey_6)
+            {
+                keys[0] = KeyCode.Alpha7;
+                keys[1] = KeyCode.Keypad7;
+            }
+            else if (ctrl == Controlls.Ability_Hotkey_7)
+            {
+                keys[0] = KeyCode.Alpha8;
+                keys[1] = KeyCode.Keypad8;
+            }
+            else if (ctrl == Controlls.Ability_Hotkey_8)
+            {
+                keys[0] = KeyCode.Alpha9;
+                keys[1] = KeyCode.Keypad9;
+            }
+            else if (ctrl == Controlls.Ability_Hotkey_9)
+            {
+                keys[0] = KeyCode.Alpha0;
+                keys[1] = KeyCode.Keypad0;
+            }
+            else if (ctrl == Controlls.Camera_Scroll_Up)
+            {
+                keys[0] = KeyCode.W;
+                keys[1] = KeyCode.UpArrow;
+            }
+            else if (ctrl == Controlls.Camera_Scroll_Down)
+            {
+                keys[0] = KeyCode.S;
+                keys[1] = KeyCode.DownArrow;
+            }
+            else if (ctrl == Controlls.Camera_Scroll_Left)
+            {
+                keys[0] = KeyCode.A;
+                keys[1] = KeyCode.LeftArrow;
+            }
+            else if (ctrl == Controlls.Camera_Scroll_Right)
+            {
+                keys[0] = KeyCode.D;
+                keys[1] = KeyCode.RightArrow;
+            }
+            else if (ctrl == Controlls.Camera_Turn_Left)
+            {
+                keys[0] = KeyCode.Q;
+                keys[1] = KeyCode.LeftBracket;
+            }
+            else if (ctrl == Controlls.Camera_Turn_Right)
+            {
+                keys[0] = KeyCode.E;
+                keys[1] = KeyCode.RightBracket;
+            }
+            else if (ctrl == Controlls.Next_Player)
+            {
+                keys[0] = KeyCode.Equals;
+                keys[1] = KeyCode.KeypadPlus;
+            }
+            else if (ctrl == Controlls.Previous_Player)
+            {
+                keys[0] = KeyCode.Minus;
+                keys[1] = KeyCode.KeypadMinus;
+            }
+            controlls.Add(ctrl, keys);
+        }
+
+        return controlls;
     }
 
     /// <summary>
@@ -172,70 +280,80 @@ public class Game_Controller : MonoBehaviour {
         Character_Script character = curr_scenario.curr_player.GetComponent<Character_Script>();
         if (!character.ending_turn)
         {
-            if (Input.GetKeyDown("1"))
+            if (Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_0][0]) ||
+                Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_0][1]))
             {
                 if (character.actions.Count >= 1)
                 {
                     character.actions[0].Select(character);
                 }
             }
-            else if (Input.GetKeyDown("2"))
+            else if (Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_1][0]) ||
+                Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_1][1]))
             {
                 if (character.actions.Count >= 2)
                 {
                     character.actions[1].Select(character);
                 }
             }
-            else if (Input.GetKeyDown("3"))
+            else if (Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_2][0]) ||
+                Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_2][1]))
             {
                 if (character.actions.Count >= 3)
                 {
                     character.actions[2].Select(character);
                 }
             }
-            else if (Input.GetKeyDown("4"))
+            else if (Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_3][0]) ||
+                Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_3][1]))
             {
                 if (character.actions.Count >= 4)
                 {
                     character.actions[3].Select(character);
                 }
             }
-            else if (Input.GetKeyDown("5"))
+            else if (Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_4][0]) ||
+                Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_4][1]))
             {
                 if (character.actions.Count >= 5)
                 {
                     character.actions[4].Select(character);
                 }
             }
-            else if (Input.GetKeyDown("6"))
+            else if (Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_5][0]) ||
+                Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_5][1]))
             {
                 if (character.actions.Count >= 6)
                 {
                     character.actions[5].Select(character);
                 }
             }
-            else if (Input.GetKeyDown("7"))
+            else if (Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_6][0]) ||
+                Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_6][1]))
             {
                 if (character.actions.Count >= 7)
                 {
                     character.actions[6].Select(character);
                 }
             }
-            else if (Input.GetKeyDown("8"))
+            else if (Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_7][0]) ||
+                Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_7][1]))
             {
                 if (character.actions.Count >= 8)
                 {
                     character.actions[7].Select(character);
                 }
             }
-            else if (Input.GetKeyDown("9"))
+            else if (Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_8][0]) ||
+                Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_8][1]))
             {
                 if (character.actions.Count >= 9)
                 {
                     character.actions[8].Select(character);
                 }
             }
-            else if (Input.GetKeyDown("0"))
+            else if (Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_9][0]) ||
+                Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_9][1]))
             {
                 if (character.actions.Count >= 10)
                 {
@@ -276,20 +394,23 @@ public class Game_Controller : MonoBehaviour {
         }
 
         //Next player button
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        if (Input.GetKeyDown(controlls[Controlls.Next_Player][0]) ||
+            Input.GetKeyDown(controlls[Controlls.Next_Player][1]))
         {
             curr_scenario.Next_Player();
         }
 
         //Prev player button
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (Input.GetKeyDown(controlls[Controlls.Previous_Player][0]) ||
+            Input.GetKeyDown(controlls[Controlls.Previous_Player][1]))
         {
             curr_scenario.Prev_Player();
         }
 
         //Camera Turning
         //Debug.Log(curr_scenario.curr_player.GetComponent<Character_Script>().state);
-        if (Input.GetKeyDown(KeyCode.Q) && curr_scenario.curr_player.GetComponent<Character_Script>().state != Character_States.Walking)
+        if ((Input.GetKeyDown(controlls[Controlls.Camera_Turn_Right][0]) || Input.GetKeyDown(controlls[Controlls.Camera_Turn_Right][1])) 
+            && curr_scenario.curr_player.GetComponent<Character_Script>().state != Character_States.Walking)
         {
             //Debug.Log("x:" + main_camera.transform.rotation.x + ", y:" + main_camera.transform.rotation.y + "z:" + main_camera.transform.rotation.z + ", w:" + main_camera.transform.rotation.w);
 
@@ -315,7 +436,8 @@ public class Game_Controller : MonoBehaviour {
             //Debug.Log(curr_scenario.curr_player.GetComponent<Character_Script>().orientation);
             
         }
-        if (Input.GetKeyDown(KeyCode.E) && curr_scenario.curr_player.GetComponent<Character_Script>().state != Character_States.Walking)
+        if ((Input.GetKeyDown(controlls[Controlls.Camera_Turn_Left][0]) || Input.GetKeyDown(controlls[Controlls.Camera_Turn_Left][1])) &&
+            curr_scenario.curr_player.GetComponent<Character_Script>().state != Character_States.Walking)
         {
             //Debug.Log("x:" + main_camera.transform.rotation.x + ", y:" + main_camera.transform.rotation.y + "z:" + main_camera.transform.rotation.z + ", w:" + main_camera.transform.rotation.w);
             //transform.rotation = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w);
@@ -357,21 +479,14 @@ public class Game_Controller : MonoBehaviour {
                 //tile_data.printTileData();
                 //If the tile is not traversible we know it is occupied, check for a character there
                 //this is done to print stats of the current highlighted character
-                if (!tile_data.traversible)
+                if (tile_data.obj != null)
                 {
-                    foreach (GameObject character in curr_scenario.characters)
-                    {
-                        if (character != null && 
-                            character.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[0] == tile_data.index[0] && 
-                            character.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[1] == tile_data.index[1])
-                        {
-                            curr_scenario.highlighted_player = character;
-                        }
-                    }
+
+                    curr_scenario.highlighted_obj = tile_data.obj;
                 }
                 else
                 {
-                    curr_scenario.highlighted_player = null;
+                    curr_scenario.highlighted_obj = null;
                 }
 
                 //update cursor location

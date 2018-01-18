@@ -696,7 +696,7 @@ public class Action
                     {
                         if (target.GetComponent<Tile>().obj != null)
                         {
-                            Target tar = new Target(target.GetComponent<Tile>().obj, area[x, y]);
+                            Target tar = new Target(target.GetComponent<Tile>().obj, Calculate_Total_Modifier(character, target.GetComponent<Tile>().obj, area[x, y]));
                             targets.Add(tar);
                         }
                     }
@@ -711,6 +711,185 @@ public class Action
         {
             return null;
         }
+    }
+
+    /// <summary>
+    /// Used to calculate the total modifier to be applied to the ability. 
+    /// </summary>
+    /// <param name="character">The character performing the action</param>
+    /// <param name="target">The target of the action. Could be a Character_Script or an Object.</param>
+    /// <param name="action_mod">The modifier for the Action being used in that space. </param>
+    /// <returns></returns>
+    public float Calculate_Total_Modifier(Character_Script character, GameObject target, float action_mod)
+    {
+        float modifier = 0;
+        modifier += action_mod;
+        Debug.Log("Action modifier is: " + action_mod);
+        modifier += character.accuracy;
+        //Debug.Log("Character Accuracy is: " + character.accuracy);
+        modifier += Calculate_Height_Modifier(character, target);
+        modifier += Calclulate_Orientation_Modifier(character, target);
+        modifier += Calculate_Weapon_Modifier(character, target);
+        Character_Script target_character = target.GetComponent<Character_Script>();
+        if (target_character != null)
+        {
+            modifier -= target_character.resistance;
+            //Debug.Log("Target Resistance is: " + target_character.resistance);
+        }
+
+        //Debug.Log("Character Lethality is: " + character.lethality);
+        if (modifier > character.lethality)
+        {
+            modifier = character.lethality;
+        }
+
+        //Debug.Log("Character Finesse is: " + character.finesse);
+        if(modifier >= character.finesse)
+        {
+            Debug.Log("Critical Hit!");
+        }
+
+        Debug.Log("Total Modifier is: " + modifier);
+        return modifier;
+    }
+
+    /// <summary>
+    /// Calculate the portion of the Ability Modifier derived from the character's and target's Tile Elevation.
+    /// </summary>
+    /// <param name="character">The Character performing the Action.</param>
+    /// <param name="target">The target of the Action.</param>
+    /// <returns>The Height Modifier.</returns>
+    public float Calculate_Height_Modifier(Character_Script character, GameObject target)
+    {
+        float modifier = 0;
+        Character_Script target_character = target.GetComponent<Character_Script>();
+        if (target_character != null)
+        {
+            if(target_character.curr_tile != null &&
+                character.curr_tile != null)
+            {
+                modifier = 0.125f * (character.curr_tile.GetComponent<Tile>().height - target_character.curr_tile.GetComponent<Tile>().height);
+                if (modifier > 0.25f)
+                {
+                    modifier = 0.25f;
+                }
+                else if (modifier < -0.25f)
+                {
+                    modifier = -0.25f;
+                }
+            }
+        }
+        Debug.Log("Height Modifier is: " + modifier);
+        return modifier;
+    }
+
+    /// <summary>
+    /// Calculate the portion of the Ability Modifier derived from the character's and target's Orientation.
+    /// </summary>
+    /// <param name="character">The Character performing the Action</param>
+    /// <param name="target">The target of the Action</param>
+    /// <returns>The Orientation modifier.</returns>
+    public float Calclulate_Orientation_Modifier(Character_Script character, GameObject target)
+    {
+        float modifier = 0;
+        Character_Script target_character = target.GetComponent<Character_Script>();
+        if (target_character != null)
+        {
+            Tile target_tile_data = target_character.curr_tile.GetComponent<Tile>();
+            Tile char_tile_data = character.curr_tile.GetComponent<Tile>();
+            if (char_tile_data != null && 
+                target_tile_data != null)
+            {
+                if (target_character.orientation == 0)
+                {
+                    //Striking from the sides
+                    if ((char_tile_data.index[0] > target_tile_data.index[0] &&
+                        Math.Abs(char_tile_data.index[1] - target_tile_data.index[1]) <= Math.Abs(char_tile_data.index[0] - target_tile_data.index[0])) ||
+                        (char_tile_data.index[0] < target_tile_data.index[0] &&
+                        Math.Abs(char_tile_data.index[1] - target_tile_data.index[1]) <= Math.Abs(char_tile_data.index[0] - target_tile_data.index[0])))
+                    {
+                        modifier = .125f;
+                    }
+                    //Striking from behind
+                    if (char_tile_data.index[1] > target_tile_data.index[1] &&
+                        Math.Abs(char_tile_data.index[0] - target_tile_data.index[0]) <= Math.Abs(char_tile_data.index[1] - target_tile_data.index[1]))
+                    {
+                        modifier = .25f;
+                    }
+                    //Otherwise we are striking from the front and don't update the modifier.
+                }
+                else if (target_character.orientation == 1)
+                {
+                    //Striking from the sides
+                    if ((char_tile_data.index[1] > target_tile_data.index[1] &&
+                        Math.Abs(char_tile_data.index[0] - target_tile_data.index[0]) <= Math.Abs(char_tile_data.index[1] - target_tile_data.index[1])) ||
+                        (char_tile_data.index[1] < target_tile_data.index[1] &&
+                        Math.Abs(char_tile_data.index[0] - target_tile_data.index[0]) <= Math.Abs(char_tile_data.index[1] - target_tile_data.index[1])))
+                    {
+                        modifier = .125f;
+                    }
+                    //Striking from behind
+                    if (char_tile_data.index[0] < target_tile_data.index[0] &&
+                        Math.Abs(char_tile_data.index[1] - target_tile_data.index[1]) <= Math.Abs(char_tile_data.index[0] - target_tile_data.index[0]))
+                    {
+                        modifier = .25f;
+                    }
+                    //Otherwise we are striking from the front and don't update the modifier.
+                }
+                else if (target_character.orientation == 2)
+                {
+                    //Striking from the sides
+                    if ((char_tile_data.index[0] > target_tile_data.index[0] &&
+                        Math.Abs(char_tile_data.index[1] - target_tile_data.index[1]) <= Math.Abs(char_tile_data.index[0] - target_tile_data.index[0])) ||
+                        (char_tile_data.index[0] < target_tile_data.index[0] &&
+                        Math.Abs(char_tile_data.index[1] - target_tile_data.index[1]) <= Math.Abs(char_tile_data.index[0] - target_tile_data.index[0])))
+                    {
+                        modifier = .125f;
+                    }
+                    //Striking from behind
+                    if (char_tile_data.index[1] < target_tile_data.index[1] &&
+                        Math.Abs(char_tile_data.index[0] - target_tile_data.index[0]) <= Math.Abs(char_tile_data.index[0] - target_tile_data.index[0]))
+                    {
+                        modifier = .25f;
+                    }
+                    //Otherwise we are striking from the front and don't update the modifier.
+                }
+                else if (target_character.orientation == 3)
+                {
+                    //Striking from the sides
+                    if ((char_tile_data.index[1] > target_tile_data.index[1] &&
+                        Math.Abs(char_tile_data.index[0] - target_tile_data.index[0]) <= Math.Abs(char_tile_data.index[1] - target_tile_data.index[1])) ||
+                        (char_tile_data.index[1] < target_tile_data.index[1] &&
+                        Math.Abs(char_tile_data.index[0] - target_tile_data.index[0]) <= Math.Abs(char_tile_data.index[1] - target_tile_data.index[1])))
+                    {
+                        modifier = .125f;
+                    }
+                    //Striking from behind
+                    if (char_tile_data.index[0] > target_tile_data.index[0] &&
+                        Math.Abs(char_tile_data.index[1] - target_tile_data.index[1]) <= Math.Abs(char_tile_data.index[0] - target_tile_data.index[0]))
+                    {
+                        modifier = .25f;
+                    }
+                    //Otherwise we are striking from the front and don't update the modifier.
+                }
+            }
+        }
+        Debug.Log("Facing Modifier is: " + modifier);
+        return modifier;
+    }
+
+    /// <summary>
+    /// Calculate the portion of the Ability Modifier derived from the character's Weapon Preferred spaces.
+    /// </summary>
+    /// <param name="character">The character performing the Action.</param>
+    /// <param name="target">The target of the Action</param>
+    /// <returns>The weapon modifier.</returns>
+    public float Calculate_Weapon_Modifier(Character_Script character, GameObject target)
+    {
+        float modifier = 0;
+        //Debug.Log("Weapon Modifier is: " + modifier);
+        //TODO: FINISH THIS METHOD
+        return modifier;
     }
 
     /// <summary>
@@ -1024,7 +1203,6 @@ public class Action
             Character_Script target_character = target.game_object.GetComponent<Character_Script>();
             int damage = (int)(Convert_To_Double(value, character) * target.modifier);
             Debug.Log("original damage: " + Convert_To_Double(value, character));
-            Debug.Log("modifier: "+ target.modifier);
             Debug.Log("Character " + character.character_name + " Attacked: " + target_character.character_name + "; Dealing " + damage + " damage and Using " + ap_cost + " AP");
             target_character.Take_Damage(damage, character.weapon.armor_pierce);
         }

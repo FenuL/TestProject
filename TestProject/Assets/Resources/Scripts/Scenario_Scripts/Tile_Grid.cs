@@ -345,9 +345,7 @@ public class Tile_Grid : ScriptableObject
 
                     //Set the tile object to that character and set traversible to false;
                     tiles[x, y].GetComponent<Tile>().obj = character;
-                    tiles[x, y].GetComponent<Tile>().traversible = false;
-
-
+                    //tiles[x, y].GetComponent<Tile>().traversible = false;
                 }
 
                 //create OBJECTS on top of tiles

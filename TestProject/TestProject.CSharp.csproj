@@ -72,6 +72,7 @@
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Character_States.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Character_Stats.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Conditions.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Controlls.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Scenario_Objectives.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Equipment_Scripts\Accessory.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Equipment_Scripts\Armor.cs" />

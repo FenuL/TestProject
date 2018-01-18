@@ -45,6 +45,10 @@ public class Character_Script : MonoBehaviour {
     /// int spirit - The Character's Spirit stat. Influences Maximum MP.
     /// int dexterity - The Character's Dexterity stat. Used for determining turn order.
     /// int vitality - The Character's Vitality stat. Used to determine Maximum Aura. 
+    /// float accuracy - The Character's Accuracy. Used to determine their total Ability Modifier.
+    /// float resistance - The Character's Resistance. Used to determine the total Ability Modifier of Abilities used against them.
+    /// float lethality - The Character's Lethality. Used to determine their maximum Ability Modifier.
+    /// float finesse - The Character's Finesse. Used to determine the Ability Modifier threshold for a Critical Hit.
     /// double speed - The distance a Character can traverse with a Move.
     /// int level - The level for the Character. Leveling can raise your other stats.
     /// int orientation - The direction the Character sprite is looking. Influences the Object's Animator.
@@ -85,6 +89,10 @@ public class Character_Script : MonoBehaviour {
     public int spirit { get; private set; }
     public int dexterity { get; private set; }
     public int vitality { get; private set; }
+    public float accuracy { get; private set; }
+    public float resistance { get; private set; }
+    public float lethality { get; private set; }
+    public float finesse { get; private set; }
     public double speed { get; private set; }
     public int level { get; private set; }
     public int orientation { get; private set; }
@@ -131,6 +139,10 @@ public class Character_Script : MonoBehaviour {
         dexterity = dex;
         vitality = vit;
         speed = spd;
+        accuracy = 0;
+        resistance = 0;
+        lethality = 2;
+        finesse = 1.75f;
         aura_max = vitality * AURA_MULTIPLIER;
         aura_curr = aura_max;
         action_max = AP_MAX;
@@ -220,6 +232,10 @@ public class Character_Script : MonoBehaviour {
         spirit = data.spirit;
         dexterity = data.dexterity;
         vitality = data.vitality;
+        accuracy = 0;
+        resistance = 0;
+        lethality = 2;
+        finesse = 1.75f;
         speed = (int)data.speed;
         canister_max = data.canister_max;
         weapon = data.weapon;
@@ -320,11 +336,13 @@ public class Character_Script : MonoBehaviour {
     /// <param name="condition">The new Condition to add.</param>
     public void Add_Condition(Condition condition)
     {
+        Color color = Color.red;
         //Check if the condition type is a cleanser
         if (condition.type == Conditions.Clarity)
         {
             Remove_Condition(Conditions.Confuse);
             Remove_Condition(Conditions.Blind);
+            color = Color.green;
         }
         else if (condition.type == Conditions.Cleanse)
         {
@@ -333,6 +351,7 @@ public class Character_Script : MonoBehaviour {
             Remove_Condition(Conditions.Stun);
             Remove_Condition(Conditions.Freeze);
             Remove_Condition(Conditions.Petrify);
+            color = Color.green;
         }
         else if (condition.type == Conditions.Cure)
         {
@@ -341,6 +360,7 @@ public class Character_Script : MonoBehaviour {
             Remove_Condition(Conditions.Corrupt);
             Remove_Condition(Conditions.Frostbite);
             Remove_Condition(Conditions.Drain);
+            color = Color.green;
         }
         else if (condition.type == Conditions.Restore)
         {
@@ -348,6 +368,7 @@ public class Character_Script : MonoBehaviour {
             Remove_Condition(Conditions.Vulnerability);
             Remove_Condition(Conditions.Slow);
             Remove_Condition(Conditions.Poison);
+            color = Color.green;
         }
         else if (condition.type == Conditions.Purify)
         {
@@ -370,6 +391,7 @@ public class Character_Script : MonoBehaviour {
             Remove_Condition(Conditions.Hemorrage);
             Remove_Condition(Conditions.Blight);
             Remove_Condition(Conditions.Scorch);
+            color = Color.green;
         }
         else if (condition.type == Conditions.None)
         {
@@ -408,6 +430,7 @@ public class Character_Script : MonoBehaviour {
                 conditions.Add(condition.type, condi_list);
             }
         }
+        Game_Controller.Create_Floating_Text(condition.type.ToString(), transform, color);
 
     }
 

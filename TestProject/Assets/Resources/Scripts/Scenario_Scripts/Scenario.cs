@@ -32,7 +32,7 @@ public class Scenario : MonoBehaviour {
     /// List<int> unlocks_scenarios_on_win - Scenarios that will be added to the available_scenarios List if the Player achieves the Objective.
     /// List<int> unlocks_scenarios_on_bonus - Scenarios that will be added to the available_scenarios List if the Player achieves the Bonus Objective. 
     /// GameObject curr_player - The Character that is currently Acting.
-    /// GameObject highlighted_player - The Character on the tile that is currently holding the Cursor Object.
+    /// GameObject highlighted_obj - The Object/Character on the tile that is currently holding the Cursor Object.
     /// GameObject cursor - The Cursor Object is used to select Tiles and Characters for Actions. It shows which Tile Object the player's mouse is over.
     /// List<GameObject> cursors - The List of currently active Cursor Objects. Multiple Cursors are necessary because of AoE Actions.
     /// String cursor_name - Stores the current Character's Action so we can tell if we need to change the number of Cursor Objects in the cursors List.
@@ -69,7 +69,7 @@ public class Scenario : MonoBehaviour {
     public List<int> unlocks_scenarios_on_win { get; private set; }
     public List<int> unlocks_scenarios_on_bonus { get; private set; }
     public GameObject curr_player { get; private set; }
-    public GameObject highlighted_player { get; set; }
+    public GameObject highlighted_obj { get; set; }
     public GameObject cursor { get; private set; }
     public List<GameObject> cursors { get; private set; }
     public String cursor_name { get; private set; }
@@ -483,7 +483,7 @@ public class Scenario : MonoBehaviour {
 
         cursor = GameObject.FindGameObjectWithTag("Cursor");
         cursors = new List<GameObject>();
-        GameObject[] objects = GameObject.FindGameObjectsWithTag("Character");
+        GameObject[] objects = GameObject.FindGameObjectsWithTag("Character (Friendly)");
 
         //set starting positions for players
         //TODO change this to read positions from the scenario file.
@@ -499,11 +499,13 @@ public class Scenario : MonoBehaviour {
             {
                 //Player
                 char_data = player_character_data[char_id % 100 - 1];
+                game_object.tag = "Character (Friendly)";
             }
             else if (char_id / 10000 == 2 )
             {
                 //Monster
                 char_data = monster_character_data[char_id % 100 -1];
+                game_object.tag = "Character (Enemy)";
             }
             else
             {

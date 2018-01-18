@@ -167,7 +167,7 @@ range: WPR
 center: Target 1x1
 area: 1
 self_effect: NUL
-target_effect: Status Bleed 3 2; Damage 1
+target_effect: Status Bleed 3 2
 activation_type: active
 origin: innate
 orient: target
@@ -182,7 +182,7 @@ range: WPR
 center: Target 1x1
 area: 1
 self_effect: NUL
-target_effect: Status Stun 2; Damage 0
+target_effect: Status Stun 2
 activation_type: active
 origin: innate
 orient: target
