@@ -51,6 +51,7 @@ public class Character_Script : MonoBehaviour {
     /// float finesse - The Character's Finesse. Used to determine the Ability Modifier threshold for a Critical Hit.
     /// double speed - The distance a Character can traverse with a Move.
     /// int level - The level for the Character. Leveling can raise your other stats.
+    /// float combo_mod - The modifier to add to this Character when using abilities. 
     /// int orientation - The direction the Character sprite is looking. Influences the Object's Animator.
     /// int camera_orientation_offset - The direction of the Camera looking at the Character can affect their Orientation.
     /// Vector3 camera_position_offset - The offset of the Character Sprite so that it looks right for the Camera.
@@ -95,6 +96,7 @@ public class Character_Script : MonoBehaviour {
     public float finesse { get; private set; }
     public double speed { get; private set; }
     public int level { get; private set; }
+    public float combo_mod { get; private set; }
     public int orientation { get; private set; }
     public int camera_orientation_offset { get; private set; }
     public Vector3 camera_position_offset { get; private set; }
@@ -103,7 +105,7 @@ public class Character_Script : MonoBehaviour {
     public Weapon weapon { get; private set; }
     public Armor armor { get; private set; }
     public Accessory[] accessories { get; private set; }
-    public static List<Action> all_actions { get; private set; }
+    public static Dictionary<string, Action> all_actions { get; private set; }
     public List<Action> actions { get; private set; }
     public Action curr_action { get; set; }
     public Character_States state { get; set; }
@@ -161,25 +163,15 @@ public class Character_Script : MonoBehaviour {
         state = Character_States.Idle;
         all_actions = controller.all_actions;
         actions.Add(Find_Action("Move"));
-        actions.Add(Find_Action("Attack"));
-        foreach (Equipment.Weapon_Types weps in Enum.GetValues(typeof(Equipment.Weapon_Types)))
-        {
-            if (wep.TrimStart() == weps.ToString())
-            {
-                Weapon w = new Weapon(weps);
-                Equip(w);
-                break;
-            }
-        }
-        foreach (Equipment.Armor_Types arms in Enum.GetValues(typeof(Equipment.Armor_Types)))
-        {
-            if (arm.TrimStart() == arms.ToString())
-            {
-                Armor a = new Armor(arms);
-                Equip(a);
-                break;
-            }
-        }
+        Weapon temp_weapon;
+        controller.all_weapons.TryGetValue(wep.TrimStart().TrimEnd(), out temp_weapon);
+        weapon = temp_weapon;
+        //TODO ADD info for PASSIVES AND REACTIONS AS WELL
+        Equip(weapon);
+        Armor temp_armor;
+        controller.all_armors.TryGetValue(arm.TrimStart().TrimEnd(), out temp_armor);
+        armor = temp_armor;
+        Equip(armor);
         actions.Add(Find_Action("Wait"));
         //foreach (string s in acc)
         //{
@@ -573,6 +565,16 @@ public class Character_Script : MonoBehaviour {
 
     }
 
+    public void Increase_Combo_Mod()
+    {
+        combo_mod += 0.1f;
+    }
+
+    public void Reset_Combo_Mod()
+    {
+        combo_mod = 0;
+    }
+
     /// <summary>
     /// Coroutine for letting the player select the character orientation
     /// </summary>
@@ -784,15 +786,15 @@ public class Character_Script : MonoBehaviour {
     {
         if (all_actions != null)
         {
-            //TODO Optimize search to use binary search
-            foreach (Action act in all_actions)
+            Action action;
+            //Debug.Log("Looking for: " + name);
+            if (all_actions.TryGetValue(name, out action))
             {
-                if (act.name == name)
-                {
-                    return act;
-                }
+                //Debug.Log("Found it!");
+                return action;
             }
         }
+        //Debug.Log(name + " NOT found.");
         return null;
     }
 
@@ -850,6 +852,7 @@ public class Character_Script : MonoBehaviour {
     /// <param name="e">The Equipment to Equip</param>
     public void Equip(Equipment e)
     {
+        //Debug.Log(e.name);
         switch (e.type)
         {
             case Equipment.Equipment_Type.Weapon:
@@ -902,16 +905,17 @@ public class Character_Script : MonoBehaviour {
                 }
             }
         }
-        /*speed -= e.weight;
+        speed -= e.weight;
         if( speed <= 0)
         {
             speed = 1;
-        }*/
+        }
         if (e.actions != null)
         {
             foreach(String str in e.actions)
             {
-                actions.Add(Find_Action(str));
+                //Debug.Log(str);
+                actions.Add(Find_Action(str.TrimStart().TrimEnd()));
             }
         }
     }
@@ -940,45 +944,73 @@ public class Character_Script : MonoBehaviour {
 		state = Character_States.Idle;
 
         //Randomize Equipment
-        int w = UnityEngine.Random.Range(0, 5);
+        int w = UnityEngine.Random.Range(0, 10);
         Weapon wep;
         if (w == 0)
         {
-            wep = new Weapon(Equipment.Weapon_Types.Sword);
+            wep = new Weapon(Weapon_Types.Longsword);
         } else if (w == 1)
         {
-            wep = new Weapon(Equipment.Weapon_Types.Rifle);
+            wep = new Weapon(Weapon_Types.Daggers);
         }
         else if (w == 2)
         {
-            wep = new Weapon(Equipment.Weapon_Types.Spear);
+            wep = new Weapon(Weapon_Types.Rocket_Spear);
         }
         else if (w == 3)
         {
-            wep = new Weapon(Equipment.Weapon_Types.Sniper);
+            wep = new Weapon(Weapon_Types.Gravity_Gauntlets);
         }
         else if (w == 4)
         {
-            wep = new Weapon(Equipment.Weapon_Types.Pistol);
+            wep = new Weapon(Weapon_Types.Titan_Shield);
+        }
+        else if (w == 5)
+        {
+            wep = new Weapon(Weapon_Types.Explosives);
+        }
+        else if (w == 6)
+        {
+            wep = new Weapon(Weapon_Types.Handguns);
+        }
+        else if (w == 7)
+        {
+            wep = new Weapon(Weapon_Types.Rifle);
+        }
+        else if (w == 8)
+        {
+            wep = new Weapon(Weapon_Types.Alchemyst);
         }
         else
         {
-            wep = new Weapon(Equipment.Weapon_Types.Claws);
+            wep = new Weapon(Weapon_Types.Shotgun);
         }
         Equip(wep);
-        int a = UnityEngine.Random.Range(0, 3);
+        int a = UnityEngine.Random.Range(0, 6);
         Armor ar;
         if (a == 0)
         {
-            ar = new Armor(Equipment.Armor_Types.Light);
+            ar = new Armor(Armor_Types.Ranger);
         }
         else if (a == 1)
         {
-            ar = new Armor(Equipment.Armor_Types.Medium);
+            ar = new Armor(Armor_Types.Berserker);
+        }
+        else if (a == 2)
+        {
+            ar = new Armor(Armor_Types.MAGE);
+        }
+        else if (a == 3)
+        {
+            ar = new Armor(Armor_Types.Savior);
+        }
+        else if (a == 4)
+        {
+            ar = new Armor(Armor_Types.Carapace);
         }
         else
         {
-            ar = new Armor(Equipment.Armor_Types.Heavy);
+            ar = new Armor(Armor_Types.Bard);
         }
         Equip(ar);
 		level = 1;
@@ -993,7 +1025,7 @@ public class Character_Script : MonoBehaviour {
     /// </summary>
     /// <param name="amount"> The amount of damage to take. </param>
     /// <param name="armor_penetration">The amount of armor to ignore. Set to -1 to ignore all armor.</param>
-    public void Take_Damage(int amount, int armor_penetration)
+    public void Take_Damage(float amount, float armor_penetration)
     {
         Debug.Log("Character " + character_name + " takes " + amount + " damage!");
         if (aura_curr == 0)
@@ -1004,7 +1036,7 @@ public class Character_Script : MonoBehaviour {
         {
             if (armor_penetration != -1)
             {
-                int damage_negation = armor.armor - armor_penetration;
+                float damage_negation = armor.armor - armor_penetration;
                 if (damage_negation < 0)
                 {
                     damage_negation = 0;
@@ -1015,7 +1047,7 @@ public class Character_Script : MonoBehaviour {
                     amount = 0;
                 }
             }
-            aura_curr -= amount;
+            aura_curr -= (int)amount;
             if (aura_curr < 0)
             {
                 aura_curr = 0;

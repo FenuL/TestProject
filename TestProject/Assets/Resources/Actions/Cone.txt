@@ -1,0 +1,18 @@
+name: Cone
+ap_cost: 1
+mp_cost: 5
+range: WPR
+center: Self 5x5
+area: 0 1 1 1 0
+area: 1 0 1 0 1 
+area: 1 1 0 1 1
+area: 1 0 1 0 1
+area: 0 1 1 1 0
+self_effect: NUL
+target_effect: Damage WPD+5
+activation_type: active
+origin: innate
+orient: target
+trigger: NUL
+enabled: true
+animation: NUL

@@ -1,0 +1,14 @@
+name: Bleed
+ap_cost: 0
+mp_cost: 0
+range: WPR
+center: Target 1x1
+area: 1
+self_effect: NUL
+target_effect: Status Bleed 3 2
+activation_type: active
+origin: innate
+orient: target
+trigger: NUL
+enabled: true
+animation: NUL

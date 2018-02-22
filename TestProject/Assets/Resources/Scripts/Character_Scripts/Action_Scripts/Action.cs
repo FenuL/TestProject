@@ -94,7 +94,7 @@ public class Action
     ///     animation - The animation attached to the Action</param>
     ///         Eg: animation: NUL
     /// <returns>A completely constructed Action</returns>
-    public static Action Parse(List<String> input)
+    public static Action Parse(string[] input)
     {
         Action act = new Action();
         int area_x_index = 0;
@@ -104,8 +104,15 @@ public class Action
             if (s != null)
             {
                 //Split the line into its category and its values
-                String category = s.Split(':')[0];
-                String values = s.Split(':')[1];
+                string[] split = s.Split(':');
+                if (split.Length < 2)
+                {
+                    return null;
+                } 
+                String category = split[0];
+                String values = split[1];
+                //Debug.Log("category: " + category);
+                //Debug.Log("value 0: " + values.TrimStart().TrimEnd());
                 //read the inputs based on their categories
                 switch (category)
                 {
@@ -225,25 +232,19 @@ public class Action
     /// Used to generate a List of all available Actions.
     /// </summary>
     /// <returns>A List of all Actions available</returns>
-    public static List<Action> Load_Actions()
+    public static Dictionary<string, Action> Load_Actions()
     {
-        string[] lines = System.IO.File.ReadAllLines(PLAYER_ACTIONS_FILE);
-        List<String> subset = new List<String>();
-        string line = "";
-        List<Action> actions = new List<Action>();
-        for (int i = 0; i < lines.Length; i++)
+        Dictionary<string, Action> actions = new Dictionary<string, Action>();
+        foreach (string file in System.IO.Directory.GetFiles("Assets/Resources/Actions"))
         {
-            line = lines[i];
-            if (!lines[i].Contains("==="))
+            string[] lines = System.IO.File.ReadAllLines(file);
+            Action action = Parse(lines);
+            //Debug.Log("NAME: " + action.name);
+            //Debug.Log("COST: "+ action.ap_cost);
+            if (action != null && action.name != null)
             {
-                subset.Add(lines[i]);
+                actions.Add(action.name, action);
             }
-            else
-            {
-                actions.Add(Parse(subset));
-                subset = new List<String>();
-            }
-
         }
         return actions;
     }
@@ -332,7 +333,7 @@ public class Action
                     }
                     else if (val.ToString() == "WPR")
                     {
-                        input = input.Replace(val.ToString(), "" + obj.weapon.range);
+                        input = input.Replace(val.ToString(), "" + obj.weapon.modifier.GetLength(0)/2);
                     }
                     else if (val.ToString() == "WPD")
                     {
@@ -724,12 +725,13 @@ public class Action
     {
         float modifier = 0;
         modifier += action_mod;
-        Debug.Log("Action modifier is: " + action_mod);
+        //Debug.Log("Action modifier is: " + action_mod);
         modifier += character.accuracy;
         //Debug.Log("Character Accuracy is: " + character.accuracy);
         modifier += Calculate_Height_Modifier(character, target);
         modifier += Calclulate_Orientation_Modifier(character, target);
         modifier += Calculate_Weapon_Modifier(character, target);
+        modifier += Calculate_Combo_Modifier(character, target);
         Character_Script target_character = target.GetComponent<Character_Script>();
         if (target_character != null)
         {
@@ -746,10 +748,10 @@ public class Action
         //Debug.Log("Character Finesse is: " + character.finesse);
         if(modifier >= character.finesse)
         {
-            Debug.Log("Critical Hit!");
+            //Debug.Log("Critical Hit!");
         }
 
-        Debug.Log("Total Modifier is: " + modifier);
+        //Debug.Log("Total Modifier is: " + modifier);
         return modifier;
     }
 
@@ -763,6 +765,18 @@ public class Action
     {
         float modifier = 0;
         Character_Script target_character = target.GetComponent<Character_Script>();
+        if (target_character == null)
+        {
+            Tile tile = target.GetComponent<Tile>();
+            if (tile != null)
+            {
+                GameObject obj = tile.obj;
+                if (obj != null)
+                {
+                    target_character = obj.GetComponent<Character_Script>();
+                }
+            }
+        }
         if (target_character != null)
         {
             if(target_character.curr_tile != null &&
@@ -779,7 +793,7 @@ public class Action
                 }
             }
         }
-        Debug.Log("Height Modifier is: " + modifier);
+        //Debug.Log("Height Modifier is: " + modifier);
         return modifier;
     }
 
@@ -793,6 +807,18 @@ public class Action
     {
         float modifier = 0;
         Character_Script target_character = target.GetComponent<Character_Script>();
+        if (target_character == null)
+        {
+            Tile tile = target.GetComponent<Tile>();
+            if (tile != null)
+            {
+                GameObject obj = tile.obj;
+                if (obj != null)
+                {
+                    target_character = obj.GetComponent<Character_Script>();
+                }
+            }
+        }
         if (target_character != null)
         {
             Tile target_tile_data = target_character.curr_tile.GetComponent<Tile>();
@@ -874,7 +900,7 @@ public class Action
                 }
             }
         }
-        Debug.Log("Facing Modifier is: " + modifier);
+        //Debug.Log("Facing Modifier is: " + modifier);
         return modifier;
     }
 
@@ -887,8 +913,62 @@ public class Action
     public float Calculate_Weapon_Modifier(Character_Script character, GameObject target)
     {
         float modifier = 0;
-        //Debug.Log("Weapon Modifier is: " + modifier);
-        //TODO: FINISH THIS METHOD
+        Character_Script target_character = target.GetComponent<Character_Script>();
+        if (target_character == null)
+        {
+            Tile tile = target.GetComponent<Tile>();
+            if (tile != null)
+            {
+                GameObject obj = tile.obj;
+                if (obj != null)
+                {
+                    target_character = obj.GetComponent<Character_Script>();
+                }
+            }
+        }
+        if (target_character != null)
+        {
+            Tile char_tile = character.curr_tile.GetComponent<Tile>();
+            Tile tar_tile = target_character.curr_tile.GetComponent<Tile>();
+            //Debug.Log(character.weapon.name + " range is " + character.weapon.modifier.GetLength(0)/2);
+            int range = character.weapon.modifier.GetLength(0)/2;
+            int diff_x = Math.Abs(char_tile.index[0] - tar_tile.index[0]);
+            int diff_y = Math.Abs(char_tile.index[1] - tar_tile.index[1]);
+            if (diff_x + range < character.weapon.modifier.GetLength(0) && 
+                diff_x >= 0 && 
+                diff_y + range < character.weapon.modifier.GetLength(0) && 
+                diff_y >= 0)
+            {
+                modifier = character.weapon.modifier[diff_x + range , diff_y + range];
+            }
+            //Debug.Log("Weapon Modifier is: " + modifier);
+        }
+        return modifier;
+    }
+
+    /// <summary>
+    /// Calculate the portion of the Ability Modifier derived from the target's Combo Modifier
+    /// </summary>
+    /// <param name="character">The character performing the Action.</param>
+    /// <param name="target">The target of the Action</param>
+    /// <returns>the combo modifier</returns>
+    public float Calculate_Combo_Modifier(Character_Script character, GameObject target)
+    {
+        float modifier = 0;
+        Character_Script target_character = target.GetComponent<Character_Script>();
+        Tile tile = target.GetComponent<Tile>();
+        if (tile != null)
+        {
+            GameObject obj = tile.obj;
+            if (obj != null)
+            {
+                target_character = obj.GetComponent<Character_Script>();
+            }
+        }
+        if (target_character != null)
+        {
+            modifier = target_character.combo_mod;
+        }
         return modifier;
     }
 
@@ -995,13 +1075,22 @@ public class Action
         {
             if (target_effect != null)
             {
+                //Find targets in AoE
+                List<Target> targets = Get_Targets(character, target_tile);
+                if (targets != null)
+                {
+                    foreach (Target target in targets)
+                    {
+                        if (target.game_object.GetComponent<Character_Script>())
+                        {
+                            target.game_object.GetComponent<Character_Script>().Increase_Combo_Mod();
+                        }
+                    }
+                }
                 foreach (Action_Effect eff in target_effect)
                 {
                     if (eff.type.ToString() == Action_Effect.Types.Move.ToString())
                     {
-                        //Find targets in AoE
-                        List<Target> targets = Get_Targets(character, target_tile);
-
                         // find the target to move towards
                         int centerX = character.curr_tile.GetComponent<Tile>().index[0];
                         int centerY = character.curr_tile.GetComponent<Tile>().index[1];
@@ -1048,7 +1137,6 @@ public class Action
                     }
                     else if (eff.type.ToString() == Action_Effect.Types.Damage.ToString())
                     {
-                        List<Target> targets = Get_Targets(character, target_tile);
                         foreach (Target target in targets)
                         {
                             Enact_Damage(character, eff.value[0], target);
@@ -1056,7 +1144,6 @@ public class Action
                     }
                     else if (eff.type.ToString() == Action_Effect.Types.Heal.ToString())
                     {
-                        List<Target> targets = Get_Targets(character, target_tile);
                         foreach (Target target in targets)
                         {
                             Enact_Healing(character, eff.value[0], target);
@@ -1064,7 +1151,6 @@ public class Action
                     }
                     else if (eff.type.ToString() == Action_Effect.Types.Status.ToString())
                     {
-                        List<Target> targets = Get_Targets(character, target_tile);
                         foreach (Target target in targets)
                         {
                             Enact_Status(character, eff.value, target);
@@ -1072,7 +1158,6 @@ public class Action
                     }
                     else if (eff.type.ToString() == Action_Effect.Types.Elevate.ToString())
                     {
-                        List<Target> targets = Get_Target_Tiles(character, target_tile);
                         foreach (Target target in targets)
                         {
                             Enact_Elevate(character, eff.value[0], target);
@@ -1080,7 +1165,6 @@ public class Action
                     }
                     else if (eff.type.ToString() == Action_Effect.Types.Enable.ToString())
                     {
-                        List<Target> targets = Get_Target_Tiles(character, target_tile);
                         foreach (Target target in targets)
                         {
                             Enact_Enable(character, eff.value, target);
@@ -1088,8 +1172,8 @@ public class Action
                     }
                     else if (eff.type.ToString() == Action_Effect.Types.Pass.ToString())
                     {
-                        List<Target> targets = Get_Target_Tiles(character, target_tile);
-                        foreach (Target target in targets)
+                        List<Target> target_tiles = Get_Target_Tiles(character, target_tile);
+                        foreach (Target target in target_tiles)
                         {
                             Enact_Pass(character, target);
                         }
@@ -1138,7 +1222,6 @@ public class Action
                 //Debug.Log("State " + character.state.ToString());
                 yield return new WaitForEndOfFrame();
             }
-
         }
     }
 
@@ -1204,7 +1287,7 @@ public class Action
             int damage = (int)(Convert_To_Double(value, character) * target.modifier);
             Debug.Log("original damage: " + Convert_To_Double(value, character));
             Debug.Log("Character " + character.character_name + " Attacked: " + target_character.character_name + "; Dealing " + damage + " damage and Using " + ap_cost + " AP");
-            target_character.Take_Damage(damage, character.weapon.armor_pierce);
+            target_character.Take_Damage(damage, character.weapon.pierce);
         }
         else
         {

@@ -32,7 +32,6 @@ public class Scenario : MonoBehaviour {
     /// List<int> unlocks_scenarios_on_win - Scenarios that will be added to the available_scenarios List if the Player achieves the Objective.
     /// List<int> unlocks_scenarios_on_bonus - Scenarios that will be added to the available_scenarios List if the Player achieves the Bonus Objective. 
     /// GameObject curr_player - The Character that is currently Acting.
-    /// GameObject highlighted_obj - The Object/Character on the tile that is currently holding the Cursor Object.
     /// GameObject cursor - The Cursor Object is used to select Tiles and Characters for Actions. It shows which Tile Object the player's mouse is over.
     /// List<GameObject> cursors - The List of currently active Cursor Objects. Multiple Cursors are necessary because of AoE Actions.
     /// String cursor_name - Stores the current Character's Action so we can tell if we need to change the number of Cursor Objects in the cursors List.
@@ -69,7 +68,6 @@ public class Scenario : MonoBehaviour {
     public List<int> unlocks_scenarios_on_win { get; private set; }
     public List<int> unlocks_scenarios_on_bonus { get; private set; }
     public GameObject curr_player { get; private set; }
-    public GameObject highlighted_obj { get; set; }
     public GameObject cursor { get; private set; }
     public List<GameObject> cursors { get; private set; }
     public String cursor_name { get; private set; }
@@ -257,6 +255,7 @@ public class Scenario : MonoBehaviour {
                     {
                         string[] entries = lines[j].Split(' ');
                         materials[(j-i-1)] = (Material)Resources.Load("Objects/Materials/TileMat0" + (j-i-1));
+                        materials[(j - i - 1)].name = entries[1];
                         materials[(j-i-1)].mainTexture = (Texture)Resources.Load("Textures/" + entries[1]);
                         double modifier;
                         if (double.TryParse(entries[2], out modifier))
@@ -760,43 +759,42 @@ public class Scenario : MonoBehaviour {
                     if (y_index + j >= 0 && y_index + j < tile_grid.grid_length)
                     {
                         int h = tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().height - 1;
-                        if (Mathf.Abs(i) + Mathf.Abs(j) <= curr_player.GetComponent<Character_Script>().speed)
+                        if (curr_player.GetComponent<Character_Script>().state == Character_States.Moving)
                         {
-                            if (curr_player.GetComponent<Character_Script>().state == Character_States.Moving )
+                            //if (grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().traversible){
+                            //    if ((Math.Abs(x_index - (x_index + i)) * (int)(armor.weight + weapon.weight) + Math.Abs(y_index - (y_index + j)) * (int)(armor.weight + weapon.weight) + (grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().tile_height - curr_tile.GetComponent<Tile>().tile_height) * 2) < action_curr)
+                            //    {
+                            //        reachable_tiles.Add(grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j));
+                            //    }
+                            //}
+                            if (tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight <= curr_player.GetComponent<Character_Script>().speed &&
+                                tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight > 0 &&
+                                tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().distance <= distance_limit)
                             {
-                                //if (grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().traversible){
-                                //    if ((Math.Abs(x_index - (x_index + i)) * (int)(armor.weight + weapon.weight) + Math.Abs(y_index - (y_index + j)) * (int)(armor.weight + weapon.weight) + (grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().tile_height - curr_tile.GetComponent<Tile>().tile_height) * 2) < action_curr)
-                                //    {
-                                //        reachable_tiles.Add(grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j));
-                                //    }
-                                //}
-                                if (tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight <= curr_player.GetComponent<Character_Script>().speed &&
-                                    tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight > 0 &&
-                                    tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().distance <= distance_limit)
+                                reachable_tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
+                            }
+                        }
+                        if (curr_player.GetComponent<Character_Script>().state == Character_States.Blinking)
+                        {
+                            if (tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().traversible)
+                            {
+                                if ((Math.Abs(x_index - (x_index + i)) + Math.Abs(y_index - (y_index + j))) < curr_player.GetComponent<Character_Script>().speed)
                                 {
                                     reachable_tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
                                 }
                             }
-                            if (curr_player.GetComponent<Character_Script>().state == Character_States.Blinking)
+                        }
+                        if (curr_player.GetComponent<Character_Script>().state == Character_States.Attacking)
+                        {
+                            //print ("scanned x index: " + x_index + i )
+                            //Prevent Self-Harm
+                            if (i != 0 || j != 0)
                             {
-                                if (tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().traversible)
-                                {
-                                    if ((Math.Abs(x_index - (x_index + i)) + Math.Abs(y_index - (y_index + j))) < curr_player.GetComponent<Character_Script>().speed)
-                                    {
-                                        reachable_tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
-                                    }
-                                }
-                            }
-                            if (curr_player.GetComponent<Character_Script>().state == Character_States.Attacking)
-                            {
-                                //print ("scanned x index: " + x_index + i )
-                                //Prevent Self-Harm
-                                if (i != 0 || j != 0)
+                                if (Math.Abs(i) + Math.Abs(j) <= distance_limit)
                                 {
                                     reachable_tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
                                 }
                             }
-
                         }
                     }
                 }
@@ -873,6 +871,9 @@ public class Scenario : MonoBehaviour {
     /// </summary>
     public void Next_Player()
     {
+        foreach (GameObject chara in characters) {
+            chara.GetComponent<Character_Script>().Reset_Combo_Mod();
+        }
         curr_character_num = curr_character_num - 1;
         if (curr_character_num < 0)
         {
@@ -906,6 +907,10 @@ public class Scenario : MonoBehaviour {
     /// </summary>
     public void Prev_Player()
     {
+        foreach (GameObject chara in characters)
+        {
+            chara.GetComponent<Character_Script>().Reset_Combo_Mod();
+        }
         curr_character_num = curr_character_num + 1;
         if (curr_character_num >= characters.Count)
         {

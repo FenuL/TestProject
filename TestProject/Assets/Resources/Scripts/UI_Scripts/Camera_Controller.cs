@@ -26,9 +26,158 @@ public class Camera_Controller : MonoBehaviour {
     GUIStyle style;
 
     private Character_Script curr_player;
-    private Character_Script highlighted_player;
+    private GameObject highlighted_obj;
 
     Game_Controller controller;// = Game_Controller.controller;
+
+    /// <summary>
+    /// Method to create a GUI window to show the 
+    /// currently slected Player's stats.
+    /// </summary>
+    public void Current_Character_Preview()
+    {
+        int actions_remaining = (int)(curr_player.action_curr - curr_player.curr_action.Convert_To_Double(curr_player.curr_action.ap_cost, curr_player));
+        string action_color = "white";
+        if (actions_remaining > curr_player.action_curr)
+        {
+            action_color = "blue";
+        }
+        else if (actions_remaining < curr_player.action_curr)
+        {
+            action_color = "red";
+        }
+        int mana_remaining = (int)(curr_player.mana_curr - curr_player.curr_action.Convert_To_Double(curr_player.curr_action.mp_cost, curr_player));
+        string mana_color = "white";
+        if (mana_remaining > curr_player.mana_curr)
+        {
+            mana_color = "blue";
+        }
+        else if (mana_remaining < curr_player.mana_curr)
+        {
+            mana_color = "red";
+        }
+        GUI.TextArea(new Rect(10, Screen.height - 120, 200, 110), curr_player.character_name + "\n" +
+          "AU: " + curr_player.aura_curr + " / " + curr_player.aura_max + "\n" +
+          "AP: <color=" + action_color + ">" + actions_remaining + "</color> / " + curr_player.action_max + "     " +
+          "MP: <color=" + mana_color + ">" + mana_remaining + "</color> / " + curr_player.mana_max + "\n" +
+          "Str: " + curr_player.strength + "   Crd: " + curr_player.coordination + "    Spt: " + curr_player.spirit + "\n" +
+          "Dex: " + curr_player.dexterity + "   Vit: " + curr_player.vitality + "   Spd: " + curr_player.speed + "\n" +
+          "Wep: " + curr_player.weapon.name + "   Armor: " + curr_player.armor.name, style);
+    }
+
+    /// <summary>
+    /// Method to create a GUI window displaying the 
+    /// information on the currently selected Tile.
+    /// </summary>
+    public void Current_Tile_Preview()
+    {
+        Tile tile = controller.curr_scenario.selected_tile.GetComponent<Tile>();
+        if (tile != null)
+        {
+            float action_mod = 0;
+            if (curr_player.curr_action != null)
+            {
+                action_mod = curr_player.curr_action.Calculate_Total_Modifier(
+                    curr_player,
+                    controller.curr_scenario.selected_tile.gameObject,
+                    curr_player.curr_action.area[curr_player.curr_action.area.GetLength(0) / 2, curr_player.curr_action.area.GetLength(1) / 2]);
+            }
+            string mod_color = "white";
+            if (action_mod >= curr_player.finesse)
+            {
+                mod_color = "blue";
+            }
+            GUI.TextArea(new Rect(Screen.width - 110, Screen.height - 120, 100, 110),
+            "Tile: " + tile.GetComponentInChildren<Renderer>().material.name.Split(' ')[0] + "\n" +
+            "Height: " + tile.height + "\n" +
+            "Effects: \n" +
+            "Action Mod: <color=" + mod_color + ">" + action_mod + "</color> \n" +
+            "Move Mod : " + tile.modifier + "\n", style);
+        }
+    }
+
+    /// <summary>
+    /// Method to create a GUI window displaying the information 
+    /// on the Object or Character on the currently selected tile.
+    /// </summary>
+    public void Current_Target_Preview()
+    {
+        highlighted_obj = controller.curr_scenario.selected_tile.GetComponent<Tile>().obj;
+        if (highlighted_obj != null)
+        {
+            Character_Script highlighted_character = highlighted_obj.GetComponent<Character_Script>();
+            if (highlighted_character != null)
+            {
+                if (curr_player.curr_action != null)
+                {
+                    bool preview = false;
+                    foreach (Action_Effect eff in curr_player.curr_action.target_effect)
+                    {
+                        if (eff.type.ToString() == "Damage")
+                        {
+                            //TODO: This is inaccurate because it doesn't take into account the target modifier.
+                            int damage_dealt = highlighted_character.Estimate_Damage(curr_player.curr_action.Convert_To_Double(eff.value[0], curr_player), (int)curr_player.weapon.pierce);
+                            int new_aura = highlighted_character.aura_curr - damage_dealt;
+                            if (new_aura < 0)
+                            {
+                                new_aura = 0;
+                            }
+                            else if (new_aura > highlighted_character.aura_curr)
+                            {
+                                new_aura = highlighted_character.aura_curr;
+                            }
+                            GUI.TextArea(new Rect(Screen.width - 320, Screen.height - 120, 200, 110), highlighted_character.character_name + "\n" +
+                              "AU: <color=red>" + (new_aura) + "</color> / " + highlighted_character.aura_max + "     " +
+                              "AP: " + highlighted_character.action_curr + " / " + highlighted_character.action_max + "\n" +
+                              "MP: " + highlighted_character.mana_curr + " / " + highlighted_character.mana_max + "\n" +
+                              "Str: " + highlighted_character.strength + "   Crd: " + highlighted_character.coordination + "    Spt: " + highlighted_character.spirit + "\n" +
+                              "Dex: " + highlighted_character.dexterity + "   Vit: " + highlighted_character.vitality + "   Spd: " + highlighted_character.speed + "\n" +
+                              "Wep: " + highlighted_character.weapon.name + "   Armor: " + highlighted_character.armor.name, style);
+                            preview = true;
+                            break;
+                        }
+                        else if (eff.type.ToString() == "Heal")
+                        {
+                            int healing = (int)curr_player.curr_action.Convert_To_Double(eff.value[0], curr_player);
+                            int new_aura = highlighted_character.aura_curr + healing;
+                            if (new_aura < 0)
+                            {
+                                new_aura = 0;
+                            }
+                            else if (new_aura > highlighted_character.aura_max)
+                            {
+                                new_aura = highlighted_character.aura_max;
+                            }
+                            GUI.TextArea(new Rect(Screen.width - 320, Screen.height - 120, 200, 110), highlighted_character.character_name + "\n" +
+                              "AU: <color=green>" + new_aura + "</color> / " + highlighted_character.aura_max + "     " +
+                              "AP: " + highlighted_character.action_curr + " / " + highlighted_character.action_max + "\n" +
+                              "MP: " + highlighted_character.mana_curr + " / " + highlighted_character.mana_max + "\n" +
+                              "Str: " + highlighted_character.strength + "   Crd: " + highlighted_character.coordination + "    Spt: " + highlighted_character.spirit + "\n" +
+                              "Dex: " + highlighted_character.dexterity + "   Vit: " + highlighted_character.vitality + "   Spd: " + highlighted_character.speed + "\n" +
+                              "Wep: " + highlighted_character.weapon.name + "   Armor: " + highlighted_character.armor.name, style);
+                            preview = true;
+                            break;
+                        }
+                    }
+                    if (!preview)
+                    {
+                        GUI.TextArea(new Rect(Screen.width - 320, Screen.height - 120, 200, 110), highlighted_character.character_name + "\n" +
+                            "AU: " + highlighted_character.aura_curr + " / " + highlighted_character.aura_max + "\n" +
+                            "AP: " + highlighted_character.action_curr + " / " + highlighted_character.action_max + "     " +
+                            "MP: " + highlighted_character.mana_curr + " / " + highlighted_character.mana_max + "\n" +
+                            "Str: " + highlighted_character.strength + "   Crd: " + highlighted_character.coordination + "    Spt: " + highlighted_character.spirit + "\n" +
+                            "Dex: " + highlighted_character.dexterity + "   Vit: " + highlighted_character.vitality + "   Spd: " + highlighted_character.speed + "\n" +
+                            "Wep: " + highlighted_character.weapon.name + "   Armor: " + highlighted_character.armor.name, style);
+                    }
+                }
+            }
+            else
+            {
+                //Object
+                GUI.TextArea(new Rect(Screen.width - 320, Screen.height - 120, 200, 110), "Object \n");
+            }
+        }
+    }
 
     /// <summary>
     /// Displays the GUI for the player. 
@@ -59,106 +208,14 @@ public class Camera_Controller : MonoBehaviour {
             curr_player = controller.curr_scenario.curr_player.GetComponent<Character_Script>();
             if (curr_player.curr_action != null)
             {
-                int actions_remaining = (int)(curr_player.action_curr - curr_player.curr_action.Convert_To_Double(curr_player.curr_action.ap_cost, curr_player));
-                string action_color = "white";
-                if (actions_remaining > curr_player.action_curr)
-                {
-                    action_color = "blue";
-                }else if (actions_remaining < curr_player.action_curr)
-                {
-                    action_color = "red";
-                }
-                int mana_remaining = (int)(curr_player.mana_curr - curr_player.curr_action.Convert_To_Double(curr_player.curr_action.mp_cost, curr_player));
-                string mana_color = "white";
-                if (mana_remaining > curr_player.mana_curr)
-                {
-                    mana_color = "blue";
-                }
-                else if (mana_remaining < curr_player.mana_curr)
-                {
-                    mana_color = "red";
-                }
-                GUI.TextArea(new Rect(10, Screen.height - 120, 200, 110), curr_player.character_name + "\n" +
-                  "AU: " + curr_player.aura_curr + " / " + curr_player.aura_max + "\n" +
-                  "AP: <color=" + action_color + ">" + actions_remaining + "</color> / " + curr_player.action_max + "\n" +
-                  "MP: <color=" + mana_color + ">" + mana_remaining + "</color> / " + curr_player.mana_max + "\n" +
-                  "Str: " + curr_player.strength + "   Crd: " + curr_player.coordination + "    Spt: " + curr_player.spirit + "\n" +
-                  "Dex: " + curr_player.dexterity + "   Vit: " + curr_player.vitality + "   Spd: " + curr_player.speed + "\n" +
-                  "Wep: " + curr_player.weapon.name + "   Armor: " + curr_player.armor.name,style);
+                Current_Character_Preview();
             }
-            if (controller.curr_scenario.highlighted_obj != null)
+
+            Current_Tile_Preview();
+
+            if (controller.curr_scenario.selected_tile.GetComponent<Tile>() != null)
             {
-                highlighted_player = controller.curr_scenario.highlighted_obj.GetComponent<Character_Script>();
-                if (highlighted_player != null)
-                {
-                    if (curr_player.curr_action != null)
-                    {
-                        bool preview = false;
-                        foreach (Action_Effect eff in curr_player.curr_action.target_effect)
-                        {
-                            if (eff.type.ToString() == "Damage")
-                            {
-                                //TODO: This is inaccurate because it doesn't take into account the target modifier.
-                                int damage_dealt = highlighted_player.Estimate_Damage(curr_player.curr_action.Convert_To_Double(eff.value[0], curr_player), curr_player.weapon.armor_pierce);
-                                int new_aura = highlighted_player.aura_curr - damage_dealt;
-                                if (new_aura < 0)
-                                {
-                                    new_aura = 0;
-                                }
-                                else if (new_aura > highlighted_player.aura_curr)
-                                {
-                                    new_aura = highlighted_player.aura_curr;
-                                }
-                                GUI.TextArea(new Rect(Screen.width - 210, Screen.height - 120, 200, 110), highlighted_player.character_name + "\n" +
-                                  "AU: <color=red>" + (new_aura) + "</color> / " + highlighted_player.aura_max + "\n" +
-                                  "AP: " + highlighted_player.action_curr + " / " + highlighted_player.action_max + "\n" +
-                                  "MP: " + highlighted_player.mana_curr + " / " + highlighted_player.mana_max + "\n" +
-                                  "Str: " + highlighted_player.strength + "   Crd: " + highlighted_player.coordination + "    Spt: " + highlighted_player.spirit + "\n" +
-                                  "Dex: " + highlighted_player.dexterity + "   Vit: " + highlighted_player.vitality + "   Spd: " + highlighted_player.speed + "\n" +
-                                  "Wep: " + highlighted_player.weapon.name + "   Armor: " + highlighted_player.armor.name, style);
-                                preview = true;
-                                break;
-                            }
-                            else if (eff.type.ToString() == "Heal")
-                            {
-                                int healing = (int)curr_player.curr_action.Convert_To_Double(eff.value[0], curr_player);
-                                int new_aura = highlighted_player.aura_curr + healing;
-                                if (new_aura < 0)
-                                {
-                                    new_aura = 0;
-                                }
-                                else if (new_aura > highlighted_player.aura_max)
-                                {
-                                    new_aura = highlighted_player.aura_max;
-                                }
-                                GUI.TextArea(new Rect(Screen.width - 210, Screen.height - 120, 200, 110), highlighted_player.character_name + "\n" +
-                                  "AU: <color=green>" + new_aura + "</color> / " + highlighted_player.aura_max + "\n" +
-                                  "AP: " + highlighted_player.action_curr + " / " + highlighted_player.action_max + "\n" +
-                                  "MP: " + highlighted_player.mana_curr + " / " + highlighted_player.mana_max + "\n" +
-                                  "Str: " + highlighted_player.strength + "   Crd: " + highlighted_player.coordination + "    Spt: " + highlighted_player.spirit + "\n" +
-                                  "Dex: " + highlighted_player.dexterity + "   Vit: " + highlighted_player.vitality + "   Spd: " + highlighted_player.speed + "\n" +
-                                  "Wep: " + highlighted_player.weapon.name + "   Armor: " + highlighted_player.armor.name, style);
-                                preview = true;
-                                break;
-                            }
-                        }
-                        if (!preview)
-                        {
-                            GUI.TextArea(new Rect(Screen.width - 210, Screen.height - 120, 200, 110), highlighted_player.character_name + "\n" +
-                                "AU: " + highlighted_player.aura_curr + " / " + highlighted_player.aura_max + "\n" +
-                                "AP: " + highlighted_player.action_curr + " / " + highlighted_player.action_max + "\n" +
-                                "MP: " + highlighted_player.mana_curr + " / " + highlighted_player.mana_max + "\n" +
-                                "Str: " + highlighted_player.strength + "   Crd: " + highlighted_player.coordination + "    Spt: " + highlighted_player.spirit + "\n" +
-                                "Dex: " + highlighted_player.dexterity + "   Vit: " + highlighted_player.vitality + "   Spd: " + highlighted_player.speed + "\n" +
-                                "Wep: " + highlighted_player.weapon.name + "   Armor: " + highlighted_player.armor.name, style);
-                        }
-                    }
-                }
-                else
-                {
-                    //Object
-                    GUI.TextArea(new Rect(Screen.width - 210, Screen.height - 120, 200, 110), "Object \n");
-                }
+                Current_Target_Preview();
             }
         }
     }

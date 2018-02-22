@@ -8,8 +8,8 @@ dexterity: 2
 vitality: 5
 speed: 5
 canister_max: 0
-weapon: Claws
-armor: Heavy
+weapon: Daggers
+armor: Carapace
 #accessories: none, none
 animator: Beetleboar
 scale: 3.25,3.25,3.25
@@ -23,8 +23,8 @@ dexterity: 2
 vitality: 7
 speed: 7
 canister_max: 0
-weapon: Claws
-armor: Heavy
+weapon: Daggers
+armor: Carapace
 accessories: none, none
 animator: Beetleboar
 scale: 4.0,4.0,4.0

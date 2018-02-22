@@ -8,8 +8,8 @@ dexterity: 5
 vitality: 2
 speed: 6
 canister_max: 2
-weapon: Sniper
-armor: Medium
+weapon: Rifle
+armor: Ranger
 #accessories: none, none
 animator: Larken
 scale: 7.5
@@ -23,8 +23,8 @@ dexterity: 4
 vitality: 4
 speed: 6
 canister_max: 2
-weapon: Pistol
-armor: Medium
+weapon: Handguns
+armor: Ranger
 #accessories: none, none
 animator: Shiz
 scale: 7.5
@@ -38,8 +38,8 @@ dexterity: 3
 vitality: 5
 speed: 6
 canister_max: 2
-weapon: Sword
-armor: Light
+weapon: Gravity_Gauntlets
+armor: Ranger
 #accessories: none, none
 animator: En
 scale: 7.5
@@ -53,8 +53,8 @@ dexterity: 1
 vitality: 1
 speed: 6
 canister_max: 3
-weapon: Rifle
-armor: Light
+weapon: Alchemyst
+armor: Ranger
 #accessories: none, none
 animator: Magus
 scale: 7.5
@@ -68,8 +68,8 @@ dexterity: 2
 vitality: 5
 speed: 6
 canister_max: 2
-weapon: Spear
-armor: Heavy
+weapon: Rocket_Spear
+armor: Ranger
 #accessories: none, none
 animator: En
 scale: 7.5
@@ -83,8 +83,8 @@ dexterity: 1
 vitality: 1
 speed: 6
 canister_max: 1
-weapon: Sniper
-armor: Heavy
+weapon: Daggers
+armor: Ranger
 #accessories: none, none
 animator: Magus
 scale: 7.5

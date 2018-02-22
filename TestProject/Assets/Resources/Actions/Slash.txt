@@ -1,0 +1,14 @@
+﻿name: Slash
+ap_cost: 1
+mp_cost: 0
+range: WPR
+center: Target 1x1
+area: 1
+self_effect: Enable Attack false
+target_effect: Damage WPD+5
+activation_type: active
+origin: innate
+orient: target
+trigger: NUL
+enabled: true
+animation: NUL

@@ -1,0 +1,14 @@
+name: Stun
+ap_cost: 1
+mp_cost: 5
+range: WPR
+center: Target 1x1
+area: 1
+self_effect: NUL
+target_effect: Status Stun 2
+activation_type: active
+origin: innate
+orient: target
+trigger: NUL
+enabled: true
+animation: NUL

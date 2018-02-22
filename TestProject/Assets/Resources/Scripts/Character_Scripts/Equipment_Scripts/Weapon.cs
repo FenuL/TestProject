@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 /// <summary>
 /// Class for Weapon class Equipment. Inherits from Equipment.
@@ -13,10 +14,143 @@ public class Weapon : Equipment
     /// bool ranged - Whether the Weapon is Ranged or Melee.
     /// int armor_pierce - How much armor the Weapon ignores when dealing damage.
     /// </summary>
-    public int range { get; private set; }
-    public int attack { get; private set; }
-    public bool ranged { get; private set; }
-    public int armor_pierce { get; private set; }
+    public string category { get; private set;  }
+    public string scaling { get; private set; }
+    public float[,] modifier { get; private set; }
+    public float attack { get; private set; }
+    public float pierce { get; private set; }
+    public string passive { get; private set; }
+    public string reaction { get; private set; }
+    public string active1 { get; private set; }
+    public string active2 { get; private set; }
+    public string active3 { get; private set; }
+
+    /// <summary>
+    /// Takes a List of strings and returns a usable Weapon object.
+    /// </summary>
+    /// <param name="input">The list of weapon stats to create the Weapon.</param>
+    /// <returns>The Weapon object.</returns>
+    public static Weapon Parse(string[] input)
+    {
+        Weapon weapon = new Weapon();
+        int mod_x_index = 0;
+        int mod_y_index = 0;
+        float number = 0;
+        foreach (string s in input)
+        {
+            if (s != null)
+            {
+                //Split the line into its category and its values
+                string[] split = s.Split(':');
+                if (split.Length < 2)
+                {
+                    return null;
+                }
+                string category = split[0];
+                string values = split[1];
+                //read the inputs based on their categories
+                switch (category)
+                {
+                    case "name":
+                        weapon.name = values.TrimStart().TrimEnd();
+                        category = weapon.name;
+                        break;
+                    case "scaling":
+                        weapon.scaling = values.TrimStart().TrimEnd();
+                        break;
+                    case "area":
+                        int x;
+                        int y;
+                        int.TryParse(values.Split('x')[0], out x);
+                        int.TryParse(values.Split('x')[1], out y);
+                        weapon.modifier = new float[x, y];
+                        break;
+                    case "mod":
+                        foreach (string num in values.TrimStart().TrimEnd().Split(' '))
+                        {
+                            number = 0;
+                            float.TryParse(num, out number);
+                            weapon.modifier[mod_x_index, mod_y_index] = number;
+                            mod_y_index++;
+                        }
+                        mod_y_index = 0;
+                        mod_x_index++;
+                        break;
+                    case "attack":
+                        number = 0;
+                        float.TryParse(values.TrimStart().TrimEnd(), out number);
+                        weapon.attack = number;
+                        break;
+                    case "weight":
+                        number = 0;
+                        float.TryParse(values.TrimStart().TrimEnd(), out number);
+                        weapon.weight = number;
+                        break;
+                    case "pierce":
+                        number = 0;
+                        float.TryParse(values.TrimStart().TrimEnd(), out number);
+                        weapon.pierce = number;
+                        break;
+                    case "Passive":
+                        weapon.passive = values.TrimStart().TrimEnd();
+                        break;
+                    case "Reaction":
+                        weapon.reaction = values.TrimStart().TrimEnd();
+                        break;
+                    case "Active1":
+                        weapon.active1 = values.TrimStart().TrimEnd();
+                        break;
+                    case "Active2":
+                        weapon.active2 = values.TrimStart().TrimEnd();
+                        break;
+                    case "Active3":
+                        weapon.active3 = values.TrimStart().TrimEnd();
+                        break;
+                }
+            }
+        }
+        weapon.actions[0] = weapon.active1;
+        weapon.actions[1] = weapon.active2;
+        weapon.actions[2] = weapon.active3;
+        return weapon;
+    }
+
+    /// <summary>
+    /// Used in conjustion with the Parse method to create a Dictionary of all known weapon types.
+    /// </summary>
+    /// <returns>A constructed Dictionary containing all known weapon types, using their names as the key.</returns>
+    public static Dictionary<string, Weapon> Load_Weapons()
+    {
+        Dictionary<string, Weapon> weapon_types = new Dictionary<string, Weapon>();
+        foreach (string file in System.IO.Directory.GetFiles("Assets/Resources/Equipment/Weapons/"))
+        {
+            string[] lines = System.IO.File.ReadAllLines(file);
+            Weapon weapon = Parse(lines);
+            if (weapon != null && weapon.name != "")
+            {
+                //Debug.Log("Added " + weapon.name);
+                weapon_types.Add(weapon.name, weapon);
+            }
+        }
+        return weapon_types;
+    }
+
+    /// <summary>
+    /// An empty Constructor used to instantiate an epty Weapon object.
+    /// </summary>
+    public Weapon()
+    {
+        type = Equipment_Type.Weapon;
+        name = "";
+        attack = 0;
+        pierce = 0;
+        passive = "";
+        reaction = "";
+        active1 = "";
+        active2 = "";
+        active3 = "";
+        actions = new string[3];  
+}
 
     /// <summary>
     /// Constructor for the class. Takes a String and parses it to a Weapon_Type.
@@ -26,69 +160,6 @@ public class Weapon : Equipment
     {
         type = Equipment_Type.Weapon;
         durability = 100;
-        switch (str)
-        {
-            case "Sword":
-                name = Weapon_Types.Sword.ToString();
-                range = 1;
-                attack = 2;
-                weight = 0.5;
-                ranged = false;
-                armor_pierce = 0;
-                actions = new string[1];
-                actions[0] = "Bleed";
-                break;
-            case "Rifle":
-                name = Weapon_Types.Rifle.ToString();
-                range = 4;
-                attack = 3;
-                ranged = true;
-                weight = 1;
-                armor_pierce = 1;
-                actions = new string[1];
-                actions[0] = "Stun";
-                break;
-            case "Spear":
-                name = Weapon_Types.Spear.ToString();
-                range = 2;
-                attack = 2;
-                ranged = false;
-                weight = 1;
-                armor_pierce = 1;
-                break;
-            case "Sniper":
-                name = Weapon_Types.Sniper.ToString();
-                range = 6;
-                attack = 5;
-                ranged = true;
-                weight = 3;
-                armor_pierce = 2;
-                actions = new string[1];
-                actions[0] = "Stun";
-                break;
-            case "Pistol":
-                name = Weapon_Types.Pistol.ToString();
-                range = 3;
-                attack = 2;
-                ranged = true;
-                weight = 0.5;
-                armor_pierce = 0;
-                actions = new string[1];
-                actions[0] = "Stun";
-                break;
-            case "Claws":
-                name = Weapon_Types.Claws.ToString();
-                range = 1;
-                attack = 10;
-                ranged = false;
-                weight = 4;
-                armor_pierce = 0;
-                actions = new string[1];
-                actions[0] = "Bleed";
-                break;
-            default:
-                break;
-        }
     }
 
     /// <summary>
@@ -99,68 +170,6 @@ public class Weapon : Equipment
     {
         type = Equipment_Type.Weapon;
         durability = 100;
-        switch (wep)
-        {
-            case Weapon_Types.Sword:
-                name = Weapon_Types.Sword.ToString();
-                range = 1;
-                attack = 2;
-                weight = 0.5;
-                ranged = false;
-                armor_pierce = 0;
-                actions = new string[1];
-                actions[0] = "Bleed";
-                break;
-            case Weapon_Types.Rifle:
-                name = Weapon_Types.Rifle.ToString();
-                range = 4;
-                attack = 3;
-                ranged = true;
-                weight = 1;
-                armor_pierce = 1;
-                actions = new string[1];
-                actions[0] = "Stun";
-                break;
-            case Weapon_Types.Spear:
-                name = Weapon_Types.Spear.ToString();
-                range = 2;
-                attack = 2;
-                ranged = false;
-                weight = 1;
-                armor_pierce = 1;
-                break;
-            case Weapon_Types.Sniper:
-                name = Weapon_Types.Sniper.ToString();
-                range = 6;
-                attack = 5;
-                ranged = true;
-                weight = 3;
-                armor_pierce = 2;
-                actions = new string[1];
-                actions[0] = "Stun";
-                break;
-            case Weapon_Types.Pistol:
-                name = Weapon_Types.Pistol.ToString();
-                range = 3;
-                attack = 2;
-                ranged = true;
-                weight = 0.5;
-                armor_pierce = 0;
-                actions = new string[1];
-                actions[0] = "Stun";
-                break;
-            case Weapon_Types.Claws:
-                name = Weapon_Types.Claws.ToString();
-                range = 1;
-                attack = 10;
-                ranged = false;
-                weight = 4;
-                armor_pierce = 0;
-                actions = new string[1];
-                actions[0] = "Bleed";
-                break;
-            default:
-                break;
-        }
+        
     }
 }

@@ -1,0 +1,16 @@
+name: Cross
+ap_cost: 1
+mp_cost: 0
+range: WPR
+center: Target 3x3
+area: 0 .6 0
+area: .6 1 .6
+area: 0 .6 0
+self_effect: NUL
+target_effect: Damage WPD+5
+activation_type: active
+origin: innate
+orient: target
+trigger: NUL
+enabled: true
+animation: NUL

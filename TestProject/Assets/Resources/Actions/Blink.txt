@@ -1,0 +1,14 @@
+name: Blink
+ap_cost: 0
+mp_cost: 5
+range: SPD
+center: Target 1x1
+area: .2
+self_effect: Move 4
+target_effect: NUL
+activation_type: active
+origin: innate
+orient: target
+trigger: NUL
+enabled: true
+animation: NUL

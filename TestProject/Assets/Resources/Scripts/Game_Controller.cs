@@ -28,7 +28,9 @@ public class Game_Controller : MonoBehaviour {
     public Scenario curr_scenario { get; private set; }
     public ArrayList avail_scenarios;
     public GameObject main_camera;
-    public List<Action> all_actions { get; private set; }
+    public Dictionary<string, Action> all_actions { get; private set; }
+    public Dictionary<string, Weapon> all_weapons { get; private set; }
+    public Dictionary<string, Armor> all_armors { get; private set; }
     public Transform action_menu;
     public Dictionary<Controlls, KeyCode[]> controlls { get; private set; }
 
@@ -110,6 +112,8 @@ public class Game_Controller : MonoBehaviour {
         popup = Resources.Load<FloatingText>("Prefabs/Object Prefabs/PopupTextParent");
         main_camera = GameObject.FindGameObjectWithTag("MainCamera");
         all_actions = Action.Load_Actions();
+        all_weapons = Weapon.Load_Weapons();
+        all_armors = Armor.Load_Armors();
         curr_scenario = new Scenario(STARTING_SCENARIO);
         avail_scenarios = new ArrayList();
         avail_scenarios.Add(curr_scenario);
@@ -476,19 +480,6 @@ public class Game_Controller : MonoBehaviour {
             Tile tile_data = hit.transform.GetComponent<Tile>();
             if (tile_data != null)
             {
-                //tile_data.printTileData();
-                //If the tile is not traversible we know it is occupied, check for a character there
-                //this is done to print stats of the current highlighted character
-                if (tile_data.obj != null)
-                {
-
-                    curr_scenario.highlighted_obj = tile_data.obj;
-                }
-                else
-                {
-                    curr_scenario.highlighted_obj = null;
-                }
-
                 //update cursor location
                 curr_scenario.selected_tile = hit.transform;
                 curr_scenario.Update_Cursor(curr_scenario.selected_tile);

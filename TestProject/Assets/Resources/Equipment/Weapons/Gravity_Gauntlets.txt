@@ -1,0 +1,20 @@
+name: Gravity_Gauntlets
+scaling: STR
+attack: 2
+weight: 1
+pierce: 0
+area: 9x9
+mod: 0 0 0 0 0.125 0 0 0 0
+mod: 0 0 0 0.125 0.25 0.125 0 0 0
+mod: 0 0 0.125 0.25 0.25 0.25 0.125 0 0
+mod: 0 0.125 0.25 0.25 0.5 0.25 0.25 0.125 0
+mod: 0.125 0.25 0.25 0.5 0.5 0.5 0 0 0.125
+mod: 0 0.125 0.25 0.25 0.5 0.25 0.25 0.125 0
+mod: 0 0 0.125 0.25 0.25 0.25 0.125 0 0
+mod: 0 0 0 0 0.125.25 0.125 0 0 0
+mod: 0 0 0 0 0.125 0 0 0 0
+Passive: Master_of_Positioning
+Reaction: Counter
+Active1: Slash
+Active2: Cone
+Active3: Stun

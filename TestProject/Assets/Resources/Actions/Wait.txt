@@ -1,0 +1,14 @@
+name: Wait
+ap_cost: APC
+mp_cost: -5
+range: 0
+center: Self 1x1
+area: .2
+self_effect: Pass
+target_effect: NUL
+activation_type: active
+origin: innate
+orient: select
+trigger: NUL
+enabled: true
+animation: NUL

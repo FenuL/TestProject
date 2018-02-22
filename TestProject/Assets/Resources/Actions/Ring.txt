@@ -1,0 +1,16 @@
+name: Ring
+ap_cost: 1
+mp_cost: 5
+range: WPR
+center: Self 3x3
+area: .3 .6 .3
+area: .6 0 .6
+area: .3 .6 .3
+self_effect: NUL
+target_effect: Heal WPD+5
+activation_type: active
+origin: innate
+orient: target
+trigger: NUL
+enabled: true
+animation: NUL
