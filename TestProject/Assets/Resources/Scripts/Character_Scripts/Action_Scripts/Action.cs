@@ -29,6 +29,7 @@ public class Action
     /// String range - Unconverted number of tiles away the skill can target.
     /// String center - Unconverted where to center the Action. Over a Target or over the Character's Self.
     /// float[,] area - The area of effect that the Action will affect.
+    /// bool paused - If the Action is paused or not. 
     /// List<Action_Effect> self_effect - The Effect the Character will have on itself when using this Action
     /// List<Action_Effect> target_effect - the Effect the Character will have on a target when using this Action
     /// Activation_Types type - The type of Activation for the Skill. Active skills must be Selected. Passive Skills are always active. Reactive Skills have a Trigger.
@@ -45,6 +46,7 @@ public class Action
     public String range { get; private set; }
     public String center { get; private set; }
     public float[,] area { get; private set; }
+    public bool paused { get; private set; }
     public List<Action_Effect> self_effect { get; private set; }
     public List<Action_Effect> target_effect { get; private set; }
     public Activation_Types type { get; private set; }
@@ -99,6 +101,7 @@ public class Action
         Action act = new Action();
         int area_x_index = 0;
         int area_y_index = 0;
+        act.paused = false;
         foreach (String s in input)
         {
             if (s != null)
@@ -473,32 +476,32 @@ public class Action
                     {
                         foreach (Action_Effect eff in target_effect)
                         {
-                            if (eff.type.ToString() == Action_Effect.Types.Move.ToString())
+                            if (eff.type == Action_Effect.Types.Move)
                             {
                                 character.state = Character_States.Moving;
                                 character.controller.curr_scenario.Find_Reachable((int)character.speed, (int)Convert_To_Double(range, character));
                             }
-                            else if (eff.type.ToString() == Action_Effect.Types.Damage.ToString())
+                            else if (eff.type == Action_Effect.Types.Damage)
                             {
                                 character.state = Character_States.Attacking;
                                 character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, character));
                             }
-                            else if (eff.type.ToString() == Action_Effect.Types.Heal.ToString())
+                            else if (eff.type == Action_Effect.Types.Heal)
                             {
                                 character.state = Character_States.Attacking;
                                 character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, character));
                             }
-                            else if (eff.type.ToString() == Action_Effect.Types.Status.ToString())
+                            else if (eff.type == Action_Effect.Types.Status)
                             {
                                 character.state = Character_States.Attacking;
                                 character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, character));
                             }
-                            else if (eff.type.ToString() == Action_Effect.Types.Elevate.ToString())
+                            else if (eff.type == Action_Effect.Types.Elevate)
                             {
                                 character.state = Character_States.Attacking;
                                 character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, character));
                             }
-                            else if (eff.type.ToString() == Action_Effect.Types.Enable.ToString())
+                            else if (eff.type == Action_Effect.Types.Enable)
                             {
                                 character.state = Character_States.Attacking;
                                 character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, character));
@@ -523,32 +526,32 @@ public class Action
                                     character.controller.curr_scenario.Find_Reachable((int)character.speed * 2, (int)Convert_To_Double(range, character));
                                 }
                             }
-                            else if (eff.type.ToString() == Action_Effect.Types.Damage.ToString())
+                            else if (eff.type == Action_Effect.Types.Damage)
                             {
                                 character.state = Character_States.Attacking;
                                 character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, character));
                             }
-                            else if (eff.type.ToString() == Action_Effect.Types.Heal.ToString())
+                            else if (eff.type == Action_Effect.Types.Heal)
                             {
                                 character.state = Character_States.Attacking;
                                 character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, character));
                             }
-                            else if (eff.type.ToString() == Action_Effect.Types.Status.ToString())
+                            else if (eff.type == Action_Effect.Types.Status)
                             {
                                 character.state = Character_States.Attacking;
                                 character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, character));
                             }
-                            else if (eff.type.ToString() == Action_Effect.Types.Elevate.ToString())
+                            else if (eff.type == Action_Effect.Types.Elevate)
                             {
                                 character.state = Character_States.Attacking;
                                 character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, character));
                             }
-                            else if (eff.type.ToString() == Action_Effect.Types.Enable.ToString())
+                            else if (eff.type == Action_Effect.Types.Enable)
                             {
                                 character.state = Character_States.Attacking;
                                 character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, character));
                             }
-                            else if (eff.type.ToString() == Action_Effect.Types.Pass.ToString())
+                            else if (eff.type == Action_Effect.Types.Pass)
                             {
                                 //character.curr_action = this;
                                 //character.StartCoroutine(character.Act(null));
@@ -1089,13 +1092,13 @@ public class Action
                 }
                 foreach (Action_Effect eff in target_effect)
                 {
-                    if (eff.type.ToString() == Action_Effect.Types.Move.ToString())
+                    if (eff.type == Action_Effect.Types.Move)
                     {
                         // find the target to move towards
                         int centerX = character.curr_tile.GetComponent<Tile>().index[0];
                         int centerY = character.curr_tile.GetComponent<Tile>().index[1];
                         //Target tile = new Target(character.curr_tile.gameObject, 0);
-                        if(center == "target")
+                        if (center == "target")
                         {
                             centerX = target_tile.GetComponent<Tile>().index[0] + (area.GetLength(0) / 2);
                             centerY = target_tile.GetComponent<Tile>().index[1] + (area.GetLength(1) / 2);
@@ -1104,8 +1107,9 @@ public class Action
                         foreach (Target target in targets)
                         {
                             int tile_x = 0;
-                            int tile_y = 0; 
-                            if (target.game_object.GetComponent<Character_Script>()) {
+                            int tile_y = 0;
+                            if (target.game_object.GetComponent<Character_Script>())
+                            {
                                 tile_x = (int)(centerX +
                                         (target.game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[0] - centerX) *
                                         target.modifier *
@@ -1114,7 +1118,7 @@ public class Action
                                         (target.game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[1] - centerY) *
                                         target.modifier *
                                         Convert_To_Double(eff.value[1], character));
-                                if(tile_x < 0)
+                                if (tile_x < 0)
                                 {
                                     tile_x = 0;
                                 }
@@ -1130,47 +1134,55 @@ public class Action
                                 {
                                     tile_y = character.controller.curr_scenario.tile_grid.grid_width;
                                 }
-                                Target tile = new Target(character.controller.curr_scenario.tile_grid.getTile(tile_x,tile_y).gameObject, target.modifier);
+                                Target tile = new Target(character.controller.curr_scenario.tile_grid.getTile(tile_x, tile_y).gameObject, target.modifier);
                                 Enact_Move(target.game_object.GetComponent<Character_Script>(), eff.value[0], tile);
                             }
                         }
                     }
-                    else if (eff.type.ToString() == Action_Effect.Types.Damage.ToString())
+                    else if (eff.type == Action_Effect.Types.Damage)
                     {
                         foreach (Target target in targets)
                         {
                             Enact_Damage(character, eff.value[0], target);
                         }
                     }
-                    else if (eff.type.ToString() == Action_Effect.Types.Heal.ToString())
+                    else if (eff.type == Action_Effect.Types.Heal)
                     {
                         foreach (Target target in targets)
                         {
-                            Enact_Healing(character, eff.value[0], target);
+                            Enact_Healing(character, eff.value, target);
                         }
                     }
-                    else if (eff.type.ToString() == Action_Effect.Types.Status.ToString())
+                    else if (eff.type == Action_Effect.Types.Status)
                     {
                         foreach (Target target in targets)
                         {
                             Enact_Status(character, eff.value, target);
                         }
                     }
-                    else if (eff.type.ToString() == Action_Effect.Types.Elevate.ToString())
+                    else if (eff.type == Action_Effect.Types.Effect)
+                    {
+                        List<Target> target_tiles = Get_Target_Tiles(character, target_tile);
+                        foreach (Target target in target_tiles)
+                        {
+                            Enact_Effect(character, eff.value, target);
+                        }
+                    }
+                    else if (eff.type == Action_Effect.Types.Elevate)
                     {
                         foreach (Target target in targets)
                         {
                             Enact_Elevate(character, eff.value[0], target);
                         }
                     }
-                    else if (eff.type.ToString() == Action_Effect.Types.Enable.ToString())
+                    else if (eff.type == Action_Effect.Types.Enable)
                     {
                         foreach (Target target in targets)
                         {
                             Enact_Enable(character, eff.value, target);
                         }
                     }
-                    else if (eff.type.ToString() == Action_Effect.Types.Pass.ToString())
+                    else if (eff.type == Action_Effect.Types.Pass)
                     {
                         List<Target> target_tiles = Get_Target_Tiles(character, target_tile);
                         foreach (Target target in target_tiles)
@@ -1185,35 +1197,40 @@ public class Action
                 foreach (Action_Effect eff in self_effect)
                 {
                     //TODO FIND A WAY TO CARRY FORWARD MODIFIER FOR SELF EFFECTS
-                    Target target = new Target(character.gameObject,area[0,0]);
-                    if (eff.type.ToString() == Action_Effect.Types.Move.ToString())
+                    Target target = new Target(character.gameObject, area[0, 0]);
+                    if (eff.type == Action_Effect.Types.Move)
                     {
-                        Enact_Move(character, eff.value[0], new Target(target_tile, area[0,0]));
+                        Enact_Move(character, eff.value[0], new Target(target_tile, area[0, 0]));
                     }
-                    else if (eff.type.ToString() == Action_Effect.Types.Damage.ToString())
+                    else if (eff.type == Action_Effect.Types.Damage)
                     {
                         Enact_Damage(character, eff.value[0], target);
                     }
-                    else if (eff.type.ToString() == Action_Effect.Types.Heal.ToString())
+                    else if (eff.type == Action_Effect.Types.Heal)
                     {
-                        Enact_Healing(character, eff.value[0], target);
+                        Enact_Healing(character, eff.value, target);
                     }
-                    else if (eff.type.ToString() == Action_Effect.Types.Status.ToString())
+                    else if (eff.type == Action_Effect.Types.Status)
                     {
                         Enact_Status(character, eff.value, target);
                     }
-                    else if (eff.type.ToString() == Action_Effect.Types.Elevate.ToString())
+                    else if (eff.type == Action_Effect.Types.Effect)
+                    {
+                        Enact_Effect(character, eff.value, target);
+                    }
+                    else if (eff.type == Action_Effect.Types.Elevate)
                     {
                         Enact_Elevate(character, eff.value[0], new Target(character.curr_tile.gameObject, 0));
                     }
-                    else if (eff.type.ToString() == Action_Effect.Types.Enable.ToString())
+                    else if (eff.type == Action_Effect.Types.Enable)
                     {
                         Enact_Enable(character, eff.value, target);
                     }
-                    else if (eff.type.ToString() == Action_Effect.Types.Pass.ToString())
+                    else if (eff.type == Action_Effect.Types.Pass)
                     {
                         Enact_Pass(character, target);
                     }
+
                 }
             }
 
@@ -1223,6 +1240,16 @@ public class Action
                 yield return new WaitForEndOfFrame();
             }
         }
+    }
+
+    public void Pause()
+    {
+        paused = true;
+    }
+
+    public void Resume()
+    {
+        paused = false;
     }
 
     /// <summary>
@@ -1304,14 +1331,32 @@ public class Action
     /// <param name="character">The Character performing the Action</param>
     /// <param name="value">The String with the healing equation.</param>
     /// <param name="target">The Target being Healed.</param>
-    public void Enact_Healing(Character_Script character, String value, Target target)
+    public void Enact_Healing(Character_Script character, String[] value, Target target)
     {
         if (target.game_object.GetComponent<Character_Script>())
         {
             Character_Script target_character = target.game_object.GetComponent<Character_Script>();
-            int healing = (int)(Convert_To_Double(value, character) * target.modifier);
-            Debug.Log("Character " + character.character_name + " Healed: " + target_character.character_name + "; for " + healing + " and Using " + ap_cost + " AP");
-            target_character.Recover_Damage(healing);
+            int healing = (int)(Convert_To_Double(value[1], character) * target.modifier);
+            if (value[0] == Accepted_Shortcuts.AUC.ToString())
+            {
+                Debug.Log("Character " + character.character_name + " Healed: " + target_character.character_name + "; for " + healing + " Aura, Using " + ap_cost + " AP");
+                target_character.Recover_Aura(healing);
+            }
+            else if (value[0] == Accepted_Shortcuts.MPC.ToString())
+            {
+                Debug.Log("Character " + character.character_name + " Healed: " + target_character.character_name + "; for " + healing + " MP, Using " + ap_cost + " AP");
+                target_character.Recover_Mana(healing);
+            }
+            else if (value[0] == Accepted_Shortcuts.APC.ToString())
+            {
+                Debug.Log("Character " + character.character_name + " Healed: " + target_character.character_name + "; for " + healing + " AP, Using " + ap_cost + " AP");
+                target_character.Recover_Actions(healing);
+            }
+            else
+            {
+                Debug.Log("Invalid Healing prefix.");
+            }
+
         }
         //Reset character state when actions are done
         character.state = Character_States.Idle;
@@ -1348,6 +1393,52 @@ public class Action
             " " + condi.type.ToString() + " for " + condi.duration + " turns " + " with " + condi.power + 
             " power, for " + ap_cost + "AP") ;
 
+        //Reset character state when actions are done
+        character.state = Character_States.Idle;
+    }
+
+    /// <summary>
+    /// Function to Enact an Effect type Action. Used in the Enact() Function.
+    /// </summary>
+    /// <param name="character">The Character performing the Action. </param>
+    /// <param name="value">The String with the equation for how much to Elevate.</param>
+    /// <param name="target">The Target tile to affect. </param>
+    public void Enact_Effect(Character_Script character, String[] value, Target target)
+    {
+        if (target.game_object.GetComponent<Tile>())
+        {
+            if (target.game_object.GetComponent<Tile>().obj == null && target.game_object.GetComponent<Tile>().traversible)
+            {
+                string[] values = new string[value.Length - 3];
+                for (int i = 3; i < value.Length; i++)
+                {
+                    if (value[i] != null)
+                    {
+                        if (value[2] != Action_Effect.Types.Heal.ToString() && value[2] != Action_Effect.Types.Status.ToString())
+                        {
+                            values[i - 3] = "" + Convert_To_Double(value[i], character);
+                        }else
+                        {
+                            if (i == 3)
+                            {
+                                values[i - 3] = value[i];
+                            }else
+                            {
+                                values[i - 3] = "" + Convert_To_Double(value[i], character);
+                            }
+                        }
+                    }
+                }
+                int duration = (int)Convert_To_Double(value[1], character);
+                Tile_Effect effect = new Tile_Effect(value[0], value[2], duration, values, target.modifier, target.game_object);
+                effect.Instantiate();
+                Debug.Log("Character " + character.character_name + " Created Effect: " + name + " on tile (" + target.game_object.GetComponent<Tile>().index[0] + "," + target.game_object.GetComponent<Tile>().index[1] + "); For " + duration + " and Using " + ap_cost + " AP");
+            }
+        }
+        else
+        {
+            Debug.Log("Invalid target for Effect.");
+        }
         //Reset character state when actions are done
         character.state = Character_States.Idle;
     }

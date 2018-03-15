@@ -1058,6 +1058,23 @@ public class Character_Script : MonoBehaviour {
     }
 
     /// <summary>
+    /// Increase the Character's Mana by the specified amount
+    /// </summary>
+    /// <param name="amount">The amount to increase the Character's mana</param>
+    public void Increase_Mana(int amount)
+    {
+        mana_curr += amount;
+        if (mana_curr < 0)
+        {
+            mana_curr = 0;
+        }
+        if (mana_curr > mana_max)
+        {
+            mana_curr = mana_max;
+        }
+    }
+
+    /// <summary>
     /// Estimates how much Damage would be taken by an attack. 
     /// </summary>
     /// <returns>The Damage the Character would take. </returns>
@@ -1084,10 +1101,10 @@ public class Character_Script : MonoBehaviour {
     }
 
     /// <summary>
-    /// Remove Damage from this Character.
+    /// Restore Aura to this Character.
     /// </summary>
-    /// <param name="amount">The amount of Damage to remove.</param>
-    public void Recover_Damage(int amount)
+    /// <param name="amount">The amount of Aura to restore.</param>
+    public void Recover_Aura(int amount)
     {
         //Set the character to unwounded if they are wounded
         if (aura_curr == 0)
@@ -1101,6 +1118,46 @@ public class Character_Script : MonoBehaviour {
             aura_curr = aura_max;
         }
         Game_Controller.Create_Floating_Text(amount.ToString(), transform, Color.green);
+    }
+
+    /// <summary>
+    /// Restore MP to this Character.
+    /// </summary>
+    /// <param name="amount">The amount of Mana to restore.</param>
+    public void Recover_Mana(int amount)
+    {
+        mana_curr += amount;
+        //Cap Mana gain to the max
+        if (mana_curr > mana_max)
+        {
+            mana_curr = mana_max;
+        }
+        //Cap Mana floor to 0
+        if (mana_curr < 0 )
+        {
+            mana_curr = 0;
+        }
+        Game_Controller.Create_Floating_Text(amount.ToString(), transform, Color.blue);
+    }
+
+    /// <summary>
+    /// Restore Action Points to this Character.
+    /// </summary>
+    /// <param name="amount">The amount of Action Points to restore.</param>
+    public void Recover_Actions(int amount)
+    {
+        action_curr += amount;
+        //Cap Mana gain to the max
+        if (action_curr > action_max)
+        {
+            action_curr = action_max;
+        }
+        //Cap Mana floor to 0
+        if (action_curr < 0)
+        {
+            action_curr = 0;
+        }
+        Game_Controller.Create_Floating_Text(amount.ToString(), transform, Color.yellow);
     }
 
     /// <summary>
@@ -1210,7 +1267,10 @@ public class Character_Script : MonoBehaviour {
             Vector3 end = new Vector3(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.x,
                             (float)(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.y + Tile_Grid.TILE_SCALE * (temp_tile.height) + height_offset),
                             controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.z) +camera_position_offset;
-
+            if (temp_tile.effect)
+            {
+                StartCoroutine(temp_tile.effect.GetComponent<Tile_Effect>().Enact(this));
+            }
             while (elapsedTime < duration)
             {
                 if(prev_tile.index[0] == temp_tile.index[0] && prev_tile.index[1] > temp_tile.index[1])

@@ -87,10 +87,23 @@ public class Camera_Controller : MonoBehaviour {
             {
                 mod_color = "blue";
             }
+
+            string tile_effect_string = "";
+            if (tile.effect)
+            {
+                if (tile.effect.GetComponent<Tile_Effect>().type.ToString() == "Heal")
+                {
+                    tile_effect_string = tile.effect.name + " " + tile.effect.GetComponent<Tile_Effect>().type.ToString() + " " + tile.effect.GetComponent<Tile_Effect>().value[1];
+                }
+                else
+                {
+                    tile_effect_string = tile.effect.name + " " + tile.effect.GetComponent<Tile_Effect>().type.ToString() + " " + tile.effect.GetComponent<Tile_Effect>().value[0];
+                }
+            }
             GUI.TextArea(new Rect(Screen.width - 110, Screen.height - 120, 100, 110),
             "Tile: " + tile.GetComponentInChildren<Renderer>().material.name.Split(' ')[0] + "\n" +
             "Height: " + tile.height + "\n" +
-            "Effects: \n" +
+            "Effects: " + tile_effect_string + "\n" +
             "Action Mod: <color=" + mod_color + ">" + action_mod + "</color> \n" +
             "Move Mod : " + tile.modifier + "\n", style);
         }

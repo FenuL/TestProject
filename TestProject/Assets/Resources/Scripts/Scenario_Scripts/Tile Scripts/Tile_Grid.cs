@@ -11,6 +11,7 @@ public class Tile_Grid : ScriptableObject
     ///     File Locations:
     ///     static string OBJECT_SPRITESHEET_FILE - The spritesheet used to draw objects.
     ///     static string OBJECT_PREFAB_SRC - The source for the prefab used to create Objects.
+    ///     static string EFFECT_PREFAB_SRC - The source for the prefab used to create Effects.
     ///     static string REACHABLE_PREFAB_SRC - The source for the prefab used to dentote what tiles are reachable. 
     ///     static string CHARACTER_PREFAB_SRC - The source for the prefab used to create Characters.
     /// 
@@ -32,6 +33,7 @@ public class Tile_Grid : ScriptableObject
     /// Variables:
     ///     Prefabs:
     ///     object_prefab - Used to generate the Objects on top of the Tiles.
+    ///     effect_prefab - Used to generate the Effects on top of the Tiles.
     ///     reachable_prefab - Used to generate the Reachable Tile Indicators.
     ///     character_prefab - Used to generate Characters on top of the Tiles. 
     ///     
@@ -52,9 +54,10 @@ public class Tile_Grid : ScriptableObject
     //Constants
     //File Locations
     private static string OBJECT_SPRITESHEET_FILE = "Sprites/Object Sprites/object_spritesheet_transparent";
-    private static string OBJECT_PREFAB_SRC = "Prefabs/Object Prefabs/object_prefab";
+    private static string OBJECT_PREFAB_SRC = "Prefabs/Scenario Prefabs/Object Prefabs/object_prefab";
+    private static string EFFECT_PREFAB_SRC = "Prefabs/Scenario Prefabs/Effect Prefabs/effect_prefab";
     private static string CHARACTER_PREFAB_SRC = "Prefabs/Character_Prefab/Character_Prefab";
-    private static string REACHABLE_PREFAB_SRC = "Prefabs/Tile Prefabs/Reachable";
+    private static string REACHABLE_PREFAB_SRC = "Prefabs/Scenario Prefabs/Tile Prefabs/Reachable";
     //Grid size restriction in number of tiles
     private static int MAX_WIDTH = 40;
     private static int MAX_LENGTH = 40;
@@ -80,6 +83,7 @@ public class Tile_Grid : ScriptableObject
 
     //Prefabs
     public GameObject object_prefab { get; private set; }
+    public GameObject effect_prefab { get; private set; }
     public GameObject reachable_prefab { get; private set; }
     public GameObject character_prefab { get; private set; }
 
@@ -111,6 +115,7 @@ public class Tile_Grid : ScriptableObject
     {
         //Load the prefabs
         object_prefab = Resources.Load(OBJECT_PREFAB_SRC, typeof(GameObject)) as GameObject;
+        effect_prefab = Resources.Load(EFFECT_PREFAB_SRC, typeof(GameObject)) as GameObject;
         reachable_prefab = Resources.Load(REACHABLE_PREFAB_SRC, typeof(GameObject)) as GameObject;
         character_prefab = Resources.Load(CHARACTER_PREFAB_SRC, typeof(GameObject)) as GameObject;
 
@@ -380,6 +385,23 @@ public class Tile_Grid : ScriptableObject
                     tiles[x, y].GetComponent<Tile>().traversible = false;
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// Create a Tile Effect on a specific Tile.
+    /// </summary>
+    /// <param name="tile">The tile on which to create the Effect.</param>
+    public void CreateEffect(GameObject tile_object)
+    {
+        Tile tile = tile_object.GetComponent<Tile>();
+        if (tile != null) {
+            //create Effects on top of tiles
+            tile.effect = (GameObject)Instantiate(effect_prefab,
+                    new Vector3((float)(tile_object.transform.position.x),
+                        (float)(tile_object.transform.position.y + 0.66f),
+                        (float)(tile_object.transform.position.z)),
+                    Quaternion.identity);
         }
     }
 

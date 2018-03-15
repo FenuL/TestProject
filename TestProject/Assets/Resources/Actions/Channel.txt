@@ -4,7 +4,7 @@ mp_cost: 10
 range: 0
 center: Self 1x1
 area: 1
-self_effect: Heal 10; Pass
+self_effect: Heal AUC 10; Pass
 target_effect: NUL
 activation_type: active
 origin: innate

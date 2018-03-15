@@ -6,25 +6,27 @@ using System.Collections.Generic;
 /// Class for storing Data on the indivindexual Tile Objects. 
 /// </summary>
 public class Tile : MonoBehaviour{
-	/// <summary>
+    /// <summary>
     /// bool reachable - True if the tile is reachable by the current Character ability.
     /// double weight - The cost of traversing to this Tile. USed for navigation purposes.
     /// int distance - The distance in number of tiles for this Tile. Used for navigation purposes.
     /// bool visited - If the Tile has been visited by a search. USed for navigation purposes. 
     /// bool traversible - If the Tile can be walked through. Used for navigation purposes.
     /// GameObject obj - The Object sitting on top of this Tile.
+    /// Tile_Effect effect - The effect currently on this Tile. 
     /// Tile parent - The parent tile for navitation purposes. TODO GET RID OF THIS.
     /// int height - The height of the Tile.
     /// double modifier - The modifier for the tile. How much it takes to move through the Tile.
     /// int[] index - The index of the Tile in the Tile_Grid and navmesh Dictionary.
     /// Edge[] edges - the Edges connecting the Tile to other Tiles.
     /// </summary>
-	public bool reachable { get; private set; }
+    public bool reachable { get; private set; }
     public double weight { get; set; }
     public int distance { get; set; }
     public bool visited { get; set; }
     public bool traversible { get; set; }
     public GameObject obj { get; set; }
+    public GameObject effect { get; set; }
     public Tile parent { get; set; }
     public int height { get; set; }
     public double modifier { get; private set; }
@@ -79,6 +81,15 @@ public class Tile : MonoBehaviour{
             tile.edges[1] = e1;
         }
 
+    }
+
+    public bool Has_Effect()
+    {
+        if(effect != null)
+        {
+            return true;
+        }
+        return false;
     }
 
     /// <summary>

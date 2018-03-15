@@ -1,0 +1,1178 @@
+fileFormatVersion: 2
+guid: 766e954fec763254189e9ae4c0336f33
+timeCreated: 1520471193
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: 03-2D-Animated-Magic-Orbs_0
+    21300002: 03-2D-Animated-Magic-Orbs_1
+    21300004: 03-2D-Animated-Magic-Orbs_2
+    21300006: 03-2D-Animated-Magic-Orbs_3
+    21300008: 03-2D-Animated-Magic-Orbs_4
+    21300010: 03-2D-Animated-Magic-Orbs_5
+    21300012: 03-2D-Animated-Magic-Orbs_6
+    21300014: 03-2D-Animated-Magic-Orbs_7
+    21300016: 03-2D-Animated-Magic-Orbs_8
+    21300018: 03-2D-Animated-Magic-Orbs_9
+    21300020: 03-2D-Animated-Magic-Orbs_10
+    21300022: 03-2D-Animated-Magic-Orbs_11
+    21300024: 03-2D-Animated-Magic-Orbs_12
+    21300026: 03-2D-Animated-Magic-Orbs_13
+    21300028: 03-2D-Animated-Magic-Orbs_14
+    21300030: 03-2D-Animated-Magic-Orbs_15
+    21300032: 03-2D-Animated-Magic-Orbs_16
+    21300034: 03-2D-Animated-Magic-Orbs_17
+    21300036: 03-2D-Animated-Magic-Orbs_18
+    21300038: 03-2D-Animated-Magic-Orbs_19
+    21300040: 03-2D-Animated-Magic-Orbs_20
+    21300042: 03-2D-Animated-Magic-Orbs_21
+    21300044: 03-2D-Animated-Magic-Orbs_22
+    21300046: 03-2D-Animated-Magic-Orbs_23
+    21300048: 03-2D-Animated-Magic-Orbs_24
+    21300050: 03-2D-Animated-Magic-Orbs_25
+    21300052: 03-2D-Animated-Magic-Orbs_26
+    21300054: 03-2D-Animated-Magic-Orbs_27
+    21300056: 03-2D-Animated-Magic-Orbs_28
+    21300058: 03-2D-Animated-Magic-Orbs_29
+    21300060: 03-2D-Animated-Magic-Orbs_30
+    21300062: 03-2D-Animated-Magic-Orbs_31
+    21300064: 03-2D-Animated-Magic-Orbs_32
+    21300066: 03-2D-Animated-Magic-Orbs_33
+    21300068: 03-2D-Animated-Magic-Orbs_34
+    21300070: 03-2D-Animated-Magic-Orbs_35
+    21300072: 03-2D-Animated-Magic-Orbs_36
+    21300074: 03-2D-Animated-Magic-Orbs_37
+    21300076: 03-2D-Animated-Magic-Orbs_38
+    21300078: 03-2D-Animated-Magic-Orbs_39
+    21300080: 03-2D-Animated-Magic-Orbs_40
+    21300082: 03-2D-Animated-Magic-Orbs_41
+    21300084: 03-2D-Animated-Magic-Orbs_42
+    21300086: 03-2D-Animated-Magic-Orbs_43
+    21300088: 03-2D-Animated-Magic-Orbs_44
+    21300090: 03-2D-Animated-Magic-Orbs_45
+    21300092: 03-2D-Animated-Magic-Orbs_46
+    21300094: 03-2D-Animated-Magic-Orbs_47
+    21300096: 03-2D-Animated-Magic-Orbs_48
+    21300098: 03-2D-Animated-Magic-Orbs_49
+    21300100: 03-2D-Animated-Magic-Orbs_50
+    21300102: 03-2D-Animated-Magic-Orbs_51
+    21300104: 03-2D-Animated-Magic-Orbs_52
+    21300106: 03-2D-Animated-Magic-Orbs_53
+    21300108: 03-2D-Animated-Magic-Orbs_54
+    21300110: 03-2D-Animated-Magic-Orbs_55
+    21300112: 03-2D-Animated-Magic-Orbs_56
+    21300114: 03-2D-Animated-Magic-Orbs_57
+    21300116: 03-2D-Animated-Magic-Orbs_58
+    21300118: 03-2D-Animated-Magic-Orbs_59
+    21300120: 03-2D-Animated-Magic-Orbs_60
+    21300122: 03-2D-Animated-Magic-Orbs_61
+    21300124: 03-2D-Animated-Magic-Orbs_62
+    21300126: 03-2D-Animated-Magic-Orbs_63
+    21300128: 03-2D-Animated-Magic-Orbs_64
+    21300130: 03-2D-Animated-Magic-Orbs_65
+    21300132: 03-2D-Animated-Magic-Orbs_66
+    21300134: 03-2D-Animated-Magic-Orbs_67
+    21300136: 03-2D-Animated-Magic-Orbs_68
+    21300138: 03-2D-Animated-Magic-Orbs_69
+    21300140: 03-2D-Animated-Magic-Orbs_70
+    21300142: 03-2D-Animated-Magic-Orbs_71
+    21300144: 03-2D-Animated-Magic-Orbs_72
+    21300146: 03-2D-Animated-Magic-Orbs_73
+    21300148: 03-2D-Animated-Magic-Orbs_74
+    21300150: 03-2D-Animated-Magic-Orbs_75
+    21300152: 03-2D-Animated-Magic-Orbs_76
+    21300154: 03-2D-Animated-Magic-Orbs_77
+    21300156: 03-2D-Animated-Magic-Orbs_78
+    21300158: 03-2D-Animated-Magic-Orbs_79
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_0
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 701
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_1
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 701
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_2
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 701
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_3
+      rect:
+        serializedVersion: 2
+        x: 306
+        y: 701
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_4
+      rect:
+        serializedVersion: 2
+        x: 399
+        y: 701
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_5
+      rect:
+        serializedVersion: 2
+        x: 492
+        y: 701
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_6
+      rect:
+        serializedVersion: 2
+        x: 585
+        y: 701
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_7
+      rect:
+        serializedVersion: 2
+        x: 678
+        y: 701
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_8
+      rect:
+        serializedVersion: 2
+        x: 771
+        y: 701
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_9
+      rect:
+        serializedVersion: 2
+        x: 864
+        y: 701
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_10
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 606
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_11
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 606
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_12
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 606
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_13
+      rect:
+        serializedVersion: 2
+        x: 306
+        y: 606
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_14
+      rect:
+        serializedVersion: 2
+        x: 399
+        y: 606
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_15
+      rect:
+        serializedVersion: 2
+        x: 492
+        y: 606
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_16
+      rect:
+        serializedVersion: 2
+        x: 585
+        y: 606
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_17
+      rect:
+        serializedVersion: 2
+        x: 678
+        y: 606
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_18
+      rect:
+        serializedVersion: 2
+        x: 771
+        y: 606
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_19
+      rect:
+        serializedVersion: 2
+        x: 864
+        y: 606
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_20
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 511
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_21
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 511
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_22
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 511
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_23
+      rect:
+        serializedVersion: 2
+        x: 306
+        y: 511
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_24
+      rect:
+        serializedVersion: 2
+        x: 399
+        y: 511
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_25
+      rect:
+        serializedVersion: 2
+        x: 492
+        y: 511
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_26
+      rect:
+        serializedVersion: 2
+        x: 585
+        y: 511
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_27
+      rect:
+        serializedVersion: 2
+        x: 678
+        y: 511
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_28
+      rect:
+        serializedVersion: 2
+        x: 771
+        y: 511
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_29
+      rect:
+        serializedVersion: 2
+        x: 864
+        y: 511
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_30
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 416
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_31
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 416
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_32
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 416
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_33
+      rect:
+        serializedVersion: 2
+        x: 306
+        y: 416
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_34
+      rect:
+        serializedVersion: 2
+        x: 399
+        y: 416
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_35
+      rect:
+        serializedVersion: 2
+        x: 492
+        y: 416
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_36
+      rect:
+        serializedVersion: 2
+        x: 585
+        y: 416
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_37
+      rect:
+        serializedVersion: 2
+        x: 678
+        y: 416
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_38
+      rect:
+        serializedVersion: 2
+        x: 771
+        y: 416
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_39
+      rect:
+        serializedVersion: 2
+        x: 864
+        y: 416
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_40
+      rect:
+        serializedVersion: 2
+        x: 28
+        y: 311
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_41
+      rect:
+        serializedVersion: 2
+        x: 119
+        y: 310
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_42
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 309
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_43
+      rect:
+        serializedVersion: 2
+        x: 306
+        y: 311
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_44
+      rect:
+        serializedVersion: 2
+        x: 399
+        y: 311
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_45
+      rect:
+        serializedVersion: 2
+        x: 492
+        y: 321
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_46
+      rect:
+        serializedVersion: 2
+        x: 585
+        y: 321
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_47
+      rect:
+        serializedVersion: 2
+        x: 678
+        y: 321
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_48
+      rect:
+        serializedVersion: 2
+        x: 771
+        y: 321
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_49
+      rect:
+        serializedVersion: 2
+        x: 864
+        y: 321
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_50
+      rect:
+        serializedVersion: 2
+        x: 29
+        y: 219
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_51
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 219
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_52
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 226
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_53
+      rect:
+        serializedVersion: 2
+        x: 306
+        y: 226
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_54
+      rect:
+        serializedVersion: 2
+        x: 399
+        y: 226
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_55
+      rect:
+        serializedVersion: 2
+        x: 492
+        y: 226
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_56
+      rect:
+        serializedVersion: 2
+        x: 585
+        y: 226
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_57
+      rect:
+        serializedVersion: 2
+        x: 678
+        y: 226
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_58
+      rect:
+        serializedVersion: 2
+        x: 771
+        y: 226
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_59
+      rect:
+        serializedVersion: 2
+        x: 864
+        y: 226
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_60
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 131
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_61
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 131
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_62
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 131
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_63
+      rect:
+        serializedVersion: 2
+        x: 306
+        y: 131
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_64
+      rect:
+        serializedVersion: 2
+        x: 399
+        y: 131
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_65
+      rect:
+        serializedVersion: 2
+        x: 492
+        y: 131
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_66
+      rect:
+        serializedVersion: 2
+        x: 585
+        y: 131
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_67
+      rect:
+        serializedVersion: 2
+        x: 678
+        y: 131
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_68
+      rect:
+        serializedVersion: 2
+        x: 771
+        y: 131
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_69
+      rect:
+        serializedVersion: 2
+        x: 864
+        y: 131
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_70
+      rect:
+        serializedVersion: 2
+        x: 27
+        y: 36
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_71
+      rect:
+        serializedVersion: 2
+        x: 120
+        y: 36
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_72
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 36
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_73
+      rect:
+        serializedVersion: 2
+        x: 306
+        y: 36
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_74
+      rect:
+        serializedVersion: 2
+        x: 399
+        y: 36
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_75
+      rect:
+        serializedVersion: 2
+        x: 492
+        y: 36
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_76
+      rect:
+        serializedVersion: 2
+        x: 585
+        y: 36
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_77
+      rect:
+        serializedVersion: 2
+        x: 678
+        y: 36
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_78
+      rect:
+        serializedVersion: 2
+        x: 771
+        y: 36
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: 03-2D-Animated-Magic-Orbs_79
+      rect:
+        serializedVersion: 2
+        x: 864
+        y: 36
+        width: 85
+        height: 85
+      alignment: 1
+      pivot: {x: 0, y: 1}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

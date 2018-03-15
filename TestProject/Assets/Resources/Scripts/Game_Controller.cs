@@ -109,7 +109,7 @@ public class Game_Controller : MonoBehaviour {
 	void Start () {
         controlls = createControlls();
         canvas = GameObject.Find("Canvas");
-        popup = Resources.Load<FloatingText>("Prefabs/Object Prefabs/PopupTextParent");
+        popup = Resources.Load<FloatingText>("Prefabs/Scenario Prefabs/Object Prefabs/PopupTextParent");
         main_camera = GameObject.FindGameObjectWithTag("MainCamera");
         all_actions = Action.Load_Actions();
         all_weapons = Weapon.Load_Weapons();

@@ -20,7 +20,7 @@ public class Action_Effect
     /// Type type - The Type of Action
     /// string[] value - A list of strings that detail the effect of the Action.
     /// </summary>
-    public enum Types { Move, Damage, Heal, Status, Elevate, Enable, Pass }
+    public enum Types { Move, Damage, Heal, Status, Effect, Elevate, Enable, Pass }
 
     public Types type { get; private set; }
     public string[] value { get; private set; }

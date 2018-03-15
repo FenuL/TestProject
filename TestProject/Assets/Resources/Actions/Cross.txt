@@ -7,7 +7,7 @@ area: 0 .6 0
 area: .6 1 .6
 area: 0 .6 0
 self_effect: NUL
-target_effect: Damage WPD+5
+target_effect: Effect Blast 5 Damage WPD+5
 activation_type: active
 origin: innate
 orient: target

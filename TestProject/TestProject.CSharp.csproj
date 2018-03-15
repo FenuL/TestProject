@@ -82,17 +82,17 @@
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Equipment_Scripts\Weapon.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Monster_Scripts\Monster_Script.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Player_Scripts\Player_Script.cs" />
-    <Compile Include="Assets\Resources\Scripts\ExpressionParser.cs" />
     <Compile Include="Assets\Resources\Scripts\Game_Controller.cs" />
-    <Compile Include="Assets\Resources\Scripts\Scenario_Scripts\Edge.cs" />
-    <Compile Include="Assets\Resources\Scripts\Scenario_Scripts\Graph.cs" />
+    <Compile Include="Assets\Resources\Scripts\Scenario_Scripts\Effect Scripts\Tile_Effect.cs" />
+    <Compile Include="Assets\Resources\Scripts\Scenario_Scripts\Object Scripts\Object_Script.cs" />
     <Compile Include="Assets\Resources\Scripts\Scenario_Scripts\Scenario.cs" />
-    <Compile Include="Assets\Resources\Scripts\Scenario_Scripts\Tile.cs" />
-    <Compile Include="Assets\Resources\Scripts\Scenario_Scripts\Tile_Grid.cs" />
+    <Compile Include="Assets\Resources\Scripts\Scenario_Scripts\Tile Scripts\Edge.cs" />
+    <Compile Include="Assets\Resources\Scripts\Scenario_Scripts\Tile Scripts\Graph.cs" />
+    <Compile Include="Assets\Resources\Scripts\Scenario_Scripts\Tile Scripts\Tile.cs" />
+    <Compile Include="Assets\Resources\Scripts\Scenario_Scripts\Tile Scripts\Tile_Grid.cs" />
     <Compile Include="Assets\Resources\Scripts\UI_Scripts\Action_Menu_Script.cs" />
     <Compile Include="Assets\Resources\Scripts\UI_Scripts\Camera_Controller.cs" />
     <Compile Include="Assets\Resources\Scripts\UI_Scripts\FloatingText.cs" />
-    <Compile Include="Assets\Resources\Scripts\UI_Scripts\Object_Script.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Resources\Actions\Bleed.txt" />
