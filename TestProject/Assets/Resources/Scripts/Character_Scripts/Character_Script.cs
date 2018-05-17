@@ -60,10 +60,10 @@ public class Character_Script : MonoBehaviour {
     /// Weapon weapon - The Character's Equipped Weapon.
     /// Armor armor - The Character's Equipped Armor.
     /// Accessory[] accessories - The Character's Equipped Accessories.
-    /// static List<Action> all_actions - The List of all possible Actions.
-    /// List<Action> actions - The list of all the Character's Actions. A subset of all_actions derived from the Character's Equipment.
-    /// Action curr_action - The Character's currently Selected Action.
-    /// Character_States state - The Character's current State. Typically altered by their Action.
+    /// static List<Character_Action> all_actions - The List of all possible Character_Actions.
+    /// List<Character_Action> actions - The list of all the Character's Character_Actions. A subset of all_actions derived from the Character's Equipment.
+    /// Stack<Character_Action> curr_action - The Character's currently Selected Character_Action.
+    /// Character_States state - The Character's current State. Typically altered by their Character_Action.
     /// Dictionary<Conditions., List<Condition>> conditions - The List of Conditions currently afflicting the Character.
     /// Game_Controller controller - The Game Controller that handles overarching game processes.
     /// Transform curr_tile - The current Tile Object the Character is on top of.
@@ -105,9 +105,9 @@ public class Character_Script : MonoBehaviour {
     public Weapon weapon { get; private set; }
     public Armor armor { get; private set; }
     public Accessory[] accessories { get; private set; }
-    public static Dictionary<string, Action> all_actions { get; private set; }
-    public List<Action> actions { get; private set; }
-    public Action curr_action { get; set; }
+    public static Dictionary<string, Character_Action> all_actions { get; private set; }
+    public List<Character_Action> actions { get; private set; }
+    public Stack<Character_Action> curr_action { get; set; }
     public Character_States state { get; set; }
     public Dictionary<Conditions, List<Condition>> conditions { get; private set; }
     public Game_Controller controller { get; set; }
@@ -153,8 +153,8 @@ public class Character_Script : MonoBehaviour {
         mana_curr = MP_RECOVERY;
         reaction_max = AP_MAX;
         reaction_curr = reaction_max;
-        curr_action = null;
-        actions = new List<Action>();
+        curr_action = new Stack<Character_Action>();
+        actions = new List<Character_Action>();
         canister_max = can;
         animator_name = animator;
         orientation = 2;
@@ -162,7 +162,7 @@ public class Character_Script : MonoBehaviour {
         conditions = new Dictionary<Conditions, List<Condition>>();
         state = Character_States.Idle;
         all_actions = controller.all_actions;
-        actions.Add(Find_Action("Move"));
+        actions.Add(new Character_Action(Find_Action_Global("Move"), this));
         Weapon temp_weapon;
         controller.all_weapons.TryGetValue(wep.TrimStart().TrimEnd(), out temp_weapon);
         weapon = temp_weapon;
@@ -172,7 +172,7 @@ public class Character_Script : MonoBehaviour {
         controller.all_armors.TryGetValue(arm.TrimStart().TrimEnd(), out temp_armor);
         armor = temp_armor;
         Equip(armor);
-        actions.Add(Find_Action("Wait"));
+        actions.Add(new Character_Action(Find_Action_Global("Wait"), this));
         //foreach (string s in acc)
         //{
         //    foreach (Equipment.Weapon_Types weps in Enum.GetValues(typeof(Equipment.Weapon_Types)))
@@ -188,11 +188,78 @@ public class Character_Script : MonoBehaviour {
     }
 
     /// <summary>
+    /// Constructor for building a new Character_Script from an old one
+    /// </summary>
+    /// <param name="chara"></param>
+    public Character_Script(Character_Script chara)
+    {
+        character_id = chara.character_id;
+        character_num = chara.character_num;
+        character_name = chara.character_name;
+        animator_name = chara.animator_name;
+        character_scale = chara.character_scale;
+        aura_max = chara.aura_max;
+        aura_curr = chara.aura_curr;
+        action_max = chara.action_max;
+        action_curr = chara.action_curr;
+        mana_max = chara.mana_max;
+        mana_curr = chara.mana_curr;
+        reaction_max = chara.reaction_max;
+        reaction_curr = chara.reaction_curr;
+        canister_max = chara.canister_max;
+        canister_curr = chara.canister_curr;
+        strength = chara.strength;
+        coordination = chara.coordination;
+        spirit = chara.spirit;
+        dexterity = chara.dexterity;
+        vitality = chara.dexterity;
+        accuracy = chara.accuracy;
+        resistance = chara.resistance;
+        lethality = chara.lethality;
+        finesse = chara.finesse;
+        speed = chara.speed;
+        level = chara.level;
+        combo_mod = chara.combo_mod;
+        orientation = chara.orientation;
+        camera_orientation_offset = chara.camera_orientation_offset;
+        camera_position_offset = chara.camera_position_offset;
+        height_offset = chara.height_offset;
+        rotate = chara.rotate;
+        weapon = chara.weapon;
+        armor = chara.armor;
+        accessories = chara.accessories;
+        actions = chara.actions;
+        curr_action = chara.curr_action;
+        state = chara.state;
+        conditions = chara.conditions;
+        controller = chara.controller;
+        curr_tile = chara.curr_tile;
+        ending_turn = chara.ending_turn;
+    }
+
+    /// <summary>
     /// Default Class Constructor for Inheritance purposes.
     /// </summary>
     public Character_Script()
     {
 
+    }
+
+    /// <summary>
+    /// Compares this Character_Script to a different one and checks if they are equal.
+    /// </summary>
+    /// <param name="chara">The Character_Script to compare to</param>
+    /// <returns>True if the scripts are Equal, False otherwise.</returns>
+    public bool Equals(Character_Script chara)
+    {
+        if (chara != null &&
+            character_id == chara.character_id && 
+            character_name == chara.character_name && 
+            character_num == chara.character_num)
+        {
+            return true;
+        }
+        return false;
     }
 
     /// <summary>
@@ -236,9 +303,20 @@ public class Character_Script : MonoBehaviour {
         aura_curr = data.aura_curr;
         action_max = data.action_max;
         action_curr = data.action_max;
+        reaction_max = data.reaction_max;
+        reaction_curr = data.reaction_max;
         mana_max = data.mana_max;
         mana_curr = data.mana_curr;
         actions = data.actions;
+        foreach(Character_Action act in actions)
+        {
+            act.Set_Character(this);
+            if (act.type == Character_Action.Activation_Types.Reactive)
+            {
+                act.Enable_Reaction();
+            }
+        }
+        curr_action = new Stack<Character_Action>();
         canister_curr = data.canister_curr;
         state = data.state;
         conditions = new Dictionary<Conditions, List<Condition>>();
@@ -263,10 +341,12 @@ public class Character_Script : MonoBehaviour {
     public void Start_Turn()
     {
         controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
-        Find_Action("Move").Select(this);
+        Find_Action_Local("Move").Select();
 
         //Center camera on player
         Camera.main.GetComponent<Camera_Controller>().PanTo(transform.position - Camera.main.transform.forward * 35);
+
+        Replenish_Resources();
 
         Update_Conditions();
 
@@ -275,7 +355,7 @@ public class Character_Script : MonoBehaviour {
     /// <summary>
     /// Coroutine to End the Character's Turn: 
     ///     Resets and Cleans reachable_tiles; 
-    ///     Resets current Action; 
+    ///     Resets current Character_Action; 
     ///     Increases AP and MP; 
     ///     Increases reaction points; 
     ///     Progresses Conditions; 
@@ -286,28 +366,32 @@ public class Character_Script : MonoBehaviour {
     public IEnumerator End_Turn()
     {
         ending_turn = true;
-        if (curr_action.orient == "select")
+        if (curr_action.Count >0 && curr_action.Peek().orient == "select")
         {
             StartCoroutine(Choose_Orientation());
         }
         controller.curr_scenario.Reset_Reachable();
-        controller.curr_scenario.Clean_Reachable();
+        //controller.curr_scenario.Clean_Reachable();
         while (state == Character_States.Walking || state == Character_States.Orienting)
         {
             yield return new WaitForEndOfFrame();
         }
 
         Debug.Log("Character " + character_name + " Passed");
-        curr_action = null;
-        reaction_curr = reaction_max;
-        action_curr = action_max;
-        mana_curr += MP_RECOVERY;
+        //Remove all current actions
+        while (curr_action.Count != 0)
+        {
+            curr_action.Pop();
+        }
+        //reaction_curr = reaction_max;
+        //action_curr = action_max;
+        //mana_curr += MP_RECOVERY;
         if (mana_curr > mana_max)
         {
             mana_curr = mana_max;
         }
         //TODO Fix this later
-        foreach (Action act in actions)
+        foreach (Character_Action act in actions)
         {
             if (!act.enabled)
             {
@@ -565,6 +649,17 @@ public class Character_Script : MonoBehaviour {
 
     }
 
+    public void Replenish_Resources()
+    {
+        reaction_curr = reaction_max;
+        action_curr = action_max;
+        mana_curr += MP_RECOVERY;
+        if (mana_curr > mana_max)
+        {
+            mana_curr = mana_max;
+        }
+    }
+
     public void Increase_Combo_Mod()
     {
         combo_mod += 0.1f;
@@ -778,15 +873,15 @@ public class Character_Script : MonoBehaviour {
     }
 
     /// <summary>
-    /// Find a specific Action from the character's list of actions
+    /// Find a specific Character_Action from the global list of all actions
     /// </summary>
-    /// <param name="name">The name of the Action to look for.</param>
-    /// <returns>The Action if it is found, null otherwise.</returns>
-    public Action Find_Action(String name)
+    /// <param name="name">The name of the Character_Action to look for.</param>
+    /// <returns>The Character_Action if it is found, null otherwise.</returns>
+    public Character_Action Find_Action_Global(String name)
     {
         if (all_actions != null)
         {
-            Action action;
+            Character_Action action;
             //Debug.Log("Looking for: " + name);
             if (all_actions.TryGetValue(name, out action))
             {
@@ -799,15 +894,50 @@ public class Character_Script : MonoBehaviour {
     }
 
     /// <summary>
-    /// Coroutine to perform an Action.
+    /// Find a specific Character_Action from the character's list of actions
     /// </summary>
-    /// <param name="target_tile">The target for the Action.</param>
-    /// <returns>The current status of the Coroutine.</returns>
-    public IEnumerator Act(Action action, Transform target_tile)
+    /// <param name="name">The name of the Character_Action to look for.</param>
+    /// <returns>The Character_Action if it is found, null otherwise.</returns>
+    public Character_Action Find_Action_Local(String name)
     {
-        if (curr_action != null)
+        if (actions != null)
         {
-            StartCoroutine(action.Enact(this, target_tile.gameObject));
+            foreach (Character_Action act in actions)
+            {
+                if (name == act.name)
+                {
+                    return act;
+                }
+            }
+        }
+        //Debug.Log(name + " NOT found.");
+        return null;
+    }
+
+    /// <summary>
+    /// Check if the script's Game Object has a specific tag.
+    /// </summary>
+    /// <param name="tag">The tag to check.</param>
+    /// <returns>True if the tags match, False otherwise.</returns>
+    public bool Check_Tag(string tag)
+    {
+        if(this.gameObject.tag == tag)
+        {
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Coroutine to perform an Character_Action.
+    /// </summary>
+    /// <param name="target_tile">The target for the Character_Action.</param>
+    /// <returns>The current status of the Coroutine.</returns>
+    public IEnumerator Act(Character_Action action, Transform target_tile)
+    {
+        if (curr_action.Peek() != null)
+        {
+            StartCoroutine(action.Enact(target_tile.gameObject));
 
             while (state != Character_States.Idle)
             {
@@ -815,13 +945,22 @@ public class Character_Script : MonoBehaviour {
             }
 
             //update AP and MP
-            action_curr -= (int)action.Convert_To_Double(action.ap_cost, this);
-            mana_curr -= (int)action.Convert_To_Double(action.mp_cost, this);
+            if (action.type == Character_Action.Activation_Types.Active)
+            {
+                action_curr -= (int)action.Convert_To_Double(action.ap_cost, target_tile.gameObject.GetComponent<Tile>().obj);
+            }else if (action.type == Character_Action.Activation_Types.Reactive)
+            {
+                reaction_curr -= (int)action.Convert_To_Double(action.ap_cost, target_tile.gameObject.GetComponent<Tile>().obj);
+            }
+            mana_curr -= (int)action.Convert_To_Double(action.mp_cost, target_tile.gameObject.GetComponent<Tile>().obj);
             //character.state = Character_Script.States.Idle;
 
             //Update reachable tiles
-            controller.curr_scenario.Clean_Reachable();
+            //controller.curr_scenario.Clean_Reachable();
             controller.curr_scenario.Reset_Reachable();
+
+            //Remove the action from the stack.
+            //curr_action.Pop();
 
             if (action.orient == "target")
             {
@@ -832,17 +971,20 @@ public class Character_Script : MonoBehaviour {
                 action_curr = action_max;
             }
 
-            if (action_curr <= 0 && controller.curr_scenario.curr_player.GetComponent<Character_Script>().character_num == character_num)
+            if (action_curr <= 0 && controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().character_num == character_num)
             {
                 StartCoroutine(End_Turn());
             }
             else
             {
-                controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
-                Find_Action("Move").Select(this);
+                if (this.Equals(controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>()))
+                {
+                    controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
+                    Find_Action_Local("Move").Select();
+                }
             }
         }
-        //curr_action.Enact(this, target_tile.gameObject);
+        //curr_action.Peek().Enact(this, target_tile.gameObject);
 
     }
 
@@ -914,8 +1056,11 @@ public class Character_Script : MonoBehaviour {
         {
             foreach(String str in e.actions)
             {
-                //Debug.Log(str);
-                actions.Add(Find_Action(str.TrimStart().TrimEnd()));
+                Character_Action act = Find_Action_Global(str.TrimStart().TrimEnd());
+                if (act != null)
+                {
+                    actions.Add(new Character_Action(act, this));
+                }
             }
         }
     }
@@ -938,7 +1083,7 @@ public class Character_Script : MonoBehaviour {
         aura_curr = aura_max;
         action_max = AP_MAX;// spirit * AP_MULTIPLIER;
         action_curr = action_max;
-        actions = new List<Action>();
+        actions = new List<Character_Action>();
         canister_max = UnityEngine.Random.Range(0, 3);
         canister_curr = canister_max;
 		state = Character_States.Idle;
@@ -1161,6 +1306,26 @@ public class Character_Script : MonoBehaviour {
     }
 
     /// <summary>
+    /// Restore Reaction Points to this Character.
+    /// </summary>
+    /// <param name="amount">The amount of Action Points to restore.</param>
+    public void Recover_Reactions(int amount)
+    {
+        reaction_curr += amount;
+        //Cap Mana gain to the max
+        if (reaction_curr > reaction_max)
+        {
+            reaction_curr = reaction_max;
+        }
+        //Cap Mana floor to 0
+        if (reaction_curr < 0)
+        {
+            reaction_curr = 0;
+        }
+        Game_Controller.Create_Floating_Text(amount.ToString(), transform, Color.yellow);
+    }
+
+    /// <summary>
     /// What happens when a character Dies
     /// TODO fix turn order glitches
     /// </summary>
@@ -1172,11 +1337,22 @@ public class Character_Script : MonoBehaviour {
         curr_tile.GetComponent<Tile>().obj = null;
 
         //remove the character from the turn order and character list
-        Debug.Log("Character num: " + character_num + " has died");
+        Debug.Log("Character " + name + " (" + character_num + ") has died");
+
+        //remove any active reactions for this character.
+        foreach (Character_Action act in actions)
+        {
+            if (act.type != Character_Action.Activation_Types.Active)
+            {
+                act.Disable_Reaction();
+            }
+        }
+
         //Debug.Log("Characters remaining: " + controller.curr_scenario.characters.Count);
         controller.curr_scenario.characters.Remove(transform.gameObject);
         controller.curr_scenario.turn_order.Remove(transform.gameObject);
-        if (character_num == controller.curr_scenario.curr_player.GetComponent<Character_Script>().character_num)
+        //character_num == controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().character_num
+        if (this.Equals(controller.curr_scenario.curr_player.Peek()))
         {
             controller.curr_scenario.Next_Player();
         }
@@ -1191,7 +1367,8 @@ public class Character_Script : MonoBehaviour {
 
         //remove the character from the board
         //gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0);
-        Destroy(this.gameObject);
+        //Destroy(this.gameObject);
+        this.gameObject.GetComponent<SpriteRenderer>().enabled = false;
 
     }
 
@@ -1214,47 +1391,24 @@ public class Character_Script : MonoBehaviour {
     }
 
     /// <summary>
-    /// Coroutine to perform a Move Action. 
+    /// Coroutine to perform a Move Character_Action. 
     /// </summary>
     /// <param name="clicked_tile">The Tile for the Character to Move to.</param>
     /// <returns>The current status of the Coroutine</returns>
     public IEnumerator Move(Transform clicked_tile)
     {
         state = Character_States.Walking;
-        Stack<Tile> path = new Stack<Tile>();
-        //path = controller.navmesh.shortestPath(curr_tile.GetComponent<Tile>().node, clicked_tile.GetComponent<Tile>().node, action_curr, SPEED);
-        //Tile.Node temp_tile;
-        //temp_tile = path.Pop();
-        //Tile.Node prev_tile;
-        Tile temp_tile = clicked_tile.GetComponent<Tile>();
-        Tile prev_tile = curr_tile.GetComponent<Tile>();
+        Stack<Tile> path = controller.curr_scenario.tile_grid.navmesh.FindPath(curr_tile.GetComponent<Tile>(), clicked_tile.gameObject.GetComponent<Tile>());
         
-        //action_curr -= action_cost;
-        //action_cost = 0;
-
-        
-        //Tile.Node temp_tile = clicked_tile.GetComponent<Tile>().node;
-        //Tile.Node prev_tile = curr_tile.GetComponent<Tile>().node;
-        //Stack<Tile.Node> path = new Stack<Tile.Node>();
-
-        //Construct a stack that is a path from the clicked tile to the source.
-        while(!(temp_tile.index[0] == curr_tile.GetComponent<Tile>().index[0] && temp_tile.index[1] == curr_tile.GetComponent<Tile>().index[1]))
-        {
-            path.Push(temp_tile);
-            //Look at the parent tile.
-            temp_tile = temp_tile.parent;
-        }
-            
-        //distances.Push(distance);
-        //Debug.Log("temp_tile.index[0]: " + temp_tile.index[0]);
-        //Debug.Log("temp_tile.index[1]: " + temp_tile.index[1]);
-        //Debug.Log("curr_tile.index[0]: " + curr_tile.GetComponent<Tile>().index[0]);
-        //Debug.Log("curr_tile.index[0]: " + curr_tile.GetComponent<Tile>().index[1]);
         //Navigate the path by popping tiles out of the stack.
         while (path.Count != 0)
         {
-
-            temp_tile = path.Pop();
+            while (curr_action.Peek().paused)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+            Tile prev_tile = curr_tile.GetComponent<Tile>();
+            Tile temp_tile = path.Pop();
             //transform.position = new Vector3(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.x, (float)(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.y + (controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z);
             //
             //yield return new WaitForSeconds(.3f);
@@ -1415,8 +1569,10 @@ public class Character_Script : MonoBehaviour {
                 }*/
                 yield return new WaitForEndOfFrame();
             }
+            
             //gameObject.GetComponent<SpriteRenderer>().sortingOrder = controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<SpriteRenderer>().sortingOrder + 1;
-            prev_tile = temp_tile;
+            curr_tile = temp_tile.gameObject.transform;
+            //Debug.Log("Curr tile: " + curr_tile.GetComponent<Tile>().index[0] + "," + curr_tile.GetComponent<Tile>().index[1]);
 
 
 
@@ -1477,5 +1633,19 @@ public class Character_Script : MonoBehaviour {
             transform.eulerAngles = new Vector3(0, Camera.main.transform.rotation.eulerAngles.y, 0);
         }
         //rotationAmount -= rotationAmount * CAMERA_TURN_SPEED * Time.deltaTime;
+    }
+
+    /// <summary>
+    /// Failsafe to catch any reactions that aren't removed when de-equipping a weapon.
+    /// </summary>
+    void OnDisable()
+    {
+        foreach (Character_Action act in actions)
+        {
+            if (act.type == Character_Action.Activation_Types.Reactive)
+            {
+                act.Disable_Reaction();
+            }
+        }
     }
 }

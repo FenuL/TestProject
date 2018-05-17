@@ -643,4 +643,35 @@ public class Graph
             }
         }
     }
+
+    public Stack<Tile> FindPath(Tile start, Tile finish)
+    {
+        Stack<Tile> path = new Stack<Tile>();
+        //If we already have a path from a bfs call.
+        if (visitedTiles.Count != 0)
+        {
+            Tile temp_tile = finish;
+            Tile prev_tile = start;
+
+            //Construct a stack that is a path from the clicked tile to the source.
+            while (!(temp_tile.index[0] == start.index[0] && temp_tile.index[1] == start.index[1]))
+            {
+                path.Push(temp_tile);
+                //Look at the parent tile.
+                temp_tile = temp_tile.parent;
+            }
+
+            //reset the previously visited tiles
+            Tile n;
+            while (visitedTiles.Count != 0)
+            {
+                n = visitedTiles.Pop();
+                n.weight = -1;
+                n.parent = null;
+                n.visited = false;
+            }
+
+        }
+        return path;
+    }
 }

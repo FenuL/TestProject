@@ -31,7 +31,7 @@ public class Scenario : MonoBehaviour {
     /// List<int> unlocks_scenarios_on_loss - Scenarios that will be added to the available_scenarios List if the Player does not achieve the Objective.
     /// List<int> unlocks_scenarios_on_win - Scenarios that will be added to the available_scenarios List if the Player achieves the Objective.
     /// List<int> unlocks_scenarios_on_bonus - Scenarios that will be added to the available_scenarios List if the Player achieves the Bonus Objective. 
-    /// GameObject curr_player - The Character that is currently Acting.
+    /// Stack<GameObject> curr_player - The Character that is currently Acting.
     /// GameObject cursor - The Cursor Object is used to select Tiles and Characters for Actions. It shows which Tile Object the player's mouse is over.
     /// List<GameObject> cursors - The List of currently active Cursor Objects. Multiple Cursors are necessary because of AoE Actions.
     /// String cursor_name - Stores the current Character's Action so we can tell if we need to change the number of Cursor Objects in the cursors List.
@@ -68,7 +68,7 @@ public class Scenario : MonoBehaviour {
     public List<int> unlocks_scenarios_on_loss { get; private set; }
     public List<int> unlocks_scenarios_on_win { get; private set; }
     public List<int> unlocks_scenarios_on_bonus { get; private set; }
-    public GameObject curr_player { get; private set; }
+    public Stack<GameObject> curr_player { get; private set; }
     public GameObject cursor { get; private set; }
     public List<GameObject> cursors { get; private set; }
     public String cursor_name { get; private set; }
@@ -508,13 +508,13 @@ public class Scenario : MonoBehaviour {
             if (char_id / 10000 == 1)
             {
                 //Player
-                char_data = player_character_data[char_id % 100 - 1];
+                char_data = new Character_Script(player_character_data[char_id % 100 - 1]);
                 game_object.tag = "Character (Friend)";
             }
             else if (char_id / 10000 == 2 )
             {
                 //Monster
-                char_data = monster_character_data[char_id % 100 -1];
+                char_data = new Character_Script(monster_character_data[char_id % 100 -1]);
                 game_object.tag = "Character (Enemy)";
             }
             else
@@ -535,10 +535,11 @@ public class Scenario : MonoBehaviour {
 
         turn_order.Sort(Sort_By_Dex);
         curr_character_num = characters.Count - 1;
-        curr_player = turn_order[curr_character_num];
-        curr_player.GetComponent<Animator>().SetBool("Selected", true);
+        curr_player = new Stack<GameObject>();
+        curr_player.Push(turn_order[curr_character_num]);
+        curr_player.Peek().GetComponent<Animator>().SetBool("Selected", true);
         char_num = 0;
-        curr_player.GetComponent<Character_Script>().Find_Action("Move").Select(curr_player.GetComponent<Character_Script>());
+        curr_player.Peek().GetComponent<Character_Script>().Find_Action_Local("Move").Select();
         //GetComponent<Character_Script>().state = Character_Script.States.Moving;
         //FindReachable(curr_player.GetComponent<Character_Script>().action_curr, curr_player.GetComponent<Character_Script>().SPEED);
         //MarkReachable();
@@ -630,13 +631,14 @@ public class Scenario : MonoBehaviour {
     /// <param name="selected_tile">The tile on which the Cursor Object is currently.</param>
     public void Update_Cursor(Transform selected_tile)
     {
-        if (curr_player.GetComponent<Character_Script>().curr_action != null)
+        //Debug.Log("curr_player " + curr_player.Peek().GetComponent<Character_Script>().curr_action.Count);
+        if (curr_player.Count > 0 && curr_player.Peek().GetComponent<Character_Script>().curr_action.Count > 0)
         {
-            int area_width = curr_player.GetComponent<Character_Script>().curr_action.area.GetLength(0);
-            int area_length = curr_player.GetComponent<Character_Script>().curr_action.area.GetLength(1);
+            int area_width = curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area.GetLength(0);
+            int area_length = curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area.GetLength(1);
 
             //Update cursor type to match current Ability
-            if (cursor_name != curr_player.GetComponent<Character_Script>().curr_action.name)
+            if (cursor_name != curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().name)
             {
                 
                 //Destroy existing cursors
@@ -646,32 +648,32 @@ public class Scenario : MonoBehaviour {
                     Destroy(game_object);
                 }
                 cursors = new List<GameObject>();
-                cursor_name = curr_player.GetComponent<Character_Script>().curr_action.name;
+                cursor_name = curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().name;
 
                 //Recreate cursors based on type
                 for (int x = 0; x < area_width; x++)
                 {
                     for (int y = 0; y < area_length; y++)
                     {
-                        if (curr_player.GetComponent<Character_Script>().curr_action.area[x,y] != 0)
+                        if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area[x,y] != 0)
                         {
                             GameObject instance = Instantiate(cursor);
-                            if (curr_player.GetComponent<Character_Script>().curr_action.area[x, y] > 0 && 
-                                curr_player.GetComponent<Character_Script>().curr_action.area[x, y] < .25f)
+                            if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area[x, y] > 0 && 
+                                curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area[x, y] < .25f)
                             {
                                 instance.GetComponent<Renderer>().material = (Material)Resources.Load("Objects/Materials/GoldMat");
                             }
-                            if (curr_player.GetComponent<Character_Script>().curr_action.area[x, y] >= .25f &&
-                                curr_player.GetComponent<Character_Script>().curr_action.area[x, y] < .5f)
+                            if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area[x, y] >= .25f &&
+                                curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area[x, y] < .5f)
                             {
                                 instance.GetComponent<Renderer>().material = (Material)Resources.Load("Objects/Materials/GoldMat");
                             }
-                            if (curr_player.GetComponent<Character_Script>().curr_action.area[x, y] >= .5f &&
-                                curr_player.GetComponent<Character_Script>().curr_action.area[x, y] < .75f)
+                            if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area[x, y] >= .5f &&
+                                curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area[x, y] < .75f)
                             {
                                 instance.GetComponent<Renderer>().material = (Material)Resources.Load("Objects/Materials/OrangeMat");
                             }
-                            if (curr_player.GetComponent<Character_Script>().curr_action.area[x, y] > .75f)
+                            if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area[x, y] > .75f)
                             {
                                 instance.GetComponent<Renderer>().material = (Material)Resources.Load("Objects/Materials/RedMat");
                             }
@@ -682,27 +684,27 @@ public class Scenario : MonoBehaviour {
             }
 
             //Update cursor positions
-            if (curr_player.GetComponent<Character_Script>().curr_action == null ||
-                curr_player.GetComponent<Character_Script>().curr_action.area.Length == 1)
+            if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Count == 0 ||
+                curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area.Length == 1)
             {
                 cursors[0].transform.position = new Vector3(
                     selected_tile.position.x, 
                     selected_tile.position.y + 0.025f + Tile_Grid.TILE_SCALE * selected_tile.GetComponent<Tile>().height, 
                     selected_tile.position.z);
             }
-            else if (curr_player.GetComponent<Character_Script>().curr_action.area.Length > 1)
+            else if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area.Length > 1)
             {
                 int startX = 0;
                 int startY = 0;
-                if (curr_player.GetComponent<Character_Script>().curr_action.center == "Target")
+                if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().center == "Target")
                 {
                     startX = selected_tile.GetComponent<Tile>().index[0];
                     startY = selected_tile.GetComponent<Tile>().index[1];
                 }
-                else if (curr_player.GetComponent<Character_Script>().curr_action.center == "Self")
+                else if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().center == "Self")
                 {
-                    startX = curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[0];
-                    startY = curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[1];
+                    startX = curr_player.Peek().GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[0];
+                    startY = curr_player.Peek().GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[1];
                 }
                 startX -= area_width / 2;
                 startY -= area_length / 2;
@@ -711,7 +713,7 @@ public class Scenario : MonoBehaviour {
                 {
                     for (int y = 0; y < area_length; y++)
                     {
-                        if (curr_player.GetComponent<Character_Script>().curr_action.area[x, y] != 0)
+                        if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area[x, y] != 0)
                         {
                             Transform tile = tile_grid.getTile(startX + x, startY + y);
                             if (tile != null)
@@ -752,7 +754,7 @@ public class Scenario : MonoBehaviour {
         if (scenario_id == controller.curr_scenario.scenario_id)
         {
             //if we are on this scenario and the current player has been assigned (scenario is active)
-            if (curr_player != null)
+            if (curr_player.Peek() != null)
             {
                 Check_For_Victory();
             }
@@ -790,11 +792,11 @@ public class Scenario : MonoBehaviour {
     public void Find_Reachable(int cost_limit, int distance_limit)
     {
         //Debug.Log("cost limit: " + cost_limit + "; distance limit: " + distance_limit);
-        tile_grid.navmesh.bfs(curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>(), cost_limit, distance_limit);
+        tile_grid.navmesh.bfs(curr_player.Peek().GetComponent<Character_Script>().curr_tile.GetComponent<Tile>(), cost_limit, distance_limit);
 
         reachable_tiles = new List<Transform>();
-        int x_index = curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[0];
-        int y_index = curr_player.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[1];
+        int x_index = curr_player.Peek().GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[0];
+        int y_index = curr_player.Peek().GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[1];
         int i = -distance_limit;
         int j = -distance_limit;
         while (i <= distance_limit)
@@ -806,7 +808,7 @@ public class Scenario : MonoBehaviour {
                     if (y_index + j >= 0 && y_index + j < tile_grid.grid_length)
                     {
                         int h = tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().height - 1;
-                        if (curr_player.GetComponent<Character_Script>().state == Character_States.Moving)
+                        if (curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Moving)
                         {
                             //if (grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().traversible){
                             //    if ((Math.Abs(x_index - (x_index + i)) * (int)(armor.weight + weapon.weight) + Math.Abs(y_index - (y_index + j)) * (int)(armor.weight + weapon.weight) + (grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().tile_height - curr_tile.GetComponent<Tile>().tile_height) * 2) < action_curr)
@@ -814,24 +816,24 @@ public class Scenario : MonoBehaviour {
                             //        reachable_tiles.Add(grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j));
                             //    }
                             //}
-                            if (tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight <= curr_player.GetComponent<Character_Script>().speed &&
+                            if (tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight <= curr_player.Peek().GetComponent<Character_Script>().speed &&
                                 tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight > 0 &&
                                 tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().distance <= distance_limit)
                             {
                                 reachable_tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
                             }
                         }
-                        if (curr_player.GetComponent<Character_Script>().state == Character_States.Blinking)
+                        if (curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Blinking)
                         {
                             if (tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().traversible)
                             {
-                                if ((Math.Abs(x_index - (x_index + i)) + Math.Abs(y_index - (y_index + j))) < curr_player.GetComponent<Character_Script>().speed)
+                                if ((Math.Abs(x_index - (x_index + i)) + Math.Abs(y_index - (y_index + j))) < curr_player.Peek().GetComponent<Character_Script>().speed)
                                 {
                                     reachable_tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
                                 }
                             }
                         }
-                        if (curr_player.GetComponent<Character_Script>().state == Character_States.Attacking)
+                        if (curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Attacking)
                         {
                             //print ("scanned x index: " + x_index + i )
                             //Prevent Self-Harm
@@ -857,6 +859,7 @@ public class Scenario : MonoBehaviour {
     /// </summary>
     public void Reset_Reachable()
     {
+        //Debug.Log("Resetting");
         foreach (Transform t in reachable_tiles)
         {
             t.GetComponent<Tile>().weight = -1;
@@ -871,17 +874,18 @@ public class Scenario : MonoBehaviour {
     /// </summary>
     public void Mark_Reachable()
     {
+        //Debug.Log("Marking");
         reachable_tile_objects = new List<GameObject>();
         foreach (Transform tile in reachable_tiles)
         {
             //tile_grid.reachable_prefab.GetComponent<SpriteRenderer>().sortingOrder = tile.GetComponent<SpriteRenderer>().sortingOrder;
-            if (curr_player.GetComponent<Character_Script>().state == Character_States.Moving || curr_player.GetComponent<Character_Script>().state == Character_States.Blinking)
+            if (curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Moving || curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Blinking)
             {
                 //Set Material to blue
                 //Debug.Log(tile_grid.reachable_prefab.GetComponent<Material>().name);
                 tile_grid.reachable_prefab.GetComponent<Renderer>().sharedMaterial.color = new Color(0, 0, 255);
             }
-            if (curr_player.GetComponent<Character_Script>().state == Character_States.Attacking)
+            if (curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Attacking)
             {
                 //set material to red.
                 //tile_grid.reachable_prefab.GetComponent<Renderer>().sharedMaterial.color = new Color(0, 255, 0);
@@ -904,6 +908,7 @@ public class Scenario : MonoBehaviour {
     /// </summary>
     public void Clean_Reachable()
     {
+        //Debug.Log("Cleaning");
         //GameObject[] objects = GameObject.FindGameObjectsWithTag("Reachable");
         foreach (GameObject game_object in reachable_tile_objects)
         {
@@ -940,27 +945,29 @@ public class Scenario : MonoBehaviour {
         {
             curr_character_num = characters.Count - 1;
         }
-        curr_player.GetComponent<Animator>().SetBool("Selected", false);
-        curr_player = turn_order[curr_character_num];
-        if (curr_player.GetComponent<Character_Script>().state == Character_States.Dead)
+        curr_player.Peek().GetComponent<Animator>().SetBool("Selected", false);
+        curr_player.Pop();
+        curr_player.Push(turn_order[curr_character_num]);
+        
+        if (curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Dead)
         {
             Next_Player();
         }
         else
         {
-            curr_player.GetComponent<Animator>().SetBool("Selected", true);
+            curr_player.Peek().GetComponent<Animator>().SetBool("Selected", true);
         }
-        //curr_player.GetComponent<Character_Script>().state = Character_Script.States.Moving;
-        //FindReachable(curr_player.GetComponent<Character_Script>().action_curr, curr_player.GetComponent<Character_Script>().SPEED);
+        //curr_player.Peek().GetComponent<Character_Script>().state = Character_Script.States.Moving;
+        //FindReachable(curr_player.Peek().GetComponent<Character_Script>().action_curr, curr_player.Peek().GetComponent<Character_Script>().SPEED);
 
-        Clean_Reachable();
+        Reset_Reachable();
 
         //Start new player's turn
-        curr_player.GetComponent<Character_Script>().Start_Turn();
+        curr_player.Peek().GetComponent<Character_Script>().Start_Turn();
     }
 
     /// <summary>
-    /// Move the curr_player to the previous available character in the turn_order. Turn_order is sorted in order of Dexterity.
+    /// Move the curr_player.Peek() to the previous available character in the turn_order. Turn_order is sorted in order of Dexterity.
     /// </summary>
     public void Prev_Player()
     {
@@ -983,21 +990,23 @@ public class Scenario : MonoBehaviour {
             curr_character_num = 0;
         }
 
-        curr_player.GetComponent<Animator>().SetBool("Selected", false);
-        curr_player = turn_order[curr_character_num];
-        if (curr_player.GetComponent<Character_Script>().state == Character_States.Dead)
+        curr_player.Peek().GetComponent<Animator>().SetBool("Selected", false);
+        curr_player.Pop();
+        curr_player.Push(turn_order[curr_character_num]);
+        //Debug.Log("Current character num " + curr_character_num);
+        if (curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Dead)
         {
             Prev_Player();
         }
         else
         {
-            curr_player.GetComponent<Animator>().SetBool("Selected", true);
+            curr_player.Peek().GetComponent<Animator>().SetBool("Selected", true);
         }
 
-        Clean_Reachable();
+        Reset_Reachable();
 
         //Start the new player's turn
-        curr_player.GetComponent<Character_Script>().Start_Turn();
+        curr_player.Peek().GetComponent<Character_Script>().Start_Turn();
     }
 
     /// <summary>

@@ -1,6 +1,13 @@
 ﻿/// <summary>
 /// Valid shortcuts used for parsing in the action list.
 /// Accepted Shortcuts:
+/// Split into 2 parts: Target - Stat.
+/// 
+/// Targets:
+/// C - character performing the action.
+/// T - Target of the action.
+/// 
+/// Stats:
 /// AUM = Char Aura MAX
 /// AUC = Char Aura Current
 /// APM = Action Point Max
@@ -26,26 +33,47 @@
 /// NUL = Null
 /// </summary>
 public enum Accepted_Shortcuts {
-    AUM,
-    AUC,
-    APM,
-    APC,
-    MPM,
-    MPC,
-    CAM,
-    CAC,
-    SPD,
-    STR,
-    CRD,
-    SPT,
-    DEX,
-    VIT,
-    LVL,
-    WPR,
-    WPD,
-    ARM,
-    WGT,
-    MOC,
-    DST,
-    NUL
+    CAUM,
+    CAUC,
+    CAPM,
+    CAPC,
+    CMPM,
+    CMPC,
+    CCAM,
+    CCAC,
+    CSPD,
+    CSTR,
+    CCRD,
+    CSPT,
+    CDEX,
+    CVIT,
+    CLVL,
+    CWPR,
+    CWPD,
+    CARM,
+    CWGT,
+    CMOC,
+    CDST,
+    TAUM,
+    TAUC,
+    TAPM,
+    TAPC,
+    TMPM,
+    TMPC,
+    TCAM,
+    TCAC,
+    TSPD,
+    TSTR,
+    TCRD,
+    TSPT,
+    TDEX,
+    TVIT,
+    TLVL,
+    TWPR,
+    TWPD,
+    TARM,
+    TWGT,
+    TMOC,
+    TDST,
+    NUL,
 }

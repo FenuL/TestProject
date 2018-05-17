@@ -112,6 +112,7 @@ public class Weapon : Equipment
         weapon.actions[0] = weapon.active1;
         weapon.actions[1] = weapon.active2;
         weapon.actions[2] = weapon.active3;
+        weapon.actions[3] = weapon.reaction;
         return weapon;
     }
 
@@ -149,7 +150,7 @@ public class Weapon : Equipment
         active1 = "";
         active2 = "";
         active3 = "";
-        actions = new string[3];  
+        actions = new string[4];  
 }
 
     /// <summary>

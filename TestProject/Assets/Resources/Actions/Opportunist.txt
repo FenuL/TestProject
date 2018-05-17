@@ -1,0 +1,14 @@
+﻿name: Opportunist
+ap_cost: 1
+mp_cost: 0
+range: CWPR
+center: Target 1x1
+area: 1
+self_effect: NUL
+target_effect: Damage CWPD+CSTR+5
+activation_type: reactive
+origin: innate
+orient: target
+trigger: ON_TILE_ENTER
+enabled: true
+animation: NUL

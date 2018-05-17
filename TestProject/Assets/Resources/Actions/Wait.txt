@@ -1,5 +1,5 @@
 name: Wait
-ap_cost: APC
+ap_cost: CAPC
 mp_cost: -5
 range: 0
 center: Self 1x1

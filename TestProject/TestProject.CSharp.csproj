@@ -63,17 +63,19 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Action_Scripts\Action.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Action_Scripts\Action_Effect.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Action_Scripts\Character_Action.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Action_Scripts\Target.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Character_Script.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Condition.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Accepted_Shortcuts.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Accepted_Tests.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Armor_Types.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Character_States.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Character_Stats.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Conditions.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Controlls.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Event_Trigger.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Scenario_Objectives.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Weapon_Types.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Equipment_Scripts\Accessory.cs" />
@@ -82,6 +84,7 @@
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Equipment_Scripts\Weapon.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Monster_Scripts\Monster_Script.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Player_Scripts\Player_Script.cs" />
+    <Compile Include="Assets\Resources\Scripts\Event_Manager.cs" />
     <Compile Include="Assets\Resources\Scripts\Game_Controller.cs" />
     <Compile Include="Assets\Resources\Scripts\Scenario_Scripts\Effect Scripts\Tile_Effect.cs" />
     <Compile Include="Assets\Resources\Scripts\Scenario_Scripts\Object Scripts\Object_Script.cs" />
@@ -104,6 +107,7 @@
     <None Include="Assets\Resources\Actions\Flurry.txt" />
     <None Include="Assets\Resources\Actions\Lower.txt" />
     <None Include="Assets\Resources\Actions\Move.txt" />
+    <None Include="Assets\Resources\Actions\Opportunist.txt" />
     <None Include="Assets\Resources\Actions\Raise.txt" />
     <None Include="Assets\Resources\Actions\Ring.txt" />
     <None Include="Assets\Resources\Actions\Rush.txt" />

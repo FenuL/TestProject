@@ -16,7 +16,7 @@ public class Game_Controller : MonoBehaviour {
     /// Scenario curr_scenario - The current Scenario that is Loaded.
     /// ArrayList avail_Scenarios - The Array of currently available Scenarios.
     /// GameObject main_camera - The Main camera object.
-    /// List<Actions> all_actions - The list of all possible Actions created by parsing the Action List File. 
+    /// List<Character_Actions> all_actions - The list of all possible Character_Actions created by parsing the Character_Action List File. 
     /// Transform action_menu - the Action Menu used to select different Character Actions. 
     /// </summary>
     public static string STARTING_SCENARIO = "Assets/Resources/Maps/tile_map.txt";
@@ -28,7 +28,7 @@ public class Game_Controller : MonoBehaviour {
     public Scenario curr_scenario { get; private set; }
     public ArrayList avail_scenarios;
     public GameObject main_camera;
-    public Dictionary<string, Action> all_actions { get; private set; }
+    public Dictionary<string, Character_Action> all_actions { get; private set; }
     public Dictionary<string, Weapon> all_weapons { get; private set; }
     public Dictionary<string, Armor> all_armors { get; private set; }
     public Transform action_menu;
@@ -103,7 +103,7 @@ public class Game_Controller : MonoBehaviour {
     /// Used for initialization.
     /// Finds the Canvas to draw the UI text on.
     /// Finds the Main Camera.
-    /// Sets up the Action Menu
+    /// Sets up the Character_Action Menu
     /// Loads the first Scenario.
     /// </summary>
 	void Start () {
@@ -111,7 +111,7 @@ public class Game_Controller : MonoBehaviour {
         canvas = GameObject.Find("Canvas");
         popup = Resources.Load<FloatingText>("Prefabs/Scenario Prefabs/Object Prefabs/PopupTextParent");
         main_camera = GameObject.FindGameObjectWithTag("MainCamera");
-        all_actions = Action.Load_Actions();
+        all_actions = Character_Action.Load_Actions();
         all_weapons = Weapon.Load_Weapons();
         all_armors = Armor.Load_Armors();
         curr_scenario = new Scenario(STARTING_SCENARIO);
@@ -223,6 +223,11 @@ public class Game_Controller : MonoBehaviour {
                 keys[0] = KeyCode.Minus;
                 keys[1] = KeyCode.KeypadMinus;
             }
+            else if (ctrl == Controlls.Pause)
+            {
+                keys[0] = KeyCode.P;
+                keys[1] = KeyCode.P;
+            }
             controlls.Add(ctrl, keys);
         }
 
@@ -281,7 +286,7 @@ public class Game_Controller : MonoBehaviour {
         }
 
         //Action menu hotkeys
-        Character_Script character = curr_scenario.curr_player.GetComponent<Character_Script>();
+        Character_Script character = curr_scenario.curr_player.Peek().GetComponent<Character_Script>();
         if (!character.ending_turn)
         {
             if (Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_0][0]) ||
@@ -289,7 +294,7 @@ public class Game_Controller : MonoBehaviour {
             {
                 if (character.actions.Count >= 1)
                 {
-                    character.actions[0].Select(character);
+                    character.actions[0].Select();
                 }
             }
             else if (Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_1][0]) ||
@@ -297,7 +302,7 @@ public class Game_Controller : MonoBehaviour {
             {
                 if (character.actions.Count >= 2)
                 {
-                    character.actions[1].Select(character);
+                    character.actions[1].Select();
                 }
             }
             else if (Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_2][0]) ||
@@ -305,7 +310,7 @@ public class Game_Controller : MonoBehaviour {
             {
                 if (character.actions.Count >= 3)
                 {
-                    character.actions[2].Select(character);
+                    character.actions[2].Select();
                 }
             }
             else if (Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_3][0]) ||
@@ -313,7 +318,7 @@ public class Game_Controller : MonoBehaviour {
             {
                 if (character.actions.Count >= 4)
                 {
-                    character.actions[3].Select(character);
+                    character.actions[3].Select();
                 }
             }
             else if (Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_4][0]) ||
@@ -321,7 +326,7 @@ public class Game_Controller : MonoBehaviour {
             {
                 if (character.actions.Count >= 5)
                 {
-                    character.actions[4].Select(character);
+                    character.actions[4].Select();
                 }
             }
             else if (Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_5][0]) ||
@@ -329,7 +334,7 @@ public class Game_Controller : MonoBehaviour {
             {
                 if (character.actions.Count >= 6)
                 {
-                    character.actions[5].Select(character);
+                    character.actions[5].Select();
                 }
             }
             else if (Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_6][0]) ||
@@ -337,7 +342,7 @@ public class Game_Controller : MonoBehaviour {
             {
                 if (character.actions.Count >= 7)
                 {
-                    character.actions[6].Select(character);
+                    character.actions[6].Select();
                 }
             }
             else if (Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_7][0]) ||
@@ -345,7 +350,7 @@ public class Game_Controller : MonoBehaviour {
             {
                 if (character.actions.Count >= 8)
                 {
-                    character.actions[7].Select(character);
+                    character.actions[7].Select();
                 }
             }
             else if (Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_8][0]) ||
@@ -353,7 +358,7 @@ public class Game_Controller : MonoBehaviour {
             {
                 if (character.actions.Count >= 9)
                 {
-                    character.actions[8].Select(character);
+                    character.actions[8].Select();
                 }
             }
             else if (Input.GetKeyDown(controlls[Controlls.Ability_Hotkey_9][0]) ||
@@ -361,7 +366,22 @@ public class Game_Controller : MonoBehaviour {
             {
                 if (character.actions.Count >= 10)
                 {
-                    character.actions[9].Select(character);
+                    character.actions[9].Select();
+                }
+            }
+            else if (Input.GetKeyDown(controlls[Controlls.Pause][0]) ||
+                Input.GetKeyDown(controlls[Controlls.Pause][1]))
+            {
+                if (character.curr_action != null)
+                {
+                    if (character.curr_action.Peek().paused)
+                    {
+                        character.curr_action.Peek().Resume();
+                    }
+                    else
+                    {
+                        character.curr_action.Peek().Pause();
+                    }
                 }
             }
             if (Input.GetKeyDown("k"))
@@ -383,7 +403,7 @@ public class Game_Controller : MonoBehaviour {
                     {
                         if (tile.Equals(curr_scenario.clicked_tile))
                         {
-                            character.StartCoroutine(character.Act(character.curr_action, curr_scenario.clicked_tile));
+                            character.StartCoroutine(character.Act(character.curr_action.Peek(), curr_scenario.clicked_tile));
                         }
                     }
                 }
@@ -414,7 +434,7 @@ public class Game_Controller : MonoBehaviour {
         //Camera Turning
         //Debug.Log(curr_scenario.curr_player.GetComponent<Character_Script>().state);
         if ((Input.GetKeyDown(controlls[Controlls.Camera_Turn_Right][0]) || Input.GetKeyDown(controlls[Controlls.Camera_Turn_Right][1])) 
-            && curr_scenario.curr_player.GetComponent<Character_Script>().state != Character_States.Walking)
+            && curr_scenario.curr_player.Peek().GetComponent<Character_Script>().state != Character_States.Walking)
         {
             //Debug.Log("x:" + main_camera.transform.rotation.x + ", y:" + main_camera.transform.rotation.y + "z:" + main_camera.transform.rotation.z + ", w:" + main_camera.transform.rotation.w);
 
@@ -441,7 +461,7 @@ public class Game_Controller : MonoBehaviour {
             
         }
         if ((Input.GetKeyDown(controlls[Controlls.Camera_Turn_Left][0]) || Input.GetKeyDown(controlls[Controlls.Camera_Turn_Left][1])) &&
-            curr_scenario.curr_player.GetComponent<Character_Script>().state != Character_States.Walking)
+            curr_scenario.curr_player.Peek().GetComponent<Character_Script>().state != Character_States.Walking)
         {
             //Debug.Log("x:" + main_camera.transform.rotation.x + ", y:" + main_camera.transform.rotation.y + "z:" + main_camera.transform.rotation.z + ", w:" + main_camera.transform.rotation.w);
             //transform.rotation = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w);

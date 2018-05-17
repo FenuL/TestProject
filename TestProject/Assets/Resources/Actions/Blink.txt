@@ -1,7 +1,7 @@
 name: Blink
 ap_cost: 0
 mp_cost: 5
-range: SPD
+range: CSPD
 center: Target 1x1
 area: .2
 self_effect: Move 4

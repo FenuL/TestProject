@@ -36,7 +36,7 @@ public class Camera_Controller : MonoBehaviour {
     /// </summary>
     public void Current_Character_Preview()
     {
-        int actions_remaining = (int)(curr_player.action_curr - curr_player.curr_action.Convert_To_Double(curr_player.curr_action.ap_cost, curr_player));
+        int actions_remaining = (int)(curr_player.action_curr - curr_player.curr_action.Peek().Convert_To_Double(curr_player.curr_action.Peek().ap_cost, null));
         string action_color = "white";
         if (actions_remaining > curr_player.action_curr)
         {
@@ -46,7 +46,7 @@ public class Camera_Controller : MonoBehaviour {
         {
             action_color = "red";
         }
-        int mana_remaining = (int)(curr_player.mana_curr - curr_player.curr_action.Convert_To_Double(curr_player.curr_action.mp_cost, curr_player));
+        int mana_remaining = (int)(curr_player.mana_curr - curr_player.curr_action.Peek().Convert_To_Double(curr_player.curr_action.Peek().mp_cost, null));
         string mana_color = "white";
         if (mana_remaining > curr_player.mana_curr)
         {
@@ -57,9 +57,10 @@ public class Camera_Controller : MonoBehaviour {
             mana_color = "red";
         }
         GUI.TextArea(new Rect(10, Screen.height - 120, 200, 110), curr_player.character_name + "\n" +
-          "AU: " + curr_player.aura_curr + " / " + curr_player.aura_max + "\n" +
-          "AP: <color=" + action_color + ">" + actions_remaining + "</color> / " + curr_player.action_max + "     " +
+          "AU: " + curr_player.aura_curr + " / " + curr_player.aura_max + "     " +
           "MP: <color=" + mana_color + ">" + mana_remaining + "</color> / " + curr_player.mana_max + "\n" +
+          "AP: <color=" + action_color + ">" + actions_remaining + "</color> / " + curr_player.action_max + "     " +
+          "RP: " + curr_player.reaction_curr + " / " + curr_player.reaction_max + "\n" +
           "Str: " + curr_player.strength + "   Crd: " + curr_player.coordination + "    Spt: " + curr_player.spirit + "\n" +
           "Dex: " + curr_player.dexterity + "   Vit: " + curr_player.vitality + "   Spd: " + curr_player.speed + "\n" +
           "Wep: " + curr_player.weapon.name + "   Armor: " + curr_player.armor.name, style);
@@ -75,12 +76,11 @@ public class Camera_Controller : MonoBehaviour {
         if (tile != null)
         {
             float action_mod = 0;
-            if (curr_player.curr_action != null)
+            if (curr_player.curr_action.Count > 0)
             {
-                action_mod = curr_player.curr_action.Calculate_Total_Modifier(
-                    curr_player,
+                action_mod = curr_player.curr_action.Peek().Calculate_Total_Modifier(
                     controller.curr_scenario.selected_tile.gameObject,
-                    curr_player.curr_action.area[curr_player.curr_action.area.GetLength(0) / 2, curr_player.curr_action.area.GetLength(1) / 2]);
+                    curr_player.curr_action.Peek().area[curr_player.curr_action.Peek().area.GetLength(0) / 2, curr_player.curr_action.Peek().area.GetLength(1) / 2]);
             }
             string mod_color = "white";
             if (action_mod >= curr_player.finesse)
@@ -121,15 +121,15 @@ public class Camera_Controller : MonoBehaviour {
             Character_Script highlighted_character = highlighted_obj.GetComponent<Character_Script>();
             if (highlighted_character != null)
             {
-                if (curr_player.curr_action != null)
+                if (curr_player.curr_action.Count > 0)
                 {
                     bool preview = false;
-                    foreach (Action_Effect eff in curr_player.curr_action.target_effect)
+                    foreach (Action_Effect eff in curr_player.curr_action.Peek().target_effect)
                     {
                         if (eff.type.ToString() == "Damage")
                         {
                             //TODO: This is inaccurate because it doesn't take into account the target modifier.
-                            int damage_dealt = highlighted_character.Estimate_Damage(curr_player.curr_action.Convert_To_Double(eff.value[0], curr_player), (int)curr_player.weapon.pierce);
+                            int damage_dealt = highlighted_character.Estimate_Damage(curr_player.curr_action.Peek().Convert_To_Double(eff.value[0], highlighted_character.gameObject), (int)curr_player.weapon.pierce);
                             int new_aura = highlighted_character.aura_curr - damage_dealt;
                             if (new_aura < 0)
                             {
@@ -140,9 +140,10 @@ public class Camera_Controller : MonoBehaviour {
                                 new_aura = highlighted_character.aura_curr;
                             }
                             GUI.TextArea(new Rect(Screen.width - 320, Screen.height - 120, 200, 110), highlighted_character.character_name + "\n" +
-                              "AU: <color=red>" + (new_aura) + "</color> / " + highlighted_character.aura_max + "     " +
-                              "AP: " + highlighted_character.action_curr + " / " + highlighted_character.action_max + "\n" +
+                              "AU: <color=red>" + (new_aura) + "</color> / " + highlighted_character.aura_max + "    " +
                               "MP: " + highlighted_character.mana_curr + " / " + highlighted_character.mana_max + "\n" +
+                              "AP: " + highlighted_character.action_curr + " / " + highlighted_character.action_max + "    " +
+                              "RP: " + highlighted_character.reaction_curr + " / " + highlighted_character.reaction_max + "\n" +
                               "Str: " + highlighted_character.strength + "   Crd: " + highlighted_character.coordination + "    Spt: " + highlighted_character.spirit + "\n" +
                               "Dex: " + highlighted_character.dexterity + "   Vit: " + highlighted_character.vitality + "   Spd: " + highlighted_character.speed + "\n" +
                               "Wep: " + highlighted_character.weapon.name + "   Armor: " + highlighted_character.armor.name, style);
@@ -151,7 +152,7 @@ public class Camera_Controller : MonoBehaviour {
                         }
                         else if (eff.type.ToString() == "Heal")
                         {
-                            int healing = (int)curr_player.curr_action.Convert_To_Double(eff.value[0], curr_player);
+                            int healing = (int)curr_player.curr_action.Peek().Convert_To_Double(eff.value[0], highlighted_character.gameObject);
                             int new_aura = highlighted_character.aura_curr + healing;
                             if (new_aura < 0)
                             {
@@ -163,8 +164,9 @@ public class Camera_Controller : MonoBehaviour {
                             }
                             GUI.TextArea(new Rect(Screen.width - 320, Screen.height - 120, 200, 110), highlighted_character.character_name + "\n" +
                               "AU: <color=green>" + new_aura + "</color> / " + highlighted_character.aura_max + "     " +
-                              "AP: " + highlighted_character.action_curr + " / " + highlighted_character.action_max + "\n" +
                               "MP: " + highlighted_character.mana_curr + " / " + highlighted_character.mana_max + "\n" +
+                              "AP: " + highlighted_character.action_curr + " / " + highlighted_character.action_max + "     " +
+                              "RP: " + highlighted_character.reaction_curr + " / " + highlighted_character.reaction_max + "\n" +
                               "Str: " + highlighted_character.strength + "   Crd: " + highlighted_character.coordination + "    Spt: " + highlighted_character.spirit + "\n" +
                               "Dex: " + highlighted_character.dexterity + "   Vit: " + highlighted_character.vitality + "   Spd: " + highlighted_character.speed + "\n" +
                               "Wep: " + highlighted_character.weapon.name + "   Armor: " + highlighted_character.armor.name, style);
@@ -175,9 +177,10 @@ public class Camera_Controller : MonoBehaviour {
                     if (!preview)
                     {
                         GUI.TextArea(new Rect(Screen.width - 320, Screen.height - 120, 200, 110), highlighted_character.character_name + "\n" +
-                            "AU: " + highlighted_character.aura_curr + " / " + highlighted_character.aura_max + "\n" +
-                            "AP: " + highlighted_character.action_curr + " / " + highlighted_character.action_max + "     " +
+                            "AU: " + highlighted_character.aura_curr + " / " + highlighted_character.aura_max + "     " +
                             "MP: " + highlighted_character.mana_curr + " / " + highlighted_character.mana_max + "\n" +
+                            "AP: " + highlighted_character.action_curr + " / " + highlighted_character.action_max + "     " +
+                            "RP: " + highlighted_character.reaction_curr + " / " + highlighted_character.reaction_max + "\n" +
                             "Str: " + highlighted_character.strength + "   Crd: " + highlighted_character.coordination + "    Spt: " + highlighted_character.spirit + "\n" +
                             "Dex: " + highlighted_character.dexterity + "   Vit: " + highlighted_character.vitality + "   Spd: " + highlighted_character.speed + "\n" +
                             "Wep: " + highlighted_character.weapon.name + "   Armor: " + highlighted_character.armor.name, style);
@@ -216,10 +219,10 @@ public class Camera_Controller : MonoBehaviour {
 		}
 
         //print (controller.curr_scenario.curr_player.GetComponent<Character_Script> ().character_name);
-        if (controller.curr_scenario.curr_player != null)
+        if (controller.curr_scenario.curr_player.Count > 0)
         {
-            curr_player = controller.curr_scenario.curr_player.GetComponent<Character_Script>();
-            if (curr_player.curr_action != null)
+            curr_player = controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>();
+            if (curr_player.curr_action.Count > 0)
             {
                 Current_Character_Preview();
             }

@@ -1,11 +1,11 @@
 name: Flurry
 ap_cost: 1
 mp_cost: 5
-range: WPR
+range: CWPR
 center: Target 1x1
 area: 1
 self_effect: Enable Attack false
-target_effect: Damage WPD+STR+2; Damage WPD+STR+2; Damage WPD+STR+2
+target_effect: Damage CWPD+STR+2; Damage CWPD+STR+2; Damage CWPD+STR+2
 activation_type: active
 origin: weapon
 orient: target

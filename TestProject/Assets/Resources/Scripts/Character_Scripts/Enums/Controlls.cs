@@ -20,5 +20,6 @@ public enum Controlls
     Ability_Hotkey_7,
     Ability_Hotkey_8,
     Ability_Hotkey_9,
-    Ability_Hotkey_0
+    Ability_Hotkey_0,
+    Pause
 }

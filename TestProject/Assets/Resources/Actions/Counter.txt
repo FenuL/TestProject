@@ -1,14 +1,15 @@
 name: Counter
 ap_cost: 1
 mp_cost: 0
-range: WPR
+range: CWPR
 center: Target 1x1
 area: 1
-self_effect: Enable Attack false
-target_effect: Damage WPD+5
-activation_type: active
+self_effect: NUL
+target_effect: Damage CWPD+CSTR
+activation_type: reactive
 origin: innate
 orient: target
-trigger: NUL
+trigger: ON_DAMAGE
+condition: CHK_TARG_SELF & CHK_SRC_RANG
 enabled: true
 animation: NUL

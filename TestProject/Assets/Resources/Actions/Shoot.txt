@@ -1,11 +1,11 @@
 name: Shoot
 ap_cost: 1
 mp_cost: 0
-range: WPR
+range: CWPR
 center: Target 1x1
 area: 1
 self_effect: Enable Attack false
-target_effect: Damage WPD+CRD+5
+target_effect: Damage CWPD+CCRD+5
 activation_type: active
 origin: innate
 orient: target

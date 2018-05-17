@@ -1,7 +1,7 @@
 name: Bleed
 ap_cost: 0
 mp_cost: 0
-range: WPR
+range: CWPR
 center: Target 1x1
 area: 1
 self_effect: NUL

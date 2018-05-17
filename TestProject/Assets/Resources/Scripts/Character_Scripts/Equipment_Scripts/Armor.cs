@@ -68,6 +68,7 @@ public class Armor : Equipment
         }
         armor.actions[0] = armor.active1;
         armor.actions[1] = armor.active2;
+        armor.actions[2] = armor.reaction;
         return armor;
     }
 
@@ -101,7 +102,7 @@ public class Armor : Equipment
         reaction = "";
         active1 = "";
         active2 = "";
-        actions = new string[2];
+        actions = new string[3];
     }
 
     /// <summary>
