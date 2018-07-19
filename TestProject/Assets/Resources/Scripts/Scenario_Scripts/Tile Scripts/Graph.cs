@@ -648,6 +648,8 @@ public class Graph
     {
         Stack<Tile> path = new Stack<Tile>();
         //If we already have a path from a bfs call.
+        //Debug.Log("Start exists " + start.index[0] + "," + start.index[1]);
+        //Debug.Log("Finish Exists " + finish.index[0] + "," + finish.index[1]);
         if (visitedTiles.Count != 0)
         {
             Tile temp_tile = finish;
@@ -658,7 +660,9 @@ public class Graph
             {
                 path.Push(temp_tile);
                 //Look at the parent tile.
+                //Debug.Log("parent tile: " + temp_tile.parent.index[0] + "," + temp_tile.parent.index[1]);
                 temp_tile = temp_tile.parent;
+                
             }
 
             //reset the previously visited tiles

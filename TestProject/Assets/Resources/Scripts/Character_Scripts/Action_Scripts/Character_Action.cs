@@ -59,6 +59,8 @@ public class Character_Action
     public string orient { get; private set; }
     public String animation { get; private set; }
     public Character_Script character { get; private set; }
+    public int proc_effect_num { get; set; }
+    public int anim_num { get; private set; }
 
     /// <summary>
     /// Create an empty Character_Action.
@@ -82,6 +84,7 @@ public class Character_Action
         orient = "";
         animation = "";
         character = null;
+        proc_effect_num = 0;
     }
 
     /// <summary>
@@ -108,6 +111,7 @@ public class Character_Action
         orient = act.orient;
         animation = act.animation;
         character = chara;
+        proc_effect_num = act.proc_effect_num;
     }
 
     /// <summary>
@@ -576,154 +580,158 @@ public class Character_Action
     /// </summary>
     public void Select()
     {
-        //Check to see if action is enabled
-        //Debug.Log("Name: " + name + " is enabled: " + enabled);
-        if (this.enabled)
+        if (character.Is_Idle())
         {
-            //Debug.Log("AP cost: " + (int)Convert_To_Double(cost, character));
-            //Check to see if player can afford action:
-            if (Check_Resource())
+            //Debug.Log("Selecting Action");
+            //Check to see if action is enabled
+            //Debug.Log("Name: " + name + " is enabled: " + enabled);
+            if (this.enabled)
             {
-                //Debug.Log("Enough action points");
-                if (character.mana_curr >= (int)Convert_To_Double(mp_cost, null))
+                //Debug.Log("AP cost: " + (int)Convert_To_Double(cost, character));
+                //Check to see if player can afford action:
+                if (Check_Resource())
                 {
-                    //Debug.Log("Enough mana points");
-                    //character.curr_action.Push(this);
-                    if (target_effect != null)
+                    //Debug.Log("Enough action points");
+                    if (character.mana_curr >= (int)Convert_To_Double(mp_cost, null))
                     {
-                        foreach (Action_Effect eff in target_effect)
+                        //Debug.Log("Enough mana points");
+                        //character.curr_action.Push(this);
+                        if (target_effect != null)
                         {
-                            if (eff.type == Action_Effect.Types.Move)
+                            foreach (Action_Effect eff in target_effect)
                             {
-                                character.state = Character_States.Moving;
-                                character.controller.curr_scenario.Find_Reachable((int)character.speed, (int)Convert_To_Double(range, null));
+                                if (eff.type == Action_Effect.Types.Move)
+                                {
+                                    //character.state = Character_States.Moving;
+                                    character.controller.curr_scenario.Find_Reachable((int)character.speed, (int)Convert_To_Double(range, null),1);
+                                }
+                                else if (eff.type == Action_Effect.Types.Damage)
+                                {
+                                    //character.state = Character_States.Attacking;
+                                    character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null),3);
+                                }
+                                else if (eff.type == Action_Effect.Types.Heal)
+                                {
+                                    //character.state = Character_States.Attacking;
+                                    character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null),3);
+                                }
+                                else if (eff.type == Action_Effect.Types.Status)
+                                {
+                                    //character.state = Character_States.Attacking;
+                                    character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null),3);
+                                }
+                                else if (eff.type == Action_Effect.Types.Elevate)
+                                {
+                                    //character.state = Character_States.Attacking;
+                                    character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null),3);
+                                }
+                                else if (eff.type == Action_Effect.Types.Enable)
+                                {
+                                    //character.state = Character_States.Attacking;
+                                    character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null),3);
+                                }
                             }
-                            else if (eff.type == Action_Effect.Types.Damage)
+                        }
+                        if (self_effect != null)
+                        {
+                            foreach (Action_Effect eff in self_effect)
                             {
-                                character.state = Character_States.Attacking;
-                                character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null));
-                            }
-                            else if (eff.type == Action_Effect.Types.Heal)
-                            {
-                                character.state = Character_States.Attacking;
-                                character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null));
-                            }
-                            else if (eff.type == Action_Effect.Types.Status)
-                            {
-                                character.state = Character_States.Attacking;
-                                character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null));
-                            }
-                            else if (eff.type == Action_Effect.Types.Elevate)
-                            {
-                                character.state = Character_States.Attacking;
-                                character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null));
-                            }
-                            else if (eff.type == Action_Effect.Types.Enable)
-                            {
-                                character.state = Character_States.Attacking;
-                                character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null));
+                                if (eff.type.ToString() == Action_Effect.Types.Move.ToString())
+                                {
+                                    if (Convert_To_Double(eff.value[0], null) != 4)
+                                    {
+                                        //character.state = Character_States.Moving;
+                                        //Debug.Log("Speed: " + character.speed);
+                                        character.controller.curr_scenario.Find_Reachable((int)character.speed, (int)Convert_To_Double(range, null),1);
+                                    }
+                                    else
+                                    {
+                                        //character.state = Character_States.Blinking;
+                                        character.controller.curr_scenario.Find_Reachable((int)character.speed * 2, (int)Convert_To_Double(range, null),2);
+                                    }
+                                }
+                                else if (eff.type == Action_Effect.Types.Damage)
+                                {
+                                    //character.state = Character_States.Attacking;
+                                    character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null),3);
+                                }
+                                else if (eff.type == Action_Effect.Types.Heal)
+                                {
+                                    //character.state = Character_States.Attacking;
+                                    character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null),3);
+                                }
+                                else if (eff.type == Action_Effect.Types.Status)
+                                {
+                                    //character.state = Character_States.Attacking;
+                                    character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null),3);
+                                }
+                                else if (eff.type == Action_Effect.Types.Elevate)
+                                {
+                                    //character.state = Character_States.Attacking;
+                                    character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null),3);
+                                }
+                                else if (eff.type == Action_Effect.Types.Enable)
+                                {
+                                    //character.state = Character_States.Attacking;
+                                    character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null),3);
+                                }
+                                else if (eff.type == Action_Effect.Types.Pass)
+                                {
+                                    //character.curr_action = this;
+                                    //character.StartCoroutine(character.Act(null));
+                                    //Debug.Log("TEST 2");
+                                    //TODO Change this so the Character_Action actually goes off before ending the turn.
+                                    //Enact(character, null);
+                                    character.curr_action.Push(this);
+                                    character.StartCoroutine(character.End_Turn());
+                                }
                             }
                         }
                     }
-                    if (self_effect != null)
+                    //Select the action in the action menu
+                    foreach (Transform but in character.controller.action_menu.GetComponent<Action_Menu_Script>().buttons)
                     {
-                        foreach (Action_Effect eff in self_effect)
+                        if (but.name == name)
                         {
-                            if (eff.type.ToString() == Action_Effect.Types.Move.ToString())
-                            {
-                                if (Convert_To_Double(eff.value[0], null) != 4)
-                                {
-                                    character.state = Character_States.Moving;
-                                    //Debug.Log("Speed: " + character.speed);
-                                    character.controller.curr_scenario.Find_Reachable((int)character.speed, (int)Convert_To_Double(range, null));
-                                }
-                                else
-                                {
-                                    character.state = Character_States.Blinking;
-                                    character.controller.curr_scenario.Find_Reachable((int)character.speed * 2, (int)Convert_To_Double(range, null));
-                                }
-                            }
-                            else if (eff.type == Action_Effect.Types.Damage)
-                            {
-                                character.state = Character_States.Attacking;
-                                character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null));
-                            }
-                            else if (eff.type == Action_Effect.Types.Heal)
-                            {
-                                character.state = Character_States.Attacking;
-                                character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null));
-                            }
-                            else if (eff.type == Action_Effect.Types.Status)
-                            {
-                                character.state = Character_States.Attacking;
-                                character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null));
-                            }
-                            else if (eff.type == Action_Effect.Types.Elevate)
-                            {
-                                character.state = Character_States.Attacking;
-                                character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null));
-                            }
-                            else if (eff.type == Action_Effect.Types.Enable)
-                            {
-                                character.state = Character_States.Attacking;
-                                character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range,  null));
-                            }
-                            else if (eff.type == Action_Effect.Types.Pass)
-                            {
-                                //character.curr_action = this;
-                                //character.StartCoroutine(character.Act(null));
-                                //Debug.Log("TEST 2");
-                                //TODO Change this so the Character_Action actually goes off before ending the turn.
-                                //Enact(character, null);
-                                character.curr_action.Push(this);
-                                character.StartCoroutine(character.End_Turn());
-                            }
+                            but.GetComponent<Image>().color = Color.blue;
+                        }
+                        else if (but.GetComponent<Image>().color == Color.blue)
+                        {
+                            but.GetComponent<Image>().color = Color.white;
                         }
                     }
-                }
-                //Select the action in the action menu
-                foreach (Transform but in character.controller.action_menu.GetComponent<Action_Menu_Script>().buttons)
-                {
-                    if (but.name == name)
+                    character.controller.curr_scenario.Clean_Reachable();
+                    character.controller.curr_scenario.Mark_Reachable();
+                    if (character.curr_action.Count != 0)
                     {
-                        but.GetComponent<Image>().color = Color.blue;
+                        character.curr_action.Pop();
                     }
-                    else if (but.GetComponent<Image>().color == Color.blue)
-                    {
-                        but.GetComponent<Image>().color = Color.white;
-                    }
-                }
-                character.controller.curr_scenario.Clean_Reachable();
-                character.controller.curr_scenario.Mark_Reachable();
-                if (character.curr_action.Count != 0)
-                {
-                    character.curr_action.Pop();
-                }
-                character.curr_action.Push(this);
-                //Debug.Log(character.curr_action.Peek().name);
-                //Debug.Log(character.character_num);
+                    character.curr_action.Push(this);
+                    //Debug.Log("Character " + character.name + " current action " + character.curr_action.Peek().name);
+                    //Debug.Log(character.character_num);
 
+                }
+                else
+                {
+                    Debug.Log("NOT Enough Action Points");
+                    foreach (Transform but in character.controller.action_menu.GetComponent<Action_Menu_Script>().buttons)
+                    {
+                        if (but.name == name)
+                        {
+                            but.GetComponent<Image>().color = Color.red;
+                        }
+                    }
+                }
             }
             else
             {
-                Debug.Log("NOT Enough Action Points");
+                Debug.Log("Character_Action is disabled");
                 foreach (Transform but in character.controller.action_menu.GetComponent<Action_Menu_Script>().buttons)
                 {
                     if (but.name == name)
                     {
                         but.GetComponent<Image>().color = Color.red;
                     }
-                }
-            }
-        }
-        else
-        {
-            Debug.Log("Character_Action is disabled");
-            foreach (Transform but in character.controller.action_menu.GetComponent<Action_Menu_Script>().buttons)
-            {
-                if (but.name == name)
-                {
-                    but.GetComponent<Image>().color = Color.red;
                 }
             }
         }
@@ -1356,24 +1364,28 @@ public class Character_Action
     {
         if (Evaluate_Conditional(condition, act, value, target) && Check_Resource())
         {
+            //Debug.Log("Character " + character.name + " is reacting with " + name);
             character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().Pause();
+            //Debug.Log("Pausing Character " + character.controller.curr_scenario.curr_player.Peek().name + "'s current action " + character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().name);
+            //Debug.Log("Character action count " + character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Count);
             character.controller.curr_scenario.curr_player.Push(character.gameObject);
             character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Push(this);
             Character_Script target_character = target.GetComponent<Character_Script>();
             character.StartCoroutine(character.Act(this, act.character.curr_tile));
-            character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Pop();
-            character.controller.curr_scenario.curr_player.Pop();
-            if (character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Count > 0) {
-                character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().Resume();
-            }
         }
 
-        /*while (character.state != Character_States.Idle)
-        {
-            //Debug.Log("State " + character.state.ToString());
-            yield return new WaitForEndOfFrame();
-        }*/
+    }
 
+    public void End_Reaction()
+    {
+        //Debug.Log("Ending Reaction of " + character.name);
+        character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Pop();
+        character.controller.curr_scenario.curr_player.Pop();
+        //Debug.Log("Current player: " + character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Count);
+        if (character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Count > 0)
+        {
+            character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().Resume();
+        }
     }
 
     /// <summary>
@@ -1387,10 +1399,31 @@ public class Character_Action
     {
         if (Check_Valid(target_tile))
         {
+            float duration = 1;
+            AnimationClip anim_clip = new AnimationClip();
+            if (type == Activation_Types.Active)
+            {
+                anim_clip = character.GetComponent<Animator>().runtimeAnimatorController.animationClips[anim_num - 99];
+                duration = anim_clip.length;
+            }
+            else if (type == Activation_Types.Reactive)
+            {
+                anim_clip = character.GetComponent<Animator>().runtimeAnimatorController.animationClips[anim_num - 194];
+                duration = anim_clip.length;
+                //Debug.Log(anim_clip.name);
+            }
+            //Debug.Log("Animation playing: " + anim_clip.name+ " looping? " + anim_clip.isLooping);
+            float elapsedTime = 0;
+            
+            //Debug.Log("Duration " + duration);
+            //Debug.Log("Animation loops " + character.GetComponent<Animator>().runtimeAnimatorController.animationClips[anim_num - 99].isLooping);
             if (target_effect != null)
             {
+                //Stack<Action> Functions = new Stack<Action>();
+
                 //Find targets in AoE
                 List<Target> targets = Get_Targets(target_tile);
+                //Functions.Push(Enact_Damage("", targets[0]));
                 if (targets != null)
                 {
                     foreach (Target target in targets)
@@ -1401,10 +1434,37 @@ public class Character_Action
                         }
                     }
                 }
+
+                //Begin animation
+                character.GetComponent<Animator>().SetInteger("Anim_Num", anim_num);
+                character.GetComponent<Animator>().SetTrigger("Act");
+
                 foreach (Action_Effect eff in target_effect)
                 {
+                    elapsedTime = 0;
+                    //Debug.Log(character.name + " " + name + "Num of target effects: " + target_effect.Count);
+                    //Debug.Log(character.name + " " + name + "effect_num " + proc_effect_num);
+                    //Debug.Log(character.name + " " + name + "effect type " + eff.type);
+                    while (proc_effect_num == 0 || paused)
+                    {
+                        //Escape if too much time has passed.
+                        elapsedTime += Time.deltaTime;
+                        if (elapsedTime > duration && ! anim_clip.isLooping)
+                        {
+                            //Debug.Log(character.name + " " + name + " Escaping");
+                            elapsedTime = 0;
+                            proc_effect_num = -1;
+                        }
+                        //Debug.Log(character.name + " " + name + "Paused? " + paused);
+                        //Debug.Log(character.name + " " + name + "Proc num " + proc_effect_num);
+                        yield return new WaitForEndOfFrame();
+                    }
+                    
                     if (eff.type == Action_Effect.Types.Move)
                     {
+                        //Proc the effect
+                        proc_effect_num -= 1;
+
                         // find the target to move towards
                         int centerX = character.curr_tile.GetComponent<Tile>().index[0];
                         int centerY = character.curr_tile.GetComponent<Tile>().index[1];
@@ -1417,6 +1477,11 @@ public class Character_Action
 
                         foreach (Target target in targets)
                         {
+                            while ( paused)
+                            {
+                                //TODO add an interrupt here.
+                                yield return new WaitForEndOfFrame();
+                            }
                             int tile_x = 0;
                             int tile_y = 0;
                             if (target.game_object.GetComponent<Character_Script>())
@@ -1453,52 +1518,101 @@ public class Character_Action
                     }
                     else if (eff.type == Action_Effect.Types.Damage)
                     {
+                        //Proc the effect
+                        proc_effect_num -= 1;
                         foreach (Target target in targets)
                         {
+                            while (paused)
+                            {
+                                //TODO add an interrupt here.
+                                yield return new WaitForEndOfFrame();
+                            }
                             Enact_Damage(eff.value[0], target);
                         }
                     }
                     else if (eff.type == Action_Effect.Types.Heal)
                     {
+                        //Proc the effect
+                        proc_effect_num -= 1;
                         foreach (Target target in targets)
                         {
+                            while (paused)
+                            {
+                                //TODO add an interrupt here.
+                                yield return new WaitForEndOfFrame();
+                            }
                             Enact_Healing(eff.value, target);
                         }
                     }
                     else if (eff.type == Action_Effect.Types.Status)
                     {
+                        //Proc the effect
+                        proc_effect_num -= 1;
                         foreach (Target target in targets)
                         {
+                            while (paused)
+                            {
+                                //TODO add an interrupt here.
+                                yield return new WaitForEndOfFrame();
+                            }
                             Enact_Status(eff.value, target);
                         }
                     }
                     else if (eff.type == Action_Effect.Types.Effect)
                     {
+                        //Proc the effect
+                        proc_effect_num -= 1;
                         List<Target> target_tiles = Get_Target_Tiles(target_tile);
                         foreach (Target target in target_tiles)
                         {
+                            while (paused)
+                            {
+                                //TODO add an interrupt here.
+                                yield return new WaitForEndOfFrame();
+                            }
                             Enact_Effect(eff.value, target);
                         }
                     }
                     else if (eff.type == Action_Effect.Types.Elevate)
                     {
+                        //Proc the effect
+                        proc_effect_num -= 1;
                         foreach (Target target in targets)
                         {
+                            while (paused)
+                            {
+                                //TODO add an interrupt here.
+                                yield return new WaitForEndOfFrame();
+                            }
                             Enact_Elevate(eff.value[0], target);
                         }
                     }
                     else if (eff.type == Action_Effect.Types.Enable)
                     {
+                        //Proc the effect
+                        proc_effect_num -= 1;
                         foreach (Target target in targets)
                         {
+                            while (paused)
+                            {
+                                //TODO add an interrupt here.
+                                yield return new WaitForEndOfFrame();
+                            }
                             Enact_Enable(eff.value, target);
                         }
                     }
                     else if (eff.type == Action_Effect.Types.Pass)
                     {
+                        //Proc the effect
+                        proc_effect_num -= 1;
                         List<Target> target_tiles = Get_Target_Tiles(target_tile);
                         foreach (Target target in target_tiles)
                         {
+                            while (paused)
+                            {
+                                //TODO add an interrupt here.
+                                yield return new WaitForEndOfFrame();
+                            }
                             Enact_Pass(target);
                         }
                     }
@@ -1508,38 +1622,112 @@ public class Character_Action
             {
                 foreach (Action_Effect eff in self_effect)
                 {
+                    elapsedTime = 0;
+                    //Debug.Log(character.name + " " + name + "Num of self effects: " + self_effect.Count);
+                    //Debug.Log(character.name + " " + name + "Effect num " + proc_effect_num);
+                    //Debug.Log(character.name + " " + name + "Effect type " + eff.type);
+                    while (proc_effect_num == 0 || paused)
+                    {
+                        //Escape if too much time has passed.
+                        elapsedTime += Time.deltaTime;
+                        if (elapsedTime > duration && !anim_clip.isLooping)
+                        {
+                            //Debug.Log(character.name + " " + name + "Escaping");
+                            elapsedTime = 0;
+                            proc_effect_num = -1;
+                        }
+                        //Debug.Log(character.name + " " + name + "Paused? " + paused);
+                        //Debug.Log(character.name + " " + name + "Proc num " + proc_effect_num);
+                        yield return new WaitForEndOfFrame();
+                    }
                     //TODO FIND A WAY TO CARRY FORWARD MODIFIER FOR SELF EFFECTS
                     Target target = new Target(character.gameObject, area[0, 0]);
                     if (eff.type == Action_Effect.Types.Move)
                     {
+                        //Proc the effect
+                        proc_effect_num -= 1;
+                        while (paused)
+                        {
+                            //TODO add an interrupt here.
+                            yield return new WaitForEndOfFrame();
+                        }
                         Enact_Move(eff.value[0], new Target(target_tile, area[0, 0]));
                     }
                     else if (eff.type == Action_Effect.Types.Damage)
                     {
+                        //Proc the effect
+                        proc_effect_num -= 1;
+                        while (paused)
+                        {
+                            //TODO add an interrupt here.
+                            yield return new WaitForEndOfFrame();
+                        }
                         Enact_Damage(eff.value[0], target);
                     }
                     else if (eff.type == Action_Effect.Types.Heal)
                     {
+                        //Proc the effect
+                        proc_effect_num -= 1;
+                        while (paused)
+                        {
+                            //TODO add an interrupt here.
+                            yield return new WaitForEndOfFrame();
+                        }
                         Enact_Healing(eff.value, target);
                     }
                     else if (eff.type == Action_Effect.Types.Status)
                     {
+                        //Proc the effect
+                        proc_effect_num -= 1;
+                        while (paused)
+                        {
+                            //TODO add an interrupt here.
+                            yield return new WaitForEndOfFrame();
+                        }
                         Enact_Status(eff.value, target);
                     }
                     else if (eff.type == Action_Effect.Types.Effect)
                     {
+                        //Proc the effect
+                        proc_effect_num -= 1;
+                        while (paused)
+                        {
+                            //TODO add an interrupt here.
+                            yield return new WaitForEndOfFrame();
+                        }
                         Enact_Effect(eff.value, target);
                     }
                     else if (eff.type == Action_Effect.Types.Elevate)
                     {
+                        //Proc the effect
+                        proc_effect_num -= 1;
+                        while (paused)
+                        {
+                            //TODO add an interrupt here.
+                            yield return new WaitForEndOfFrame();
+                        }
                         Enact_Elevate(eff.value[0], new Target(character.curr_tile.gameObject, 0));
                     }
                     else if (eff.type == Action_Effect.Types.Enable)
                     {
+                        //Proc the effect
+                        proc_effect_num -= 1;
+                        while (paused)
+                        {
+                            //TODO add an interrupt here.
+                            yield return new WaitForEndOfFrame();
+                        }
                         Enact_Enable(eff.value, target);
                     }
                     else if (eff.type == Action_Effect.Types.Pass)
                     {
+                        //Proc the effect
+                        proc_effect_num -= 1;
+                        while (paused)
+                        {
+                            //TODO add an interrupt here.
+                            yield return new WaitForEndOfFrame();
+                        }
                         Enact_Pass(target);
                     }
 
@@ -1547,19 +1735,46 @@ public class Character_Action
             }
 
             //Debug.Log("State " + character.state);
-            if(character.state != Character_States.Walking)
+            /*if(character.state != Character_States.Walking)
             {
                 //Reset character state when actions are done
                 character.state = Character_States.Idle;
-            }
-            character.controller.curr_scenario.Reset_Reachable();
-            while (character.state != Character_States.Idle)
+            }*/
+
+            //Wait for animation and effects to end to reset the character state.
+            //while(!character.GetComponent<Animator>(). GetCurrentAnimatorClipInfo(0) .animationClips[2])
+
+            while (character.state == Character_States.Walking)
             {
                 //Debug.Log("State " + character.state.ToString());
                 yield return new WaitForEndOfFrame();
             }
+
+            //Return the character to idle state.
+            character.state = Character_States.Idle;
+            character.gameObject.GetComponent<Animator>().SetTrigger("Done_Acting");
+
+            proc_effect_num = 0;
+
+            if (type == Activation_Types.Reactive)
+            {
+                End_Reaction();
+            }
+
         }
     }
+
+    /// <summary>
+    /// Sets the number of the animation for this Action in the Animator State Machine
+    /// </summary>
+    /// <param name="num"></param>
+    public void Set_Anim_Num(int num)
+    {
+        anim_num = num;
+        //Debug.Log("Set Animation Number to " + num);
+    }
+
+    
 
     /// <summary>
     /// Pause the current action
@@ -1644,6 +1859,9 @@ public class Character_Action
         {
             int damage = (int)(Convert_To_Double(value, target.game_object) * target.modifier);
             Debug.Log("Character " + character.character_name + " Attacked: OBJECT" + "; Dealing " + damage + " damage and Using " + ap_cost + " AP");
+            Object_Script target_object = target.game_object.GetComponent<Object_Script>();
+            target_object.Take_Damage(damage, character.weapon.pierce);
+            Event_Manager.Broadcast(Event_Trigger.ON_DAMAGE, this, value, target.game_object);
         }
     }
 

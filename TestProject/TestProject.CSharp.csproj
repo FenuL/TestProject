@@ -65,6 +65,7 @@
   <ItemGroup>
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Action_Scripts\Action_Effect.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Action_Scripts\Character_Action.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Action_Scripts\On_Animation_End.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Action_Scripts\Target.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Character_Script.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Condition.cs" />

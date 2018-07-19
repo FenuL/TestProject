@@ -12,4 +12,4 @@ orient: target
 trigger: ON_DAMAGE
 condition: CHK_TARG_SELF & CHK_SRC_RANG
 enabled: true
-animation: NUL
+animation: Attack

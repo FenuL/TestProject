@@ -11,4 +11,4 @@ origin: innate
 orient: target
 trigger: ON_TILE_ENTER
 enabled: true
-animation: NUL
+animation: Attack

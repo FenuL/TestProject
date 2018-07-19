@@ -11,4 +11,4 @@ origin: weapon
 orient: target
 trigger: NUL
 enabled: true
-animation: NUL
+animation: Attack

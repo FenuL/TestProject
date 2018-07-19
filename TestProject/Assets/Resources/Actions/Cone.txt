@@ -15,4 +15,4 @@ origin: innate
 orient: target
 trigger: NUL
 enabled: true
-animation: NUL
+animation: Attack

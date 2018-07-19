@@ -8,7 +8,7 @@ self_effect: Move 1
 target_effect: NUL
 activation_type: active
 origin: innate
-orient: target
+orient: path
 trigger: NUL
 enabled: true
-animation: NUL
+animation: Move
