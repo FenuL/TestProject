@@ -706,8 +706,10 @@ public class Character_Action
                     {
                         character.curr_action.Pop();
                     }
+                
                     character.curr_action.Push(this);
-                    //Debug.Log("Character " + character.name + " current action " + character.curr_action.Peek().name);
+                    //Debug.Log("Character " + character.name + " " + character.character_num + " current action " + character.curr_action.Peek().name);
+                    //Debug.Log("Character " + character.name + " current action count " + character.curr_action.Count);
                     //Debug.Log(character.character_num);
 
                 }
@@ -1397,266 +1399,129 @@ public class Character_Action
     /// <returns>An IEnumerator with the current Coroutine progress. </returns>
     public IEnumerator Enact(GameObject target_tile)
     {
-        if (Check_Valid(target_tile))
+        float duration = 1;
+        AnimationClip anim_clip = new AnimationClip();
+        if (type == Activation_Types.Active)
         {
-            float duration = 1;
-            AnimationClip anim_clip = new AnimationClip();
-            if (type == Activation_Types.Active)
-            {
-                anim_clip = character.GetComponent<Animator>().runtimeAnimatorController.animationClips[anim_num - 99];
-                duration = anim_clip.length;
-            }
-            else if (type == Activation_Types.Reactive)
-            {
-                anim_clip = character.GetComponent<Animator>().runtimeAnimatorController.animationClips[anim_num - 194];
-                duration = anim_clip.length;
-                //Debug.Log(anim_clip.name);
-            }
-            //Debug.Log("Animation playing: " + anim_clip.name+ " looping? " + anim_clip.isLooping);
-            float elapsedTime = 0;
-            
-            //Debug.Log("Duration " + duration);
-            //Debug.Log("Animation loops " + character.GetComponent<Animator>().runtimeAnimatorController.animationClips[anim_num - 99].isLooping);
-            if (target_effect != null)
-            {
-                //Stack<Action> Functions = new Stack<Action>();
+            anim_clip = character.GetComponent<Animator>().runtimeAnimatorController.animationClips[anim_num - 99];
+            duration = anim_clip.length;
+        }
+        else if (type == Activation_Types.Reactive)
+        {
+            anim_clip = character.GetComponent<Animator>().runtimeAnimatorController.animationClips[anim_num - 194];
+            duration = anim_clip.length;
+            //Debug.Log(anim_clip.name);
+        }
+        //Debug.Log("Animation playing: " + anim_clip.name+ " looping? " + anim_clip.isLooping);
+        float elapsedTime = 0;
 
-                //Find targets in AoE
-                List<Target> targets = Get_Targets(target_tile);
-                //Functions.Push(Enact_Damage("", targets[0]));
-                if (targets != null)
+        //Debug.Log("Duration " + duration);
+        //Debug.Log("Animation loops " + character.GetComponent<Animator>().runtimeAnimatorController.animationClips[anim_num - 99].isLooping);
+        if (target_effect != null)
+        {
+            //Stack<Action> Functions = new Stack<Action>();
+
+            //Find targets in AoE
+            List<Target> targets = Get_Targets(target_tile);
+            //Functions.Push(Enact_Damage("", targets[0]));
+            if (targets != null)
+            {
+                foreach (Target target in targets)
                 {
+                    if (target.game_object.GetComponent<Character_Script>())
+                    {
+                        target.game_object.GetComponent<Character_Script>().Increase_Combo_Mod();
+                    }
+                }
+            }
+
+            //Begin animation
+            character.GetComponent<Animator>().SetInteger("Anim_Num", anim_num);
+            character.GetComponent<Animator>().SetTrigger("Act");
+
+            foreach (Action_Effect eff in target_effect)
+            {
+                elapsedTime = 0;
+                //Debug.Log(character.name + " " + name + "Num of target effects: " + target_effect.Count);
+                //Debug.Log(character.name + " " + name + "effect_num " + proc_effect_num);
+                //Debug.Log(character.name + " " + name + "effect type " + eff.type);
+                while (proc_effect_num == 0 || paused)
+                {
+                    //Escape if too much time has passed.
+                    elapsedTime += Time.deltaTime;
+                    if (elapsedTime > duration && !anim_clip.isLooping)
+                    {
+                        //Debug.Log(character.name + " " + name + " Escaping");
+                        elapsedTime = 0;
+                        proc_effect_num = -1;
+                    }
+                    //Debug.Log(character.name + " " + name + "Paused? " + paused);
+                    //Debug.Log(character.name + " " + name + "Proc num " + proc_effect_num);
+                    yield return new WaitForEndOfFrame();
+                }
+
+                if (eff.type == Action_Effect.Types.Move)
+                {
+                    //Proc the effect
+                    proc_effect_num -= 1;
+
+                    // find the target to move towards
+                    int centerX = character.curr_tile.GetComponent<Tile>().index[0];
+                    int centerY = character.curr_tile.GetComponent<Tile>().index[1];
+                    //Target tile = new Target(character.curr_tile.gameObject, 0);
+                    if (center == "target")
+                    {
+                        centerX = target_tile.GetComponent<Tile>().index[0] + (area.GetLength(0) / 2);
+                        centerY = target_tile.GetComponent<Tile>().index[1] + (area.GetLength(1) / 2);
+                    }
+
                     foreach (Target target in targets)
                     {
-                        if (target.game_object.GetComponent<Character_Script>())
-                        {
-                            target.game_object.GetComponent<Character_Script>().Increase_Combo_Mod();
-                        }
-                    }
-                }
-
-                //Begin animation
-                character.GetComponent<Animator>().SetInteger("Anim_Num", anim_num);
-                character.GetComponent<Animator>().SetTrigger("Act");
-
-                foreach (Action_Effect eff in target_effect)
-                {
-                    elapsedTime = 0;
-                    //Debug.Log(character.name + " " + name + "Num of target effects: " + target_effect.Count);
-                    //Debug.Log(character.name + " " + name + "effect_num " + proc_effect_num);
-                    //Debug.Log(character.name + " " + name + "effect type " + eff.type);
-                    while (proc_effect_num == 0 || paused)
-                    {
-                        //Escape if too much time has passed.
-                        elapsedTime += Time.deltaTime;
-                        if (elapsedTime > duration && ! anim_clip.isLooping)
-                        {
-                            //Debug.Log(character.name + " " + name + " Escaping");
-                            elapsedTime = 0;
-                            proc_effect_num = -1;
-                        }
-                        //Debug.Log(character.name + " " + name + "Paused? " + paused);
-                        //Debug.Log(character.name + " " + name + "Proc num " + proc_effect_num);
-                        yield return new WaitForEndOfFrame();
-                    }
-                    
-                    if (eff.type == Action_Effect.Types.Move)
-                    {
-                        //Proc the effect
-                        proc_effect_num -= 1;
-
-                        // find the target to move towards
-                        int centerX = character.curr_tile.GetComponent<Tile>().index[0];
-                        int centerY = character.curr_tile.GetComponent<Tile>().index[1];
-                        //Target tile = new Target(character.curr_tile.gameObject, 0);
-                        if (center == "target")
-                        {
-                            centerX = target_tile.GetComponent<Tile>().index[0] + (area.GetLength(0) / 2);
-                            centerY = target_tile.GetComponent<Tile>().index[1] + (area.GetLength(1) / 2);
-                        }
-
-                        foreach (Target target in targets)
-                        {
-                            while ( paused)
-                            {
-                                //TODO add an interrupt here.
-                                yield return new WaitForEndOfFrame();
-                            }
-                            int tile_x = 0;
-                            int tile_y = 0;
-                            if (target.game_object.GetComponent<Character_Script>())
-                            {
-                                tile_x = (int)(centerX +
-                                        (target.game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[0] - centerX) *
-                                        target.modifier *
-                                        Convert_To_Double(eff.value[1], target.game_object));
-                                tile_y = (int)(centerY +
-                                        (target.game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[1] - centerY) *
-                                        target.modifier *
-                                        Convert_To_Double(eff.value[1], target.game_object));
-                                if (tile_x < 0)
-                                {
-                                    tile_x = 0;
-                                }
-                                if (tile_y < 0)
-                                {
-                                    tile_y = 0;
-                                }
-                                if (tile_x > character.controller.curr_scenario.tile_grid.grid_length)
-                                {
-                                    tile_x = character.controller.curr_scenario.tile_grid.grid_length;
-                                }
-                                if (tile_y > character.controller.curr_scenario.tile_grid.grid_width)
-                                {
-                                    tile_y = character.controller.curr_scenario.tile_grid.grid_width;
-                                }
-                                Target tile = new Target(character.controller.curr_scenario.tile_grid.getTile(tile_x, tile_y).gameObject, target.modifier);
-                                //TODO: Add a way to move a target to a specific tile.
-                                //Enact_Move(target.game_object.GetComponent<Character_Script>(), eff.value[0], tile);
-                            }
-                        }
-                    }
-                    else if (eff.type == Action_Effect.Types.Damage)
-                    {
-                        //Proc the effect
-                        proc_effect_num -= 1;
-                        foreach (Target target in targets)
-                        {
-                            while (paused)
-                            {
-                                //TODO add an interrupt here.
-                                yield return new WaitForEndOfFrame();
-                            }
-                            Enact_Damage(eff.value[0], target);
-                        }
-                    }
-                    else if (eff.type == Action_Effect.Types.Heal)
-                    {
-                        //Proc the effect
-                        proc_effect_num -= 1;
-                        foreach (Target target in targets)
-                        {
-                            while (paused)
-                            {
-                                //TODO add an interrupt here.
-                                yield return new WaitForEndOfFrame();
-                            }
-                            Enact_Healing(eff.value, target);
-                        }
-                    }
-                    else if (eff.type == Action_Effect.Types.Status)
-                    {
-                        //Proc the effect
-                        proc_effect_num -= 1;
-                        foreach (Target target in targets)
-                        {
-                            while (paused)
-                            {
-                                //TODO add an interrupt here.
-                                yield return new WaitForEndOfFrame();
-                            }
-                            Enact_Status(eff.value, target);
-                        }
-                    }
-                    else if (eff.type == Action_Effect.Types.Effect)
-                    {
-                        //Proc the effect
-                        proc_effect_num -= 1;
-                        List<Target> target_tiles = Get_Target_Tiles(target_tile);
-                        foreach (Target target in target_tiles)
-                        {
-                            while (paused)
-                            {
-                                //TODO add an interrupt here.
-                                yield return new WaitForEndOfFrame();
-                            }
-                            Enact_Effect(eff.value, target);
-                        }
-                    }
-                    else if (eff.type == Action_Effect.Types.Elevate)
-                    {
-                        //Proc the effect
-                        proc_effect_num -= 1;
-                        foreach (Target target in targets)
-                        {
-                            while (paused)
-                            {
-                                //TODO add an interrupt here.
-                                yield return new WaitForEndOfFrame();
-                            }
-                            Enact_Elevate(eff.value[0], target);
-                        }
-                    }
-                    else if (eff.type == Action_Effect.Types.Enable)
-                    {
-                        //Proc the effect
-                        proc_effect_num -= 1;
-                        foreach (Target target in targets)
-                        {
-                            while (paused)
-                            {
-                                //TODO add an interrupt here.
-                                yield return new WaitForEndOfFrame();
-                            }
-                            Enact_Enable(eff.value, target);
-                        }
-                    }
-                    else if (eff.type == Action_Effect.Types.Pass)
-                    {
-                        //Proc the effect
-                        proc_effect_num -= 1;
-                        List<Target> target_tiles = Get_Target_Tiles(target_tile);
-                        foreach (Target target in target_tiles)
-                        {
-                            while (paused)
-                            {
-                                //TODO add an interrupt here.
-                                yield return new WaitForEndOfFrame();
-                            }
-                            Enact_Pass(target);
-                        }
-                    }
-                }
-            }
-            if (self_effect != null)
-            {
-                foreach (Action_Effect eff in self_effect)
-                {
-                    elapsedTime = 0;
-                    //Debug.Log(character.name + " " + name + "Num of self effects: " + self_effect.Count);
-                    //Debug.Log(character.name + " " + name + "Effect num " + proc_effect_num);
-                    //Debug.Log(character.name + " " + name + "Effect type " + eff.type);
-                    while (proc_effect_num == 0 || paused)
-                    {
-                        //Escape if too much time has passed.
-                        elapsedTime += Time.deltaTime;
-                        if (elapsedTime > duration && !anim_clip.isLooping)
-                        {
-                            //Debug.Log(character.name + " " + name + "Escaping");
-                            elapsedTime = 0;
-                            proc_effect_num = -1;
-                        }
-                        //Debug.Log(character.name + " " + name + "Paused? " + paused);
-                        //Debug.Log(character.name + " " + name + "Proc num " + proc_effect_num);
-                        yield return new WaitForEndOfFrame();
-                    }
-                    //TODO FIND A WAY TO CARRY FORWARD MODIFIER FOR SELF EFFECTS
-                    Target target = new Target(character.gameObject, area[0, 0]);
-                    if (eff.type == Action_Effect.Types.Move)
-                    {
-                        //Proc the effect
-                        proc_effect_num -= 1;
                         while (paused)
                         {
                             //TODO add an interrupt here.
                             yield return new WaitForEndOfFrame();
                         }
-                        Enact_Move(eff.value[0], new Target(target_tile, area[0, 0]));
+                        int tile_x = 0;
+                        int tile_y = 0;
+                        if (target.game_object.GetComponent<Character_Script>())
+                        {
+                            tile_x = (int)(centerX +
+                                    (target.game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[0] - centerX) *
+                                    target.modifier *
+                                    Convert_To_Double(eff.value[1], target.game_object));
+                            tile_y = (int)(centerY +
+                                    (target.game_object.GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[1] - centerY) *
+                                    target.modifier *
+                                    Convert_To_Double(eff.value[1], target.game_object));
+                            if (tile_x < 0)
+                            {
+                                tile_x = 0;
+                            }
+                            if (tile_y < 0)
+                            {
+                                tile_y = 0;
+                            }
+                            if (tile_x > character.controller.curr_scenario.tile_grid.grid_length)
+                            {
+                                tile_x = character.controller.curr_scenario.tile_grid.grid_length;
+                            }
+                            if (tile_y > character.controller.curr_scenario.tile_grid.grid_width)
+                            {
+                                tile_y = character.controller.curr_scenario.tile_grid.grid_width;
+                            }
+                            Target tile = new Target(character.controller.curr_scenario.tile_grid.getTile(tile_x, tile_y).gameObject, target.modifier);
+                            //TODO: Add a way to move a target to a specific tile.
+                            //Enact_Move(target.game_object.GetComponent<Character_Script>(), eff.value[0], tile);
+                        }
                     }
-                    else if (eff.type == Action_Effect.Types.Damage)
+                }
+                else if (eff.type == Action_Effect.Types.Damage)
+                {
+                    //Proc the effect
+                    proc_effect_num -= 1;
+                    foreach (Target target in targets)
                     {
-                        //Proc the effect
-                        proc_effect_num -= 1;
                         while (paused)
                         {
                             //TODO add an interrupt here.
@@ -1664,10 +1529,13 @@ public class Character_Action
                         }
                         Enact_Damage(eff.value[0], target);
                     }
-                    else if (eff.type == Action_Effect.Types.Heal)
+                }
+                else if (eff.type == Action_Effect.Types.Heal)
+                {
+                    //Proc the effect
+                    proc_effect_num -= 1;
+                    foreach (Target target in targets)
                     {
-                        //Proc the effect
-                        proc_effect_num -= 1;
                         while (paused)
                         {
                             //TODO add an interrupt here.
@@ -1675,10 +1543,13 @@ public class Character_Action
                         }
                         Enact_Healing(eff.value, target);
                     }
-                    else if (eff.type == Action_Effect.Types.Status)
+                }
+                else if (eff.type == Action_Effect.Types.Status)
+                {
+                    //Proc the effect
+                    proc_effect_num -= 1;
+                    foreach (Target target in targets)
                     {
-                        //Proc the effect
-                        proc_effect_num -= 1;
                         while (paused)
                         {
                             //TODO add an interrupt here.
@@ -1686,10 +1557,14 @@ public class Character_Action
                         }
                         Enact_Status(eff.value, target);
                     }
-                    else if (eff.type == Action_Effect.Types.Effect)
+                }
+                else if (eff.type == Action_Effect.Types.Effect)
+                {
+                    //Proc the effect
+                    proc_effect_num -= 1;
+                    List<Target> target_tiles = Get_Target_Tiles(target_tile);
+                    foreach (Target target in target_tiles)
                     {
-                        //Proc the effect
-                        proc_effect_num -= 1;
                         while (paused)
                         {
                             //TODO add an interrupt here.
@@ -1697,21 +1572,27 @@ public class Character_Action
                         }
                         Enact_Effect(eff.value, target);
                     }
-                    else if (eff.type == Action_Effect.Types.Elevate)
+                }
+                else if (eff.type == Action_Effect.Types.Elevate)
+                {
+                    //Proc the effect
+                    proc_effect_num -= 1;
+                    foreach (Target target in targets)
                     {
-                        //Proc the effect
-                        proc_effect_num -= 1;
                         while (paused)
                         {
                             //TODO add an interrupt here.
                             yield return new WaitForEndOfFrame();
                         }
-                        Enact_Elevate(eff.value[0], new Target(character.curr_tile.gameObject, 0));
+                        Enact_Elevate(eff.value[0], target);
                     }
-                    else if (eff.type == Action_Effect.Types.Enable)
+                }
+                else if (eff.type == Action_Effect.Types.Enable)
+                {
+                    //Proc the effect
+                    proc_effect_num -= 1;
+                    foreach (Target target in targets)
                     {
-                        //Proc the effect
-                        proc_effect_num -= 1;
                         while (paused)
                         {
                             //TODO add an interrupt here.
@@ -1719,10 +1600,14 @@ public class Character_Action
                         }
                         Enact_Enable(eff.value, target);
                     }
-                    else if (eff.type == Action_Effect.Types.Pass)
+                }
+                else if (eff.type == Action_Effect.Types.Pass)
+                {
+                    //Proc the effect
+                    proc_effect_num -= 1;
+                    List<Target> target_tiles = Get_Target_Tiles(target_tile);
+                    foreach (Target target in target_tiles)
                     {
-                        //Proc the effect
-                        proc_effect_num -= 1;
                         while (paused)
                         {
                             //TODO add an interrupt here.
@@ -1730,38 +1615,153 @@ public class Character_Action
                         }
                         Enact_Pass(target);
                     }
-
                 }
             }
-
-            //Debug.Log("State " + character.state);
-            /*if(character.state != Character_States.Walking)
-            {
-                //Reset character state when actions are done
-                character.state = Character_States.Idle;
-            }*/
-
-            //Wait for animation and effects to end to reset the character state.
-            //while(!character.GetComponent<Animator>(). GetCurrentAnimatorClipInfo(0) .animationClips[2])
-
-            while (character.state == Character_States.Walking)
-            {
-                //Debug.Log("State " + character.state.ToString());
-                yield return new WaitForEndOfFrame();
-            }
-
-            //Return the character to idle state.
-            character.state = Character_States.Idle;
-            character.gameObject.GetComponent<Animator>().SetTrigger("Done_Acting");
-
-            proc_effect_num = 0;
-
-            if (type == Activation_Types.Reactive)
-            {
-                End_Reaction();
-            }
-
         }
+        if (self_effect != null)
+        {
+            foreach (Action_Effect eff in self_effect)
+            {
+                elapsedTime = 0;
+                //Debug.Log(character.name + " " + name + "Num of self effects: " + self_effect.Count);
+                //Debug.Log(character.name + " " + name + "Effect num " + proc_effect_num);
+                //Debug.Log(character.name + " " + name + "Effect type " + eff.type);
+                while (proc_effect_num == 0 || paused)
+                {
+                    //Escape if too much time has passed.
+                    elapsedTime += Time.deltaTime;
+                    if (elapsedTime > duration && !anim_clip.isLooping)
+                    {
+                        //Debug.Log(character.name + " " + name + "Escaping");
+                        elapsedTime = 0;
+                        proc_effect_num = -1;
+                    }
+                    //Debug.Log(character.name + " " + name + "Paused? " + paused);
+                    //Debug.Log(character.name + " " + name + "Proc num " + proc_effect_num);
+                    yield return new WaitForEndOfFrame();
+                }
+                //TODO FIND A WAY TO CARRY FORWARD MODIFIER FOR SELF EFFECTS
+                Target target = new Target(character.gameObject, area[0, 0]);
+                if (eff.type == Action_Effect.Types.Move)
+                {
+                    //Proc the effect
+                    proc_effect_num -= 1;
+                    while (paused)
+                    {
+                        //TODO add an interrupt here.
+                        yield return new WaitForEndOfFrame();
+                    }
+                    Enact_Move(eff.value[0], new Target(target_tile, area[0, 0]));
+                }
+                else if (eff.type == Action_Effect.Types.Damage)
+                {
+                    //Proc the effect
+                    proc_effect_num -= 1;
+                    while (paused)
+                    {
+                        //TODO add an interrupt here.
+                        yield return new WaitForEndOfFrame();
+                    }
+                    Enact_Damage(eff.value[0], target);
+                }
+                else if (eff.type == Action_Effect.Types.Heal)
+                {
+                    //Proc the effect
+                    proc_effect_num -= 1;
+                    while (paused)
+                    {
+                        //TODO add an interrupt here.
+                        yield return new WaitForEndOfFrame();
+                    }
+                    Enact_Healing(eff.value, target);
+                }
+                else if (eff.type == Action_Effect.Types.Status)
+                {
+                    //Proc the effect
+                    proc_effect_num -= 1;
+                    while (paused)
+                    {
+                        //TODO add an interrupt here.
+                        yield return new WaitForEndOfFrame();
+                    }
+                    Enact_Status(eff.value, target);
+                }
+                else if (eff.type == Action_Effect.Types.Effect)
+                {
+                    //Proc the effect
+                    proc_effect_num -= 1;
+                    while (paused)
+                    {
+                        //TODO add an interrupt here.
+                        yield return new WaitForEndOfFrame();
+                    }
+                    Enact_Effect(eff.value, target);
+                }
+                else if (eff.type == Action_Effect.Types.Elevate)
+                {
+                    //Proc the effect
+                    proc_effect_num -= 1;
+                    while (paused)
+                    {
+                        //TODO add an interrupt here.
+                        yield return new WaitForEndOfFrame();
+                    }
+                    Enact_Elevate(eff.value[0], new Target(character.curr_tile.gameObject, 0));
+                }
+                else if (eff.type == Action_Effect.Types.Enable)
+                {
+                    //Proc the effect
+                    proc_effect_num -= 1;
+                    while (paused)
+                    {
+                        //TODO add an interrupt here.
+                        yield return new WaitForEndOfFrame();
+                    }
+                    Enact_Enable(eff.value, target);
+                }
+                else if (eff.type == Action_Effect.Types.Pass)
+                {
+                    //Proc the effect
+                    proc_effect_num -= 1;
+                    while (paused)
+                    {
+                        //TODO add an interrupt here.
+                        yield return new WaitForEndOfFrame();
+                    }
+                    Enact_Pass(target);
+                }
+
+            }
+        }
+
+        //Debug.Log("State " + character.state);
+        /*if(character.state != Character_States.Walking)
+        {
+            //Reset character state when actions are done
+            character.state = Character_States.Idle;
+        }*/
+
+        //Wait for animation and effects to end to reset the character state.
+        //while(!character.GetComponent<Animator>(). GetCurrentAnimatorClipInfo(0) .animationClips[2])
+
+        while (character.state == Character_States.Walking)
+        {
+            //Debug.Log("State " + character.state.ToString());
+            yield return new WaitForEndOfFrame();
+        }
+
+        //Return the character to idle state.
+        character.state = Character_States.Idle;
+        character.gameObject.GetComponent<Animator>().SetTrigger("Done_Acting");
+
+        proc_effect_num = 0;
+
+        if (type == Activation_Types.Reactive)
+        {
+            End_Reaction();
+        }
+
+
     }
 
     /// <summary>
@@ -1850,8 +1850,7 @@ public class Character_Action
         {
             Character_Script target_character = target.game_object.GetComponent<Character_Script>();
             int damage = (int)(Convert_To_Double(value, target.game_object) * target.modifier);
-            Debug.Log("original damage: " + Convert_To_Double(value, target.game_object));
-            Debug.Log("Character " + character.character_name + " Attacked: " + target_character.character_name + "; Dealing " + damage + " damage and Using " + ap_cost + " AP");
+            Debug.Log("Character " + character.character_name + " Attacked: " + target_character.character_name + "; Dealing " + damage + "(" + Convert_To_Double(value, target.game_object) + ") damage and Using " + ap_cost + " AP");
             target_character.Take_Damage(damage, character.weapon.pierce);
             Event_Manager.Broadcast(Event_Trigger.ON_DAMAGE, this, value, target.game_object);
         }

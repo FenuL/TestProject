@@ -445,7 +445,7 @@ public class Tile_Effect : MonoBehaviour {
         }
         else
         {
-            Debug.Log("Invalid Healing prefix.");
+            Debug.Log(value[0] + " is an invalid Healing prefix.");
         }
     }
 

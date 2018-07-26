@@ -403,6 +403,7 @@ public class Game_Controller : MonoBehaviour {
                     {
                         if (tile.Equals(curr_scenario.clicked_tile))
                         {
+                            //Debug.Log(character.name + " num of curr_action " + character.curr_action.Count);
                             character.StartCoroutine(character.Act(character.curr_action.Peek(), curr_scenario.clicked_tile));
                         }
                     }

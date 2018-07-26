@@ -575,7 +575,7 @@ public class Scenario : MonoBehaviour {
     public void Spawn_Mana_Orb()
     {
         bool spawned = false;
-        string[] value = { "MPC", "5" };
+        string[] value = { "CMPC", "5" };
         
         while (!spawned)
         {
@@ -763,6 +763,10 @@ public class Scenario : MonoBehaviour {
             foreach (GameObject character in characters)
             {
                 character.GetComponent<Character_Script>().Update();
+                if (character.GetComponent<Character_Script>().state == Character_States.Dead)
+                {
+                    character.tag = "Delete";
+                }
             }
 
             //Remove Tile Objects that hae to be deleted.
@@ -928,9 +932,26 @@ public class Scenario : MonoBehaviour {
     /// </summary>
     public void Next_Player()
     {
-        foreach (GameObject chara in characters) {
-            chara.GetComponent<Character_Script>().Reset_Combo_Mod();
+        for (int i = 0; i < characters.Count; i++)
+        {
+            Character_Script character = ((GameObject)characters[i]).GetComponent<Character_Script>();
+            //Debug.Log("Processing " + character.name + " " + character.character_num);
+            character.Reset_Combo_Mod();
+            character.Update_Conditions();
+            character.Progress_Conditions();
+
+            if (character.state == Character_States.Dead)
+            {
+                i--;
+            }
         }
+        /*foreach (GameObject chara in characters) {
+            
+            chara.GetComponent<Character_Script>().Reset_Combo_Mod();
+            //Every turn update the conditions and progress them.
+            chara.GetComponent<Character_Script>().Update_Conditions();
+            chara.GetComponent<Character_Script>().Progress_Conditions();
+        }*/
 
         Progress_Effects();
 
@@ -952,6 +973,8 @@ public class Scenario : MonoBehaviour {
         }
         curr_player.Peek().GetComponent<Animator>().SetBool("Selected", false);
         curr_player.Pop();
+        //Debug.Log("Current char num: " + curr_character_num);
+        //Debug.Log("Current char name: " + turn_order[curr_character_num].name + " " + turn_order[curr_character_num].GetComponent<Character_Script>().character_num);
         curr_player.Push(turn_order[curr_character_num]);
         
         if (curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Dead)
@@ -979,6 +1002,9 @@ public class Scenario : MonoBehaviour {
         foreach (GameObject chara in characters)
         {
             chara.GetComponent<Character_Script>().Reset_Combo_Mod();
+            //Every turn update the conditions and progress them.
+            chara.GetComponent<Character_Script>().Update_Conditions();
+            chara.GetComponent<Character_Script>().Progress_Conditions();
         }
 
         Progress_Effects();

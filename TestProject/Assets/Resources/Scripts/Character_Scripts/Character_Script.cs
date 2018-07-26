@@ -311,7 +311,12 @@ public class Character_Script : MonoBehaviour {
         reaction_curr = data.reaction_max;
         mana_max = data.mana_max;
         mana_curr = data.mana_curr;
-        actions = data.actions;
+        actions = new List<Character_Action>();
+        foreach (Character_Action act in data.actions)
+        {
+            Character_Action action = new Character_Action(act, this);
+            actions.Add(action);
+        }
         string controller_name = "Animations/Controllers/" + animator_name + "/" + animator_name + "_Override_S";
         s_controller = Resources.Load(controller_name) as AnimatorOverrideController;
         controller_name = "Animations/Controllers/" + animator_name + "/" + animator_name + "_Override_W";
@@ -397,14 +402,16 @@ public class Character_Script : MonoBehaviour {
     public void Start_Turn()
     {
         controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
+
+        Replenish_Resources();
+
         Find_Action_Local("Move").Select();
 
         //Center camera on player
         Camera.main.GetComponent<Camera_Controller>().PanTo(transform.position - Camera.main.transform.forward * 35);
 
-        Replenish_Resources();
-
-        Update_Conditions();
+        //Now done at the end of every turn in scenario.
+        //Update_Conditions();
 
     }
 
@@ -436,15 +443,18 @@ public class Character_Script : MonoBehaviour {
             yield return new WaitForEndOfFrame();
         }
 
-        Debug.Log("Character " + character_name + " Passed");
+        //Debug.Log("Character " + character_name + " Passed");
         //Remove all current actions
         while (curr_action.Count != 0)
         {
             curr_action.Pop();
         }
-        //reaction_curr = reaction_max;
-        //action_curr = action_max;
-        //mana_curr += MP_RECOVERY;
+
+        //Recover resources. Now happens at start of turn.
+        //Recover_Actions(action_max);
+        //Recover_Reactions(reaction_max);
+        //Recover_Mana(MP_RECOVERY);
+
         if (mana_curr > mana_max)
         {
             mana_curr = mana_max;
@@ -458,7 +468,9 @@ public class Character_Script : MonoBehaviour {
             }
         }
         controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
-        Progress_Conditions();
+
+        //Now happens every turn in scenario.
+        //Progress_Conditions();
         ending_turn = false;
         state = Character_States.Idle;
         controller.curr_scenario.Next_Player();
@@ -1022,8 +1034,12 @@ public class Character_Script : MonoBehaviour {
     {
         //Debug.Log("Current action: " + curr_action.Peek().name);
         //Debug.Log("Current action 2: " + action.name);
-        if (curr_action.Peek() != null)
+        if (action.Check_Valid(target_tile.gameObject))
         {
+            while (!curr_action.Peek().Equals(action))
+            {
+                yield return new WaitForEndOfFrame();
+            }
             state = Character_States.Acting;
             if (action.orient == "target")
             {
@@ -1047,9 +1063,9 @@ public class Character_Script : MonoBehaviour {
             }
             mana_curr -= (int)action.Convert_To_Double(action.mp_cost, target_tile.gameObject.GetComponent<Tile>().obj);
 
-            while( ! Is_Idle() || action.paused) 
-                //gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle") && 
-                //!gameObject.GetComponent<Animator>().IsInTransition(0))
+            while (!Is_Idle() || action.paused)
+            //gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle") && 
+            //!gameObject.GetComponent<Animator>().IsInTransition(0))
             {
                 //Debug.Log("Waiting for Unpause");
                 //Debug.Log("Current state: " + state + ";" + "Current animator idle: " + gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle") + "; is transitioning: " + gameObject.GetComponent<Animator>().IsInTransition(0));
@@ -1275,7 +1291,7 @@ public class Character_Script : MonoBehaviour {
     public void Take_Damage(float amount, float armor_penetration)
     {
         Debug.Log("Character " + character_name + " takes " + amount + " damage!");
-        if (aura_curr == 0)
+        if (aura_curr == 0 && state != Character_States.Dead)
         {
             Die();
         }

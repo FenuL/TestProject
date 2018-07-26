@@ -14,6 +14,7 @@ public class Camera_Controller : MonoBehaviour {
     /// float VER_SPD - The speed at which the Camera moves Vertically. 
     /// int CAMERA_HEIGHT - how far away the Camera is from the board. 
     /// float CAMERA_TURN_SPEED - how fast the camera turns when you press Q or E.
+    /// string turn_order - The current string for the turn order so we don't need to fetch it every frame.
     /// </summary>
     private int HOR_BORDER = 40;
     private int VER_BORDER = 10;
@@ -25,7 +26,8 @@ public class Camera_Controller : MonoBehaviour {
     public bool rotating;
     GUIStyle style;
 
-    private Character_Script curr_player;
+    private string turn_order = "";
+    private Character_Script curr_player = new Character_Script();
     private GameObject highlighted_obj;
 
     Game_Controller controller;// = Game_Controller.controller;
@@ -196,6 +198,35 @@ public class Camera_Controller : MonoBehaviour {
     }
 
     /// <summary>
+    /// Change the current turn order string being held by the camera.
+    /// </summary>
+    public void Update_Turn_Order()
+    {
+        string text = "";
+        foreach (GameObject obj in Game_Controller.controller.curr_scenario.turn_order)
+        {
+            Character_Script chara = obj.GetComponent<Character_Script>();
+            if (chara.Equals(curr_player))
+            {
+                text = text + "<color=red>" + chara.name + " " + chara.character_num + "</color> \n";
+            }
+            else
+            {
+                text = text + chara.name + " " + chara.character_num + "\n";
+            }
+        }
+        turn_order = text;
+    }
+
+    /// <summary>
+    /// Display the current turn order
+    /// </summary>
+    public void Turn_Order_Preview()
+    {
+        GUI.TextArea(new Rect(10, Screen.height - 170-17* Game_Controller.controller.curr_scenario.turn_order.Count, 100 , 17* Game_Controller.controller.curr_scenario.turn_order.Count), turn_order, style);
+    }
+
+    /// <summary>
     /// Displays the GUI for the player. 
     /// Creates:
     ///     Prev and Next Buttons.
@@ -221,11 +252,20 @@ public class Camera_Controller : MonoBehaviour {
         //print (controller.curr_scenario.curr_player.GetComponent<Character_Script> ().character_name);
         if (controller.curr_scenario.curr_player.Count > 0)
         {
-            curr_player = controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>();
+            if (!curr_player.Equals(controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>()))
+            {
+                curr_player = controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>();
+                Update_Turn_Order();
+            }
+            
+            //Debug.Log("Current player " + curr_player.name + " action count " + curr_player.curr_action.Count);
             if (curr_player.curr_action.Count > 0)
             {
+                //Debug.Log(curr_player.curr_action.Peek().name);
                 Current_Character_Preview();
             }
+
+            Turn_Order_Preview();
 
             Current_Tile_Preview();
 
