@@ -1,12 +1,13 @@
 name: Move
 ap_cost: 1
 mp_cost: 0
+type: Path
 range: CSPD
 center: Target 1x1
 area: .2
-self_effect: Move 1
-target_effect: NUL
-activation_type: active
+effects: 1
+  self NUL Move 1
+activation: active
 origin: innate
 orient: path
 trigger: NUL

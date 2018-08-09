@@ -682,11 +682,12 @@ public class Scenario : MonoBehaviour {
                     }
                 }
             }
-
+            //Debug.Log("Moving Cursors");
             //Update cursor positions
             if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Count == 0 ||
                 curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area.Length == 1)
             {
+                
                 cursors[0].transform.position = new Vector3(
                     selected_tile.position.x, 
                     selected_tile.position.y + 0.025f + Tile_Grid.TILE_SCALE * selected_tile.GetComponent<Tile>().height, 
@@ -732,15 +733,14 @@ public class Scenario : MonoBehaviour {
                         }
                     }
                 }
-
             }
-            else
-            {
-                cursors[0].transform.position = new Vector3(
-                    selected_tile.position.x, 
-                    selected_tile.position.y + 0.025f + Tile_Grid.TILE_SCALE * selected_tile.GetComponent<Tile>().height, 
-                    selected_tile.position.z);
-            }
+        }
+        else
+        {
+            cursors[0].transform.position = new Vector3(
+                selected_tile.position.x,
+                selected_tile.position.y + 0.025f + Tile_Grid.TILE_SCALE * selected_tile.GetComponent<Tile>().height,
+                selected_tile.position.z);
         }
     }
 

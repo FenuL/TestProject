@@ -1,12 +1,13 @@
 name: Counter
 ap_cost: 1
 mp_cost: 0
+type: Melee
 range: CWPR
 center: Target 1x1
 area: 1
-self_effect: NUL
-target_effect: Damage CWPD+CSTR
-activation_type: reactive
+effects: 1
+  target NUL Damage CWPD+CSTR
+activation: reactive
 origin: innate
 orient: target
 trigger: ON_DAMAGE

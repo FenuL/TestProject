@@ -18,12 +18,17 @@ public class Action_Effect
     ///     Enable - Enables or Disables certain Actions.
     ///     Pass - End a Character's Turn. 
     /// Type type - The Type of Action
-    /// string[] value - A list of strings that detail the effect of the Action.
+    /// Target target - The target of the effect. Either self or target.
+    /// string[] checks - The checks to perform before activating the effect.
+    /// string[] values - A list of strings that detail the effect of the Action.
     /// </summary>
     public enum Types { Move, Damage, Heal, Status, Effect, Elevate, Enable, Pass }
+    public enum Target { self, target }
 
     public Types type { get; private set; }
-    public string[] value { get; private set; }
+    public Target target { get; private set; }
+    public string[] checks { get; private set; }
+    public string[] values { get; private set; }
 
     /// <summary>
     /// Constructor for the class
@@ -31,24 +36,67 @@ public class Action_Effect
     /// <param name="input">A String of several entries separated by spaces (" ").</param>
     public Action_Effect(string input)
     {
-        string type_string = input.TrimStart().Split(' ')[0];
-        value = new string[input.Split(' ').Length];
-        Array types = Enum.GetValues(typeof(Types));
-
-        foreach (Types ty in types)
-        {
-            //Debug.Log(type_string + " and " + ty.ToString());
-            if (type_string.Contains(ty.ToString()))
+        string[] split_input = input.TrimStart().Split(' ');
+        if (split_input.Length >= 1) {
+            string target_string = split_input[0];
+            Array targets = Enum.GetValues(typeof(Target));
+            foreach (Target targ in targets)
             {
-                type = ty;
-                //Debug.Log("type:" + type);
+                if (target_string.Contains(targ.ToString()) || 
+                    target_string.Contains(targ.ToString().ToLower()))
+                {
+                    target = targ;
+                }
             }
         }
-        int x = 0;
-        while (x < input.Split(' ').Length - 1)
+
+        if (split_input.Length >= 2)
         {
-            value[x] = input.Split(' ')[x + 1];
-            x++;
+            string[] check_string = split_input[1].Split(',');
+            checks = new string[check_string.Length];
+            for (int x = 0; x < checks.Length - 1; x++)
+            {
+                if (check_string[x] == "NUL")
+                {
+                    checks[x] = "CHK_TDST_LT_CRNG";
+                }
+                else
+                {
+                    checks[x] = check_string[x];
+                    Debug.Log("Check " + x + " " + checks[x]);
+                }
+            }
+        }
+
+        if (split_input.Length >= 3)
+        {
+            string type_string = split_input[2];
+            Array types = Enum.GetValues(typeof(Types));
+
+            foreach (Types ty in types)
+            {
+                //Debug.Log(type_string + " and " + ty.ToString());
+                if (type_string.Contains(ty.ToString()) || 
+                    type_string.Contains(ty.ToString().ToLower()))
+                {
+                    type = ty;
+                    //Debug.Log("type:" + type);
+                }
+            }
+        }
+
+        if (split_input.Length >= 4)
+        {
+            string value_string = split_input[3];
+            values = new string[value_string.Split(',').Length];
+            for (int x = 0; x < values.Length; x++)
+            {
+                values[x] = value_string.Split(',')[x];
+                //Debug.Log("Values " + x + " " + values[x]);
+            }
+        }else
+        {
+            values = new string[0];
         }
     }
 }

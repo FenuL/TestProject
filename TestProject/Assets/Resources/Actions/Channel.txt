@@ -1,12 +1,14 @@
 name: Channel
 ap_cost: CAPC
 mp_cost: 10
+type: Melee
 range: 0
 center: Self 1x1
 area: 1
-self_effect: Heal AUC 10; Pass
-target_effect: NUL
-activation_type: active
+effects: 2
+  self NUL Heal CAUC,10
+  self NUL Pass
+activation: active
 origin: innate
 orient: select
 trigger: NUL

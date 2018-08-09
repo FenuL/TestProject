@@ -1,12 +1,14 @@
 name: Rush
 ap_cost: 1
 mp_cost: 0
+type: Melee
 range: CWPR
 center: Target 1x1
 area: 1
-self_effect: Enable Attack false
-target_effect: Damage CWPD+5
-activation_type: active
+effects: 2
+  target NUL Damage CWPD+5
+  self NUL Enable Rush,false
+activation: active
 origin: innate
 orient: target
 trigger: NUL

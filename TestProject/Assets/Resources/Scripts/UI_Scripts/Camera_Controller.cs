@@ -126,12 +126,12 @@ public class Camera_Controller : MonoBehaviour {
                 if (curr_player.curr_action.Count > 0)
                 {
                     bool preview = false;
-                    foreach (Action_Effect eff in curr_player.curr_action.Peek().target_effect)
+                    foreach (Action_Effect eff in curr_player.curr_action.Peek().effects)
                     {
                         if (eff.type.ToString() == "Damage")
                         {
                             //TODO: This is inaccurate because it doesn't take into account the target modifier.
-                            int damage_dealt = highlighted_character.Estimate_Damage(curr_player.curr_action.Peek().Convert_To_Double(eff.value[0], highlighted_character.gameObject), (int)curr_player.weapon.pierce);
+                            int damage_dealt = highlighted_character.Estimate_Damage(curr_player.curr_action.Peek().Convert_To_Double(eff.values[0], highlighted_character.gameObject), (int)curr_player.weapon.pierce);
                             int new_aura = highlighted_character.aura_curr - damage_dealt;
                             if (new_aura < 0)
                             {
@@ -154,7 +154,7 @@ public class Camera_Controller : MonoBehaviour {
                         }
                         else if (eff.type.ToString() == "Heal")
                         {
-                            int healing = (int)curr_player.curr_action.Peek().Convert_To_Double(eff.value[0], highlighted_character.gameObject);
+                            int healing = (int)curr_player.curr_action.Peek().Convert_To_Double(eff.values[0], highlighted_character.gameObject);
                             int new_aura = highlighted_character.aura_curr + healing;
                             if (new_aura < 0)
                             {
@@ -187,6 +187,16 @@ public class Camera_Controller : MonoBehaviour {
                             "Dex: " + highlighted_character.dexterity + "   Vit: " + highlighted_character.vitality + "   Spd: " + highlighted_character.speed + "\n" +
                             "Wep: " + highlighted_character.weapon.name + "   Armor: " + highlighted_character.armor.name, style);
                     }
+                }else
+                {
+                    GUI.TextArea(new Rect(Screen.width - 320, Screen.height - 120, 200, 110), highlighted_character.character_name + "\n" +
+                            "AU: " + highlighted_character.aura_curr + " / " + highlighted_character.aura_max + "     " +
+                            "MP: " + highlighted_character.mana_curr + " / " + highlighted_character.mana_max + "\n" +
+                            "AP: " + highlighted_character.action_curr + " / " + highlighted_character.action_max + "     " +
+                            "RP: " + highlighted_character.reaction_curr + " / " + highlighted_character.reaction_max + "\n" +
+                            "Str: " + highlighted_character.strength + "   Crd: " + highlighted_character.coordination + "    Spt: " + highlighted_character.spirit + "\n" +
+                            "Dex: " + highlighted_character.dexterity + "   Vit: " + highlighted_character.vitality + "   Spd: " + highlighted_character.speed + "\n" +
+                            "Wep: " + highlighted_character.weapon.name + "   Armor: " + highlighted_character.armor.name, style);
                 }
             }
             else
@@ -264,15 +274,16 @@ public class Camera_Controller : MonoBehaviour {
                 //Debug.Log(curr_player.curr_action.Peek().name);
                 Current_Character_Preview();
             }
+        }
 
-            Turn_Order_Preview();
+        Turn_Order_Preview();
 
-            Current_Tile_Preview();
+        Current_Tile_Preview();
 
-            if (controller.curr_scenario.selected_tile.GetComponent<Tile>() != null)
-            {
-                Current_Target_Preview();
-            }
+        if (controller.curr_scenario.selected_tile.GetComponent<Tile>() != null)
+        {
+            //Debug.Log("Selecting");
+            Current_Target_Preview();
         }
     }
 

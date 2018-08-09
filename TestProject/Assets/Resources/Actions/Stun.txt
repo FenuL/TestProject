@@ -1,12 +1,13 @@
 name: Stun
 ap_cost: 1
 mp_cost: 5
+type: Ranged
 range: CWPR
 center: Target 1x1
 area: 1
-self_effect: NUL
-target_effect: Status Stun 2
-activation_type: active
+effects: 1
+  target CHK_NOT_CND_STUN Status Stun,2
+activation: active
 origin: innate
 orient: target
 trigger: NUL

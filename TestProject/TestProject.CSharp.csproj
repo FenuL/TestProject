@@ -71,6 +71,7 @@
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Condition.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Accepted_Shortcuts.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Accepted_Tests.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Action_Types.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Armor_Types.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Character_States.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Character_Stats.cs" />

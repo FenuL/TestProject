@@ -330,7 +330,7 @@ public class Character_Script : MonoBehaviour {
                 Select_Animation(act, act_num);
             }
             act.Set_Character(this);
-            if (act.type == Character_Action.Activation_Types.Reactive)
+            if (act.activation == Character_Action.Activation_Types.Reactive)
             {
                 act.Set_Anim_Num(react_num);
                 react_num++;
@@ -401,9 +401,8 @@ public class Character_Script : MonoBehaviour {
     /// </summary>
     public void Start_Turn()
     {
-        controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
-
         Replenish_Resources();
+        controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
 
         Find_Action_Local("Move").Select();
 
@@ -433,13 +432,15 @@ public class Character_Script : MonoBehaviour {
         {
             StartCoroutine(Choose_Orientation());
         }
+        //Debug.Log("Ending Turn");
+
         controller.curr_scenario.Reset_Reachable();
         //controller.curr_scenario.Clean_Reachable();
         while (! this.gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle") || 
             this.GetComponent<Animator>().GetBool("Act") ||
             state == Character_States.Orienting )
         {
-            //Debug.Log("End Turn Wait");
+            //Debug.Log("Character " + name + " is " + state + " animator is " + this.gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle") + " and bool is " + this.GetComponent<Animator>().GetBool("Act"));
             yield return new WaitForEndOfFrame();
         }
 
@@ -751,46 +752,48 @@ public class Character_Script : MonoBehaviour {
         while (!Input.GetMouseButton(0))
         {
             state = Character_States.Orienting;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+
+            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            //RaycastHit hit;
             //deprecated 2d raycast physics
             //hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-            if (Physics.Raycast(ray, out hit, 100))
+            //if (Physics.Raycast(ray, out hit, 100))
+            //{
+            //Tile tile_data = hit.transform.GetComponent<Tile>();
+            Tile tile_data = controller.curr_scenario.selected_tile.GetComponent<Tile>();
+            if (tile_data != null)
             {
-                Tile tile_data = hit.transform.GetComponent<Tile>();
-                if (tile_data != null)
+                if (tile_data.index[0] >= curr_tile.GetComponent<Tile>().index[0] &&
+                    tile_data.index[1] < curr_tile.GetComponent<Tile>().index[1])
                 {
-                    if (tile_data.index[0] >= curr_tile.GetComponent<Tile>().index[0] &&
-                        tile_data.index[1] < curr_tile.GetComponent<Tile>().index[1])
-                    {
-                        orientation = 0 + camera_orientation_offset;
-                    }
-                    if (tile_data.index[0] > curr_tile.GetComponent<Tile>().index[0] &&
-                        tile_data.index[1] >= curr_tile.GetComponent<Tile>().index[1])
-                    {
-                        orientation = 1 + camera_orientation_offset;
-                    }
-                    if (tile_data.index[0] <= curr_tile.GetComponent<Tile>().index[0] &&
-                        tile_data.index[1] > curr_tile.GetComponent<Tile>().index[1])
-                    {
-                        orientation = 2 + camera_orientation_offset;
-                    }
-                    if (tile_data.index[0] < curr_tile.GetComponent<Tile>().index[0] &&
-                        tile_data.index[1] <= curr_tile.GetComponent<Tile>().index[1])
-                    {
-                        orientation = 3 + camera_orientation_offset;
-                    }
-                    if (orientation > 3)
-                    {
-                        orientation = orientation - 4;
-                    }
-                    if (orientation < 0)
-                    {
-                        orientation = 4-orientation;
-                    }
+                    orientation = 0 + camera_orientation_offset;
                 }
-                //orientation = (orientation + camera_orientation_offset) % 4;
+                if (tile_data.index[0] > curr_tile.GetComponent<Tile>().index[0] &&
+                    tile_data.index[1] >= curr_tile.GetComponent<Tile>().index[1])
+                {
+                    orientation = 1 + camera_orientation_offset;
+                }
+                if (tile_data.index[0] <= curr_tile.GetComponent<Tile>().index[0] &&
+                    tile_data.index[1] > curr_tile.GetComponent<Tile>().index[1])
+                {
+                    orientation = 2 + camera_orientation_offset;
+                }
+                if (tile_data.index[0] < curr_tile.GetComponent<Tile>().index[0] &&
+                    tile_data.index[1] <= curr_tile.GetComponent<Tile>().index[1])
+                {
+                    orientation = 3 + camera_orientation_offset;
+                }
+                if (orientation > 3)
+                {
+                    orientation = orientation - 4;
+                }
+                if (orientation < 0)
+                {
+                    orientation = 4 - orientation;
+                }
             }
+            //orientation = (orientation + camera_orientation_offset) % 4;
+
             Orient();
             yield return new WaitForEndOfFrame();
         }
@@ -1053,11 +1056,11 @@ public class Character_Script : MonoBehaviour {
             controller.curr_scenario.Clean_Reachable();
 
             //update AP and MP
-            if (action.type == Character_Action.Activation_Types.Active)
+            if (action.activation == Character_Action.Activation_Types.Active)
             {
                 action_curr -= (int)action.Convert_To_Double(action.ap_cost, target_tile.gameObject.GetComponent<Tile>().obj);
             }
-            else if (action.type == Character_Action.Activation_Types.Reactive)
+            else if (action.activation == Character_Action.Activation_Types.Reactive)
             {
                 reaction_curr -= (int)action.Convert_To_Double(action.ap_cost, target_tile.gameObject.GetComponent<Tile>().obj);
             }
@@ -1082,7 +1085,7 @@ public class Character_Script : MonoBehaviour {
             }
 
             //Debug.Log(action.name + " state: " + action.paused);
-            if (action.type != Character_Action.Activation_Types.Reactive)
+            if (action.activation != Character_Action.Activation_Types.Reactive)
             {
                 //Remove the action from the stack.
                 curr_action.Pop();
@@ -1090,7 +1093,11 @@ public class Character_Script : MonoBehaviour {
 
                 if (action_curr <= 0 && controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().character_num == character_num)
                 {
-                    StartCoroutine(End_Turn());
+                    if (!ending_turn)
+                    {
+                        //Debug.Log("No more actions");
+                        StartCoroutine(End_Turn());
+                    }
                 }
                 else
                 {
@@ -1460,7 +1467,7 @@ public class Character_Script : MonoBehaviour {
         //remove any active reactions for this character.
         foreach (Character_Action act in actions)
         {
-            if (act.type != Character_Action.Activation_Types.Active)
+            if (act.activation != Character_Action.Activation_Types.Active)
             {
                 act.Disable_Reaction();
             }
@@ -1764,7 +1771,7 @@ public class Character_Script : MonoBehaviour {
     {
         foreach (Character_Action act in actions)
         {
-            if (act.type == Character_Action.Activation_Types.Reactive)
+            if (act.activation == Character_Action.Activation_Types.Reactive)
             {
                 act.Disable_Reaction();
             }

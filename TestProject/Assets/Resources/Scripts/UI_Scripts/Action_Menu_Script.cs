@@ -110,7 +110,7 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
             mp_cost = a.Convert_To_Double(a.mp_cost, null);
             if (ap_cost > controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().action_curr ||
                 mp_cost > controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().mana_curr ||
-                !a.enabled || a.type != Character_Action.Activation_Types.Active)
+                !a.enabled || a.activation != Character_Action.Activation_Types.Active)
             {
                 button.GetComponent<Image>().color = Color.red;
             }else

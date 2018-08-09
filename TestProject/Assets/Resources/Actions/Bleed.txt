@@ -1,12 +1,13 @@
 name: Bleed
 ap_cost: 0
 mp_cost: 0
+type: Range
 range: CWPR
 center: Target 1x1
 area: 1
-self_effect: NUL
-target_effect: Status Bleed 3 2
-activation_type: active
+effects: 1
+  target CHK_NOT_CND_BLD Status Bleed,3,2
+activation: active
 origin: innate
 orient: target
 trigger: NUL
