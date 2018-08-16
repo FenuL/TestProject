@@ -6,7 +6,7 @@ range: CWPR
 center: Target 1x1
 area: 1
 effects: 1
-  target CHK_NOT_CND_BLD Status Bleed,3,2
+  target CHK_NOT_TCND_EQ_BLD Status Bleed,3,2
 activation: active
 origin: innate
 orient: target

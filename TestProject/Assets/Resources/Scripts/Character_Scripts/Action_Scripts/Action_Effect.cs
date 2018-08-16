@@ -54,16 +54,17 @@ public class Action_Effect
         {
             string[] check_string = split_input[1].Split(',');
             checks = new string[check_string.Length];
-            for (int x = 0; x < checks.Length - 1; x++)
+            for (int x = 0; x < checks.Length; x++)
             {
+                //Debug.Log(check_string[x]);
                 if (check_string[x] == "NUL")
                 {
-                    checks[x] = "CHK_TDST_LT_CRNG";
+                    checks[x] = "CHK_TDST_LTQ_CRNG";
                 }
                 else
                 {
                     checks[x] = check_string[x];
-                    Debug.Log("Check " + x + " " + checks[x]);
+                    //Debug.Log("Check " + x + " " + checks[x]);
                 }
             }
         }

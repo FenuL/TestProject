@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 using System.Collections.Generic;
 
 /// <summary>
@@ -225,6 +226,43 @@ public class Condition
         MAX_DURATION = condi.MAX_DURATION;
         MAX_STACKS = condi.MAX_STACKS;
         UPGRADE = condi.UPGRADE;
+    }
+
+    /// <summary>
+    /// Constructor for class, creates a generic condition of a specific type given a string
+    /// </summary>
+    /// <param name="name">The name of the Condition to create</param>
+    public Condition(string name)
+    {
+        Create_Dictionaries();
+        Array array = Enum.GetValues(typeof(Condition_Shortcuts));
+        Array array2 = Enum.GetValues(typeof(Conditions));
+        foreach (Condition_Shortcuts condi in array)
+        {
+            if (condi.ToString() == name)
+            {
+                int num = (int)condi;
+                type = (Conditions)array2.GetValue(num);
+                power = 0;
+                duration = 0;
+                attribute = "NA";
+                break;
+            }
+        }
+        if (attribute != "NA") {
+            
+            foreach (Conditions condi in array2)
+            {
+                if (condi.ToString() == name)
+                {
+                    type = condi;
+                    power = 0;
+                    duration = 0;
+                    attribute = "NA";
+                    break;
+                }
+            }
+        }
     }
 
     /// <summary>

@@ -6,7 +6,7 @@ range: CWPR
 center: Target 1x1
 area: 1
 effects: 1
-  target CHK_NOT_CND_STUN Status Stun,2
+  target CHK_NOT_TCND_EQ_STUN Status Stun,2
 activation: active
 origin: innate
 orient: target

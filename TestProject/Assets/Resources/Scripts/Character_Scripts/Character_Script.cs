@@ -63,7 +63,8 @@ public class Character_Script : MonoBehaviour {
     /// Armor armor - The Character's Equipped Armor.
     /// Accessory[] accessories - The Character's Equipped Accessories.
     /// static List<Character_Action> all_actions - The List of all possible Character_Actions.
-    /// List<Character_Action> actions - The list of all the Character's Character_Actions. A subset of all_actions derived from the Character's Equipment.
+    /// List<Character_Action> actions - The list of all the Character's Character_Actions of type Action. A subset of all_actions derived from the Character's Equipment.
+    /// List<Character_Action> reactions - The list of all the character's Character_Actions of type Reaction.
     /// Stack<Character_Action> curr_action - The Character's currently Selected Character_Action.
     /// Character_States state - The Character's current State. Typically altered by their Character_Action.
     /// Dictionary<Conditions., List<Condition>> conditions - The List of Conditions currently afflicting the Character.
@@ -109,6 +110,7 @@ public class Character_Script : MonoBehaviour {
     public Accessory[] accessories { get; private set; }
     public static Dictionary<string, Character_Action> all_actions { get; private set; }
     public List<Character_Action> actions { get; private set; }
+    public List<Character_Action> reactions { get; private set; }
     public Stack<Character_Action> curr_action { get; set; }
     public Character_States state = Character_States.Idle;
     public Dictionary<Conditions, List<Condition>> conditions { get; private set; }
@@ -159,6 +161,7 @@ public class Character_Script : MonoBehaviour {
         reaction_curr = reaction_max;
         curr_action = new Stack<Character_Action>();
         actions = new List<Character_Action>();
+        reactions = new List<Character_Action>();
         canister_max = can;
         animator_name = animator;
         orientation = 2;
@@ -232,7 +235,18 @@ public class Character_Script : MonoBehaviour {
         weapon = chara.weapon;
         armor = chara.armor;
         accessories = chara.accessories;
-        actions = chara.actions;
+        actions = new List<Character_Action>();
+        foreach (Character_Action act in chara.actions)
+        {
+            Character_Action action = new Character_Action(act, this);
+            actions.Add(action);
+        }
+        reactions = new List<Character_Action>();
+        foreach (Character_Action act in chara.reactions)
+        {
+            Character_Action action = new Character_Action(act, this);
+            reactions.Add(action);
+        }
         curr_action = chara.curr_action;
         state = chara.state;
         conditions = chara.conditions;
@@ -317,12 +331,17 @@ public class Character_Script : MonoBehaviour {
             Character_Action action = new Character_Action(act, this);
             actions.Add(action);
         }
+        reactions = new List<Character_Action>();
+        foreach (Character_Action act in data.reactions)
+        {
+            Character_Action action = new Character_Action(act, this);
+            reactions.Add(action);
+        }
         string controller_name = "Animations/Controllers/" + animator_name + "/" + animator_name + "_Override_S";
         s_controller = Resources.Load(controller_name) as AnimatorOverrideController;
         controller_name = "Animations/Controllers/" + animator_name + "/" + animator_name + "_Override_W";
         w_controller = Resources.Load(controller_name) as AnimatorOverrideController;
         int act_num = 2;
-        int react_num = 201;
         foreach (Character_Action act in actions)
         {
             if (act.animation != "NUL")
@@ -330,16 +349,21 @@ public class Character_Script : MonoBehaviour {
                 Select_Animation(act, act_num);
             }
             act.Set_Character(this);
-            if (act.activation == Character_Action.Activation_Types.Reactive)
-            {
-                act.Set_Anim_Num(react_num);
-                react_num++;
-                act.Enable_Reaction();
-            }else
-            {
-                act.Set_Anim_Num(100+act_num-1);
-            }
+            act.Set_Anim_Num(100+act_num-1);
             act_num++;
+        }
+        int react_num = 201;
+        foreach (Character_Action act in reactions)
+        {
+            if (act.animation != "NUL")
+            {
+                Select_Animation(act, act_num);
+            }
+            act.Set_Character(this);
+            act.Set_Anim_Num(react_num);
+            react_num++;
+            act_num++;
+            act.Enable_Reaction();
         }
         curr_action = new Stack<Character_Action>();
         canister_curr = data.canister_curr;
@@ -462,6 +486,13 @@ public class Character_Script : MonoBehaviour {
         }
         //TODO Fix this later
         foreach (Character_Action act in actions)
+        {
+            if (!act.enabled)
+            {
+                act.enabled = true;
+            }
+        }
+        foreach (Character_Action act in reactions)
         {
             if (!act.enabled)
             {
@@ -979,6 +1010,13 @@ public class Character_Script : MonoBehaviour {
                     return act;
                 }
             }
+            foreach (Character_Action act in reactions)
+            {
+                if (name == act.name)
+                {
+                    return act;
+                }
+            }
         }
         //Debug.Log(name + " NOT found.");
         return null;
@@ -1184,7 +1222,14 @@ public class Character_Script : MonoBehaviour {
                 Character_Action act = Find_Action_Global(str.TrimStart().TrimEnd());
                 if (act != null)
                 {
-                    actions.Add(new Character_Action(act, this));
+                    if (act.activation == Character_Action.Activation_Types.Active)
+                    {
+                        actions.Add(new Character_Action(act, this));
+                    }
+                    else if (act.activation == Character_Action.Activation_Types.Reactive)
+                    {
+                        reactions.Add(new Character_Action(act, this));
+                    }
                 }
             }
         }
@@ -1209,6 +1254,7 @@ public class Character_Script : MonoBehaviour {
         action_max = AP_MAX;// spirit * AP_MULTIPLIER;
         action_curr = action_max;
         actions = new List<Character_Action>();
+        reactions = new List<Character_Action>();
         canister_max = UnityEngine.Random.Range(0, 3);
         canister_curr = canister_max;
 		state = Character_States.Idle;
@@ -1465,12 +1511,9 @@ public class Character_Script : MonoBehaviour {
         Debug.Log("Character " + name + " (" + character_num + ") has died");
 
         //remove any active reactions for this character.
-        foreach (Character_Action act in actions)
+        foreach (Character_Action act in reactions)
         {
-            if (act.activation != Character_Action.Activation_Types.Active)
-            {
-                act.Disable_Reaction();
-            }
+            act.Disable_Reaction();
         }
 
         //Debug.Log("Characters remaining: " + controller.curr_scenario.characters.Count);
@@ -1769,12 +1812,9 @@ public class Character_Script : MonoBehaviour {
     /// </summary>
     void OnDisable()
     {
-        foreach (Character_Action act in actions)
+        foreach (Character_Action act in reactions)
         {
-            if (act.activation == Character_Action.Activation_Types.Reactive)
-            {
-                act.Disable_Reaction();
-            }
+            act.Disable_Reaction();
         }
     }
 }

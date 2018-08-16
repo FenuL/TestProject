@@ -397,7 +397,7 @@ public class Game_Controller : MonoBehaviour {
                 curr_scenario.clicked_tile = curr_scenario.selected_tile;
                 if ((character.state != Character_States.Idle ||
                     character.state != Character_States.Dead) &&
-                    !action_menu.GetComponent<Action_Menu_Script>().isOpen)
+                    !action_menu.GetComponent<Action_Menu_Script>().is_open)
                 {
                     foreach (Transform tile in curr_scenario.reachable_tiles)
                     {

@@ -20,6 +20,7 @@ public class Character_Action
     private static int HEADINGS = 14;
     public enum Activation_Types { Active, Passive, Reactive }
     public enum Origin_Types { Innate, Soul, Weapon }
+    public enum Operators { EQ, GT, LT, GTQ, LTQ }
 
     /// <summary>
     /// Variables:
@@ -1134,6 +1135,66 @@ public class Character_Action
     }
 
     /// <summary>
+    /// Function to check the criteria for an Action_Effect is met. 
+    /// </summary>
+    /// <param name="eff">The Effect whose checks we need to check.</param>
+    /// <param name="targ">The Target who will be affected by the Effect if the checks succeed.</param>
+    /// <returns>True if the Effect is valid, False otherwise.</returns>
+    public bool Check_Criteria(Action_Effect eff, Target targ)
+    {
+        bool valid = true;
+        foreach (string str in eff.checks)
+        {
+            valid = Parse_Check(str, targ);
+            if (!valid)
+            {
+                return valid;
+            }
+        }
+        return valid;
+    }
+
+    /// <summary>
+    /// Function to parse a Check into an actual condition. 
+    /// EG: CHK_CCND_EQ_BLD returns true if the character has the condition Bleeding
+    /// EG: CHK_NOT_TAUC_GT_CAUC returns true if the target's current aura points are not greater than the character's current aura points.
+    /// </summary>
+    /// <param name="input">The string to parse</param>
+    /// <param name="targ">The Target affected by the Effect.</param>
+    /// <returns>True if all checks have passed, false otherwise.</returns>
+    public bool Parse_Check(string input, Target targ)
+    {
+        bool valid = true;
+        bool not_flag = false;
+        Operators ope;
+        //Debug.Log("Check is " + input);
+        string[] conditionals = input.Split('_');
+        int i = 1;
+        if (conditionals[i] == "NOT")
+        {
+            not_flag = true;
+            i++;
+        }
+        if (conditionals[i] == "CCND")
+        {
+            //Debug.Log("Check if the character has condition");
+            valid = character.Has_Condition(new Condition(conditionals[i + 2]).type);
+
+        }
+        if (conditionals[i] == "TCND")
+        {
+            //Debug.Log("Check if the target has condition");
+            valid = targ.game_object.GetComponent<Character_Script>().Has_Condition(new Condition(conditionals[i+2]).type);
+        }
+        if(not_flag)
+        {
+            valid = !valid;
+        }
+        //Debug.Log("Condition is " + valid);
+        return valid;
+    }
+
+    /// <summary>
     /// Add the Reaction to the Event_Manager list. This makes the reaction triggerable.
     /// </summary>
     public void Enable_Reaction()
@@ -1484,7 +1545,13 @@ public class Character_Action
                     }
                     else
                     {
-                        Enact_Move(eff.values[0], new Target(target_tile, area[0, 0]));
+                        if (Check_Criteria(eff, new Target(target_tile, area[0, 0])))
+                        {
+                            Enact_Move(eff.values[0], new Target(target_tile, area[0, 0]));
+                        }else
+                        {
+                            Debug.Log("Condition not met");
+                        }
                     }
                 }
                 else if (eff.type == Action_Effect.Types.Damage)
@@ -1500,7 +1567,13 @@ public class Character_Action
                             //TODO add an interrupt here.
                             yield return new WaitForEndOfFrame();
                         }
-                        Enact_Damage(eff.values[0], target);
+                        if (Check_Criteria(eff, target))
+                        {
+                            Enact_Damage(eff.values[0], target);
+                        }else
+                        {
+                            Debug.Log("Condition not met");
+                        }
                     }
                 }
                 else if (eff.type == Action_Effect.Types.Heal)
@@ -1514,7 +1587,13 @@ public class Character_Action
                             //TODO add an interrupt here.
                             yield return new WaitForEndOfFrame();
                         }
-                        Enact_Healing(eff.values, target);
+                        if (Check_Criteria(eff, target))
+                        {
+                            Enact_Healing(eff.values, target);
+                        }else
+                        {
+                            Debug.Log("Condition not met");
+                        }
                     }
                 }
                 else if (eff.type == Action_Effect.Types.Status)
@@ -1528,7 +1607,13 @@ public class Character_Action
                             //TODO add an interrupt here.
                             yield return new WaitForEndOfFrame();
                         }
-                        Enact_Status(eff.values, target);
+                        if (Check_Criteria(eff, target))
+                        {
+                            Enact_Status(eff.values, target);
+                        }else
+                        {
+                            Debug.Log("Condition not met");
+                        }
                     }
                 }
                 else if (eff.type == Action_Effect.Types.Effect)
@@ -1542,7 +1627,13 @@ public class Character_Action
                             //TODO add an interrupt here.
                             yield return new WaitForEndOfFrame();
                         }
-                        Enact_Effect(eff.values, target);
+                        if (Check_Criteria(eff, target))
+                        {
+                            Enact_Effect(eff.values, target);
+                        }else
+                        {
+                            Debug.Log("Condition not met");
+                        }
                     }
                 }
                 else if (eff.type == Action_Effect.Types.Elevate)
@@ -1557,7 +1648,13 @@ public class Character_Action
                             //TODO add an interrupt here.
                             yield return new WaitForEndOfFrame();
                         }
-                        Enact_Elevate(eff.values[0], target);
+                        if (Check_Criteria(eff, target))
+                        {
+                            Enact_Elevate(eff.values[0], target);
+                        }else
+                        {
+                            Debug.Log("Condition not met");
+                        }
                     }
                 }
                 else if (eff.type == Action_Effect.Types.Enable)
@@ -1571,7 +1668,13 @@ public class Character_Action
                             //TODO add an interrupt here.
                             yield return new WaitForEndOfFrame();
                         }
-                        Enact_Enable(eff.values, target);
+                        if (Check_Criteria(eff, target))
+                        {
+                            Enact_Enable(eff.values, target);
+                        }else
+                        {
+                            Debug.Log("Condition not met");
+                        }
                     }
                 }
                 else if (eff.type == Action_Effect.Types.Pass)
@@ -1585,7 +1688,14 @@ public class Character_Action
                             //TODO add an interrupt here.
                             yield return new WaitForEndOfFrame();
                         }
-                        Enact_Pass(target);
+                        if (Check_Criteria(eff, target))
+                        {
+                            Enact_Pass(target);
+                        }
+                        else
+                        {
+                            Debug.Log("Condition not met");
+                        }
                     }
                 }
             }

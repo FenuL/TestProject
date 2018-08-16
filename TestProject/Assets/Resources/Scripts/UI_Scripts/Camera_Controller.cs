@@ -123,7 +123,7 @@ public class Camera_Controller : MonoBehaviour {
             Character_Script highlighted_character = highlighted_obj.GetComponent<Character_Script>();
             if (highlighted_character != null)
             {
-                if (curr_player.curr_action.Count > 0)
+                if (curr_player.curr_action.Count > 0 && curr_player.state != Character_States.Acting)
                 {
                     bool preview = false;
                     foreach (Action_Effect eff in curr_player.curr_action.Peek().effects)

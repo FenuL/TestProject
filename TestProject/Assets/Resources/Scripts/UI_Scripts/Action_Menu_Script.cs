@@ -15,11 +15,13 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
     /// Game_Controller controller - The Game Controller with the information about the game. 
     /// List<Transform> buttons - The list of buttons in the Action Menu
     /// bool isOpen - If the Action Menu is open or not. 
+    /// bool toggle_open - if the Action menu is toggled open or not.
     /// </summary>
     public RectTransform container;
     public List<Transform> buttons;
     public Game_Controller controller { get; private set; }
-    public bool isOpen { get; private set; }
+    public bool is_open { get; private set; }
+    public bool toggle_open { get; private set; }
 
     /// <summary>
     /// Opens the Action Menu when the Mouse enters it. 
@@ -27,7 +29,9 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
     /// <param name="eventData">The position of the Mouse.</param>
     public void OnPointerEnter(PointerEventData eventData)
     {
-        isOpen = true;
+        if (!toggle_open) { 
+            is_open = true;
+        }
     }
 
     /// <summary>
@@ -36,7 +40,10 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
     /// <param name="eventData">The position of the Mouse</param>
     public void OnPointerExit(PointerEventData eventData)
     {
-        isOpen = false;
+        if (!toggle_open)
+        {
+            is_open = false;
+        }
     }
 
     /// <summary>
@@ -52,7 +59,8 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
         controller = Game_Controller.controller;
         //container = transform.FindChild("Action Menu").GetComponent<RectTransform>();
         //resetActions();
-        isOpen = false;
+        is_open = false;
+        toggle_open = false;
         this.GetComponent<RectTransform>().position = new Vector3(Screen.width/2,20,0);
 	}
 
@@ -64,7 +72,7 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
     {
         //transform.position = new Vector3(controller.curr_player.transform.position.x, controller.curr_player.transform.position.y, controller.curr_player.transform.position.z);
 
-        if (isOpen)
+        if (is_open)
         {
             Vector3 scale = container.localScale;
             scale.y = Mathf.Lerp(scale.y, 1, Time.deltaTime*12);
@@ -134,4 +142,20 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
         }
     }
 
+    /// <summary>
+    /// Toggles the action menu to keep it open. Called when the Action Menu is clicked.
+    /// </summary>
+    public void toggle()
+    {
+        if (toggle_open)
+        {
+            toggle_open = false;
+            is_open = false;
+        }
+        else
+        {
+            toggle_open = true;
+            is_open = true;
+        }
+    }
 }
