@@ -46,7 +46,7 @@ public class Scenario : MonoBehaviour {
     /// List<GameObject> turn_order - The List of Characters sorted by Dexterity to determine turn order.
     /// Transform clicked_tile - The Tile object curretly Clicked by the Player.
     /// Transform selected_tile - The Tile object currently Selected by the Player. Also where the main cursor Object should be.
-    /// List<Transform> reachable_tiles - The List of tiles that are reachable for the current Character's current Action.
+    /// List<Transform> reachable_tiles - The List of tiles that are reachable for the current Character's current Action
     /// List<GameObject> reachable_tile_objects - The List of Objects used to mark what Tiles are Reachable.
     /// int curr_round - The number of the current round. Not currently in Use.
     /// </summary>
@@ -800,6 +800,7 @@ public class Scenario : MonoBehaviour {
         //Debug.Log(curr_player.Peek().GetComponent<Character_Script>().curr_tile.GetComponent<Tile>());
         if (curr_player.Peek().GetComponent<Character_Script>().curr_tile)
         {
+            //Debug.Log("BFS with cost limit " + cost_limit + ", distance limit " + distance_limit);
             tile_grid.navmesh.bfs(curr_player.Peek().GetComponent<Character_Script>().curr_tile.GetComponent<Tile>(), cost_limit, distance_limit);
 
             reachable_tiles = new List<Transform>();
@@ -824,20 +825,26 @@ public class Scenario : MonoBehaviour {
                                 //        reachable_tiles.Add(grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j));
                                 //    }
                                 //}
-                                if (tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight <= curr_player.Peek().GetComponent<Character_Script>().speed &&
+                                if (tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight <= cost_limit &&
                                     tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight > 0 &&
                                     tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().distance <= distance_limit)
                                 {
                                     reachable_tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
+                                    //reachable_tiles.Add(new Tile(tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>()));
+                                    //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight = -1;
+                                    //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().parent = null;
                                 }
                             }
                             if (type == 2)
                             {
                                 if (tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().traversible)
                                 {
-                                    if ((Math.Abs(x_index - (x_index + i)) + Math.Abs(y_index - (y_index + j))) < curr_player.Peek().GetComponent<Character_Script>().speed)
+                                    if ((Math.Abs(x_index - (x_index + i)) + Math.Abs(y_index - (y_index + j))) < cost_limit)
                                     {
                                         reachable_tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
+                                        //reachable_tiles.Add(new Tile(tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>()));
+                                        //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight = -1;
+                                        //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().parent = null;
                                     }
                                 }
                             }
@@ -850,6 +857,9 @@ public class Scenario : MonoBehaviour {
                                     if (Math.Abs(i) + Math.Abs(j) <= distance_limit)
                                     {
                                         reachable_tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
+                                        //reachable_tiles.Add(new Tile(tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>()));
+                                        //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight = -1;
+                                        //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().parent = null;
                                     }
                                 }
                             }
@@ -884,30 +894,35 @@ public class Scenario : MonoBehaviour {
     public void Mark_Reachable()
     {
         //Debug.Log("Marking");
-        reachable_tile_objects = new List<GameObject>();
-        foreach (Transform tile in reachable_tiles)
+        if (curr_player != null &&
+            curr_player.Peek() != null)
         {
-            //tile_grid.reachable_prefab.GetComponent<SpriteRenderer>().sortingOrder = tile.GetComponent<SpriteRenderer>().sortingOrder;
-            if (curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Moving || curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Blinking)
+            reachable_tile_objects = new List<GameObject>();
+            //Debug.Log("reachable tile count " + curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().reachable_tiles.Count);
+            foreach (Transform tile in reachable_tiles)
             {
-                //Set Material to blue
-                //Debug.Log(tile_grid.reachable_prefab.GetComponent<Material>().name);
-                tile_grid.reachable_prefab.GetComponent<Renderer>().sharedMaterial.color = new Color(0, 0, 255);
-            }
-            if (curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Attacking)
-            {
-                //set material to red.
-                //tile_grid.reachable_prefab.GetComponent<Renderer>().sharedMaterial.color = new Color(0, 255, 0);
-            }
-            reachable_tile_objects.Add((GameObject)Instantiate(tile_grid.reachable_prefab, new Vector3(tile.position.x,
-                                                           //tile.position.y+0.08f,
-                                                           //(float)(tile.position.y + (tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) - .24f,
-                                                           tile.position.y+.015f+ Tile_Grid.TILE_SCALE * tile.GetComponent<Tile>().height,
-                                                           tile.position.z),
-                                                           Quaternion.identity));
+                //tile_grid.reachable_prefab.GetComponent<SpriteRenderer>().sortingOrder = tile.GetComponent<SpriteRenderer>().sortingOrder;
+                if (curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Moving || curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Blinking)
+                {
+                    //Set Material to blue
+                    //Debug.Log(tile_grid.reachable_prefab.GetComponent<Material>().name);
+                    tile_grid.reachable_prefab.GetComponent<Renderer>().sharedMaterial.color = new Color(0, 0, 255);
+                }
+                if (curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Attacking)
+                {
+                    //set material to red.
+                    //tile_grid.reachable_prefab.GetComponent<Renderer>().sharedMaterial.color = new Color(0, 255, 0);
+                }
+                reachable_tile_objects.Add((GameObject)Instantiate(tile_grid.reachable_prefab, new Vector3(tile.position.x,
+                                                               //tile.position.y+0.08f,
+                                                               //(float)(tile.position.y + (tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) - .24f,
+                                                               tile.position.y + .015f + Tile_Grid.TILE_SCALE * tile.GetComponent<Tile>().height,
+                                                               tile.position.z),
+                                                               Quaternion.identity));
 
-            //+ tile.GetComponent<SpriteRenderer>().sprite.rect.width/200
-            // + selected_tile.GetComponent<SpriteRenderer>().sprite.rect.height/200
+                //+ tile.GetComponent<SpriteRenderer>().sprite.rect.width/200
+                // + selected_tile.GetComponent<SpriteRenderer>().sprite.rect.height/200
+            }
         }
 
     }
@@ -987,7 +1002,6 @@ public class Scenario : MonoBehaviour {
         }
         //curr_player.Peek().GetComponent<Character_Script>().state = Character_Script.States.Moving;
         //FindReachable(curr_player.Peek().GetComponent<Character_Script>().action_curr, curr_player.Peek().GetComponent<Character_Script>().SPEED);
-
         Reset_Reachable();
 
         //Start new player's turn

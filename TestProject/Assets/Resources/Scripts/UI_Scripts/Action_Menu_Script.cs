@@ -124,6 +124,7 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
             }else
             {
                 int index = x;
+
                 button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().actions[index].Select(); });
             }
             button_num = x + 1;

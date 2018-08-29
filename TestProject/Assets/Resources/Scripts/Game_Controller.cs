@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// Game Controller class. Handles overarching Game processes. 
@@ -393,11 +395,21 @@ public class Game_Controller : MonoBehaviour {
             //check for mouse clicks
             if (Input.GetMouseButtonDown(0))
             {
-                //cursor.GetComponent<Animator>().SetBool("Clicked", true);
-                curr_scenario.clicked_tile = curr_scenario.selected_tile;
+                GraphicRaycaster caster = GameObject.Find("Canvas").GetComponent<GraphicRaycaster>();
+                //Create the PointerEventData
+                PointerEventData data = new PointerEventData(null);
+                //Look at mouse position
+                data.position = Input.mousePosition;
+                //Create list to receive results
+                List<RaycastResult> results = new List<RaycastResult>();
+                //Raycast
+                caster.Raycast(data, results);
+                if (results.Count == 0)
+                {
+                    curr_scenario.clicked_tile = curr_scenario.selected_tile;
+                }
                 if ((character.state != Character_States.Idle ||
-                    character.state != Character_States.Dead) &&
-                    !action_menu.GetComponent<Action_Menu_Script>().is_open)
+                    character.state != Character_States.Dead))
                 {
                     foreach (Transform tile in curr_scenario.reachable_tiles)
                     {

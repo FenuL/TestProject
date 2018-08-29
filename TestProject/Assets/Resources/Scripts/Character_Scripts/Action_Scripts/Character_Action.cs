@@ -604,29 +604,12 @@ public class Character_Action
                     {
                         //Debug.Log("Enough mana points");
                         //character.curr_action.Push(this);
-                        if(action_type == Action_Types.Path)
+                        
+                        if (action_type != Action_Types.None)
                         {
-                            character.controller.curr_scenario.Find_Reachable((int)character.speed, (int)Convert_To_Double(range, null), 1);
+                            Find_Reachable_Tiles();
                         }
-                        else if (action_type == Action_Types.Unrestricted_Path)
-                        {
-                            character.controller.curr_scenario.Find_Reachable((int)character.speed * 2, (int)Convert_To_Double(range, null), 2);
-                        }
-                        else if (action_type == Action_Types.Ranged)
-                        {
-                            character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null), 3);
-                        }
-                        else if (action_type == Action_Types.Melee)
-                        {
-                            character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null), 3);
-                        }
-                        else if (action_type == Action_Types.Projectile)
-                        {
-                            character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null), 3);
-                        }
-                        else if (action_type == Action_Types.None)
-                        {
-                            character.controller.curr_scenario.Reset_Reachable();
+                        else { 
                             //character.curr_action.Push(this);
                             character.StartCoroutine(character.Act(this, character.curr_tile));
                         }
@@ -1186,12 +1169,94 @@ public class Character_Action
             //Debug.Log("Check if the target has condition");
             valid = targ.game_object.GetComponent<Character_Script>().Has_Condition(new Condition(conditionals[i+2]).type);
         }
-        if(not_flag)
+        if (conditionals[i] == "IN" && conditionals[i+1] == "RANGE")
+        {
+            //Debug.Log("Check if the target is in range");
+            valid = Check_In_Range(targ.game_object);
+        }
+        if (not_flag)
         {
             valid = !valid;
         }
         //Debug.Log("Condition is " + valid);
         return valid;
+    }
+
+    /// <summary>
+    /// Check if a target is still in range
+    /// </summary>
+    /// <param name="target">The target to check</param>
+    /// <returns>True if the target is still in the reachable tiles. False otherwise.</returns>
+    public bool Check_In_Range(GameObject target)
+    {
+        bool in_range = false;
+        //Determine if the target is a tile.
+        Tile tile = target.GetComponent<Tile>();
+        if (tile != null) {
+            //Check if the target is in one of our Reachable tiles
+            /*foreach (Tile ti in reachable_tiles)
+            {
+                if (tile.Equals(ti))
+                {
+                    return true;
+                }
+            }*/
+        }
+
+        //Determine if the target is a character
+        Character_Script chara = target.GetComponent<Character_Script>();
+        if (chara != null)
+        {
+            //Check if the target is in one of our Reachable tiles
+            /*foreach (Tile ti in reachable_tiles)
+            {
+                if (chara.Equals(ti.obj))
+                {
+                    return true;
+                }
+            }*/
+        }
+
+        //Determine if the target is a character
+        Object_Script obj = target.GetComponent<Object_Script>();
+        if (obj != null)
+        {
+            //Check if the target is in one of our Reachable tiles
+            /*foreach (Tile ti in reachable_tiles)
+            {
+                if (obj.Equals(ti.obj))
+                {
+                    return true;
+                }
+            }*/
+        }
+        return in_range;
+    }
+
+    public List<Tile> Find_Reachable_Tiles()
+    {
+        List<Tile> tiles = new List<Tile>();
+        if (action_type == Action_Types.Path)
+        {
+            character.controller.curr_scenario.Find_Reachable((int)character.speed, (int)Convert_To_Double(range, null), 1);
+        }
+        else if (action_type == Action_Types.Unrestricted_Path)
+        {
+            character.controller.curr_scenario.Find_Reachable((int)character.speed * 2, (int)Convert_To_Double(range, null), 2);
+        }
+        else if (action_type == Action_Types.Ranged)
+        {
+            character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null), 3);
+        }
+        else if (action_type == Action_Types.Melee)
+        {
+            character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null), 3);
+        }
+        else if (action_type == Action_Types.Projectile)
+        {
+            character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null), 3);
+        }
+        return tiles;
     }
 
     /// <summary>

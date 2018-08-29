@@ -55,6 +55,31 @@ public class Tile : MonoBehaviour{
     }
 
     /// <summary>
+    /// Constructor for the Class.
+    /// </summary>
+    /// <param name="tile">A Tile object to copy.</param>
+    public Tile(Tile tile)
+    {
+        height = tile.height;
+        modifier = tile.modifier;
+        index = new int[2];
+        index[0] = tile.index[0];
+        index[1] = tile.index[1];
+        edges = new Edge[4];
+        edges[0] = tile.edges[0];
+        edges[1] = tile.edges[1];
+        edges[2] = tile.edges[2];
+        edges[3] = tile.edges[3];
+        weight = tile.weight;
+        distance = tile.distance;
+        visited = tile.visited;
+        traversible = tile.traversible;
+        reachable = tile.reachable;
+        parent = tile.parent;
+        obj = tile.obj;
+    }
+
+    /// <summary>
     /// Function to add an Edge to the array of Edges for the Tile. 
     /// </summary>
     /// <param name="tile">The end Tile for the new Edge.</param>

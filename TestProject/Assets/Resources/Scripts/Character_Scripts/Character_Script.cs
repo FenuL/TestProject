@@ -1091,6 +1091,7 @@ public class Character_Script : MonoBehaviour {
             StartCoroutine(action.Enact(target_tile.gameObject));
 
             //Update reachable tiles
+            //controller.curr_scenario.Reset_Reachable();
             controller.curr_scenario.Clean_Reachable();
 
             //update AP and MP

@@ -58,14 +58,28 @@ public class Camera_Controller : MonoBehaviour {
         {
             mana_color = "red";
         }
-        GUI.TextArea(new Rect(10, Screen.height - 120, 200, 110), curr_player.character_name + "\n" +
-          "AU: " + curr_player.aura_curr + " / " + curr_player.aura_max + "     " +
-          "MP: <color=" + mana_color + ">" + mana_remaining + "</color> / " + curr_player.mana_max + "\n" +
-          "AP: <color=" + action_color + ">" + actions_remaining + "</color> / " + curr_player.action_max + "     " +
-          "RP: " + curr_player.reaction_curr + " / " + curr_player.reaction_max + "\n" +
-          "Str: " + curr_player.strength + "   Crd: " + curr_player.coordination + "    Spt: " + curr_player.spirit + "\n" +
-          "Dex: " + curr_player.dexterity + "   Vit: " + curr_player.vitality + "   Spd: " + curr_player.speed + "\n" +
-          "Wep: " + curr_player.weapon.name + "   Armor: " + curr_player.armor.name, style);
+        if (curr_player.state == Character_States.Idle)
+        {
+            GUI.TextArea(new Rect(10, Screen.height - 120, 200, 110), curr_player.character_name + "\n" +
+              "AU: " + curr_player.aura_curr + " / " + curr_player.aura_max + "     " +
+              "MP: <color=" + mana_color + ">" + mana_remaining + "</color> / " + curr_player.mana_max + "\n" +
+              "AP: <color=" + action_color + ">" + actions_remaining + "</color> / " + curr_player.action_max + "     " +
+              "RP: " + curr_player.reaction_curr + " / " + curr_player.reaction_max + "\n" +
+              "Str: " + curr_player.strength + "   Crd: " + curr_player.coordination + "    Spt: " + curr_player.spirit + "\n" +
+              "Dex: " + curr_player.dexterity + "   Vit: " + curr_player.vitality + "   Spd: " + curr_player.speed + "\n" +
+              "Wep: " + curr_player.weapon.name + "   Armor: " + curr_player.armor.name, style);
+        }
+        else
+        {
+            GUI.TextArea(new Rect(10, Screen.height - 120, 200, 110), curr_player.character_name + "\n" +
+              "AU: " + curr_player.aura_curr + " / " + curr_player.aura_max + "     " +
+              "MP: " + curr_player.mana_curr + " / " + curr_player.mana_max + "\n" +
+              "AP: " + curr_player.action_curr + " / " + curr_player.action_max + "     " +
+              "RP: " + curr_player.reaction_curr + " / " + curr_player.reaction_max + "\n" +
+              "Str: " + curr_player.strength + "   Crd: " + curr_player.coordination + "    Spt: " + curr_player.spirit + "\n" +
+              "Dex: " + curr_player.dexterity + "   Vit: " + curr_player.vitality + "   Spd: " + curr_player.speed + "\n" +
+              "Wep: " + curr_player.weapon.name + "   Armor: " + curr_player.armor.name, style);
+        }
     }
 
     /// <summary>
