@@ -1,12 +1,14 @@
 name: Move
-ap_cost: 1
+ap_cost: CEIL[(2*CSPD-CSPD)/CSPD]
 mp_cost: 0
 type: Path
 range: CSPD
+color: blue
+num_targets: 1
 center: Target 1x1
 area: .2
 effects: 1
-  self NUL Move 1
+  self NUL Move 1,PATH
 activation: active
 origin: innate
 orient: path

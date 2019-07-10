@@ -3,6 +3,8 @@ ap_cost: 1
 mp_cost: 0
 type: Projectile
 range: CWPR
+color: blue
+num_targets: 2
 center: Target 1x1
 area: 1
 effects: 2

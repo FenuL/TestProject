@@ -3,6 +3,8 @@ ap_cost: 0
 mp_cost: 0
 type: Range
 range: CWPR
+color: blue
+num_targets: 3
 center: Target 1x1
 area: 1
 effects: 1

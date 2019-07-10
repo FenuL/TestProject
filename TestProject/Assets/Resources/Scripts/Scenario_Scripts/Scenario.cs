@@ -14,6 +14,7 @@ public class Scenario : MonoBehaviour {
     /// Constants:
     /// static string PLAYER_STATS_FILE - File from which to draw Character stats.
     /// static string MONSTER_STATS_FILE - File from which to draw Monster Stats.
+    /// static Scenario scenario - Makes sure there is only one copy of this. 
     /// 
     /// Variables:
     /// Tile_Grid tile_grid  - The tile_grid object that contains the array of Tile Objects that acts as the map for the Scenario.
@@ -52,6 +53,7 @@ public class Scenario : MonoBehaviour {
     /// </summary>
     private static string PLAYER_STATS_FILE = "Assets/Resources/Characters/Player_Characters/Player_Character_Data.txt";
     private static string MONSTER_STATS_FILE = "Assets/Resources/Characters/Monster_Characters/Monster_Character_Data.txt";
+    private static Scenario scenario;
 
     public Tile_Grid tile_grid { get; private set; }
 	public Game_Controller controller { get; private set; }
@@ -317,7 +319,8 @@ public class Scenario : MonoBehaviour {
                     break;
             }
             //Resume new scenario creation
-            tile_grid = new Tile_Grid(grid_width, grid_length, materials, tile_modifiers, tile_mat_ids, object_sprite_ids, character_ids);
+            tile_grid = this.transform.GetChild(0).GetComponent<Tile_Grid>();
+            tile_grid.Start(grid_width, grid_length, materials, tile_modifiers, tile_mat_ids, object_sprite_ids, character_ids);
 
             curr_round = 0;
             curr_character_num = 0;
@@ -539,7 +542,9 @@ public class Scenario : MonoBehaviour {
         curr_player.Push(turn_order[curr_character_num]);
         curr_player.Peek().GetComponent<Animator>().SetBool("Selected", true);
         char_num = 0;
-        curr_player.Peek().GetComponent<Character_Script>().Find_Action_Local("Move").Select();
+        curr_player.Peek().GetComponent<Character_Script>().Start_Turn();
+        //controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
+        //curr_player.Peek().GetComponent<Character_Script>().Find_Action_Local("Move").Select();
         //GetComponent<Character_Script>().state = Character_Script.States.Moving;
         //FindReachable(curr_player.GetComponent<Character_Script>().action_curr, curr_player.GetComponent<Character_Script>().SPEED);
         //MarkReachable();
@@ -640,12 +645,12 @@ public class Scenario : MonoBehaviour {
             //Update cursor type to match current Ability
             if (cursor_name != curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().name)
             {
-                
+
                 //Destroy existing cursors
                 foreach (GameObject game_object in cursors)
                 {
                     //reachable_tile_objects.Remove(game_object);
-                    Destroy(game_object);
+                    GameObject.Destroy(game_object);
                 }
                 cursors = new List<GameObject>();
                 cursor_name = curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().name;
@@ -655,10 +660,10 @@ public class Scenario : MonoBehaviour {
                 {
                     for (int y = 0; y < area_length; y++)
                     {
-                        if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area[x,y] != 0)
+                        if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area[x, y] != 0)
                         {
                             GameObject instance = Instantiate(cursor);
-                            if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area[x, y] > 0 && 
+                            if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area[x, y] > 0 &&
                                 curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area[x, y] < .25f)
                             {
                                 instance.GetComponent<Renderer>().material = (Material)Resources.Load("Objects/Materials/GoldMat");
@@ -677,6 +682,8 @@ public class Scenario : MonoBehaviour {
                             {
                                 instance.GetComponent<Renderer>().material = (Material)Resources.Load("Objects/Materials/RedMat");
                             }
+                            instance.name = "Temp_Cursor";
+                            instance.transform.parent = GameObject.Find("Cursors").transform;
                             cursors.Add(instance);
                         }
                     }
@@ -687,10 +694,10 @@ public class Scenario : MonoBehaviour {
             if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Count == 0 ||
                 curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area.Length == 1)
             {
-                
+
                 cursors[0].transform.position = new Vector3(
-                    selected_tile.position.x, 
-                    selected_tile.position.y + 0.025f + Tile_Grid.TILE_SCALE * selected_tile.GetComponent<Tile>().height, 
+                    selected_tile.position.x,
+                    selected_tile.position.y + 0.025f + Tile_Grid.TILE_SCALE * selected_tile.GetComponent<Tile>().height,
                     selected_tile.position.z);
             }
             else if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area.Length > 1)
@@ -710,7 +717,7 @@ public class Scenario : MonoBehaviour {
                 startX -= area_width / 2;
                 startY -= area_length / 2;
                 int curs_index = 0;
-                for ( int x = 0; x< area_width; x++)
+                for (int x = 0; x < area_width; x++)
                 {
                     for (int y = 0; y < area_length; y++)
                     {
@@ -720,8 +727,8 @@ public class Scenario : MonoBehaviour {
                             if (tile != null)
                             {
                                 cursors[curs_index].transform.position = new Vector3(
-                                    tile.position.x, 
-                                    tile.position.y + 0.025f + Tile_Grid.TILE_SCALE * tile.GetComponent<Tile>().height, 
+                                    tile.position.x,
+                                    tile.position.y + 0.025f + Tile_Grid.TILE_SCALE * tile.GetComponent<Tile>().height,
                                     tile.position.z);
                                 curs_index++;
                             }
@@ -742,16 +749,882 @@ public class Scenario : MonoBehaviour {
                 selected_tile.position.y + 0.025f + Tile_Grid.TILE_SCALE * selected_tile.GetComponent<Tile>().height,
                 selected_tile.position.z);
         }
+        if (curr_player != null &&
+            curr_player.Count > 0 &&
+            curr_player.Peek().GetComponent<Character_Script>().curr_action != null &&
+            curr_player.Peek().GetComponent<Character_Script>().curr_action.Count > 0 &&
+            curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().action_type == Action_Types.Path) { 
+            Show_Path();
+        }
+        else
+        {
+            //IF we have no path to follow the eliminate the current mesh.
+            scenario.GetComponent<MeshFilter>().mesh = null;
+        }
     }
 
-	/// <summary>
+    /// <summary>
+    /// Displays the path from the current character to the selected tile.
+    /// </summary>
+    public void Show_Path()
+    {
+        //Debug.Log("Showing Path");
+        Tile cursor_tile = selected_tile.GetComponent<Tile>();
+        Character_Script chara = curr_player.Peek().GetComponent<Character_Script>();
+        if (cursor_tile.parent != null &&
+            curr_player.Peek() != null)
+        {
+            Tile temp_tile = cursor_tile;
+            Mesh mesh = new Mesh();
+            List<Vector3> vertices = new List<Vector3>();
+            List<Vector2> uv = new List<Vector2>();
+            List<int> triangles = new List<int>();
+            float width_modifier = 0.2f;
+            float tile_width = 1.5f;
+            int tri_x = 0;
+            int curr_path_index = chara.curr_action.Peek().curr_path.Count - 1;
+            //while (temp_tile != chara.curr_action.Peek().curr_path[chara.curr_action.Peek().curr_path.Count -1])
+            while (temp_tile != chara.curr_tile.GetComponent<Tile>())
+            {
+                //Calculate the difference in the x and y tile index
+                int delta_x;
+                int delta_y;
+                Tile next_tile;
+                if (temp_tile != chara.curr_action.Peek().curr_path[curr_path_index] && curr_path_index == chara.curr_action.Peek().curr_path.Count - 1)
+                {
+                    next_tile = temp_tile.parent;
+
+                }else
+                {
+                    next_tile = chara.curr_action.Peek().curr_path[curr_path_index];
+                    curr_path_index -= 1;
+                }
+
+                delta_x = temp_tile.index[0] - next_tile.index[0];
+                delta_y = temp_tile.index[1] - next_tile.index[1];
+
+                if (temp_tile == cursor_tile)
+                {
+                    //Set up first triangle.
+
+                    //create 3 vertices, one is alwasy centered, the other 2 change oriantaion depending on direction of triangle
+                    vertices.Add(new Vector3(temp_tile.transform.position.x,
+                                (temp_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * temp_tile.height),
+                                temp_tile.transform.position.z));
+                    uv.Add(new Vector2(0, 1));
+                    if (delta_x != 0)
+                    {
+                        vertices.Add(new Vector3(temp_tile.transform.position.x + tile_width * width_modifier,
+                                    (temp_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * temp_tile.height),
+                                    temp_tile.transform.position.z + tile_width * width_modifier * delta_x));
+                        vertices.Add(new Vector3(temp_tile.transform.position.x - tile_width * width_modifier,
+                                    (temp_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * temp_tile.height),
+                                    temp_tile.transform.position.z + tile_width * width_modifier * delta_x));
+                        uv.Add(new Vector2(1, 1));
+                        uv.Add(new Vector2(0, 0));
+                    }
+                    else if (delta_y != 0)
+                    {
+                        vertices.Add(new Vector3(temp_tile.transform.position.x + tile_width * width_modifier * delta_y,
+                                    (temp_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * temp_tile.height),
+                                    temp_tile.transform.position.z + tile_width * width_modifier));
+                        vertices.Add(new Vector3(temp_tile.transform.position.x + tile_width * width_modifier * delta_y,
+                                    (temp_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * temp_tile.height),
+                                    temp_tile.transform.position.z - tile_width * width_modifier));
+                        uv.Add(new Vector2(1, 1));
+                        uv.Add(new Vector2(0, 0));
+
+                    }
+
+                    //Draw triangle between vertices.
+                    //Duplicate the triangle to make it visible from both sides. 
+                    triangles.Add(tri_x);
+                    triangles.Add(tri_x + 1);
+                    triangles.Add(tri_x + 2);
+                    triangles.Add(tri_x + 2);
+                    triangles.Add(tri_x + 1);
+                    triangles.Add(tri_x);
+
+                    //If the height to the next tile is the same, we only need 2 duplicated triangles.
+                    if (next_tile.height == temp_tile.height)
+                    {
+                        if (delta_x < 0)
+                        {
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 6);
+                            triangles.Add(tri_x + 6);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 1);
+
+                            triangles.Add(tri_x + 6);
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 6);
+                        }
+                        else if (delta_x > 0)
+                        {
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 2);
+
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 3);
+                        }
+                        else if (delta_y < 0)
+                        {
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 6);
+                            triangles.Add(tri_x + 2);
+
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 6);
+                            triangles.Add(tri_x + 5);
+                        }
+                        else if (delta_y > 0)
+                        {
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 1);
+
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 4);
+                        }
+                    }
+                    //If not, we need to create an intermediate vertex and create more triangles.
+                    else
+                    {
+                        //create vertices on top of the tile with the lower elevation.
+                        float x_pos = next_tile.transform.position.x;
+                        float y_pos = temp_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * temp_tile.height;
+                        float z_pos = next_tile.transform.position.z;
+                        //When decreasing in height we need to invert the location of the vertices.
+                        int invert = 1;
+                        if (temp_tile.height < next_tile.height)
+                        {
+                            x_pos = temp_tile.transform.position.x;
+                            y_pos = next_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * next_tile.height;
+                            z_pos = temp_tile.transform.position.z;
+                            invert = -1;
+                        }
+
+                        if (delta_x != 0)
+                        {
+                            vertices.Add(new Vector3(x_pos + tile_width * width_modifier,
+                                        y_pos,
+                                        z_pos + tile_width * width_modifier * -delta_x * invert));
+                            vertices.Add(new Vector3(x_pos - tile_width * width_modifier,
+                                        y_pos,
+                                        z_pos + tile_width * width_modifier * -delta_x * invert));
+                            uv.Add(new Vector2(1, 1));
+                            uv.Add(new Vector2(0, 0));
+                        }
+                        else if (delta_y != 0)
+                        {
+                            vertices.Add(new Vector3(x_pos + tile_width * width_modifier * -delta_y * invert,
+                                        y_pos,
+                                        z_pos + tile_width * width_modifier));
+                            vertices.Add(new Vector3(x_pos + tile_width * width_modifier * -delta_y * invert,
+                                        y_pos,
+                                        z_pos - tile_width * width_modifier));
+                            uv.Add(new Vector2(1, 1));
+                            uv.Add(new Vector2(0, 0));
+                        }
+
+
+                        //Draw triangles connecting tile and previous tile.
+                        //Coordinates of vertices for triangles depends on the change in tile index. 
+                        if (delta_x < 0)
+                        {
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 1);
+
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 4);
+
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 3);
+
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 7);
+                        }
+                        else if (delta_x > 0)
+                        {
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 2);
+
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 3);
+
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 6);
+                            triangles.Add(tri_x + 6);
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 4);
+
+                            triangles.Add(tri_x + 6);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 6);
+                        }
+                        else if (delta_y < 0)
+                        {
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 2);
+
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 3);
+
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 6);
+                            triangles.Add(tri_x + 6);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 3);
+
+                            triangles.Add(tri_x + 6);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 6);
+                        }
+                        else if (delta_y > 0)
+                        {
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 1);
+
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 4);
+
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 3);
+
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 8);
+                        }
+                    }
+                }
+                //When not dealing with the first tile.
+                else
+                {
+                    //Add a square of vertices inside each traversed tile.
+                    vertices.Add(new Vector3(temp_tile.transform.position.x + tile_width * width_modifier,
+                            (temp_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * temp_tile.height),
+                            temp_tile.transform.position.z + tile_width * width_modifier));
+                    vertices.Add(new Vector3(temp_tile.transform.position.x + tile_width * width_modifier,
+                                            (temp_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * temp_tile.height),
+                                            temp_tile.transform.position.z - tile_width * width_modifier));
+                    vertices.Add(new Vector3(temp_tile.transform.position.x - tile_width * width_modifier,
+                                            (temp_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * temp_tile.height),
+                                            temp_tile.transform.position.z + tile_width * width_modifier));
+                    vertices.Add(new Vector3(temp_tile.transform.position.x - tile_width * width_modifier,
+                                            (temp_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * temp_tile.height),
+                                            temp_tile.transform.position.z - tile_width * width_modifier));
+                    uv.Add(new Vector2(0, 1));
+                    uv.Add(new Vector2(1, 1));
+                    uv.Add(new Vector2(0, 0));
+                    uv.Add(new Vector2(1, 0));
+
+                    //Draw triangles for the center square.
+                    triangles.Add(tri_x);
+                    triangles.Add(tri_x + 1);
+                    triangles.Add(tri_x + 2);
+                    triangles.Add(tri_x + 2);
+                    triangles.Add(tri_x + 1);
+                    triangles.Add(tri_x + 3);
+
+                    //Attach new tile's vertices to rest of mesh with new triangles.
+                    //If there is no difference in height we can go in a straight line and only need 2 triangles.
+                    if (next_tile.height == temp_tile.height)
+                    {
+                        if (delta_x < 0)
+                        {
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 6);
+                        }
+                        else if (delta_x > 0)
+                        {
+                            triangles.Add(tri_x);
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 5);
+                        }
+                        else if (delta_y < 0)
+                        {
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 5);
+                        }
+                        else if (delta_y > 0)
+                        {
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x);
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x);
+                            triangles.Add(tri_x + 6);
+                            triangles.Add(tri_x + 7);
+                        }
+
+                    }//Otherwise, we need new vertices and more triangles.
+                    else
+                    {
+                        //Create vertices on top of tile with lower elevation.
+                        float x_pos = next_tile.transform.position.x;
+                        float y_pos = temp_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * temp_tile.height;
+                        float z_pos = next_tile.transform.position.z;
+                        //When decreasing tile height we need to invert the vertex positions.
+                        int invert = 1;
+                        if (temp_tile.height < next_tile.height)
+                        {
+                            x_pos = temp_tile.transform.position.x;
+                            y_pos = next_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * next_tile.height;
+                            z_pos = temp_tile.transform.position.z;
+                            invert = -1;
+                        }
+
+                        if (delta_x != 0)
+                        {
+                            vertices.Add(new Vector3(x_pos + tile_width * width_modifier,
+                                        y_pos,
+                                        z_pos + tile_width * width_modifier * -delta_x * invert));
+                            vertices.Add(new Vector3(x_pos - tile_width * width_modifier,
+                                        y_pos,
+                                        z_pos + tile_width * width_modifier * -delta_x * invert));
+                            uv.Add(new Vector2(1, 1));
+                            uv.Add(new Vector2(0, 0));
+                        }
+                        else if (delta_y != 0)
+                        {
+                            vertices.Add(new Vector3(x_pos + tile_width * width_modifier * -delta_y * invert,
+                                        y_pos,
+                                        z_pos + tile_width * width_modifier));
+                            vertices.Add(new Vector3(x_pos + tile_width * width_modifier * -delta_y * invert,
+                                        y_pos,
+                                        z_pos - tile_width * width_modifier));
+                            uv.Add(new Vector2(1, 1));
+                            uv.Add(new Vector2(0, 0));
+                        }
+
+
+                        //Draw triangles between new vertices.
+                        //Triangle coordiantes depend on the change in tile index
+                        if (delta_x < 0)
+                        {
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 3);
+
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 4);
+
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 6);
+                            triangles.Add(tri_x + 4);
+
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 6);
+                            triangles.Add(tri_x + 8);
+
+                        }
+                        else if (delta_x > 0)
+                        {
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 2);
+
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x);
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 4);
+
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 9);
+                            triangles.Add(tri_x + 5);
+
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 9);
+                            triangles.Add(tri_x + 7);
+
+                        }
+                        else if (delta_y < 0)
+                        {
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 1);
+
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x);
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 4);
+
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 6);
+                            triangles.Add(tri_x + 4);
+
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 6);
+                            triangles.Add(tri_x + 7);
+
+                        }
+                        else if (delta_y > 0)
+                        {
+                            triangles.Add(tri_x + 0);
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 0);
+
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 0);
+                            triangles.Add(tri_x + 0);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 5);
+
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 9);
+                            triangles.Add(tri_x + 9);
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 4);
+
+                            triangles.Add(tri_x + 9);
+                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 9);
+
+                        }
+                    }
+                }
+                //Set the current index for the triangle "array" to match the current number of vertices.
+                //Don't want to connect to vertices already connected to
+                tri_x = vertices.Count;
+
+                //Move to the next tile in the path.
+                temp_tile = next_tile;
+            }
+            //Add 4 vertices on the character's current tile.
+            vertices.Add(new Vector3(temp_tile.transform.position.x + tile_width * width_modifier,
+                                    (temp_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * temp_tile.height),
+                                    temp_tile.transform.position.z + tile_width * width_modifier));
+            vertices.Add(new Vector3(temp_tile.transform.position.x + tile_width * width_modifier,
+                                    (temp_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * temp_tile.height),
+                                    temp_tile.transform.position.z - tile_width * width_modifier));
+            vertices.Add(new Vector3(temp_tile.transform.position.x - tile_width * width_modifier,
+                                    (temp_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * temp_tile.height),
+                                    temp_tile.transform.position.z + tile_width * width_modifier));
+            vertices.Add(new Vector3(temp_tile.transform.position.x - tile_width * width_modifier,
+                                    (temp_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * temp_tile.height),
+                                    temp_tile.transform.position.z - tile_width * width_modifier));
+            uv.Add(new Vector2(0, 1));
+            uv.Add(new Vector2(1, 1));
+            uv.Add(new Vector2(0, 0));
+            uv.Add(new Vector2(1, 0));
+
+            //Debug.Log("vertices " + vertices.Count);
+            //Debug.Log("uv " + uv.Count);
+            //Set the mesh vertices, uv and triangles to match what we calculated.
+            mesh.vertices = vertices.ToArray();
+            mesh.uv = uv.ToArray();
+            mesh.triangles = triangles.ToArray();
+            
+            //Draw the mesh using the Scenario object's Mesh Renderer.
+            scenario.GetComponent<MeshFilter>().mesh = mesh;
+        }else
+        {
+            //IF we have no path to follow the eliminate the current mesh.
+            scenario.GetComponent<MeshFilter>().mesh = null;
+        }
+    }
+
+    /// <summary>
+    /// Ran before a Start Method. Ensures there is only ever one Scenario.
+    /// </summary>
+    void Awake()
+    {
+        if (scenario == null)
+        {
+            DontDestroyOnLoad(gameObject);
+            scenario = this;
+        }
+        else if (scenario != this)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    /// <summary>
+    /// Start a scerio from a given scenario file
+    /// </summary>
+    public void Start(string filename)
+    {
+        controller = Game_Controller.controller;
+        scenario_file = filename;
+        //Initialize Lists
+        rewards = new List<string>();
+        bonus_rewards = new List<string>();
+        List<int> unlocks_scenarios = new List<int>();
+        List<int> unlocks_scenarios_on_loss = new List<int>();
+        List<int> unlocks_scenarios_on_win = new List<int>();
+        List<int> unlocks_scenarios_on_bonus = new List<int>();
+        //Read in the file
+        string[] lines = System.IO.File.ReadAllLines(scenario_file);
+        string line = "";
+        string[] elements = new string[2];
+        //30 is the default grid size;
+        int grid_width = 30;
+        int grid_length = 30;
+        Material[] materials = new Material[10];
+        double[] tile_modifiers = new double[10];
+        int[,] tile_mat_ids = new int[grid_width, grid_length];
+        int[,] object_sprite_ids = new int[grid_width, grid_length];
+        int[,] character_ids = new int[grid_width, grid_length];
+        //Read through the file line by line, looking for specific headings
+        for (int i = 0; i < lines.Length; i++)
+        {
+            line = lines[i];
+            switch (line)
+            {
+                //ID of the scenario
+                case "[ID]":
+                    scenario_name = lines[i + 1];
+                    i += 2;
+                    break;
+                //What Sector the scenario can be found in
+                case "[Sector]":
+                    scenario_sector = lines[i + 1];
+                    i += 2;
+                    break;
+                //Name of the Scenario
+                case "[Name]":
+                    scenario_name = lines[i + 1];
+                    i += 2;
+                    break;
+                //Description for the Scenario
+                case "[Description]":
+                    description = lines[i + 1];
+                    i += 2;
+                    break;
+                //Objective for the scenario (see Objectives enum for list of possible objectives.)
+                case "[Objective]":
+                    foreach (Scenario_Objectives obj in System.Enum.GetValues(typeof(Scenario_Objectives)))
+                    {
+                        if (obj.ToString() == lines[i + 1])
+                        {
+                            objective = obj;
+                        }
+                    }
+                    i += 2;
+                    break;
+                //Reward for winning the scenario
+                case "[Reward]":
+                    for (int j = i + 1; j < lines.Length; j++)
+                    {
+                        if (lines[j] != "")
+                        {
+                            rewards.Add(lines[j]);
+                        }
+                        else
+                        {
+                            i = j;
+                            j = lines.Length;
+                        }
+                    }
+                    break;
+                //Bonus objective for the scenario
+                case "[Bonus Objective]":
+                    bonus_objective = lines[i + 1];
+                    i += 2;
+                    break;
+                //Reward for completing the Bonus Objective
+                case "[Bonus Reward]":
+                    for (int j = i + 1; j < lines.Length; j++)
+                    {
+                        if (lines[j] != "")
+                        {
+                            bonus_rewards.Add(lines[j]);
+                        }
+                        else
+                        {
+                            i = j;
+                            j = lines.Length;
+                        }
+                    }
+                    break;
+                //Scenario IDs that will be unlocked regardless of wether or not the Objective is met
+                case "[Unlocks]":
+                    elements = lines[i + 1].Split(';');
+                    int id = scenario_id;
+                    foreach (string s in elements)
+                    {
+                        if (int.TryParse(s, out id))
+                        {
+                            unlocks_scenarios.Add(id);
+                        }
+                    }
+                    i += 2;
+                    break;
+                //Scenario IDs that will be unlocked if the Objective is not met
+                case "[Unlocks on Loss]":
+                    elements = lines[i + 1].Split(';');
+                    id = scenario_id;
+                    foreach (string s in elements)
+                    {
+                        if (int.TryParse(s, out id))
+                        {
+                            unlocks_scenarios_on_loss.Add(id);
+                        }
+                    }
+                    i += 2;
+                    break;
+                //Scenario IDs that will be unlocked if the Objective is met
+                case "[Unlocks on Win]":
+                    elements = lines[i + 1].Split(';');
+                    id = scenario_id;
+                    foreach (string s in elements)
+                    {
+                        if (int.TryParse(s, out id))
+                        {
+                            unlocks_scenarios_on_win.Add(id);
+                        }
+                    }
+                    i += 2;
+                    break;
+                //Scenario IDs that will be unlocked if the Bonus Objective is met
+                case "[Unlocks on Bonus]":
+                    elements = lines[i + 1].Split(';');
+                    id = scenario_id;
+                    foreach (string s in elements)
+                    {
+                        if (int.TryParse(s, out id))
+                        {
+                            unlocks_scenarios_on_bonus.Add(id);
+                        }
+                    }
+                    i += 2;
+                    break;
+                //Size of the tile grid map
+                case "[Grid Size]":
+                    int width = 30;
+                    int length = 30;
+                    if (int.TryParse(lines[i + 1].Split(';')[0], out width))
+                    {
+                        grid_width = width;
+                    }
+                    if (int.TryParse(lines[i + 1].Split(';')[1], out length))
+                    {
+                        grid_length = length;
+                    }
+                    i += 2;
+                    break;
+                case "[Tiles]":
+                    //build materials
+                    materials = new Material[10];
+                    for (int j = i + 1; j < i + 10 + 1; j++)
+                    {
+                        string[] entries = lines[j].Split(' ');
+                        materials[(j - i - 1)] = (Material)Resources.Load("Objects/Materials/TileMat0" + (j - i - 1));
+                        materials[(j - i - 1)].name = entries[1];
+                        materials[(j - i - 1)].mainTexture = (Texture)Resources.Load("Textures/" + entries[1]);
+                        double modifier;
+                        if (double.TryParse(entries[2], out modifier))
+                        {
+                            tile_modifiers[j - i - 1] = modifier;
+                        }
+                    }
+
+                    break;
+                case "[Tile Map]":
+                    tile_mat_ids = new int[grid_width, grid_length];
+                    for (int k = i + 1; k < i + grid_length + 1; k++)
+                    {
+                        string[] entries = lines[k].Split(';');
+                        for (int l = 0; l < grid_width; l++)
+                        {
+                            int sprite;
+                            if (int.TryParse(entries[l], out sprite))
+                            {
+                                tile_mat_ids[k - i - 1, l] = sprite;
+                            }
+                        }
+                    }
+                    break;
+                case "[Object Map]":
+                    object_sprite_ids = new int[grid_width, grid_length];
+                    for (int k = i + 1; k < i + grid_length + 1; k++)
+                    {
+                        string[] entries = lines[k].Split(';');
+                        for (int l = 0; l < grid_width; l++)
+                        {
+                            int sprite;
+                            if (int.TryParse(entries[l], out sprite))
+                            {
+                                object_sprite_ids[k - i - 1, l] = sprite;
+                            }
+                        }
+                    }
+                    break;
+                case "[Character Map]":
+                    character_ids = new int[grid_width, grid_length];
+                    for (int k = i + 1; k < i + grid_length + 1; k++)
+                    {
+                        string[] entries = lines[k].Split(';');
+                        for (int l = 0; l < grid_width; l++)
+                        {
+                            int sprite;
+                            if (int.TryParse(entries[l], out sprite))
+                            {
+                                character_ids[k - i - 1, l] = sprite;
+                            }
+                        }
+                    }
+                    break;
+                //Default in case none of the above cases are met
+                default:
+                    break;
+            }
+            //Resume new scenario creation
+            tile_grid = this.transform.GetChild(0).GetComponent<Tile_Grid>();
+            tile_grid.Start(grid_width, grid_length, materials, tile_modifiers, tile_mat_ids, object_sprite_ids, character_ids);
+
+            curr_round = 0;
+            curr_character_num = 0;
+            turn_order = new List<GameObject>();
+            reachable_tiles = new List<Transform>();
+            reachable_tile_objects = new List<GameObject>();
+            tile_objects = new List<GameObject>();
+        }
+    }
+
+    /// <summary>
     /// Called once per frame to:
     ///     Check for victory.
     ///     Update all Characters.
     ///     Delete Objects that need to be removed.
     /// </summary>
-	public void Update () {
-        if (scenario_id == controller.curr_scenario.scenario_id)
+    public void Update () {
+        if (scenario_id == Game_Controller.curr_scenario.scenario_id)
         {
             //if we are on this scenario and the current player has been assigned (scenario is active)
             if (curr_player.Peek() != null)
@@ -798,77 +1671,89 @@ public class Scenario : MonoBehaviour {
     {
         //Debug.Log("cost limit: " + cost_limit + "; distance limit: " + distance_limit);
         //Debug.Log(curr_player.Peek().GetComponent<Character_Script>().curr_tile.GetComponent<Tile>());
-        if (curr_player.Peek().GetComponent<Character_Script>().curr_tile)
+        Character_Script chara = curr_player.Peek().GetComponent<Character_Script>();
+        if (chara.curr_action != null && chara.curr_action.Count > 0)
         {
-            //Debug.Log("BFS with cost limit " + cost_limit + ", distance limit " + distance_limit);
-            tile_grid.navmesh.bfs(curr_player.Peek().GetComponent<Character_Script>().curr_tile.GetComponent<Tile>(), cost_limit, distance_limit);
-
-            reachable_tiles = new List<Transform>();
-            int x_index = curr_player.Peek().GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[0];
-            int y_index = curr_player.Peek().GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[1];
-            int i = -distance_limit;
-            int j = -distance_limit;
-            while (i <= distance_limit)
+            //Debug.Log("Finding tiles");
+            if (chara.curr_action.Peek().curr_path[chara.curr_action.Peek().curr_path.Count - 1])
             {
-                while (j <= distance_limit)
+                //Debug.Log("BFS");
+                //Debug.Log("BFS with cost limit " + cost_limit + ", distance limit " + distance_limit);
+                //tile_grid.navmesh.bfs(curr_player.Peek().GetComponent<Character_Script>().curr_tile.GetComponent<Tile>(), cost_limit, distance_limit);
+                tile_grid.navmesh.bfs(chara.curr_action.Peek().curr_path[chara.curr_action.Peek().curr_path.Count - 1], chara.tag, cost_limit, distance_limit);
+
+                reachable_tiles = new List<Transform>();
+                Tile last_Tile = chara.curr_action.Peek().curr_path[chara.curr_action.Peek().curr_path.Count - 1];
+                int x_index = last_Tile.index[0];
+                int y_index = last_Tile.index[1];
+                //Debug.Log("["+x_index+","+y_index+"]");
+                int i = -distance_limit;
+                int j = -distance_limit;
+                while (i <= distance_limit)
                 {
-                    if (x_index + i >= 0 && x_index + i < tile_grid.grid_width)
+                    while (j <= distance_limit)
                     {
-                        if (y_index + j >= 0 && y_index + j < tile_grid.grid_length)
+                        if (x_index + i >= 0 && x_index + i < tile_grid.grid_width)
                         {
-                            int h = tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().height - 1;
-                            if (type == 1)
+                            if (y_index + j >= 0 && y_index + j < tile_grid.grid_length)
                             {
-                                //if (grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().traversible){
-                                //    if ((Math.Abs(x_index - (x_index + i)) * (int)(armor.weight + weapon.weight) + Math.Abs(y_index - (y_index + j)) * (int)(armor.weight + weapon.weight) + (grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().tile_height - curr_tile.GetComponent<Tile>().tile_height) * 2) < action_curr)
-                                //    {
-                                //        reachable_tiles.Add(grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j));
-                                //    }
-                                //}
-                                if (tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight <= cost_limit &&
-                                    tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight > 0 &&
-                                    tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().distance <= distance_limit)
+                                int h = tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().height - 1;
+                                if (type == 1)
                                 {
-                                    reachable_tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
-                                    //reachable_tiles.Add(new Tile(tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>()));
-                                    //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight = -1;
-                                    //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().parent = null;
-                                }
-                            }
-                            if (type == 2)
-                            {
-                                if (tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().traversible)
-                                {
-                                    if ((Math.Abs(x_index - (x_index + i)) + Math.Abs(y_index - (y_index + j))) < cost_limit)
+                                    //if (grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().traversible){
+                                    //    if ((Math.Abs(x_index - (x_index + i)) * (int)(armor.weight + weapon.weight) + Math.Abs(y_index - (y_index + j)) * (int)(armor.weight + weapon.weight) + (grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().tile_height - curr_tile.GetComponent<Tile>().tile_height) * 2) < action_curr)
+                                    //    {
+                                    //        reachable_tiles.Add(grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j));
+                                    //    }
+                                    //}
+                                    //Debug.Log("tile weight: " + tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight + " cost_limit: " + cost_limit);
+                                    //Debug.Log("tile_distance: " + tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().distance + " distance_limit: " + distance_limit);
+                                    if (tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight <= cost_limit &&
+                                        tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight > 0 &&
+                                        tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().distance <= distance_limit)
                                     {
+                                        
                                         reachable_tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
                                         //reachable_tiles.Add(new Tile(tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>()));
                                         //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight = -1;
                                         //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().parent = null;
                                     }
                                 }
-                            }
-                            if (type == 3)
-                            {
-                                //print ("scanned x index: " + x_index + i )
-                                //Prevent Self-Harm
-                                if (i != 0 || j != 0)
+                                if (type == 2)
                                 {
-                                    if (Math.Abs(i) + Math.Abs(j) <= distance_limit)
+                                    if (tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().traversible)
                                     {
-                                        reachable_tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
-                                        //reachable_tiles.Add(new Tile(tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>()));
-                                        //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight = -1;
-                                        //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().parent = null;
+                                        if ((Math.Abs(x_index - (x_index + i)) + Math.Abs(y_index - (y_index + j))) < cost_limit)
+                                        {
+                                            reachable_tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
+                                            //reachable_tiles.Add(new Tile(tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>()));
+                                            //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight = -1;
+                                            //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().parent = null;
+                                        }
+                                    }
+                                }
+                                if (type == 3)
+                                {
+                                    //print ("scanned x index: " + x_index + i )
+                                    //Prevent Self-Harm
+                                    if (i != 0 || j != 0)
+                                    {
+                                        if (Math.Abs(i) + Math.Abs(j) <= distance_limit)
+                                        {
+                                            reachable_tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
+                                            //reachable_tiles.Add(new Tile(tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>()));
+                                            //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight = -1;
+                                            //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().parent = null;
+                                        }
                                     }
                                 }
                             }
                         }
+                        j += 1;
                     }
-                    j += 1;
+                    j = -distance_limit;
+                    i += 1;
                 }
-                j = -distance_limit;
-                i += 1;
             }
         }
     }
@@ -893,7 +1778,7 @@ public class Scenario : MonoBehaviour {
     /// </summary>
     public void Mark_Reachable()
     {
-        //Debug.Log("Marking");
+        //Debug.Log("Marking " + reachable_tiles.Count + " Tiles");
         if (curr_player != null &&
             curr_player.Peek() != null)
         {
@@ -913,12 +1798,17 @@ public class Scenario : MonoBehaviour {
                     //set material to red.
                     //tile_grid.reachable_prefab.GetComponent<Renderer>().sharedMaterial.color = new Color(0, 255, 0);
                 }
-                reachable_tile_objects.Add((GameObject)Instantiate(tile_grid.reachable_prefab, new Vector3(tile.position.x,
+                GameObject obj = (GameObject)Instantiate(tile_grid.reachable_prefab, new Vector3(tile.position.x,
                                                                //tile.position.y+0.08f,
                                                                //(float)(tile.position.y + (tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) - .24f,
                                                                tile.position.y + .015f + Tile_Grid.TILE_SCALE * tile.GetComponent<Tile>().height,
                                                                tile.position.z),
-                                                               Quaternion.identity));
+                                                               Quaternion.identity);
+
+                //Set the object Parent to the Scenario Reachable_Tiles
+                obj.transform.parent = Game_Controller.curr_scenario.transform.GetChild(4);
+
+                reachable_tile_objects.Add(obj);
 
                 //+ tile.GetComponent<SpriteRenderer>().sprite.rect.width/200
                 // + selected_tile.GetComponent<SpriteRenderer>().sprite.rect.height/200

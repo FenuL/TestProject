@@ -27,7 +27,7 @@ public class Game_Controller : MonoBehaviour {
     public static Game_Controller controller;
     public static FloatingText popup;
     public static GameObject canvas;
-    public Scenario curr_scenario { get; private set; }
+    public static Scenario curr_scenario { get; private set; }
     public ArrayList avail_scenarios;
     public GameObject main_camera;
     public Dictionary<string, Character_Action> all_actions { get; private set; }
@@ -116,12 +116,13 @@ public class Game_Controller : MonoBehaviour {
         all_actions = Character_Action.Load_Actions();
         all_weapons = Weapon.Load_Weapons();
         all_armors = Armor.Load_Armors();
-        curr_scenario = new Scenario(STARTING_SCENARIO);
+        curr_scenario = GameObject.Find("Scenario").GetComponent<Scenario>();
+        curr_scenario.Start(STARTING_SCENARIO);
         avail_scenarios = new ArrayList();
         avail_scenarios.Add(curr_scenario);
         curr_scenario.Load_Scenario();
         action_menu.GetComponent<Action_Menu_Script>().Initialize();
-        action_menu.GetComponent<Action_Menu_Script>().resetActions();
+        //action_menu.GetComponent<Action_Menu_Script>().resetActions();
         //MarkReachable ();
     }
 
@@ -416,7 +417,31 @@ public class Game_Controller : MonoBehaviour {
                         if (tile.Equals(curr_scenario.clicked_tile))
                         {
                             //Debug.Log(character.name + " num of curr_action " + character.curr_action.Count);
-                            character.StartCoroutine(character.Act(character.curr_action.Peek(), curr_scenario.clicked_tile));
+                            //Add selected tile to list of targets. If the right number of targets is met, trigger the Action.
+                            if (character.curr_action.Peek().action_type == Action_Types.Path && Input.GetKey(KeyCode.LeftShift))
+                            {
+                                //Get the current path to the clicked tile and save it under the current path for the Action.
+                                character.curr_action.Peek().Find_Path(curr_scenario.clicked_tile.gameObject);
+                                Game_Controller.curr_scenario.Reset_Reachable();
+                                character.curr_action.Peek().Find_Reachable_Tiles();
+                                Game_Controller.curr_scenario.Mark_Reachable();
+                                
+                            }
+                            else
+                            {
+                                character.curr_action.Peek().Add_Target(curr_scenario.clicked_tile.gameObject);
+                                /*Stack<Tile> path = curr_scenario.Find_Path(character.curr_action, curr_scenario.clicked_tile.gameObject.GetComponent<Tile>());
+                                foreach (Tile path_tile in path)
+                                {
+                                    //Debug.Log("Tile index: [" + path_tile.index[0] + "," + path_tile.index[1] + "]");
+                                    //character.curr_action.Peek().curr_path.Add(curr_scenario.clicked_tile.GetComponent<Tile>());
+                                    character.curr_action.Peek().curr_path.Add(path_tile);
+                                }*/
+                                if (character.curr_action.Peek().Has_Valid_Targets())
+                                {
+                                    character.StartCoroutine(character.Act(character.curr_action.Peek(), curr_scenario.clicked_tile));
+                                }
+                            }
                         }
                     }
                 }

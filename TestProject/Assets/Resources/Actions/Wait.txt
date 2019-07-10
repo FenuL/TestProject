@@ -3,6 +3,8 @@ ap_cost: CAPC
 mp_cost: -5
 type: None
 range: 0
+color: blue
+num_targets: 0
 center: Self 1x1
 area: 1
 effects: 1

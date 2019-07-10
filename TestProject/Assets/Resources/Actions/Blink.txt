@@ -1,12 +1,14 @@
 name: Blink
 ap_cost: 0
 mp_cost: 5
-type: Unrestricted_Path
+type: Instant
 range: CSPD
+color: blue
+num_targets: 1
 center: Target 1x1
 area: .2
 effects: 1
-  self NUL Move 4
+  self NUL Move 4,PATH
 activation: active
 origin: innate
 orient: target

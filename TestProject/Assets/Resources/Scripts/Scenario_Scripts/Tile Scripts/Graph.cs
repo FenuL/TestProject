@@ -580,12 +580,14 @@ public class Graph
     /// Does a Breadth First Search of the Graph and marks the shortest path to all tiles within a given range.
     /// </summary>
     /// <param name="start">The start Tile for the search.</param>
+    /// <param name="tag">The the tag to ignore for collision detection.</param>
     /// <param name="cost_limit">The range limit in cost of Edges for how far to look. </param>
     /// <param name="distace_limit">The range limit in distance for how far to look.</param>
-    public void bfs(Tile start, int cost_limit, int distace_limit)
+    public void bfs(Tile start, string tag, int cost_limit, int distace_limit)
     {
         //reset the previously visited tiles
         Tile n;
+        //Debug.Log("visited tiles " + visitedTiles.Count);
         while (visitedTiles.Count != 0)
         {
             n = visitedTiles.Pop();
@@ -600,6 +602,7 @@ public class Graph
         start.distance = 0;
         queue.Enqueue(start);
         visitedTiles.Push(start);
+
         while (queue.Count > 0)
         {
             current = queue.Dequeue();
@@ -613,8 +616,8 @@ public class Graph
                     if (e.tile2 != null &&
                         !e.tile2.visited &&
                         current.weight + e.cost <= cost_limit &&
-                        start.obj != null &&
-                        (e.tile2.obj == null || e.tile2.obj.tag == start.obj.tag) &&
+                        //start.obj != null &&
+                        (e.tile2.obj == null || e.tile2.obj.tag == tag) &&
                         current.distance < distace_limit)
                     {
                         //Debug.Log("Cost:" + e.cost);

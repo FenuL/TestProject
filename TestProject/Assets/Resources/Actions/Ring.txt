@@ -3,6 +3,8 @@ ap_cost: 1
 mp_cost: 5
 type: Ranged
 range: CWPR
+color: blue
+num_targets: 1
 center: Self 3x3
 area: .3 .6 .3
 area: .6 0 .6

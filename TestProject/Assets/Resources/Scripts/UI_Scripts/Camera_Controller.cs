@@ -88,14 +88,16 @@ public class Camera_Controller : MonoBehaviour {
     /// </summary>
     public void Current_Tile_Preview()
     {
-        Tile tile = controller.curr_scenario.selected_tile.GetComponent<Tile>();
+        //Tile tile = controller.curr_scenario.selected_tile.GetComponent<Tile>();
+        Tile tile = Game_Controller.curr_scenario.selected_tile.GetComponent<Tile>();
         if (tile != null)
         {
             float action_mod = 0;
             if (curr_player.curr_action.Count > 0)
             {
                 action_mod = curr_player.curr_action.Peek().Calculate_Total_Modifier(
-                    controller.curr_scenario.selected_tile.gameObject,
+                    //controller.curr_scenario.selected_tile.gameObject,
+                    Game_Controller.curr_scenario.selected_tile.gameObject,
                     curr_player.curr_action.Peek().area[curr_player.curr_action.Peek().area.GetLength(0) / 2, curr_player.curr_action.Peek().area.GetLength(1) / 2]);
             }
             string mod_color = "white";
@@ -131,7 +133,8 @@ public class Camera_Controller : MonoBehaviour {
     /// </summary>
     public void Current_Target_Preview()
     {
-        highlighted_obj = controller.curr_scenario.selected_tile.GetComponent<Tile>().obj;
+        //highlighted_obj = controller.curr_scenario.selected_tile.GetComponent<Tile>().obj;
+        highlighted_obj = Game_Controller.curr_scenario.selected_tile.GetComponent<Tile>().obj;
         if (highlighted_obj != null)
         {
             Character_Script highlighted_character = highlighted_obj.GetComponent<Character_Script>();
@@ -227,7 +230,8 @@ public class Camera_Controller : MonoBehaviour {
     public void Update_Turn_Order()
     {
         string text = "";
-        foreach (GameObject obj in Game_Controller.controller.curr_scenario.turn_order)
+        //foreach (GameObject obj in Game_Controller.controller.curr_scenario.turn_order)
+        foreach (GameObject obj in Game_Controller.curr_scenario.turn_order)
         {
             Character_Script chara = obj.GetComponent<Character_Script>();
             if (chara.Equals(curr_player))
@@ -247,7 +251,8 @@ public class Camera_Controller : MonoBehaviour {
     /// </summary>
     public void Turn_Order_Preview()
     {
-        GUI.TextArea(new Rect(10, Screen.height - 170-17* Game_Controller.controller.curr_scenario.turn_order.Count, 100 , 17* Game_Controller.controller.curr_scenario.turn_order.Count), turn_order, style);
+        //GUI.TextArea(new Rect(10, Screen.height - 170-17* Game_Controller.controller.curr_scenario.turn_order.Count, 100 , 17* Game_Controller.controller.curr_scenario.turn_order.Count), turn_order, style);
+        GUI.TextArea(new Rect(10, Screen.height - 170 - 17 * Game_Controller.curr_scenario.turn_order.Count, 100, 17 * Game_Controller.curr_scenario.turn_order.Count), turn_order, style);
     }
 
     /// <summary>
@@ -267,18 +272,23 @@ public class Camera_Controller : MonoBehaviour {
 			Game_Controller.controller.Save();
 		}*/
         if (GUI.Button (new Rect (10, Screen.height-160, 50, 30), "Prev")) {
-			Game_Controller.controller.curr_scenario.Prev_Player();
-		}
+            //Game_Controller.controller.curr_scenario.Prev_Player();
+            Game_Controller.curr_scenario.Prev_Player();
+        }
 		if (GUI.Button (new Rect (70, Screen.height-160, 50, 30), "Next")) {
-			Game_Controller.controller.curr_scenario.Next_Player();
-		}
+            //Game_Controller.controller.curr_scenario.Next_Player();
+            Game_Controller.curr_scenario.Next_Player();
+        }
 
         //print (controller.curr_scenario.curr_player.GetComponent<Character_Script> ().character_name);
-        if (controller.curr_scenario.curr_player.Count > 0)
+        //if (controller.curr_scenario.curr_player.Count > 0)
+        if (Game_Controller.curr_scenario.curr_player.Count > 0)
         {
-            if (!curr_player.Equals(controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>()))
+            //if (!curr_player.Equals(controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>()))
+            if (!curr_player.Equals(Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>()))
             {
-                curr_player = controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>();
+                //curr_player = controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>();
+                curr_player = Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>();
                 Update_Turn_Order();
             }
             
@@ -294,7 +304,8 @@ public class Camera_Controller : MonoBehaviour {
 
         Current_Tile_Preview();
 
-        if (controller.curr_scenario.selected_tile.GetComponent<Tile>() != null)
+        //if (controller.curr_scenario.selected_tile.GetComponent<Tile>() != null)
+        if (Game_Controller.curr_scenario.selected_tile.GetComponent<Tile>() != null)
         {
             //Debug.Log("Selecting");
             Current_Target_Preview();

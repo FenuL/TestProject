@@ -3,6 +3,8 @@ ap_cost: CAPC
 mp_cost: 10
 type: Melee
 range: 0
+color: blue
+num_targets: 1
 center: Self 1x1
 area: 1
 effects: 2

@@ -287,6 +287,7 @@ public class Tile_Effect : MonoBehaviour {
         GameObject tile_effect_obj = ((GameObject)Instantiate(tile_effect_prefab, current_tile.transform.position + new Vector3(0, .5f * (current_tile.GetComponent<Tile>().height+1), 0), Quaternion.identity));
         Tile_Effect tile_effect_script = tile_effect_obj.GetComponent<Tile_Effect>();
         tile_effect_obj.name = name;
+        tile_effect_obj.transform.parent = Game_Controller.curr_scenario.transform.GetChild(2);
         tile_effect_script.type = type;
         //Debug.Log(type.ToString());
         if (type == Types.Heal)
@@ -309,7 +310,8 @@ public class Tile_Effect : MonoBehaviour {
         tile_effect_script.modifier = modifier;
         tile_effect_script.duration = duration;
         tile_effect_script.current_tile = current_tile;
-        controller.curr_scenario.tile_effects.Add(tile_effect_obj);
+        //controller.curr_scenario.tile_effects.Add(tile_effect_obj);
+        Game_Controller.curr_scenario.tile_effects.Add(tile_effect_obj);
         current_tile.GetComponent<Tile>().effect = tile_effect_obj;
 }
 
@@ -386,25 +388,38 @@ public class Tile_Effect : MonoBehaviour {
         // 3 = fly
         // 4 = warp
 
-        if (target.game_object.GetComponent<Tile>())
+        int move_type;
+
+        //Check for valid move type.
+        if (int.TryParse(movetype, out move_type))
         {
-            Tile target_tile = target.game_object.GetComponent<Tile>();
+            //TODO, fix TILE_EFFECT movement
+            if (target != null)
+            {
+                /*Tile target_tile = target<Tile>();
 
-            //Actually move
-            character.GetComponent<Character_Script>().MoveTo(target.game_object.transform);
+                //Actually move
+                //TODO, fix TILE_EFFECT movement
+                //character.GetComponent<Character_Script>().MoveTo(move_type, target.game_object.transform);
 
-            //reset current tile information
-            character.curr_tile.GetComponent<Tile>().traversible = true;
-            character.curr_tile.GetComponent<Tile>().obj = null;
+                //reset current tile information
+                character.curr_tile.GetComponent<Tile>().traversible = true;
+                character.curr_tile.GetComponent<Tile>().obj = null;
 
-            //set new tile information
-            character.curr_tile = target_tile.transform;
-            character.curr_tile.GetComponent<Tile>().traversible = false;
-            character.curr_tile.GetComponent<Tile>().obj = character.gameObject;
+                //set new tile information
+                character.curr_tile = target_tile.transform;
+                character.curr_tile.GetComponent<Tile>().traversible = false;
+                character.curr_tile.GetComponent<Tile>().obj = character.gameObject;
+                */
+            }
+            else
+            {
+                Debug.Log("Invalid target for move.");
+            }
         }
         else
         {
-            Debug.Log("Invalid target for move.");
+            Debug.Log("Invalid move type.");
         }
     }
 
@@ -485,7 +500,8 @@ public class Tile_Effect : MonoBehaviour {
         if (current_tile.GetComponent<Tile>())
         {
             int elevation = (int)(Convert_To_Double(value, character.gameObject, character.gameObject) * modifier);
-            character.controller.curr_scenario.tile_grid.Elevate(current_tile.transform, elevation);
+            //character.controller.curr_scenario.tile_grid.Elevate(current_tile.transform, elevation);
+            Game_Controller.curr_scenario.tile_grid.Elevate(current_tile.transform, elevation);
         }
         else
         {

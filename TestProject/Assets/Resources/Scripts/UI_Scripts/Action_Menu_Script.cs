@@ -99,9 +99,10 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
         double ap_cost;
         double mp_cost;
         //Center the action menu based on available actions
-        container.GetComponent<RectTransform>().position = new Vector3(Screen.width/2+200 - 50f* controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().actions.Count/2, this.GetComponent<RectTransform>().position.y+15, 0);
-
-        foreach (Character_Action a in controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().actions)
+        //container.GetComponent<RectTransform>().position = new Vector3(Screen.width/2+200 - 50f* controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().actions.Count/2, this.GetComponent<RectTransform>().position.y+15, 0);
+        container.GetComponent<RectTransform>().position = new Vector3(Screen.width / 2 + 200 - 50f * Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().actions.Count / 2, this.GetComponent<RectTransform>().position.y + 15, 0);
+        //foreach (Character_Action a in controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().actions)
+        foreach (Character_Action a in Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().actions)
         {
             button = container.GetComponent<RectTransform>().GetChild(x);
             buttons.Add(button);
@@ -116,8 +117,12 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
             //check if the cost of the action is too high
             ap_cost = a.Convert_To_Double(a.ap_cost, null);
             mp_cost = a.Convert_To_Double(a.mp_cost, null);
-            if (ap_cost > controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().action_curr ||
+            /*if (ap_cost > controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().action_curr ||
                 mp_cost > controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().mana_curr ||
+                !a.enabled || a.activation != Character_Action.Activation_Types.Active)
+                */
+            if (ap_cost > Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().action_curr ||
+                mp_cost > Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().mana_curr ||
                 !a.enabled || a.activation != Character_Action.Activation_Types.Active)
             {
                 button.GetComponent<Image>().color = Color.red;
@@ -125,7 +130,8 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
             {
                 int index = x;
 
-                button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().actions[index].Select(); });
+                //button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().actions[index].Select(); });
+                button.GetComponent<Button>().onClick.AddListener(() => { Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().actions[index].Select(); });
             }
             button_num = x + 1;
             x++;

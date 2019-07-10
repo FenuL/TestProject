@@ -4,7 +4,7 @@ using System.Collections;
 /// <summary>
 /// Class for the Grid of Tiles that make up a Scenario's base. 
 /// </summary>
-public class Tile_Grid : ScriptableObject
+public class Tile_Grid : MonoBehaviour
 {
     /// <summary>
     /// Constants:
@@ -12,6 +12,7 @@ public class Tile_Grid : ScriptableObject
     ///     static string OBJECT_SPRITESHEET_FILE - The spritesheet used to draw objects.
     ///     static string OBJECT_PREFAB_SRC - The source for the prefab used to create Objects.
     ///     static string EFFECT_PREFAB_SRC - The source for the prefab used to create Effects.
+    ///     static string EMPTY_PREFAB_SRC - The source for the prefab used to separate rows of Tiles.
     ///     static string REACHABLE_PREFAB_SRC - The source for the prefab used to dentote what tiles are reachable. 
     ///     static string CHARACTER_PREFAB_SRC - The source for the prefab used to create Characters.
     /// 
@@ -56,6 +57,7 @@ public class Tile_Grid : ScriptableObject
     private static string OBJECT_SPRITESHEET_FILE = "Sprites/Object Sprites/object_spritesheet_transparent";
     private static string OBJECT_PREFAB_SRC = "Prefabs/Scenario Prefabs/Object Prefabs/object_prefab";
     private static string EFFECT_PREFAB_SRC = "Prefabs/Scenario Prefabs/Effect Prefabs/effect_prefab";
+    private static string EMPTY_PREFAB_SRC = "Prefabs/Scenario Prefabs/empty_prefab";
     private static string CHARACTER_PREFAB_SRC = "Prefabs/Character_Prefab/Character_Prefab";
     private static string REACHABLE_PREFAB_SRC = "Prefabs/Scenario Prefabs/Tile Prefabs/Reachable";
     //Grid size restriction in number of tiles
@@ -84,6 +86,7 @@ public class Tile_Grid : ScriptableObject
     //Prefabs
     public GameObject object_prefab { get; private set; }
     public GameObject effect_prefab { get; private set; }
+    public GameObject empty_prefab { get; private set; }
     public GameObject reachable_prefab { get; private set; }
     public GameObject character_prefab { get; private set; }
 
@@ -102,7 +105,23 @@ public class Tile_Grid : ScriptableObject
     public Graph navmesh { get; private set; }
 
     /// <summary>
-    /// Constructor for the class.
+    /// Empty Start Method for class. Loads prefabs and creates a generic grid.
+    /// </summary>
+    public void Start()
+    {
+        //Load the prefabs
+        object_prefab = Resources.Load(OBJECT_PREFAB_SRC, typeof(GameObject)) as GameObject;
+        effect_prefab = Resources.Load(EFFECT_PREFAB_SRC, typeof(GameObject)) as GameObject;
+        empty_prefab = Resources.Load(EMPTY_PREFAB_SRC, typeof(GameObject)) as GameObject;
+        reachable_prefab = Resources.Load(REACHABLE_PREFAB_SRC, typeof(GameObject)) as GameObject;
+        character_prefab = Resources.Load(CHARACTER_PREFAB_SRC, typeof(GameObject)) as GameObject;
+
+        //Load the spritesheets
+        object_sprite_sheet = Resources.LoadAll<Sprite>(OBJECT_SPRITESHEET_FILE);
+    }
+
+    /// <summary>
+    /// Start method for class
     /// </summary>
     /// <param name="width">The width of the new Tile Grid</param>
     /// <param name="length">The length of the new Tile Grid</param>
@@ -111,11 +130,12 @@ public class Tile_Grid : ScriptableObject
     /// <param name="new_tile_mat_ids">The IDs for the tile types.</param>
     /// <param name="new_object_sprite_ids">The ids for objects to put on the Tile Grid.</param>
     /// <param name="new_character_sprite_ids">The ids for Character sprites to put on the Tile Grid.</param>
-    public Tile_Grid(int width, int length, Material[] new_materials, double[] new_modifiers, int[,] new_tile_mat_ids, int[,] new_object_sprite_ids, int[,] new_character_ids)
+    public void Start(int width, int length, Material[] new_materials, double[] new_modifiers, int[,] new_tile_mat_ids, int[,] new_object_sprite_ids, int[,] new_character_ids)
     {
         //Load the prefabs
         object_prefab = Resources.Load(OBJECT_PREFAB_SRC, typeof(GameObject)) as GameObject;
         effect_prefab = Resources.Load(EFFECT_PREFAB_SRC, typeof(GameObject)) as GameObject;
+        empty_prefab = Resources.Load(EMPTY_PREFAB_SRC, typeof(GameObject)) as GameObject;
         reachable_prefab = Resources.Load(REACHABLE_PREFAB_SRC, typeof(GameObject)) as GameObject;
         character_prefab = Resources.Load(CHARACTER_PREFAB_SRC, typeof(GameObject)) as GameObject;
 
@@ -273,6 +293,19 @@ public class Tile_Grid : ScriptableObject
         int tile_number = 0;
         for (int x = 0; x < grid_width; x++)
         {
+            //Create empty suboject under Scenario's Tile_Grid object
+            GameObject empty = ((GameObject)Instantiate(empty_prefab,
+                    new Vector3(0,
+                        0,
+                        0),
+                    Quaternion.identity));
+
+            //Set empty object as father for a row.
+            empty.transform.parent = Game_Controller.curr_scenario.transform.GetChild(0);
+
+            //Change the object name to be the tile index
+            empty.name = "Row " + x;
+
             for (int y = 0; y < grid_length; y++)
             {
                 tile_number++;
@@ -295,6 +328,15 @@ public class Tile_Grid : ScriptableObject
                         (float)(NEWSTARTZ - NEWTILELENGTH * x)), 
                     Quaternion.identity));
                 instance.transform.localScale = new Vector3(tile_scale, tile_scale, tile_scale);
+
+                //Set the parent to be the Scenario object Tile_Grid
+                instance.transform.parent = Game_Controller.curr_scenario.transform.GetChild(0).GetChild(x);
+
+                //Change the object name to be the tile index
+                instance.name = "[" + x + "," + y + "]";
+
+                //Change the Tag to be a Tile
+                instance.tag = "Tile";
 
                 //Add a collider to the tile (TEMPORARY)
                 BoxCollider collider = instance.AddComponent<BoxCollider>();
@@ -344,6 +386,9 @@ public class Tile_Grid : ScriptableObject
                             (float)(NEWSTARTZ - NEWTILELENGTH * x)),
                         Quaternion.identity));
 
+                    //Set the parent to be the Scenario object Characters
+                    character.transform.parent = Game_Controller.curr_scenario.transform.GetChild(3);
+
                     //Set the character tile to the current tile
                     character.GetComponent<Character_Script>().curr_tile = getTile(x, y);
                     character.GetComponent<Character_Script>().character_id = character_ids[x, y];
@@ -367,11 +412,20 @@ public class Tile_Grid : ScriptableObject
 
                     //instantiate the object
                     //Instantiate(object_prefab, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity);
-                    tiles[x, y].GetComponent<Tile>().obj = (GameObject)Instantiate(object_prefab, 
+                    GameObject obj = (GameObject)Instantiate(object_prefab, 
                         new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y),
                             (float)(NEWSTARTY + 0.66f + .5f * tile_heights[x, y]),
                             (float)(NEWSTARTZ - NEWTILELENGTH * x)), 
                         Quaternion.identity);
+
+                    //Set the parent to be the Scenario object Tile_Objects
+                    obj.transform.parent = Game_Controller.curr_scenario.transform.GetChild(1);
+
+                    //Set the name to be the name of the object.
+                    obj.name = "TEST_OBJ";
+
+                    tiles[x, y].GetComponent<Tile>().obj = obj;
+
                     //Instantiate(object_prefab, new Vector3((float)(START_X - (x) * (TILE_WIDTH / 200) + (y) * (TILE_WIDTH / 200)), (float)(START_Y - (x) * (TILE_LENGTH / 200) - (y) * (TILE_LENGTH / 200) + tile_heights[x, y] * TILE_HEIGHT / 100.0 + .35f), 0), Quaternion.identity);
                 }
 

@@ -18,12 +18,12 @@ public class Action_Effect
     ///     Enable - Enables or Disables certain Actions.
     ///     Pass - End a Character's Turn. 
     /// Type type - The Type of Action
-    /// Target target - The target of the effect. Either self or target.
+    /// Target target - The target of the effect. Either self (will affect character performing action), target (will affect target of action), or path (will affect the action's path).
     /// string[] checks - The checks to perform before activating the effect.
     /// string[] values - A list of strings that detail the effect of the Action.
     /// </summary>
     public enum Types { Move, Damage, Heal, Status, Effect, Elevate, Enable, Pass }
-    public enum Target { self, target }
+    public enum Target { self, target, path }
 
     public Types type { get; private set; }
     public Target target { get; private set; }
