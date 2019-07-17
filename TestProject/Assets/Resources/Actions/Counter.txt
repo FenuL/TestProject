@@ -5,6 +5,7 @@ type: Melee
 range: CWPR
 color: blue
 num_targets: 1
+target_checks: NULL
 center: Target 1x1
 area: 1
 effects: 1

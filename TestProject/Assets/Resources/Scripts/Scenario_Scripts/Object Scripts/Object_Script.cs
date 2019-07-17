@@ -5,6 +5,7 @@ using System.Collections;
 /// Script for handling interaction with Non Character Objects on the Tile Grid. 
 /// </summary>
 public class Object_Script : MonoBehaviour {
+    public Transform curr_tile { get; set; }
 
     /// <summary>
     /// Deal damage to this Object.

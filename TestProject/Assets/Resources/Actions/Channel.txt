@@ -5,6 +5,7 @@ type: Melee
 range: 0
 color: blue
 num_targets: 1
+target_checks: NULL
 center: Self 1x1
 area: 1
 effects: 2

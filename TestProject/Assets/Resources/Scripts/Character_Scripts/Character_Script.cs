@@ -1587,6 +1587,7 @@ public class Character_Script : MonoBehaviour {
 
         //Navigate the path by popping tiles out of the stack.
         int tile_index = 1;
+        GameObject prev_obj = null;
         while (tile_index < path.Count)
         {
             while (curr_action.Peek().paused)
@@ -1594,8 +1595,8 @@ public class Character_Script : MonoBehaviour {
                 yield return new WaitForEndOfFrame();
             }
             Tile prev_tile = curr_tile.GetComponent<Tile>();
-
             Tile temp_tile = path[tile_index];
+
             tile_index += 1;
             if (move_type != 4)
             {
@@ -1693,10 +1694,11 @@ public class Character_Script : MonoBehaviour {
 
                 //gameObject.GetComponent<SpriteRenderer>().sortingOrder = controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<SpriteRenderer>().sortingOrder + 1;
                 //set new tile information
-                curr_tile.GetComponent<Tile>().traversible = true;
-                curr_tile.GetComponent<Tile>().obj = null;
+                //curr_tile.GetComponent<Tile>().traversible = true;
+                curr_tile.GetComponent<Tile>().obj = prev_obj;
                 curr_tile = temp_tile.gameObject.transform;
-                curr_tile.GetComponent<Tile>().traversible = false;
+                //curr_tile.GetComponent<Tile>().traversible = false;
+                prev_obj = temp_tile.obj;
                 curr_tile.GetComponent<Tile>().obj = gameObject;
                 //Debug.Log("Curr tile: " + curr_tile.GetComponent<Tile>().index[0] + "," + curr_tile.GetComponent<Tile>().index[1]);
 
@@ -1708,10 +1710,11 @@ public class Character_Script : MonoBehaviour {
                 transform.position = new Vector3(temp_tile.transform.position.x,
                                 (float)(temp_tile.transform.position.y + Tile_Grid.TILE_SCALE * (temp_tile.height) + height_offset),
                                temp_tile.transform.position.z) + camera_position_offset;
-                curr_tile.GetComponent<Tile>().traversible = true;
-                curr_tile.GetComponent<Tile>().obj = null;
+                //curr_tile.GetComponent<Tile>().traversible = true;
+                curr_tile.GetComponent<Tile>().obj = prev_obj;
                 curr_tile = temp_tile.gameObject.transform;
-                curr_tile.GetComponent<Tile>().traversible = false;
+                prev_obj = temp_tile.obj;
+                //curr_tile.GetComponent<Tile>().traversible = false;
                 curr_tile.GetComponent<Tile>().obj = gameObject;
                 yield return new WaitForEndOfFrame();
             }

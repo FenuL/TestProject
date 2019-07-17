@@ -421,24 +421,22 @@ public class Game_Controller : MonoBehaviour {
                             if (character.curr_action.Peek().action_type == Action_Types.Path && Input.GetKey(KeyCode.LeftShift))
                             {
                                 //Get the current path to the clicked tile and save it under the current path for the Action.
-                                character.curr_action.Peek().Find_Path(curr_scenario.clicked_tile.gameObject);
-                                Game_Controller.curr_scenario.Reset_Reachable();
-                                character.curr_action.Peek().Find_Reachable_Tiles();
-                                Game_Controller.curr_scenario.Mark_Reachable();
+                                if (character.curr_action.Peek().Add_Waypoint(curr_scenario.clicked_tile.gameObject))
+                                {
+                                    //character.curr_action.Peek().Find_Path(curr_scenario.clicked_tile.gameObject);
+                                    Game_Controller.curr_scenario.Reset_Reachable();
+                                    character.curr_action.Peek().Find_Reachable_Tiles();
+                                    Game_Controller.curr_scenario.Mark_Reachable();
+                                }
                                 
                             }
                             else
                             {
                                 character.curr_action.Peek().Add_Target(curr_scenario.clicked_tile.gameObject);
-                                /*Stack<Tile> path = curr_scenario.Find_Path(character.curr_action, curr_scenario.clicked_tile.gameObject.GetComponent<Tile>());
-                                foreach (Tile path_tile in path)
+                                if (character.curr_action.Peek().Has_Valid_Targets() && character.state == Character_States.Idle)
                                 {
-                                    //Debug.Log("Tile index: [" + path_tile.index[0] + "," + path_tile.index[1] + "]");
-                                    //character.curr_action.Peek().curr_path.Add(curr_scenario.clicked_tile.GetComponent<Tile>());
-                                    character.curr_action.Peek().curr_path.Add(path_tile);
-                                }*/
-                                if (character.curr_action.Peek().Has_Valid_Targets())
-                                {
+                                    //Debug.Log("Acting");
+
                                     character.StartCoroutine(character.Act(character.curr_action.Peek(), curr_scenario.clicked_tile));
                                 }
                             }

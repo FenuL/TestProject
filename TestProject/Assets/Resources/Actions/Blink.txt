@@ -5,6 +5,7 @@ type: Instant
 range: CSPD
 color: blue
 num_targets: 1
+target_checks: CHK_EMPTY
 center: Target 1x1
 area: .2
 effects: 1

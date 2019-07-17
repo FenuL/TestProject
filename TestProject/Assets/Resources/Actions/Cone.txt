@@ -5,6 +5,7 @@ type: Ranged
 range: CWPR
 color: blue
 num_targets: 1
+target_checks: NULL
 center: Self 5x5
 area: 0 1 1 1 0
 area: 1 0 1 0 1 

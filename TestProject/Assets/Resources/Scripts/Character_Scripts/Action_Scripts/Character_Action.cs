@@ -57,6 +57,7 @@ public class Character_Action
     public String center { get; private set; }
     public float[,] area { get; private set; }
     public String num_targets { get; private set; }
+    public List<string> target_checks { get; private set; }
     public List<Target> curr_targets { get; private set;  }
     public List<Tile> curr_path { get; private set; }
     public bool paused { get; private set; }
@@ -85,6 +86,7 @@ public class Character_Action
         center = "";
         area = null;
         num_targets = "";
+        target_checks = new List<string>();
         curr_targets = new List<Target>();
         curr_path = new List<Tile>();
         paused = false;
@@ -116,6 +118,7 @@ public class Character_Action
         center = act.center;
         area = act.area;
         num_targets = act.num_targets;
+        target_checks = act.target_checks;
         curr_targets = new List<Target>();
         curr_path = new List<Tile>();
         paused = act.paused;
@@ -282,6 +285,12 @@ public class Character_Action
                         break;
                     case "num_targets":
                         act.num_targets = values.TrimStart();
+                        break;
+                    case "target_checks":
+                        foreach (string check in values.TrimStart().TrimEnd().Split(','))
+                        {
+                            act.target_checks.Add(check);
+                        }
                         break;
                     case "effects":
                         int num_effects = 0;
@@ -1052,6 +1061,10 @@ public class Character_Action
             {
                 target_tile = target_character.curr_tile.GetComponent<Tile>();
             }
+            else
+            {
+                target_tile = target.GetComponent<Object_Script>().curr_tile.GetComponent<Tile>();
+            }
         }
         Tile char_tile = character.curr_tile.GetComponent<Tile>();
         //Debug.Log(character.weapon.name + " range is " + character.weapon.modifier.GetLength(0)/2);
@@ -1182,6 +1195,23 @@ public class Character_Action
     }
     */
 
+    public bool Check_Valid_Target(GameObject target)
+    {
+        Tile target_tile = target.GetComponent<Tile>();
+        if (target_tile != null)
+        {
+            foreach(string check in target_checks)
+            {
+                if(!Parse_Check(check, target))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     /// <summary>
     /// Function to check the criteria for an Action_Effect is met. 
     /// </summary>
@@ -1218,10 +1248,58 @@ public class Character_Action
         //Debug.Log("Check is " + input);
         string[] conditionals = input.Split('_');
         int i = 1;
+        if (input == "NULL")
+        {
+            return true;
+        }
         if (conditionals[i] == "NOT")
         {
             not_flag = true;
             i++;
+        }
+        if (conditionals[i] == "EMPTY")
+        {
+            //Debug.Log("Check if the target is empty");
+            if (targ.GetComponent<Tile>())
+            {
+                if (targ.GetComponent<Tile>().obj != null)
+                {
+                    valid = false;
+                }
+                else
+                {
+                    valid = true;
+                }
+            }else
+            {
+                valid = false;
+            }
+        }
+        if (conditionals[i] == "CHAR")
+        {
+            //Debug.Log("Check if the target contains a character");
+            if (targ.GetComponent<Tile>())
+            {
+                if (targ.GetComponent<Tile>().obj != null)
+                {
+                    if (targ.GetComponent<Tile>().obj.GetComponent<Character_Script>())
+                    {
+                        valid = true;
+                    }
+                    else
+                    {
+                        valid = false;
+                    }
+                }
+                else
+                {
+                    valid = false;
+                }
+            }
+            else
+            {
+                valid = false;
+            }
         }
         if (conditionals[i] == "CCND")
         {
@@ -1641,24 +1719,56 @@ public class Character_Action
         }
         if (tile != null)
         {
-            Target target = new Target(tile, area);
-            float[] modifiers = new float[2];
-            foreach(Tile affected_tile in target.affected_tiles.Keys)
+            if (Check_Valid_Target(target_tile))
             {
-                modifiers[0] = Calculate_Total_Modifier(affected_tile.gameObject, target.affected_tiles[affected_tile][0]);
-                if(affected_tile.obj != null)
+                Add_Waypoint(target_tile);
+                Target target = new Target(tile, area);
+                float[] modifiers = new float[2];
+                foreach (Tile affected_tile in target.affected_tiles.Keys)
                 {
-                    modifiers[1] = Calculate_Total_Modifier(affected_tile.obj, target.affected_tiles[affected_tile][1]);
+                    modifiers[0] = Calculate_Total_Modifier(affected_tile.gameObject, target.affected_tiles[affected_tile][0]);
+                    if (affected_tile.obj != null)
+                    {
+                        modifiers[1] = Calculate_Total_Modifier(affected_tile.obj, target.affected_tiles[affected_tile][1]);
+                    }
+                    target.Set_Modifiers(affected_tile, modifiers);
                 }
-                target.Set_Modifiers(affected_tile, modifiers);
+                //Find_Path(target_tile);
+                //Debug.Log("curr path " + curr_path.Count);
+                target.Set_Path(curr_path);
+                //Debug.Log("target path " + target.curr_path.Count);
+                //Reset_Path();
+                curr_targets.Add(target);
             }
-            Find_Path(target_tile);
-            //Debug.Log("curr path " + curr_path.Count);
-            target.Set_Path(curr_path);
-            //Debug.Log("target path " + target.curr_path.Count);
-            //Reset_Path();
-            curr_targets.Add(target);
         }
+    }
+
+    /// <summary>
+    /// Adds a step in the current path for the Action
+    /// </summary>
+    /// <param name="obj">The target that would be added.</param>
+    /// <returns>True if the waypoint was added successfully, False otherwise.</returns>
+    public bool Add_Waypoint(GameObject obj)
+    {
+        bool added = false;
+        Tile target_tile = obj.GetComponent<Tile>();
+        if (target_tile != null)
+        {
+            if(action_type == Action_Types.Path)
+            {
+                if(target_tile.traversible)
+                {
+                    Find_Path(obj);
+                    added = true;
+                }
+            }
+            else
+            {
+                Find_Path(obj);
+                added = true;
+            }
+        }
+        return added;
     }
 
     /// <summary>

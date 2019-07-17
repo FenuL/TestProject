@@ -421,6 +421,8 @@ public class Tile_Grid : MonoBehaviour
                     //Set the parent to be the Scenario object Tile_Objects
                     obj.transform.parent = Game_Controller.curr_scenario.transform.GetChild(1);
 
+                    obj.GetComponent<Object_Script>().curr_tile = tiles[x, y];
+
                     //Set the name to be the name of the object.
                     obj.name = "TEST_OBJ";
 
