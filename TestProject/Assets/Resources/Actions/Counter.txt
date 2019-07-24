@@ -8,11 +8,11 @@ num_targets: 1
 target_checks: NULL
 center: Target 1x1
 area: 1
-effects: 1
-  target NUL Damage CWPD+CSTR
+effects: 2
+  self NULL 0,0 Orient Target
+  target NULL 0,0 Damage CWPD+CSTR
 activation: reactive
 origin: innate
-orient: target
 trigger: ON_DAMAGE
 condition: CHK_TARG_SELF & CHK_SRC_RANG
 enabled: true

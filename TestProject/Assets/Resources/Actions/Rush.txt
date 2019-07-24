@@ -8,12 +8,12 @@ num_targets: 1
 target_checks: CHK_NULL
 center: Target 1x1
 area: 1
-effects: 2
-  target NUL Damage CWPD+5
-  self NUL Enable Rush,false
+effects: 3
+  self NULL 0,0 Orient Target
+  target NULL 0,0 Damage CWPD+5
+  self NULL Enable Rush,false
 activation: active
 origin: innate
-orient: target
 trigger: NUL
 enabled: true
 animation: Attack

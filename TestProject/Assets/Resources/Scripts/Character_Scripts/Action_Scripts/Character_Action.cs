@@ -43,7 +43,6 @@ public class Character_Action
     /// string condition - Under what condition a Reaction can be used after an event is fired. Example, CAUC > CAUM/2
     /// Origin_Types origin - Where the skill originates (for disabling purposes later)
     /// bool enabled - If the Character_Action is enabled or not
-    /// string orient - Whether the ability lets you select orientation. 
     /// String animation - The animation tied to the specific Character_Action.
     /// Character_Script character - The Character performing the Character_Action.
     /// </summary>
@@ -67,7 +66,6 @@ public class Character_Action
     public string condition { get; private set; }
     public Origin_Types origin { get; private set; }
     public bool enabled { get; set; }
-    public string orient { get; private set; }
     public String animation { get; private set; }
     public Character_Script character { get; private set; }
     public int proc_effect_num { get; set; }
@@ -96,7 +94,6 @@ public class Character_Action
         condition = "";
         origin = Origin_Types.Innate;
         enabled = true;
-        orient = "";
         animation = "";
         character = null;
         proc_effect_num = 0;
@@ -128,7 +125,6 @@ public class Character_Action
         condition = act.condition;
         origin = act.origin;
         enabled = act.enabled;
-        orient = act.orient;
         animation = act.animation;
         character = chara;
         proc_effect_num = act.proc_effect_num;
@@ -155,7 +151,6 @@ public class Character_Action
             condition == act.condition &&
             origin == act.origin &&
             enabled == act.enabled &&
-            orient == act.orient &&
             animation == act.animation)
         {
             eql = true;
@@ -297,11 +292,12 @@ public class Character_Action
                         int.TryParse(values.TrimStart().TrimEnd(),out num_effects);
                         //Debug.Log("Number of Effects: " + num_effects);
                         act.effects = new List<Action_Effect>();
-                        for(int i = 0; i < num_effects; i++)
+                        for (int i = 0; i < num_effects; i++)
                         {
                             string str = input[line_num + i];
                             //Debug.Log(str);
                             act.effects.Add(new Action_Effect(str.TrimStart().TrimEnd()));
+
                         }
                         break;
                     case "activation":
@@ -349,9 +345,6 @@ public class Character_Action
                     case "condition":
                         //TODO Expand on this
                         act.condition = values.Trim();
-                        break;
-                    case "orient":
-                        act.orient = values.Trim();
                         break;
                     case "enabled":
                         if (values.Trim() == "True" ||
@@ -1483,6 +1476,11 @@ public class Character_Action
             //character.controller.curr_scenario.Find_Reachable((int)character.speed * 2, (int)Convert_To_Double(range, null), 2);
             Game_Controller.curr_scenario.Find_Reachable((int)Convert_To_Double(range, null), (int)Convert_To_Double(range, null), 2);
         }
+        else if (action_type == Action_Types.None)
+        {
+            //character.controller.curr_scenario.Find_Reachable((int)character.speed * 2, (int)Convert_To_Double(range, null), 2);
+            Game_Controller.curr_scenario.Find_Reachable((int)Convert_To_Double(range, null), (int)Convert_To_Double(range, null), 3);
+        }
         return tiles;
     }
 
@@ -1836,16 +1834,9 @@ public class Character_Action
             //TODO find a way to carry over self modifier
             float[,] self_mod = new float[1, 1];
             self_mod[0, 0] = Calculate_Total_Modifier(character.gameObject, 1);
-            Target self = new Target(character.curr_tile.GetComponent<Tile>(),  self_mod);
+            Target self = new Target(character.curr_tile.GetComponent<Tile>(), self_mod);
 
-            List<Target> path_targets = new List<Target>();
-            foreach (Tile tile in curr_path)
-            {
-                //find a way to specify path modifier.
-                float[,] path_mod = new float[1, 1];
-                path_mod[0, 0] = Calculate_Total_Modifier(tile.gameObject,1);
-                path_targets.Add(new Target(tile, path_mod));
-            }
+
 
             //Functions.Push(Enact_Damage("", targets[0]));
             if (curr_targets.Count > 0)
@@ -1862,123 +1853,158 @@ public class Character_Action
 
             //Begin animation
             character.GetComponent<Animator>().SetInteger("Anim_Num", anim_num);
-            proc_effect_num = 0;
+            proc_effect_num = 1;
             character.GetComponent<Animator>().SetTrigger("Act");
-
-            foreach (Action_Effect eff in effects)
+            int target_index = 0;
+            foreach (Target target in curr_targets)
             {
-                elapsedTime = 0;
-
-                List<Target> temp_targets = new List<Target>();
-                if (eff.target == Action_Effect.Target.target)
+                foreach (Action_Effect eff in effects)
                 {
-                    temp_targets = curr_targets;
-                }
-                else if (eff.target == Action_Effect.Target.self)
-                {
-                    temp_targets.Add(self);
-                }
-                else if (eff.target == Action_Effect.Target.path)
-                {
-                    temp_targets = path_targets;
-                }
-                //Debug.Log(character.name + " " + name + "Num of target effects: " + effects.Count);
-                //Debug.Log(character.name + " " + name + "effect_num " + proc_effect_num);
-                //Debug.Log(character.name + " " + name + "effect type " + eff.type);
-                while (proc_effect_num == 0 || paused)
-                {
-                    //Escape if too much time has passed.
-                    elapsedTime += Time.deltaTime;
-                    if (elapsedTime > duration && !anim_clip.isLooping)
+                    if (eff.target_limit[0] <= target_index &&
+                       eff.target_limit[1] >= target_index)
                     {
-                        //Debug.Log(character.name + " " + name + " Escaping");
+                        //Debug.Log("Taking effect type: " + eff.type);
                         elapsedTime = 0;
-                        proc_effect_num = -1;
-                    }
-                    //Debug.Log(character.name + " " + name + "Paused? " + paused);
-                    //Debug.Log(character.name + " " + name + "Proc num " + proc_effect_num);
-                    yield return new WaitForEndOfFrame();
-                }
-                if (eff.type == Action_Effect.Types.Move)
-                {
-                    //Proc the effect
-                    proc_effect_num -= 1;
 
-                    foreach (Target target in temp_targets)
-                    {
-                        character.StartCoroutine(Enact_Move(eff.checks, eff.values, target));
-                    }
-                }
-                else if (eff.type == Action_Effect.Types.Damage)
-                {
-                    //Proc the effect
-                    proc_effect_num -= 1;
+                        List<Target> temp_targets = new List<Target>();
+                        if (eff.target == Action_Effect.Target.target)
+                        {
+                            temp_targets.Add(target);
+                        }
+                        else if (eff.target == Action_Effect.Target.self)
+                        {
+                            temp_targets.Add(self);
+                        }
+                        else if (eff.target == Action_Effect.Target.path)
+                        {
+                            List<Target> path_targets = new List<Target>();
+                            foreach (Tile tile in target.curr_path)
+                            {
+                                //find a way to specify path modifier.
+                                float[,] path_mod = new float[1, 1];
+                                path_mod[0, 0] = Calculate_Total_Modifier(tile.gameObject, 0.5f);
+                                path_targets.Add(new Target(tile, path_mod));
+                            }
 
-                    foreach (Target target in temp_targets)
-                    {
-                        character.StartCoroutine(Enact_Damage(eff.checks, eff.values[0], target));
-                    }
-                }
-                else if (eff.type == Action_Effect.Types.Heal)
-                {
-                    //Proc the effect
-                    proc_effect_num -= 1;
+                            temp_targets = path_targets;
+                        }
+                        //Debug.Log(character.name + " " + name + "Num of target effects: " + effects.Count);
+                        //Debug.Log(character.name + " " + name + "effect_num " + proc_effect_num);
+                        //Debug.Log(character.name + " " + name + "effect type " + eff.type);
+                        while (proc_effect_num == 0 || paused)
+                        {
+                            //Escape if too much time has passed.
+                            elapsedTime += Time.deltaTime;
+                            if (elapsedTime > duration && !anim_clip.isLooping)
+                            {
+                                //Debug.Log(character.name + " " + name + " Escaping");
+                                elapsedTime = 0;
+                                proc_effect_num = -1;
+                            }
+                            //Debug.Log(character.name + " " + name + "Paused? " + paused);
+                            //Debug.Log(character.name + " " + name + "Proc num " + proc_effect_num);
+                            yield return new WaitForEndOfFrame();
+                        }
 
-                    foreach (Target target in temp_targets)
-                    {
-                        character.StartCoroutine(Enact_Healing(eff.checks, eff.values, target));
-                    }
-                }
-                else if (eff.type == Action_Effect.Types.Status)
-                {
-                    //Proc the effect
-                    proc_effect_num -= 1;
+                        //stop procing if Character is Orienting.
+                        while (character.state == Character_States.Walking ||
+                            character.state == Character_States.Orienting)
+                        {
+                            yield return new WaitForEndOfFrame();
+                        }
 
-                    foreach (Target target in temp_targets)
-                    {
-                        character.StartCoroutine(Enact_Status(eff.checks, eff.values, target));
-                    }
-                }
-                else if (eff.type == Action_Effect.Types.Effect)
-                {
-                    //Proc the effect
-                    proc_effect_num -= 1;
+                        if (eff.type == Action_Effect.Types.Orient)
+                        {
+                            //Proc the effect
+                            proc_effect_num -= 1;
 
-                    foreach (Target target in temp_targets)
-                    {
-                        character.StartCoroutine(Enact_Effect(eff.checks, eff.values, target));
-                    }
-                }
-                else if (eff.type == Action_Effect.Types.Elevate)
-                {
-                    //Proc the effect
-                    proc_effect_num -= 1;
+                            foreach (Target effect_target in temp_targets)
+                            {
+                                character.StartCoroutine(Enact_Orient(eff, effect_target, target));
+                            }
+                        }
+                        else if (eff.type == Action_Effect.Types.Move)
+                        {
+                            //Proc the effect
+                            proc_effect_num -= 1;
 
-                    foreach (Target target in temp_targets)
-                    {
-                        character.StartCoroutine(Enact_Elevate(eff.checks, eff.values[0], target));
-                    }
-                }
-                else if (eff.type == Action_Effect.Types.Enable)
-                {
-                    //Proc the effect
-                    proc_effect_num -= 1;
+                            foreach (Target effect_target in temp_targets)
+                            {
+                                character.StartCoroutine(Enact_Move(eff, effect_target, target));
+                            }
+                        }
+                        else if (eff.type == Action_Effect.Types.Damage)
+                        {
+                            //Proc the effect
+                            proc_effect_num -= 1;
 
-                    foreach (Target target in temp_targets)
-                    {
-                        character.StartCoroutine(Enact_Enable(eff.checks, eff.values, target));
-                    }
-                }
-                else if (eff.type == Action_Effect.Types.Pass)
-                {
-                    //Proc the effect
-                    proc_effect_num -= 1;
-                    foreach (Target target in temp_targets)
-                    {
+                            foreach (Target effect_target in temp_targets)
+                            {
+                                character.StartCoroutine(Enact_Damage(eff, effect_target));
+                            }
+                        }
+                        else if (eff.type == Action_Effect.Types.Heal)
+                        {
+                            //Proc the effect
+                            proc_effect_num -= 1;
 
-                        character.StartCoroutine(Enact_Pass(eff.checks, target));
+                            foreach (Target effect_target in temp_targets)
+                            {
+                                character.StartCoroutine(Enact_Healing(eff, effect_target));
+                            }
+                        }
+                        else if (eff.type == Action_Effect.Types.Status)
+                        {
+                            //Proc the effect
+                            proc_effect_num -= 1;
+
+                            foreach (Target effect_target in temp_targets)
+                            {
+                                character.StartCoroutine(Enact_Status(eff, effect_target));
+                            }
+                        }
+                        else if (eff.type == Action_Effect.Types.Effect)
+                        {
+                            //Proc the effect
+                            proc_effect_num -= 1;
+
+                            foreach (Target effect_target in temp_targets)
+                            {
+                                character.StartCoroutine(Enact_Effect(eff, effect_target));
+                            }
+                        }
+                        else if (eff.type == Action_Effect.Types.Elevate)
+                        {
+                            //Proc the effect
+                            proc_effect_num -= 1;
+
+                            foreach (Target effect_target in temp_targets)
+                            {
+                                character.StartCoroutine(Enact_Elevate(eff, effect_target));
+                            }
+                        }
+                        else if (eff.type == Action_Effect.Types.Enable)
+                        {
+                            //Proc the effect
+                            proc_effect_num -= 1;
+
+                            foreach (Target effect_target in temp_targets)
+                            {
+                                character.StartCoroutine(Enact_Enable(eff, effect_target));
+                            }
+                        }
+                        else if (eff.type == Action_Effect.Types.Pass)
+                        {
+                            //Proc the effect
+                            proc_effect_num -= 1;
+                            foreach (Target effect_target in temp_targets)
+                            {
+                                character.StartCoroutine(Enact_Pass(eff.checks, effect_target));
+                            }
+                        }
                     }
                 }
+                target_index += 1;
             }
         }
 
@@ -1992,7 +2018,8 @@ public class Character_Action
         //Wait for animation and effects to end to reset the character state.
         //while(!character.GetComponent<Animator>(). GetCurrentAnimatorClipInfo(0) .animationClips[2])
 
-        while (character.state == Character_States.Walking)
+        while (character.state == Character_States.Walking || 
+            character.state == Character_States.Orienting)
         {
             //Debug.Log("State " + character.state.ToString());
             yield return new WaitForEndOfFrame();
@@ -2052,26 +2079,79 @@ public class Character_Action
     }
 
     /// <summary>
-    /// Function to Enact a Move Type Character_Action. Used in the Enact() Function.
+    /// Function to Enact an Orient type Character_Action. Used in the Enact() Function.
     /// </summary>
-    /// <param name="checks">The checks to perform to see if the Effect can be triggered. </param>
-    /// <param name="values">The details of the movement, used to calculate path for the target. </param>
-    /// <param name="target">The Target whose object(s) to move.</param>
-    public IEnumerator Enact_Move(string[] checks, string[] values, Target target)
+    /// <param name="effect">The effect to perform.</param>
+    /// <param name="to_orient">The GameObject to orient.</param>
+    /// <param name="target">The currently selected Target. May be necessary to figure out where to Orient.</param>
+    public IEnumerator Enact_Orient(Action_Effect effect, Target to_orient, Target target)
     {
-        //mover types
-        // 1 = standard move
-        // 2 = push/pull
-        // 3 = fly
-        // 4 = warp
-        foreach (Tile target_tile in target.affected_tiles.Keys)
+        foreach (Tile target_tile in to_orient.affected_tiles.Keys)
         {
             while (paused)
             {
                 //TODO add an interrupt here.
                 yield return new WaitForEndOfFrame();
             }
-            if (Check_Criteria(checks, target_tile.gameObject))
+            if (Check_Criteria(effect.checks, target_tile.gameObject))
+            {
+                if (target_tile.obj.GetComponent<Character_Script>())
+                {
+                    Character_Script target_character = target_tile.obj.GetComponent<Character_Script>();
+                    //Debug.Log(effect.values[0]);
+                    if(effect.values[0] == "Select")
+                    {
+                        target_character.StartCoroutine(target_character.Choose_Orientation());
+                        while(target_character.state == Character_States.Orienting)
+                        {
+                            yield return new WaitForEndOfFrame();
+                        }
+                    }
+                    else if (effect.values[0] == "Target")
+                    {
+                        target_character.Choose_Orientation(target.center.gameObject);
+                        while (target_character.state == Character_States.Orienting)
+                        {
+                            yield return new WaitForEndOfFrame();
+                        }
+                    }
+                    else
+                    {
+                        target_character.Choose_Orientation((int)Convert_To_Double(effect.values[0], target_tile.obj));
+                    }
+                }
+            }
+            else
+            {
+                Debug.Log("Condition not met");
+            }
+        }
+
+        //Reset character state when actions are done
+        //character.state = Character_States.Idle;
+    }
+
+    /// <summary>
+    /// Function to Enact a Move Type Character_Action. Used in the Enact() Function.
+    /// </summary>
+    /// <param name="effect">The effect to perform. </param>
+    /// <param name="effect">The GameObject to move. </param>
+    /// <param name="target">The currently selected Target. May be necessary for pathing purposes.</param>
+    public IEnumerator Enact_Move(Action_Effect effect, Target to_move, Target target)
+    {
+        //mover types
+        // 1 = standard move
+        // 2 = push/pull
+        // 3 = fly
+        // 4 = warp
+        foreach (Tile target_tile in to_move.affected_tiles.Keys)
+        {
+            while (paused)
+            {
+                //TODO add an interrupt here.
+                yield return new WaitForEndOfFrame();
+            }
+            if (Check_Criteria(effect.checks, target_tile.gameObject))
             {
                 if (target_tile.obj != null)
                 {
@@ -2079,11 +2159,11 @@ public class Character_Action
                     //Check for a valid object to move.
                     if (chara != null)
                     {
-                        int move_type = (int)Convert_To_Double(values[0], target_tile.obj);
+                        int move_type = (int)Convert_To_Double(effect.values[0], target_tile.obj);
                         Tile start = chara.curr_tile.GetComponent<Tile>();
                         //Check for valid move type.
 
-                        if (values[1] == "PATH")
+                        if (effect.values[1] == "TARG_PATH")
                         {
                             target.Set_Path(curr_path);
                         }
@@ -2092,8 +2172,8 @@ public class Character_Action
                         chara.MoveTo(move_type, target.curr_path);
 
                         Debug.Log("Character " + chara.name + " Moved from: " + start.index[0] + ","
-                            + start.index[1] + " to: " + chara.curr_tile.gameObject.GetComponent<Tile>().index[0] + ","
-                            + chara.curr_tile.gameObject.GetComponent<Tile>().index[1]);
+                            + start.index[1] + " to: " + target.center.index[0] + ","
+                            + target.center.index[1]);
                     }
                     else
                     {
@@ -2116,10 +2196,9 @@ public class Character_Action
     /// <summary>
     /// Function to Enact a Damage type Character_Action. Used in the Enact() Function.
     /// </summary>
-    /// <param name="checks">The checks to perform to see if the Effect can be invoked.</param>
-    /// <param name="value">The String with the damage equation.</param>
+    /// <param name="effect">The Action_Effect to perform.</param>
     /// <param name="target">The Target on which to act. </param>
-    public IEnumerator Enact_Damage(string[] checks, string value, Target target)
+    public IEnumerator Enact_Damage(Action_Effect effect, Target target)
     {
         foreach (Tile target_tile in target.affected_tiles.Keys)
         {
@@ -2128,7 +2207,7 @@ public class Character_Action
                 //TODO add an interrupt here.
                 yield return new WaitForEndOfFrame();
             }
-            if (Check_Criteria(checks, target_tile.gameObject))
+            if (Check_Criteria(effect.checks, target_tile.gameObject))
             {
                 //TODO add damage to Tiles
 
@@ -2137,18 +2216,18 @@ public class Character_Action
                     Character_Script chara = target_tile.obj.GetComponent<Character_Script>();
                     if (chara != null)
                     {
-                        int damage = (int)(Convert_To_Double(value, chara.gameObject) * target.affected_tiles[target_tile][1]);
-                        Debug.Log("Character " + character.character_name + " Attacked: " + chara.character_name + "; Dealing " + damage + "(" + Convert_To_Double(value, chara.gameObject) + ") damage and Using " + ap_cost + " AP");
+                        int damage = (int)(Convert_To_Double(effect.values[0], chara.gameObject) * target.affected_tiles[target_tile][1]);
+                        Debug.Log("Character " + character.character_name + " Attacked: " + chara.character_name + "; Dealing " + damage + "(" + Convert_To_Double(effect.values[0], chara.gameObject) + ") damage and Using " + ap_cost + " AP");
                         chara.Take_Damage(damage, character.weapon.pierce);
-                        Event_Manager.Broadcast(Event_Trigger.ON_DAMAGE, this, value, target_tile.gameObject);
+                        Event_Manager.Broadcast(Event_Trigger.ON_DAMAGE, this, effect.values[0], target_tile.gameObject);
                     }
                     else
                     {
-                        int damage = (int)(Convert_To_Double(value, target_tile.obj) * target.affected_tiles[target_tile][1]);
+                        int damage = (int)(Convert_To_Double(effect.values[0], target_tile.obj) * target.affected_tiles[target_tile][1]);
                         Debug.Log("Character " + character.character_name + " Attacked: OBJECT" + "; Dealing " + damage + " damage and Using " + ap_cost + " AP");
                         Object_Script target_object = target_tile.obj.GetComponent<Object_Script>();
                         target_object.Take_Damage(damage, character.weapon.pierce);
-                        Event_Manager.Broadcast(Event_Trigger.ON_DAMAGE, this, value, target_tile.gameObject);
+                        Event_Manager.Broadcast(Event_Trigger.ON_DAMAGE, this, effect.values[0], target_tile.gameObject);
                     }
                 }
             }
@@ -2164,10 +2243,9 @@ public class Character_Action
     /// <summary>
     /// Function to Enact a Healing type Character_Action. Used in the Enact() Function.
     /// </summary>
-    /// param name="checks">The checks to perform to see if the Effect can be invoked.</param>
-    /// <param name="value">The String with the healing equation.</param>
+    /// <param name="effect">The Action_Effect to instantiate.</param>
     /// <param name="target">The Target being Healed.</param>
-    public IEnumerator Enact_Healing(string[] checks, string[] value, Target target)
+    public IEnumerator Enact_Healing(Action_Effect effect, Target target)
     {
         foreach (Tile target_tile in target.affected_tiles.Keys)
         {
@@ -2176,23 +2254,23 @@ public class Character_Action
                 //TODO add an interrupt here.
                 yield return new WaitForEndOfFrame();
             }
-            if (Check_Criteria(checks, target_tile.gameObject))
+            if (Check_Criteria(effect.checks, target_tile.gameObject))
             {
                 if (target_tile.obj.GetComponent<Character_Script>())
                 {
                     Character_Script target_character = target_tile.obj.GetComponent<Character_Script>();
-                    int healing = (int)(Convert_To_Double(value[1], target_tile.obj) * target.affected_tiles[target_tile][1]);
-                    if (value[0] == Accepted_Shortcuts.CAUC.ToString() || value[0] == Accepted_Shortcuts.TAUC.ToString())
+                    int healing = (int)(Convert_To_Double(effect.values[1], target_tile.obj) * target.affected_tiles[target_tile][1]);
+                    if (effect.values[0] == Accepted_Shortcuts.CAUC.ToString() || effect.values[0] == Accepted_Shortcuts.TAUC.ToString())
                     {
                         Debug.Log("Character " + character.character_name + " Healed: " + target_character.character_name + "; for " + healing + " Aura, Using " + ap_cost + " AP");
                         target_character.Recover_Aura(healing);
                     }
-                    else if (value[0] == Accepted_Shortcuts.CMPC.ToString() || value[0] == Accepted_Shortcuts.TMPC.ToString())
+                    else if (effect.values[0] == Accepted_Shortcuts.CMPC.ToString() || effect.values[0] == Accepted_Shortcuts.TMPC.ToString())
                     {
                         Debug.Log("Character " + character.character_name + " Healed: " + target_character.character_name + "; for " + healing + " MP, Using " + ap_cost + " AP");
                         target_character.Recover_Mana(healing);
                     }
-                    else if (value[0] == Accepted_Shortcuts.CAPC.ToString() || value[0] == Accepted_Shortcuts.TAPC.ToString())
+                    else if (effect.values[0] == Accepted_Shortcuts.CAPC.ToString() || effect.values[0] == Accepted_Shortcuts.TAPC.ToString())
                     {
                         Debug.Log("Character " + character.character_name + " Healed: " + target_character.character_name + "; for " + healing + " AP, Using " + ap_cost + " AP");
                         target_character.Recover_Actions(healing);
@@ -2217,10 +2295,9 @@ public class Character_Action
     /// <summary>
     /// Function to Enact a Status type Character_Action. Used in the Enact() Function.
     /// </summary>
-    /// <param name="checks">The checks to perform to see if the Effect can be invoked.</param>
-    /// <param name="value">The equation for what Status to apply. </param>
+    /// <param name="effect">The Action_Effect to instantiate.</param>
     /// <param name="target">The Target affected by the Character_Action. </param>
-    public IEnumerator Enact_Status(string[] checks, string[] values, Target target)
+    public IEnumerator Enact_Status(Action_Effect effect, Target target)
     {
         foreach (Tile target_tile in target.affected_tiles.Keys)
         {
@@ -2229,7 +2306,7 @@ public class Character_Action
                 //TODO add an interrupt here.
                 yield return new WaitForEndOfFrame();
             }
-            if (Check_Criteria(checks, target_tile.gameObject))
+            if (Check_Criteria(effect.checks, target_tile.gameObject))
             {
                 //First we need to resolve the Condition
                 //Check for a power and attribute
@@ -2238,16 +2315,16 @@ public class Character_Action
                 //TODO add a way for status to affect Tiles and Objects.
                 if (target_tile.obj != null)
                 {
-                    if (values.Length >= 3 && values[2] != null)
+                    if (effect.values.Length >= 3 && effect.values[2] != null)
                     {
-                        power = Convert_To_Double(values[2], target_tile.obj);
+                        power = Convert_To_Double(effect.values[2], target_tile.obj);
                     }
-                    if (values.Length == 4 && values[3] != null)
+                    if (effect.values.Length == 4 && effect.values[3] != null)
                     {
-                        attribute = values[3];
+                        attribute = effect.values[3];
                     }
-                    int duration = (int)Convert_To_Double(values[1], target_tile.obj);
-                    Condition condi = new Condition(values[0], duration, power * target.affected_tiles[target_tile][1], attribute);
+                    int duration = (int)Convert_To_Double(effect.values[1], target_tile.obj);
+                    Condition condi = new Condition(effect.values[0], duration, power * target.affected_tiles[target_tile][1], attribute);
 
                     //Now we add the Condition to the target.
                     Character_Script target_character = target_tile.obj.GetComponent<Character_Script>();
@@ -2275,10 +2352,9 @@ public class Character_Action
     /// <summary>
     /// Function to Enact an Effect type Character_Action. Used in the Enact() Function.
     /// </summary>
-    /// <param name="checks">The checks to perform to see if the Effect can be invoked.</param>
-    /// <param name="value">The String with the equation for how much to Elevate.</param>
+    /// <param name="effect">The Action_Effect to isntantiate.</param>
     /// <param name="target">The Target tile to affect. </param>
-    public IEnumerator Enact_Effect(string[] checks, string[] value, Target target)
+    public IEnumerator Enact_Effect(Action_Effect effect, Target target)
     {
         foreach (Tile target_tile in target.affected_tiles.Keys)
         {
@@ -2287,36 +2363,36 @@ public class Character_Action
                 //TODO add an interrupt here.
                 yield return new WaitForEndOfFrame();
             }
-            if (Check_Criteria(checks, target_tile.gameObject))
+            if (Check_Criteria(effect.checks, target_tile.gameObject))
             {
                 if (target_tile.obj == null && target_tile.traversible)
                 {
-                    string[] values = new string[value.Length - 3];
-                    for (int i = 3; i < value.Length; i++)
+                    string[] values = new string[effect.values.Length - 3];
+                    for (int i = 3; i < effect.values.Length; i++)
                     {
-                        if (value[i] != null)
+                        if (effect.values[i] != null)
                         {
-                            if (value[2] != Action_Effect.Types.Heal.ToString() && value[2] != Action_Effect.Types.Status.ToString())
+                            if (effect.values[2] != Action_Effect.Types.Heal.ToString() && effect.values[2] != Action_Effect.Types.Status.ToString())
                             {
-                                values[i - 3] = "" + Convert_To_Double(value[i], target_tile.gameObject);
+                                values[i - 3] = "" + Convert_To_Double(effect.values[i], target_tile.gameObject);
                             }
                             else
                             {
                                 if (i == 3)
                                 {
-                                    values[i - 3] = value[i];
+                                    values[i - 3] = effect.values[i];
                                 }
                                 else
                                 {
-                                    values[i - 3] = "" + Convert_To_Double(value[i], target_tile.gameObject);
+                                    values[i - 3] = "" + Convert_To_Double(effect.values[i], target_tile.gameObject);
                                 }
                             }
                         }
                     }
-                    int duration = (int)Convert_To_Double(value[1], target_tile.gameObject);
-                    Tile_Effect effect = new Tile_Effect(value[0], value[2], duration, values, target.affected_tiles[target_tile][0], target_tile.gameObject);
-                    effect.Instantiate();
-                    Debug.Log("Character " + character.character_name + " Created Effect: " + name + " on tile (" + target_tile.gameObject.GetComponent<Tile>().index[0] + "," + target_tile.gameObject.GetComponent<Tile>().index[1] + "); For " + duration + " and Using " + ap_cost + " AP");
+                    int duration = (int)Convert_To_Double(effect.values[1], target_tile.gameObject);
+                    Tile_Effect tile_effect = new Tile_Effect(effect.values[0], effect.values[2], duration, values, target.affected_tiles[target_tile][0], target_tile.gameObject);
+                    tile_effect.Instantiate();
+                    //Debug.Log("Character " + character.character_name + " Created Effect: " + name + " on tile (" + target_tile.gameObject.GetComponent<Tile>().index[0] + "," + target_tile.gameObject.GetComponent<Tile>().index[1] + "); For " + duration + " and Using " + ap_cost + " AP");
                 }
                 else
                 {
@@ -2336,10 +2412,9 @@ public class Character_Action
     /// <summary>
     /// Function to Enact an Elevate type Character_Action. Used in the Enact() Function.
     /// </summary>
-    /// <param name="checks">The checks to perform to see if the Effect can be invoked.</param>
-    /// <param name="value">The String with the equation for how much to Elevate.</param>
+    /// <param name="effect">The Action_Effect to enact.</param>
     /// <param name="target">The Target tile to affect. </param>
-    public IEnumerator Enact_Elevate(string[] checks, string value, Target target)
+    public IEnumerator Enact_Elevate(Action_Effect effect, Target target)
     {
         foreach (Tile target_tile in target.affected_tiles.Keys)
         {
@@ -2348,9 +2423,9 @@ public class Character_Action
                 //TODO add an interrupt here.
                 yield return new WaitForEndOfFrame();
             }
-            if (Check_Criteria(checks, target_tile.gameObject))
+            if (Check_Criteria(effect.checks, target_tile.gameObject))
             {
-                int elevation = (int)(Convert_To_Double(value, target_tile.gameObject) * target.affected_tiles[target_tile][0]);
+                int elevation = (int)(Convert_To_Double(effect.values[0], target_tile.gameObject) * target.affected_tiles[target_tile][0]);
                 Debug.Log("Character " + character.character_name + " Elevated Tile: (" + target_tile.index[0] + "," + target_tile.index[1] + "); By " + elevation + " and Using " + ap_cost + " AP");
                 //character.controller.curr_scenario.tile_grid.Elevate(target.game_object.transform, elevation);
                 Game_Controller.curr_scenario.tile_grid.Elevate(target_tile.transform, elevation);
@@ -2368,10 +2443,9 @@ public class Character_Action
     /// <summary>
     /// Function to Enact an Enable type Character_Action. Used in the Enact() Function.
     /// </summary>
-    /// <param name="checks">The checks to perform to see if the Effect can be invoked.</param>
-    /// <param name="value">The String with the euqation for what to do. Should be an action name and a bool pair.</param>
+    /// <param name="effect">The Action_Effect to enact.</param>
     /// <param name="target">The Target whose ability is being Enabled/Disabled.</param>
-    public IEnumerator Enact_Enable(string[] checks, string[] value, Target target)
+    public IEnumerator Enact_Enable(Action_Effect effect, Target target)
     {
         foreach (Tile target_tile in target.affected_tiles.Keys)
         {
@@ -2380,23 +2454,23 @@ public class Character_Action
                 //TODO add an interrupt here.
                 yield return new WaitForEndOfFrame();
             }
-            if (Check_Criteria(checks, target_tile.gameObject))
+            if (Check_Criteria(effect.checks, target_tile.gameObject))
             {
                 if (target_tile.obj.GetComponent<Character_Script>())
                 {
                     Character_Script target_character = target_tile.obj.GetComponent<Character_Script>();
                     foreach (Character_Action act in target_character.GetComponent<Character_Script>().actions)
                     {
-                        //Debug.Log("act.name: " + act.name + ", eff.value: " + eff.value[0]);
-                        if (act.name == value[0])
+                        //Debug.Log("act.name: " + act.name + ", eff.effect.values: " + effect.values[0]);
+                        if (act.name == effect.values[0])
                         {
                             //Debug.Log("MATCH");
-                            if (value[1] == "false" || value[1] == "False" || value[1] == "FALSE")
+                            if (effect.values[1] == "false" || effect.values[1] == "False" || effect.values[1] == "FALSE")
                             {
                                 //Debug.Log("Skill " + act.name + " is disabled.");
                                 act.enabled = false;
                             }
-                            if (value[1] == "true" || value[1] == "True" || value[1] == "TRUE")
+                            if (effect.values[1] == "true" || effect.values[1] == "True" || effect.values[1] == "TRUE")
                             {
                                 //Debug.Log("Skill " + act.name + " is enabled.");
                                 act.enabled = true;
@@ -2418,7 +2492,7 @@ public class Character_Action
     /// <summary>
     /// Function to Enact a Pass type Character_Action. Used in the Enact() Function.
     /// </summary>
-    /// <param name="checks">The checks to perform to see if the Effect can be invoked.</param>
+    /// <param name="effect">The Action_Effect to be enacted.</param>
     /// <param name="target">The Target for the Character_Action.</param>
     public IEnumerator Enact_Pass(string[] checks, Target target)
     {

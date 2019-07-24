@@ -8,11 +8,11 @@ num_targets: 3
 target_checks: CHK_CHAR
 center: Target 1x1
 area: 1
-effects: 1
-  target CHK_NOT_TCND_EQ_BLD Status Bleed,3,2
+effects: 2
+  self NULL 1,1 Orient Target
+  target CHK_NOT_TCND_EQ_BLD 0,0 Status Bleed,3,2
 activation: active
 origin: innate
-orient: target
 trigger: NUL
 enabled: true
 animation: Attack

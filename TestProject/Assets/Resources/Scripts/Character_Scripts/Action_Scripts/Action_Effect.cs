@@ -10,6 +10,7 @@ public class Action_Effect
     /// <summary>
     /// Variables: 
     /// enum Types - All the various Types of Action effects.
+    ///     Orient - Changes the Character(s) orientation.
     ///     Move - Moves Character(s) in the area to a different Tile.
     ///     Damage - Deals damage to Character(s) in the area.
     ///     Heal - Restores Aura to Character(s) in the area.
@@ -22,13 +23,14 @@ public class Action_Effect
     /// string[] checks - The checks to perform before activating the effect.
     /// string[] values - A list of strings that detail the effect of the Action.
     /// </summary>
-    public enum Types { Move, Damage, Heal, Status, Effect, Elevate, Enable, Pass }
+    public enum Types { Orient, Move, Damage, Heal, Status, Effect, Elevate, Enable, Pass }
     public enum Target { self, target, path }
 
     public Types type { get; private set; }
     public Target target { get; private set; }
     public string[] checks { get; private set; }
     public string[] values { get; private set; }
+    public int[] target_limit { get; private set; }
 
     /// <summary>
     /// Constructor for the class
@@ -57,7 +59,7 @@ public class Action_Effect
             for (int x = 0; x < checks.Length; x++)
             {
                 //Debug.Log(check_string[x]);
-                if (check_string[x] == "NUL")
+                if (check_string[x] == "NULL")
                 {
                     checks[x] = "CHK_TDST_LTQ_CRNG";
                 }
@@ -68,10 +70,16 @@ public class Action_Effect
                 }
             }
         }
-
         if (split_input.Length >= 3)
         {
-            string type_string = split_input[2];
+            string[] target_limit_string = split_input[2].Split(',');
+            target_limit = new int[2];
+            int.TryParse(target_limit_string[0], out target_limit[0]);
+            int.TryParse(target_limit_string[0], out target_limit[1]);
+        }
+        if (split_input.Length >= 4)
+        {
+            string type_string = split_input[3];
             Array types = Enum.GetValues(typeof(Types));
 
             foreach (Types ty in types)
@@ -86,9 +94,9 @@ public class Action_Effect
             }
         }
 
-        if (split_input.Length >= 4)
+        if (split_input.Length >= 5)
         {
-            string value_string = split_input[3];
+            string value_string = split_input[4];
             values = new string[value_string.Split(',').Length];
             for (int x = 0; x < values.Length; x++)
             {

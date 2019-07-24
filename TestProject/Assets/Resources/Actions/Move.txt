@@ -9,10 +9,9 @@ target_checks: CHK_EMPTY
 center: Target 1x1
 area: .2
 effects: 1
-  self NUL Move 1,PATH
+  self NULL 0,0 Move 1,TARG_PATH
 activation: active
 origin: innate
-orient: path
 trigger: NUL
 enabled: true
 animation: Move

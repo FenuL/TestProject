@@ -10,11 +10,11 @@ center: Target 3x3
 area: 0 .6 0
 area: .6 1 .6
 area: 0 .6 0
-effects: 1
-  target NUL Effect Blast,5,Damage,CWPD+5
+effects: 2
+  self NULL 0,0 Orient Target
+  target NULL 0,0 Effect Blast,5,Damage,CWPD+5
 activation: active
 origin: innate
-orient: target
 trigger: NUL
 enabled: true
 animation: Attack

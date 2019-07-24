@@ -2,17 +2,17 @@ name: Wait
 ap_cost: CAPC
 mp_cost: -5
 type: None
-range: 0
+range: 1
 color: blue
-num_targets: 0
+num_targets: 1
 target_checks: NULL
-center: Self 1x1
+center: Target 1x1
 area: 1
-effects: 1
-  self NUL Pass
+effects: 2
+  self NULL 0,0 Orient Target
+  self NULL 0,0 Pass
 activation: active
 origin: innate
-orient: select
 trigger: NUL
 enabled: true
 animation: Attack

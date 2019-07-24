@@ -12,11 +12,11 @@ area: 1 0 1 0 1
 area: 1 1 0 1 1
 area: 1 0 1 0 1
 area: 0 1 1 1 0
-effects: 1
-  target NUL Damage CWPD+5
+effects: 2
+  self NULL 0,0 Orient Target
+  target NULL 0,0 Damage CWPD+5
 activation: active
 origin: innate
-orient: target
 trigger: NUL
 enabled: true
 animation: Attack

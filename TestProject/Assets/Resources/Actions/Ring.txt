@@ -10,11 +10,11 @@ center: Self 3x3
 area: .3 .6 .3
 area: .6 0 .6
 area: .3 .6 .3
-effects: 1
-  target NUL Heal CWPD+5
+effects: 2
+  self NULL 0,0 Orient Target
+  target NULL 0,0 Heal CWPD+5
 activation: active
 origin: innate
-orient: target
 trigger: NUL
 enabled: true
 animation: Attack

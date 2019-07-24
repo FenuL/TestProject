@@ -8,11 +8,11 @@ num_targets: 1
 target_checks: CHK_EMPTY
 center: Target 1x1
 area: .2
-effects: 1
-  self NUL Move 4,PATH
+effects: 2
+  self NULL 0,0 Orient Target
+  self NULL 0,0 Move 4,TARG_PATH
 activation: active
 origin: innate
-orient: target
 trigger: NUL
 enabled: true
 animation: Attack

@@ -452,10 +452,10 @@ public class Character_Script : MonoBehaviour {
     public IEnumerator End_Turn()
     {
         ending_turn = true;
-        if (curr_action.Count >0 && curr_action.Peek().orient == "select")
+        /*if (curr_action.Count >0 && curr_action.Peek().orient == "select")
         {
             StartCoroutine(Choose_Orientation());
-        }
+        }*/
         //Debug.Log("Ending Turn");
 
         //controller.curr_scenario.Reset_Reachable();
@@ -845,6 +845,7 @@ public class Character_Script : MonoBehaviour {
         Tile tile_data = target.GetComponent<Tile>();
         if (tile_data != null)
         {
+            //Debug.Log("Target tile is " + tile_data.index[0] + ","+tile_data.index[1]);
             if (tile_data.index[0] >= curr_tile.GetComponent<Tile>().index[0] &&
                 tile_data.index[1] < curr_tile.GetComponent<Tile>().index[1])
             {
@@ -869,6 +870,23 @@ public class Character_Script : MonoBehaviour {
         }
         Orient();
         state = prev_state;
+    }
+
+    /// <summary>
+    /// Sets the Character Orientation to the specified direction.
+    /// </summary>
+    /// <param name="orient">The orientation to set (must be between 0 and 3, inclusive).</param>
+    public void Choose_Orientation(int orient)
+    {
+        if (orient >= 0)
+        {
+            orientation = orient % 4;
+            Orient();
+        }
+        else
+        {
+            Debug.Log("Invalid orientation " + orient);
+        }
     }
 
     /// <summary>
@@ -1084,10 +1102,10 @@ public class Character_Script : MonoBehaviour {
                 yield return new WaitForEndOfFrame();
             }
             state = Character_States.Acting;
-            if (action.orient == "target")
+            /*if (action.orient == "target")
             {
                 Choose_Orientation(target_tile.gameObject);
-            }
+            }*/
 
             //action.Enact(target_tile.gameObject);
             StartCoroutine(action.Enact());
