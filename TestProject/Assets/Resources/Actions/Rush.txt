@@ -9,9 +9,9 @@ target_checks: CHK_NULL
 center: Target 1x1
 area: 1
 effects: 3
+  self NULL 0,0 Enable Rush,false
   self NULL 0,0 Orient Target
   target NULL 0,0 Damage CWPD+5
-  self NULL Enable Rush,false
 activation: active
 origin: innate
 trigger: NUL

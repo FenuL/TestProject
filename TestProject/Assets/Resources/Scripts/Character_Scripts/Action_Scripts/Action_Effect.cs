@@ -73,9 +73,10 @@ public class Action_Effect
         if (split_input.Length >= 3)
         {
             string[] target_limit_string = split_input[2].Split(',');
+            //Debug.Log(target_limit_string[0]);
             target_limit = new int[2];
             int.TryParse(target_limit_string[0], out target_limit[0]);
-            int.TryParse(target_limit_string[0], out target_limit[1]);
+            int.TryParse(target_limit_string[1], out target_limit[1]);
         }
         if (split_input.Length >= 4)
         {

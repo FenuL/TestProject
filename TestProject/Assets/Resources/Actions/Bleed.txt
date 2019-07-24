@@ -9,8 +9,8 @@ target_checks: CHK_CHAR
 center: Target 1x1
 area: 1
 effects: 2
-  self NULL 1,1 Orient Target
-  target CHK_NOT_TCND_EQ_BLD 0,0 Status Bleed,3,2
+  self NULL 0,2 Orient Target
+  target CHK_NOT_TCND_EQ_BLD 0,2 Status Bleed,3,2
 activation: active
 origin: innate
 trigger: NUL

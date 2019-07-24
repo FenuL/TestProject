@@ -677,6 +677,9 @@ public class Character_Action
 
                             character.curr_action.Push(this);
 
+                            //Show the number of targets for the selected Action.
+                            character.controller.action_menu.GetComponent<Action_Menu_Script>().Set_Text("Using " + name + " - Select " + num_targets + " Target(s)");
+
                             Find_Reachable_Tiles();
 
                             Game_Controller.curr_scenario.Clean_Reachable();
@@ -1737,6 +1740,7 @@ public class Character_Action
                 //Debug.Log("target path " + target.curr_path.Count);
                 //Reset_Path();
                 curr_targets.Add(target);
+                character.controller.action_menu.GetComponent<Action_Menu_Script>().Set_Text("Using " + name + " - Select " + (Convert_To_Double(num_targets, target_tile)-curr_targets.Count) + " Target(s)");
             }
         }
     }
@@ -1858,8 +1862,12 @@ public class Character_Action
             int target_index = 0;
             foreach (Target target in curr_targets)
             {
+
                 foreach (Action_Effect eff in effects)
                 {
+                    //Debug.Log("Using " + eff.type + " on " + target.center.index[0] + "," + target.center.index[1]);
+                    //Debug.Log("lower limit " + eff.target_limit[0] + " higher limit " + eff.target_limit[1]);
+                    //Debug.Log("target_index " + target_index);
                     if (eff.target_limit[0] <= target_index &&
                        eff.target_limit[1] >= target_index)
                     {

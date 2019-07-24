@@ -18,6 +18,7 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
     /// bool toggle_open - if the Action menu is toggled open or not.
     /// </summary>
     public RectTransform container;
+    public Text text;
     public List<Transform> buttons;
     public Game_Controller controller { get; private set; }
     public bool is_open { get; private set; }
@@ -152,7 +153,7 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
     /// <summary>
     /// Toggles the action menu to keep it open. Called when the Action Menu is clicked.
     /// </summary>
-    public void toggle()
+    public void Toggle()
     {
         if (toggle_open)
         {
@@ -164,5 +165,14 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
             toggle_open = true;
             is_open = true;
         }
+    }
+
+    /// <summary>
+    /// Sets the text description for the Action Menu
+    /// </summary>
+    /// <param name="text"></param>
+    public void Set_Text(string new_text)
+    {
+        text.text = "Action Menu - " + new_text;
     }
 }

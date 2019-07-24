@@ -9,9 +9,9 @@ target_checks: CHK_CHAR
 center: Target 1x1
 area: 1
 effects: 3
+  self NULL 0,0 Enable Shoot,false
   self NULL 0,1 Orient Target
   target NULL 0,1 Damage CWPD+CCRD+5
-  self NULL 0,0 Enable Shoot,false
 activation: active
 origin: innate
 trigger: NUL
