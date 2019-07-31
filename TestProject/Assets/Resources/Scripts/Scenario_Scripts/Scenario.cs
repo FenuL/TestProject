@@ -771,9 +771,10 @@ public class Scenario : MonoBehaviour {
         //Debug.Log("Showing Path");
         Tile cursor_tile = selected_tile.GetComponent<Tile>();
         Character_Script chara = curr_player.Peek().GetComponent<Character_Script>();
-        if (cursor_tile.parent != null &&
+        if ((cursor_tile.parent != null) &&
             curr_player.Peek() != null)
         {
+            //Debug.Log("Testing");
             Tile temp_tile = cursor_tile;
             Mesh mesh = new Mesh();
             List<Vector3> vertices = new List<Vector3>();
@@ -1709,7 +1710,7 @@ public class Scenario : MonoBehaviour {
                                     //Debug.Log("tile weight: " + tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight + " cost_limit: " + cost_limit);
                                     //Debug.Log("tile_distance: " + tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().distance + " distance_limit: " + distance_limit);
                                     if (tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight <= cost_limit &&
-                                        tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight > 0 &&
+                                        tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight >= 0 &&
                                         tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().distance <= distance_limit)
                                     {
                                         

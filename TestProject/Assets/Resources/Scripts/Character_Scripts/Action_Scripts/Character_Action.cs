@@ -59,6 +59,7 @@ public class Character_Action
     public List<string> target_checks { get; private set; }
     public List<Target> curr_targets { get; private set;  }
     public List<Tile> curr_path { get; private set; }
+    public float curr_path_cost { get; private set; }
     public bool paused { get; private set; }
     public List<Action_Effect> effects { get; private set; }
     public Activation_Types activation { get; private set; }
@@ -87,6 +88,7 @@ public class Character_Action
         target_checks = new List<string>();
         curr_targets = new List<Target>();
         curr_path = new List<Tile>();
+        curr_path_cost = 0;
         paused = false;
         effects = null;
         activation = Activation_Types.Active;
@@ -118,6 +120,7 @@ public class Character_Action
         target_checks = act.target_checks;
         curr_targets = new List<Target>();
         curr_path = new List<Tile>();
+        curr_path_cost = 0;
         paused = act.paused;
         effects = act.effects;
         activation = act.activation;
@@ -1452,7 +1455,8 @@ public class Character_Action
         if (action_type == Action_Types.Path)
         {
             //character.controller.curr_scenario.Find_Reachable((int)character.speed, (int)Convert_To_Double(range, null), 1);
-            Game_Controller.curr_scenario.Find_Reachable((int)Convert_To_Double(range, null), (int)Convert_To_Double(range, null), 1);
+            //Debug.Log((int)(Convert_To_Double(range, null) - curr_path_cost));
+            Game_Controller.curr_scenario.Find_Reachable((int)(Convert_To_Double(range, null)-curr_path_cost), (int)Convert_To_Double(range, null), 1);
         }
         else if (action_type == Action_Types.Unrestricted_Path)
         {
@@ -1737,6 +1741,8 @@ public class Character_Action
                 //Find_Path(target_tile);
                 //Debug.Log("curr path " + curr_path.Count);
                 target.Set_Path(curr_path);
+                target.Set_Path_Cost(curr_path_cost);
+                //Debug.Log("Path cost " + curr_path_cost);
                 //Debug.Log("target path " + target.curr_path.Count);
                 //Reset_Path();
                 curr_targets.Add(target);
@@ -1760,6 +1766,7 @@ public class Character_Action
             {
                 if(target_tile.traversible)
                 {
+                    curr_path_cost += (float)target_tile.weight;
                     Find_Path(obj);
                     added = true;
                 }
@@ -1802,6 +1809,7 @@ public class Character_Action
     {
         curr_path = new List<Tile>();
         curr_path.Add(character.curr_tile.GetComponent<Tile>());
+        curr_path_cost = 0;
     }
 
     /// <summary>
@@ -2170,11 +2178,6 @@ public class Character_Action
                         int move_type = (int)Convert_To_Double(effect.values[0], target_tile.obj);
                         Tile start = chara.curr_tile.GetComponent<Tile>();
                         //Check for valid move type.
-
-                        if (effect.values[1] == "TARG_PATH")
-                        {
-                            target.Set_Path(curr_path);
-                        }
 
                         //Actually move
                         chara.MoveTo(move_type, target.curr_path);

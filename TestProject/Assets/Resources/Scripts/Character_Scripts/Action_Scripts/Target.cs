@@ -8,14 +8,19 @@ public class Target
 {
     /// <summary>
     /// Variables:
-    /// GameObject game_object - The Object for the Action to Target
-    /// float modifier - The AoE modifier for the Action to attach to the Target
+    /// Tile center - the Center of the Target.
+    /// Dictionary<Tile, float[]> affected_tiles - The list of Tiles affected by the target mapped to their modifier.
+    /// Dictionary<Character_Script, float> affected_characters - the list of Characters affected by the target mapped to their modifier
+    /// Dictionary<Object_Script, float> affected_objects - the list of Objects affected by the target mapped to their modifier.
+    /// List<Tile> curr_path - The List of tiles to traverse to reach the center of the target from the character's position.
+    /// curr_path_cost - The cost of traversing the Target's curr_path.
     /// </summary>
     public Tile center { get; private set; }
     public Dictionary<Tile, float[]> affected_tiles { get; private set; }
     public Dictionary<Character_Script, float> affected_characters { get; private set; }
     public Dictionary<Object_Script, float> affected_objects { get; private set; }
     public List<Tile> curr_path { get; private set; }
+    public float curr_path_cost { get; private set; }
 
     /// <summary>
     /// Constructor for the class
@@ -29,6 +34,7 @@ public class Target
         affected_characters = new Dictionary<Character_Script, float>();
         affected_objects = new Dictionary<Object_Script, float>();
         curr_path = new List<Tile>();
+        curr_path_cost = 0;
 
         //String[] area_effect = center.Split(' ');
         int startX = center.index[0];
@@ -107,6 +113,24 @@ public class Target
     public void Set_Path(List<Tile> path)
     {
         curr_path = path;
+    }
+
+    /// <summary>
+    /// Sets the path_cost for the target
+    /// </summary>
+    /// <param name="cost">The cost of the path.</param>
+    public void Set_Path_Cost(float cost)
+    {
+        curr_path_cost = cost;
+    }
+
+    /// <summary>
+    /// Adds to the path_cost for the target
+    /// </summary>
+    /// <param name="cost">The amount to add to the cost of the path.</param>
+    public void Add_Path_Cost(float cost)
+    {
+        curr_path_cost += cost;
     }
 
 }

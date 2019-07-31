@@ -2,14 +2,14 @@ name: Move
 ap_cost: CEIL[(2*CSPD-CSPD)/CSPD]
 mp_cost: 0
 type: Path
-range: CSPD
+range: (2-CAPM-CAPC)*CSPD
 color: blue
 num_targets: 1
 target_checks: CHK_EMPTY
 center: Target 1x1
 area: .2
 effects: 1
-  self NULL 0,0 Move 1,TARG_PATH
+  self NULL 0,0 Move 1,T_PATH
 activation: active
 origin: innate
 trigger: NUL
