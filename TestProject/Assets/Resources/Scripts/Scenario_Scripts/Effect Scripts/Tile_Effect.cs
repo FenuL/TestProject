@@ -302,7 +302,7 @@ public class Tile_Effect : MonoBehaviour {
         {
             tile_effect_obj.GetComponent<SpriteRenderer>().sprite = Resources.LoadAll<Sprite>("Sprites/Object Sprites/potions_transparent")[2];
         }
-        if (type == Types.Heal && (value[0] == Accepted_Shortcuts.CMPC.ToString() || value[0] == Accepted_Shortcuts.TMPC.ToString()))
+        if (type == Types.Heal && (value[0] == Accepted_Shortcuts.MPC.ToString()))
         {
             tile_effect_obj.GetComponent<SpriteRenderer>().sprite = Resources.LoadAll<Sprite>("Sprites/Object Sprites/potions_transparent")[3];
         }
@@ -443,17 +443,17 @@ public class Tile_Effect : MonoBehaviour {
     public void Enact_Healing(Character_Script character, String[] value)
     {
         int healing = (int)(Convert_To_Double(value[1], character.gameObject, character.gameObject) * modifier);
-        if (value[0] == Accepted_Shortcuts.CAUC.ToString() || value[0] == Accepted_Shortcuts.CAUC.ToString())
+        if (value[0] == Accepted_Shortcuts.AUC.ToString())
         {
             Debug.Log("Character " + character.character_name + " Triggered: " + name + "; for " + healing + " Aura");
             character.Recover_Aura(healing);
         }
-        else if (value[0] == Accepted_Shortcuts.CMPC.ToString() || value[0] == Accepted_Shortcuts.TMPC.ToString())
+        else if (value[0] == Accepted_Shortcuts.MPC.ToString())
         {
             Debug.Log("Character " + character.character_name + " Triggered: " + name + "; for " + healing + " MP");
             character.Recover_Mana(healing);
         }
-        else if (value[0] == Accepted_Shortcuts.CAPC.ToString() || value[0] == Accepted_Shortcuts.TAPC.ToString())
+        else if (value[0] == Accepted_Shortcuts.APC.ToString())
         {
             Debug.Log("Character " + character.character_name + " Triggered: " + name + "; for " + healing + " AP");
             character.Recover_Actions(healing);

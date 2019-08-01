@@ -2,8 +2,8 @@ name: Ring
 ap_cost: 1
 mp_cost: 5
 type: Ranged
-range: CWPR
-color: blue
+range: CC_WPR
+tile_color: 0
 num_targets: 1
 target_checks: NULL
 center: Self 3x3
@@ -12,7 +12,7 @@ area: .6 0 .6
 area: .3 .6 .3
 effects: 2
   self NULL 0,0 Orient Target
-  target NULL 0,0 Heal CWPD+5
+  target NULL 0,0 Heal CC_WPD+5
 activation: active
 origin: innate
 trigger: NUL

@@ -1,16 +1,16 @@
 name: Channel
-ap_cost: CAPC
+ap_cost: CC_APC
 mp_cost: 10
 type: Melee
 range: 1
-color: blue
+tile_color: 0
 num_targets: 1
 target_checks: NULL
 center: Target 1x1
 area: 1
 effects: 3
   self NULL 0,0 Orient Target
-  self NULL 0,0 Heal CAUC,10
+  self NULL 0,0 Heal CC_AUC,10
   self NULL 0,0 Pass
 activation: active
 origin: innate

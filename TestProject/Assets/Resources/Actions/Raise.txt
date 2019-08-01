@@ -2,8 +2,8 @@ name: Raise
 ap_cost: 1
 mp_cost: 5
 type: Ranged
-range: CWPR
-color: blue
+range: CC_WPR
+tile_color: 0
 num_targets: 2
 target_checks: NULL
 center: Target 3x3

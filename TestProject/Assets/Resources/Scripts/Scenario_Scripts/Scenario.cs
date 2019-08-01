@@ -53,8 +53,10 @@ public class Scenario : MonoBehaviour {
     /// </summary>
     private static string PLAYER_STATS_FILE = "Assets/Resources/Characters/Player_Characters/Player_Character_Data.txt";
     private static string MONSTER_STATS_FILE = "Assets/Resources/Characters/Monster_Characters/Monster_Character_Data.txt";
+    private static string MAT_FOLDER = "Assets/Resources/Objects/Materials/";
     private static Scenario scenario;
 
+    public List<Material> Reachable_Materials { get; private set; }
     public Tile_Grid tile_grid { get; private set; }
 	public Game_Controller controller { get; private set; }
     public string scenario_file { get; private set; }
@@ -78,6 +80,7 @@ public class Scenario : MonoBehaviour {
     public ArrayList characters { get; private set; }
     public List<GameObject> tile_objects { get; private set; }
     public List<GameObject> tile_effects { get; private set; }
+    public List<Material> reachable_tile_materials { get; private set; }
     public Character_Script[] player_character_data { get; private set; }
     public Character_Script[] monster_character_data { get; private set; }
     public List<GameObject> turn_order { get; private set; }
@@ -477,6 +480,13 @@ public class Scenario : MonoBehaviour {
     {
         //Instantiate the actual tile objects
         tile_grid.Instantiate();
+
+        //Load the reachable tile materials
+        reachable_tile_materials = new List<Material>();
+        for (int i =0; i< 2; i++)
+        {
+            reachable_tile_materials.Add(Resources.Load(MAT_FOLDER + "Reachable_Tile_0"+i+".mat", typeof(Material)) as Material);
+        }
 
         //Load player and monster stats and come up with turn order
         player_character_data = Read_Character_Data(PLAYER_STATS_FILE);
@@ -1787,11 +1797,13 @@ public class Scenario : MonoBehaviour {
             //Debug.Log("reachable tile count " + curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().reachable_tiles.Count);
             foreach (Transform tile in reachable_tiles)
             {
+
                 //tile_grid.reachable_prefab.GetComponent<SpriteRenderer>().sortingOrder = tile.GetComponent<SpriteRenderer>().sortingOrder;
                 if (curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Moving || curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Blinking)
                 {
                     //Set Material to blue
                     //Debug.Log(tile_grid.reachable_prefab.GetComponent<Material>().name);
+
                     tile_grid.reachable_prefab.GetComponent<Renderer>().sharedMaterial.color = new Color(0, 0, 255);
                 }
                 if (curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Attacking)
@@ -1805,7 +1817,7 @@ public class Scenario : MonoBehaviour {
                                                                tile.position.y + .015f + Tile_Grid.TILE_SCALE * tile.GetComponent<Tile>().height,
                                                                tile.position.z),
                                                                Quaternion.identity);
-
+                //obj.GetComponent<MeshRenderer>().material = reachable_tile_materials[0];
                 //Set the object Parent to the Scenario Reachable_Tiles
                 obj.transform.parent = Game_Controller.curr_scenario.transform.GetChild(4);
 

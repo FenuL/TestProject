@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 using UnityEngine.UI;
+using System.Text.RegularExpressions;
 
 /// <summary>
 /// Class to define Character Actions. 
@@ -51,7 +52,7 @@ public class Character_Action
     public String ap_cost { get; private set; }
     public String mp_cost { get; private set; }
     public Action_Types action_type { get; private set; }
-    public String color { get; private set; }
+    public String tile_color { get; private set; }
     public String range { get; private set; }
     public String center { get; private set; }
     public float[,] area { get; private set; }
@@ -112,7 +113,7 @@ public class Character_Action
         ap_cost = act.ap_cost;
         mp_cost = act.mp_cost;
         action_type = act.action_type;
-        color = act.color;
+        tile_color = act.tile_color;
         range = act.range;
         center = act.center;
         area = act.area;
@@ -257,7 +258,7 @@ public class Character_Action
                         }
                         break;
                     case "color":
-                        act.color = values.Trim();
+                        act.tile_color = values.Trim();
                         break;
                     case "range":
                         act.range = values.Trim();
@@ -399,28 +400,75 @@ public class Character_Action
     /// Parses Accepted_Shortcuts in the String based on stats from the provided Character_Script.
     /// </summary>
     /// <param name="input">The String to convert to a Double</param>
-    /// <param name="target">The target receiving the action. Used to parse ACCEPTED_SHORTCUTS beginning with T.</param>
-    /// <returns></returns>
-    public double Convert_To_Double(string input, GameObject target)
+    /// <param name="target_obj">The target object receiving the action. Used to parse ACCEPTED_SHORTCUTS beginning with CT.</param>
+    /// <param name="target">The Target in the curr_targets list receiving the action. Used to parse ACCEPTED_SHORTCUTS beginning with TN.</param>
+    /// <param name="escape">The current parse attempt. Used to escape an infinite loop. </param>
+    /// <returns>A float value of the equation given in the input</returns>
+    public float Convert_To_Float(string input, GameObject target_obj, Target target, int escape)
     {
-        double output = 0.0;
+        //Debug.Log("Action: " + name + "; " + input);
+        //Base case 
+        if (escape > 5)
+        {
+            Debug.Log("TOOK TOO LONG TO PARSE");
+            return -1;
+        }
+
+        float output = 0;
+        Character_Script source = character;
+        Target target_source = target;
+        string prefix = "CC_";
+        if (input.Contains("CT_"))
+        {
+            if (target_obj != null)
+            {
+                if (target_obj.GetComponent<Character_Script>())
+                {
+                    source = target_obj.GetComponent<Character_Script>();
+                }
+                else
+                {
+                    source = target_obj.GetComponent<Tile>().obj.GetComponent<Character_Script>();
+                }
+                prefix = "CT";
+            }
+        }
+        else if (input.Contains("TN_"))
+        {
+            int start = input.IndexOf("TN_")+3;
+            int length = input.Substring(start).IndexOf("_");
+            prefix = "TN_" + input.Substring(start, length) + "_";
+            int target_index;
+            if (int.TryParse(input.Substring(start, length), out target_index))
+            {
+                if (target_index < curr_targets.Count)
+                {
+                    target_source = curr_targets[target_index];
+                }
+            }
+            if (target_source != null)
+            {
+                if (target_source.center.obj != null)
+                {
+                    if (target_source.center.obj.GetComponent<Character_Script>())
+                    {
+                        source = target_source.center.obj.GetComponent<Character_Script>();
+                    }
+                }
+            }
+        }
+
         if(input.Contains("CEIL")){
             string[] start_string = input.Replace("CEIL", "").Split("[".ToCharArray(), 2);
             string[] end_string = start_string[1].Split("]".ToCharArray(), 2);
-            /*foreach (string str in start_string)
-            {
-                Debug.Log("start " + str);
-            }
-            foreach (string str in end_string)
-            {
-                Debug.Log("end" + str);
-            }*/
-            return Mathf.Ceil((float)Convert_To_Double(end_string[0], target));
+            return Mathf.Ceil(Convert_To_Float(end_string[0], target_obj, target, escape+1));
         }
         if (input.Contains("FLOOR")){
-            return Mathf.Floor((float)Convert_To_Double(input.Split('[')[1].Split(']')[0], target));
+            string[] start_string = input.Replace("CEIL", "").Split("[".ToCharArray(), 2);
+            string[] end_string = start_string[1].Split("]".ToCharArray(), 2);
+            return Mathf.Floor(Convert_To_Float(end_string[0], target_obj, target, escape+1));
         }
-        if (double.TryParse(input, out output))
+        if (float.TryParse(input, out output))
         {
             return output;
         }
@@ -430,154 +478,171 @@ public class Character_Action
             Array values = Enum.GetValues(typeof(Accepted_Shortcuts));
             foreach (Accepted_Shortcuts val in values)
             {
-                Character_Script source = character;
-
-                if (val.ToString()[0] == 'T')
-                {
-                    if (target != null)
-                    {
-                        if (target.GetComponent<Character_Script>())
-                        {
-                            source = target.GetComponent<Character_Script>();
-                        }
-                        else
-                        {
-                            source = target.GetComponent<Tile>().GetComponent<Character_Script>();
-                        }
-                    }
-                }
                 //Debug.Log("Input " + input);
                 if (source != null && !source.Equals(null))
                 {
-                    if (input.Contains(val.ToString()))
+                    if (input.Contains(prefix))
                     {
-                        if (val.ToString().Contains("AUM"))
+                        if (input.Contains(val.ToString()))
                         {
-                            input = input.Replace(val.ToString(), "" + source.aura_max);
+                            if (val.ToString().Contains("AUM"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.aura_max);
+                            }
+                            else if (val.ToString().Contains("AUC"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.aura_curr);
+                            }
+                            else if (val.ToString().Contains("APM"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.action_max);
+                            }
+                            else if (val.ToString().Contains("APC"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.action_curr);
+                            }
+                            else if (val.ToString().Contains("MPM"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.mana_max);
+                            }
+                            else if (val.ToString().Contains("MPC"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.mana_curr);
+                            }
+                            else if (val.ToString().Contains("CAM"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.canister_max);
+                            }
+                            else if (val.ToString().Contains("CAC"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.canister_curr);
+                            }
+                            else if (val.ToString().Contains("SPD"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.speed);
+                            }
+                            else if (val.ToString().Contains("STR"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.strength);
+                            }
+                            else if (val.ToString().Contains("CRD"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.coordination);
+                            }
+                            else if (val.ToString().Contains("SPT"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.spirit);
+                            }
+                            else if (val.ToString().Contains("DEX"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.dexterity);
+                            }
+                            else if (val.ToString().Contains("VIT"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.vitality);
+                            }
+                            else if (val.ToString().Contains("LVL"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.level);
+                            }
+                            else if (val.ToString().Contains("WPR"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.weapon.modifier.GetLength(0) / 2);
+                            }
+                            else if (val.ToString().Contains("WPD"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.weapon.attack);
+                            }
+                            else if (val.ToString().Contains("WPN"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.weapon.name);
+                            }
+                            else if (val.ToString().Contains("ARM"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.armor.armor);
+                            }
+                            else if (val.ToString().Contains("WGT"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.armor.weight);
+                            }
+                            else if (val.ToString().Contains("MOC"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.action_curr);
+                            }
+                            else if (val.ToString().Contains("DST"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.aura_max);
+                            }
+                            else if (val.ToString().Contains("CST"))
+                            {
+                                if (target_source != null)
+                                {
+                                    input = input.Replace(prefix + val.ToString(), "" + target_source.curr_path_cost);
+                                }else
+                                {
+                                    input = input.Replace(prefix + val.ToString(), "" + source.speed);
+                                }
+                            }
+                            else if (val.ToString().Contains("NUL"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + 0.0);
+                            }
                         }
-                        else if (val.ToString().Contains("AUC"))
+                    }
+                    else
+                    {
+                        //try to convert to double after converting
+                        if (float.TryParse(input, out output))
                         {
-                            input = input.Replace(val.ToString(), "" + source.aura_curr);
+                            return output;
                         }
-                        else if (val.ToString().Contains("APM"))
+                        else if (input.Contains("CC_") || 
+                            input.Contains("TN_") || 
+                            input.Contains("CT_") )
                         {
-                            input = input.Replace(val.ToString(), "" + source.action_max);
+                            return Convert_To_Float(input, target_obj, target, escape + 1);
                         }
-                        else if (val.ToString().Contains("APC"))
+                        else if (input.Contains("+") ||
+                            input.Contains("/") ||
+                            input.Contains("*") ||
+                            input.Contains("-") ||
+                            input.Contains("^") ||
+                            input.Contains("(") ||
+                            input.Contains(")"))
                         {
-                            input = input.Replace(val.ToString(), "" + source.action_curr);
-                        }
-                        else if (val.ToString().Contains("MPM"))
-                        {
-                            input = input.Replace(val.ToString(), "" + source.mana_max);
-                        }
-                        else if (val.ToString().Contains("MPC"))
-                        {
-                            input = input.Replace(val.ToString(), "" + source.mana_curr);
-                        }
-                        else if (val.ToString().Contains("CAM"))
-                        {
-                            input = input.Replace(val.ToString(), "" + source.canister_max);
-                        }
-                        else if (val.ToString().Contains("CAC"))
-                        {
-                            input = input.Replace(val.ToString(), "" + source.canister_curr);
-                        }
-                        else if (val.ToString().Contains("SPD"))
-                        {
-                            input = input.Replace(val.ToString(), "" + source.speed);
-                        }
-                        else if (val.ToString().Contains("STR"))
-                        {
-                            input = input.Replace(val.ToString(), "" + source.strength);
-                        }
-                        else if (val.ToString().Contains("CRD"))
-                        {
-                            input = input.Replace(val.ToString(), "" + source.coordination);
-                        }
-                        else if (val.ToString().Contains("SPT"))
-                        {
-                            input = input.Replace(val.ToString(), "" + source.spirit);
-                        }
-                        else if (val.ToString().Contains("DEX"))
-                        {
-                            input = input.Replace(val.ToString(), "" + source.dexterity);
-                        }
-                        else if (val.ToString().Contains("VIT"))
-                        {
-                            input = input.Replace(val.ToString(), "" + source.vitality);
-                        }
-                        else if (val.ToString().Contains("LVL"))
-                        {
-                            input = input.Replace(val.ToString(), "" + source.level);
-                        }
-                        else if (val.ToString().Contains("WPR"))
-                        {
-                            input = input.Replace(val.ToString(), "" + source.weapon.modifier.GetLength(0) / 2);
-                        }
-                        else if (val.ToString().Contains("WPD"))
-                        {
-                            input = input.Replace(val.ToString(), "" + source.weapon.attack);
-                        }
-                        else if (val.ToString().Contains("WPN"))
-                        {
-                            input = input.Replace(val.ToString(), "" + source.weapon.name);
-                        }
-                        else if (val.ToString().Contains("ARM"))
-                        {
-                            input = input.Replace(val.ToString(), "" + source.armor.armor);
-                        }
-                        else if (val.ToString().Contains("WGT"))
-                        {
-                            input = input.Replace(val.ToString(), "" + source.armor.weight);
-                        }
-                        else if (val.ToString().Contains("MOC"))
-                        {
-                            input = input.Replace(val.ToString(), "" + source.action_curr);
-                        }
-                        else if (val.ToString().Contains("DST"))
-                        {
-                            input = input.Replace(val.ToString(), "" + source.aura_max);
-                        }
-                        else if (val.ToString().Contains("NUL"))
-                        {
-                            input = input.Replace(val.ToString(), "" + 0.0);
+                            return Parse_Equation(input);
                         }
                     }
                 }
             }
-            //try to convert to double after converting
-            
-            if (double.TryParse(input, out output))
-            {
-                return output;
-            }
-            else if (input.Contains("+") ||
-                input.Contains("/") ||
-                input.Contains("*") ||
-                input.Contains("-") ||
-                input.Contains("^") ||
-                input.Contains("(") ||
-                input.Contains(")"))
-            {
-                return Parse_Equation(input);
-            }
-            return -1.0;
         }
-
+        return Convert_To_Float(input, target_obj, target, escape + 1);
     }
 
     /// <summary>
-    /// Parses a String Equation and computes it. Used by the Convert_To_Double Function to fully solve equations.
+    /// Converts the String parameters from the Character_Action into a double. 
+    /// Parses Accepted_Shortcuts in the String based on stats from the provided Character_Script.
+    /// </summary>
+    /// <param name="input">The String to convert to a Double</param>
+    /// <param name="target_obj">The target object receiving the action. Used to parse ACCEPTED_SHORTCUTS beginning with CT.</param>
+    /// <param name="target">The Target in the curr_targets list receiving the action. Used to parse ACCEPTED_SHORTCUTS beginning with TN.</param>
+    /// <returns>A float value of the equation given in the input</returns>
+    public float Convert_To_Float(string input, GameObject target_obj, Target target)
+    {
+        return Convert_To_Float(input, target_obj, target, 0);
+    }
+
+    /// <summary>
+    /// Parses a String Equation and computes it. Used by the Convert_To_Float Function to fully solve equations.
     /// </summary>
     /// <param name="input">An Equation to parse out.</param>
     /// <returns></returns>
-    public double Parse_Equation(string input)
+    public float Parse_Equation(string input)
     {
         //Debug.Log("Parsing: " + input);
         //base case, can we convert to double?
-        double output;
-        if (double.TryParse(input, out output))
+        float output;
+        if (float.TryParse(input, out output))
         {
             return output;
         }
@@ -644,18 +709,18 @@ public class Character_Action
             //Debug.Log("Name: " + name + " is enabled: " + enabled);
             if (this.enabled)
             {
-                //Debug.Log("AP cost: " + (int)Convert_To_Double(ap_cost, character.gameObject));
+                //Debug.Log("AP cost: " + (int)Convert_To_Float(ap_cost, character.gameObject));
                 //Check to see if player can afford action:
                 if (Check_Resource())
                 {
                     //Debug.Log("Enough action points");
-                    if (character.mana_curr >= (int)Convert_To_Double(mp_cost, null))
+                    if (character.mana_curr >= (int)Convert_To_Float(mp_cost, null, null))
                     {
                         //Debug.Log("Enough mana points");
                         //character.curr_action.Push(this);
                         
                         if (action_type != Action_Types.None || 
-                            Convert_To_Double(num_targets, null) > 0 )
+                            Convert_To_Float(num_targets, null, null) > 0 )
                         {
                             Reset_Targets();
                             Reset_Path();
@@ -1454,39 +1519,39 @@ public class Character_Action
         List<Tile> tiles = new List<Tile>();
         if (action_type == Action_Types.Path)
         {
-            //character.controller.curr_scenario.Find_Reachable((int)character.speed, (int)Convert_To_Double(range, null), 1);
-            //Debug.Log((int)(Convert_To_Double(range, null) - curr_path_cost));
-            Game_Controller.curr_scenario.Find_Reachable((int)(Convert_To_Double(range, null)-curr_path_cost), (int)Convert_To_Double(range, null), 1);
+            //character.controller.curr_scenario.Find_Reachable((int)character.speed, (int)Convert_To_Float(range, null), 1);
+            //Debug.Log((int)(Convert_To_Float(range, null) - curr_path_cost));
+            Game_Controller.curr_scenario.Find_Reachable((int)(Convert_To_Float(range, null, null)-curr_path_cost), (int)Convert_To_Float(range, null, null), 1);
         }
         else if (action_type == Action_Types.Unrestricted_Path)
         {
-            //character.controller.curr_scenario.Find_Reachable((int)character.speed * 2, (int)Convert_To_Double(range, null), 2);
-            Game_Controller.curr_scenario.Find_Reachable((int)character.speed * 2, (int)Convert_To_Double(range, null), 2);
+            //character.controller.curr_scenario.Find_Reachable((int)character.speed * 2, (int)Convert_To_Float(range, null), 2);
+            Game_Controller.curr_scenario.Find_Reachable((int)character.speed * 2, (int)Convert_To_Float(range, null, null), 2);
         }
         else if (action_type == Action_Types.Ranged)
         {
-            //character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null), 3);
-            Game_Controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null), 3);
+            //character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Float(range, null), 3);
+            Game_Controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Float(range, null, null), 3);
         }
         else if (action_type == Action_Types.Melee)
         {
-            //character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null), 3);
-            Game_Controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null), 3);
+            //character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Float(range, null), 3);
+            Game_Controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Float(range, null, null), 3);
         }
         else if (action_type == Action_Types.Projectile)
         {
-            //character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null), 3);
-            Game_Controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Double(range, null), 3);
+            //character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Float(range, null), 3);
+            Game_Controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Float(range, null, null), 3);
         }
         else if (action_type == Action_Types.Instant)
         {
-            //character.controller.curr_scenario.Find_Reachable((int)character.speed * 2, (int)Convert_To_Double(range, null), 2);
-            Game_Controller.curr_scenario.Find_Reachable((int)Convert_To_Double(range, null), (int)Convert_To_Double(range, null), 2);
+            //character.controller.curr_scenario.Find_Reachable((int)character.speed * 2, (int)Convert_To_Float(range, null), 2);
+            Game_Controller.curr_scenario.Find_Reachable((int)Convert_To_Float(range, null, null), (int)Convert_To_Float(range, null, null), 2);
         }
         else if (action_type == Action_Types.None)
         {
-            //character.controller.curr_scenario.Find_Reachable((int)character.speed * 2, (int)Convert_To_Double(range, null), 2);
-            Game_Controller.curr_scenario.Find_Reachable((int)Convert_To_Double(range, null), (int)Convert_To_Double(range, null), 3);
+            //character.controller.curr_scenario.Find_Reachable((int)character.speed * 2, (int)Convert_To_Float(range, null), 2);
+            Game_Controller.curr_scenario.Find_Reachable((int)Convert_To_Float(range, null, null), (int)Convert_To_Float(range, null, null), 3);
         }
         return tiles;
     }
@@ -1660,8 +1725,8 @@ public class Character_Action
     {
         //Debug.Log("type " + type + " character actions " + character.action_curr);
 
-        if ((activation == Activation_Types.Active && character.action_curr >= (int)Convert_To_Double(ap_cost, null)) || 
-            (activation == Activation_Types.Reactive && character.reaction_curr >= (int)Convert_To_Double(ap_cost, null)))
+        if ((activation == Activation_Types.Active && character.action_curr >= (int)Convert_To_Float(ap_cost, null, null)) || 
+            (activation == Activation_Types.Reactive && character.reaction_curr >= (int)Convert_To_Float(ap_cost, null, null)))
         {
             return true;
         }
@@ -1746,7 +1811,7 @@ public class Character_Action
                 //Debug.Log("target path " + target.curr_path.Count);
                 //Reset_Path();
                 curr_targets.Add(target);
-                character.controller.action_menu.GetComponent<Action_Menu_Script>().Set_Text("Using " + name + " - Select " + (Convert_To_Double(num_targets, target_tile)-curr_targets.Count) + " Target(s)");
+                character.controller.action_menu.GetComponent<Action_Menu_Script>().Set_Text("Using " + name + " - Select " + (Convert_To_Float(num_targets, target_tile, target)-curr_targets.Count) + " Target(s)");
             }
         }
     }
@@ -1787,7 +1852,7 @@ public class Character_Action
     public bool Has_Valid_Targets()
     {
         bool valid = false;
-        if (curr_targets.Count >= Convert_To_Double(num_targets, null))
+        if (curr_targets.Count >= Convert_To_Float(num_targets, null, null, 0))
         {
             valid = true;
         }
@@ -2133,7 +2198,7 @@ public class Character_Action
                     }
                     else
                     {
-                        target_character.Choose_Orientation((int)Convert_To_Double(effect.values[0], target_tile.obj));
+                        target_character.Choose_Orientation((int)Convert_To_Float(effect.values[0], target_tile.obj, target));
                     }
                 }
             }
@@ -2175,7 +2240,7 @@ public class Character_Action
                     //Check for a valid object to move.
                     if (chara != null)
                     {
-                        int move_type = (int)Convert_To_Double(effect.values[0], target_tile.obj);
+                        int move_type = (int)Convert_To_Float(effect.values[0], target_tile.obj, target, 0);
                         Tile start = chara.curr_tile.GetComponent<Tile>();
                         //Check for valid move type.
 
@@ -2227,14 +2292,14 @@ public class Character_Action
                     Character_Script chara = target_tile.obj.GetComponent<Character_Script>();
                     if (chara != null)
                     {
-                        int damage = (int)(Convert_To_Double(effect.values[0], chara.gameObject) * target.affected_tiles[target_tile][1]);
-                        Debug.Log("Character " + character.character_name + " Attacked: " + chara.character_name + "; Dealing " + damage + "(" + Convert_To_Double(effect.values[0], chara.gameObject) + ") damage and Using " + ap_cost + " AP");
+                        int damage = (int)(Convert_To_Float(effect.values[0], chara.gameObject, target) * target.affected_tiles[target_tile][1]);
+                        Debug.Log("Character " + character.character_name + " Attacked: " + chara.character_name + "; Dealing " + damage + "(" + Convert_To_Float(effect.values[0], chara.gameObject, target) + ") damage and Using " + ap_cost + " AP");
                         chara.Take_Damage(damage, character.weapon.pierce);
                         Event_Manager.Broadcast(Event_Trigger.ON_DAMAGE, this, effect.values[0], target_tile.gameObject);
                     }
                     else
                     {
-                        int damage = (int)(Convert_To_Double(effect.values[0], target_tile.obj) * target.affected_tiles[target_tile][1]);
+                        int damage = (int)(Convert_To_Float(effect.values[0], target_tile.obj, target) * target.affected_tiles[target_tile][1]);
                         Debug.Log("Character " + character.character_name + " Attacked: OBJECT" + "; Dealing " + damage + " damage and Using " + ap_cost + " AP");
                         Object_Script target_object = target_tile.obj.GetComponent<Object_Script>();
                         target_object.Take_Damage(damage, character.weapon.pierce);
@@ -2270,18 +2335,18 @@ public class Character_Action
                 if (target_tile.obj.GetComponent<Character_Script>())
                 {
                     Character_Script target_character = target_tile.obj.GetComponent<Character_Script>();
-                    int healing = (int)(Convert_To_Double(effect.values[1], target_tile.obj) * target.affected_tiles[target_tile][1]);
-                    if (effect.values[0] == Accepted_Shortcuts.CAUC.ToString() || effect.values[0] == Accepted_Shortcuts.TAUC.ToString())
+                    int healing = (int)(Convert_To_Float(effect.values[1], target_tile.obj, target) * target.affected_tiles[target_tile][1]);
+                    if (effect.values[0] == Accepted_Shortcuts.AUC.ToString())
                     {
                         Debug.Log("Character " + character.character_name + " Healed: " + target_character.character_name + "; for " + healing + " Aura, Using " + ap_cost + " AP");
                         target_character.Recover_Aura(healing);
                     }
-                    else if (effect.values[0] == Accepted_Shortcuts.CMPC.ToString() || effect.values[0] == Accepted_Shortcuts.TMPC.ToString())
+                    else if (effect.values[0] == Accepted_Shortcuts.MPC.ToString())
                     {
                         Debug.Log("Character " + character.character_name + " Healed: " + target_character.character_name + "; for " + healing + " MP, Using " + ap_cost + " AP");
                         target_character.Recover_Mana(healing);
                     }
-                    else if (effect.values[0] == Accepted_Shortcuts.CAPC.ToString() || effect.values[0] == Accepted_Shortcuts.TAPC.ToString())
+                    else if (effect.values[0] == Accepted_Shortcuts.APC.ToString())
                     {
                         Debug.Log("Character " + character.character_name + " Healed: " + target_character.character_name + "; for " + healing + " AP, Using " + ap_cost + " AP");
                         target_character.Recover_Actions(healing);
@@ -2328,13 +2393,13 @@ public class Character_Action
                 {
                     if (effect.values.Length >= 3 && effect.values[2] != null)
                     {
-                        power = Convert_To_Double(effect.values[2], target_tile.obj);
+                        power = Convert_To_Float(effect.values[2], target_tile.obj, target);
                     }
                     if (effect.values.Length == 4 && effect.values[3] != null)
                     {
                         attribute = effect.values[3];
                     }
-                    int duration = (int)Convert_To_Double(effect.values[1], target_tile.obj);
+                    int duration = (int)Convert_To_Float(effect.values[1], target_tile.obj, target);
                     Condition condi = new Condition(effect.values[0], duration, power * target.affected_tiles[target_tile][1], attribute);
 
                     //Now we add the Condition to the target.
@@ -2385,7 +2450,7 @@ public class Character_Action
                         {
                             if (effect.values[2] != Action_Effect.Types.Heal.ToString() && effect.values[2] != Action_Effect.Types.Status.ToString())
                             {
-                                values[i - 3] = "" + Convert_To_Double(effect.values[i], target_tile.gameObject);
+                                values[i - 3] = "" + Convert_To_Float(effect.values[i], target_tile.gameObject, target);
                             }
                             else
                             {
@@ -2395,12 +2460,12 @@ public class Character_Action
                                 }
                                 else
                                 {
-                                    values[i - 3] = "" + Convert_To_Double(effect.values[i], target_tile.gameObject);
+                                    values[i - 3] = "" + Convert_To_Float(effect.values[i], target_tile.gameObject, target);
                                 }
                             }
                         }
                     }
-                    int duration = (int)Convert_To_Double(effect.values[1], target_tile.gameObject);
+                    int duration = (int)Convert_To_Float(effect.values[1], target_tile.gameObject, target);
                     Tile_Effect tile_effect = new Tile_Effect(effect.values[0], effect.values[2], duration, values, target.affected_tiles[target_tile][0], target_tile.gameObject);
                     tile_effect.Instantiate();
                     //Debug.Log("Character " + character.character_name + " Created Effect: " + name + " on tile (" + target_tile.gameObject.GetComponent<Tile>().index[0] + "," + target_tile.gameObject.GetComponent<Tile>().index[1] + "); For " + duration + " and Using " + ap_cost + " AP");
@@ -2436,7 +2501,7 @@ public class Character_Action
             }
             if (Check_Criteria(effect.checks, target_tile.gameObject))
             {
-                int elevation = (int)(Convert_To_Double(effect.values[0], target_tile.gameObject) * target.affected_tiles[target_tile][0]);
+                int elevation = (int)(Convert_To_Float(effect.values[0], target_tile.gameObject, target) * target.affected_tiles[target_tile][0]);
                 Debug.Log("Character " + character.character_name + " Elevated Tile: (" + target_tile.index[0] + "," + target_tile.index[1] + "); By " + elevation + " and Using " + ap_cost + " AP");
                 //character.controller.curr_scenario.tile_grid.Elevate(target.game_object.transform, elevation);
                 Game_Controller.curr_scenario.tile_grid.Elevate(target_tile.transform, elevation);

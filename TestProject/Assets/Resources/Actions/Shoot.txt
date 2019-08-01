@@ -2,8 +2,8 @@ name: Shoot
 ap_cost: 1
 mp_cost: 0
 type: Projectile
-range: CWPR
-color: blue
+range: CC_WPR
+tile_color: 0
 num_targets: 2
 target_checks: CHK_CHAR
 center: Target 1x1
@@ -11,7 +11,7 @@ area: 1
 effects: 3
   self NULL 0,0 Enable Shoot,false
   self NULL 0,1 Orient Target
-  target NULL 0,1 Damage CWPD+CCRD+5
+  target NULL 0,1 Damage CC_WPD+CC_CRD+5
 activation: active
 origin: innate
 trigger: NUL

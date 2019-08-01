@@ -38,7 +38,7 @@ public class Camera_Controller : MonoBehaviour {
     /// </summary>
     public void Current_Character_Preview()
     {
-        int actions_remaining = (int)(curr_player.action_curr - curr_player.curr_action.Peek().Convert_To_Double(curr_player.curr_action.Peek().ap_cost, null));
+        int actions_remaining = (int)(curr_player.action_curr - curr_player.curr_action.Peek().Convert_To_Float(curr_player.curr_action.Peek().ap_cost, null, null));
         string action_color = "white";
         if (actions_remaining > curr_player.action_curr)
         {
@@ -48,7 +48,7 @@ public class Camera_Controller : MonoBehaviour {
         {
             action_color = "red";
         }
-        int mana_remaining = (int)(curr_player.mana_curr - curr_player.curr_action.Peek().Convert_To_Double(curr_player.curr_action.Peek().mp_cost, null));
+        int mana_remaining = (int)(curr_player.mana_curr - curr_player.curr_action.Peek().Convert_To_Float(curr_player.curr_action.Peek().mp_cost, null, null));
         string mana_color = "white";
         if (mana_remaining > curr_player.mana_curr)
         {
@@ -148,7 +148,7 @@ public class Camera_Controller : MonoBehaviour {
                         if (eff.type.ToString() == "Damage")
                         {
                             //TODO: This is inaccurate because it doesn't take into account the target modifier.
-                            int damage_dealt = highlighted_character.Estimate_Damage(curr_player.curr_action.Peek().Convert_To_Double(eff.values[0], highlighted_character.gameObject), (int)curr_player.weapon.pierce);
+                            int damage_dealt = highlighted_character.Estimate_Damage(curr_player.curr_action.Peek().Convert_To_Float(eff.values[0], highlighted_character.gameObject, null), (int)curr_player.weapon.pierce);
                             int new_aura = highlighted_character.aura_curr - damage_dealt;
                             if (new_aura < 0)
                             {
@@ -171,7 +171,7 @@ public class Camera_Controller : MonoBehaviour {
                         }
                         else if (eff.type.ToString() == "Heal")
                         {
-                            int healing = (int)curr_player.curr_action.Peek().Convert_To_Double(eff.values[0], highlighted_character.gameObject);
+                            int healing = (int)curr_player.curr_action.Peek().Convert_To_Float(eff.values[0], highlighted_character.gameObject, null);
                             int new_aura = highlighted_character.aura_curr + healing;
                             if (new_aura < 0)
                             {

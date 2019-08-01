@@ -1118,13 +1118,13 @@ public class Character_Script : MonoBehaviour {
             //update AP and MP
             if (action.activation == Character_Action.Activation_Types.Active)
             {
-                action_curr -= (int)action.Convert_To_Double(action.ap_cost, target_tile.gameObject.GetComponent<Tile>().obj);
+                action_curr -= (int)action.Convert_To_Float(action.ap_cost, target_tile.gameObject.GetComponent<Tile>().obj, null);
             }
             else if (action.activation == Character_Action.Activation_Types.Reactive)
             {
-                reaction_curr -= (int)action.Convert_To_Double(action.ap_cost, target_tile.gameObject.GetComponent<Tile>().obj);
+                reaction_curr -= (int)action.Convert_To_Float(action.ap_cost, target_tile.gameObject.GetComponent<Tile>().obj, null);
             }
-            mana_curr -= (int)action.Convert_To_Double(action.mp_cost, target_tile.gameObject.GetComponent<Tile>().obj);
+            mana_curr -= (int)action.Convert_To_Float(action.mp_cost, target_tile.gameObject.GetComponent<Tile>().obj, null);
 
             while (!Is_Idle() || action.paused)
             //gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle") && 

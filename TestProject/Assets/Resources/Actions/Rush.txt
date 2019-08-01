@@ -2,8 +2,8 @@ name: Rush
 ap_cost: 1
 mp_cost: 0
 type: Melee
-range: CWPR
-color: blue
+range: CC_WPR
+tile_color: 0
 num_targets: 1
 target_checks: CHK_NULL
 center: Target 1x1
@@ -11,7 +11,7 @@ area: 1
 effects: 3
   self NULL 0,0 Enable Rush,false
   self NULL 0,0 Orient Target
-  target NULL 0,0 Damage CWPD+5
+  target NULL 0,0 Damage CC_WPD+5
 activation: active
 origin: innate
 trigger: NUL
