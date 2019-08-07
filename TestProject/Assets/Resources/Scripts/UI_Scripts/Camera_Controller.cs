@@ -89,9 +89,10 @@ public class Camera_Controller : MonoBehaviour {
     public void Current_Tile_Preview()
     {
         //Tile tile = controller.curr_scenario.selected_tile.GetComponent<Tile>();
-        Tile tile = Game_Controller.curr_scenario.selected_tile.GetComponent<Tile>();
-        if (tile != null)
+
+        if (Game_Controller.curr_scenario.selected_tile)
         {
+            Tile tile = Game_Controller.curr_scenario.selected_tile.GetComponent<Tile>();
             float action_mod = 0;
             if (curr_player.curr_action.Count > 0)
             {
@@ -305,10 +306,13 @@ public class Camera_Controller : MonoBehaviour {
         Current_Tile_Preview();
 
         //if (controller.curr_scenario.selected_tile.GetComponent<Tile>() != null)
-        if (Game_Controller.curr_scenario.selected_tile.GetComponent<Tile>() != null)
+        if (Game_Controller.curr_scenario.selected_tile)
         {
-            //Debug.Log("Selecting");
-            Current_Target_Preview();
+            if (Game_Controller.curr_scenario.selected_tile.GetComponent<Tile>() != null)
+            {
+                //Debug.Log("Selecting");
+                Current_Target_Preview();
+            }
         }
     }
 

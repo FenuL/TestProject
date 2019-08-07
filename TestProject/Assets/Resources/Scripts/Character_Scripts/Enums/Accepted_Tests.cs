@@ -21,5 +21,5 @@ public enum Accepted_Tests {
     CHK_SRC_FRND,
     CHK_SRC_ENMY,
     CHK_SRC_RANG,
-    CHK_TARG_RANG
+    CHK_TARG_RANG,
 }

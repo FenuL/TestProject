@@ -14,6 +14,7 @@ public class Character_Script : MonoBehaviour {
     private int AURA_MULTIPLIER = 10;
     private int MP_MULTIPLIER = 5;
     private int MP_RECOVERY = 5;
+    private float COMBO_MODIFIER_INCREASE = 0.1f;
     private int AP_MAX = 2;
     //public int AP_RECOVERY = 10;
     private int SPEED = 6;
@@ -53,7 +54,9 @@ public class Character_Script : MonoBehaviour {
     /// float finesse - The Character's Finesse. Used to determine the Ability Modifier threshold for a Critical Hit.
     /// double speed - The distance a Character can traverse with a Move.
     /// int level - The level for the Character. Leveling can raise your other stats.
-    /// float combo_mod - The modifier to add to this Character when using abilities. 
+    /// Dictionary<Character_Turn_Records, float> turn_stats - The character's stats for the current turn. Keeps track of tiles moved, damage dealt, etc.
+    /// Dictionary<Character_Total_Records, float> scenario_stats - The character's stats for the whole scenario.
+    /// Dictionary<Character_Total_Records, float> total_stats - The character's stats for the whole game. 
     /// int orientation - The direction the Character sprite is looking. Influences the Object's Animator.
     /// int camera_orientation_offset - The direction of the Camera looking at the Character can affect their Orientation.
     /// Vector3 camera_position_offset - The offset of the Character Sprite so that it looks right for the Camera.
@@ -99,7 +102,9 @@ public class Character_Script : MonoBehaviour {
     public float finesse { get; private set; }
     public double speed { get; private set; }
     public int level { get; private set; }
-    public float combo_mod { get; private set; }
+    public Dictionary<Character_Turn_Records, float> turn_stats { get; private set; }
+    public Dictionary<Character_Total_Records, float> scenario_stats { get; private set; }
+    public Dictionary<Character_Total_Records, float> total_stats { get; private set; }
     public int orientation { get; private set; }
     public int camera_orientation_offset { get; private set; }
     public Vector3 camera_position_offset { get; private set; }
@@ -226,7 +231,7 @@ public class Character_Script : MonoBehaviour {
         finesse = chara.finesse;
         speed = chara.speed;
         level = chara.level;
-        combo_mod = chara.combo_mod;
+        total_stats = chara.total_stats;
         orientation = chara.orientation;
         camera_orientation_offset = chara.camera_orientation_offset;
         camera_position_offset = chara.camera_position_offset;
@@ -369,6 +374,19 @@ public class Character_Script : MonoBehaviour {
         canister_curr = data.canister_curr;
         state = data.state;
         conditions = new Dictionary<Conditions, List<Condition>>();
+        turn_stats = new Dictionary<Character_Turn_Records, float>();
+        foreach (Character_Turn_Records record in Enum.GetValues(typeof(Character_Turn_Records)))
+        {
+            turn_stats.Add(record, 0);
+        }
+        scenario_stats = new Dictionary<Character_Total_Records, float>();
+        total_stats = new Dictionary<Character_Total_Records, float>();
+        foreach (Character_Total_Records record in Enum.GetValues(typeof(Character_Total_Records)))
+        {
+            scenario_stats.Add(record, 0);
+            //TODO: Either import Total stats from elsewhere or make them part of another class (maybe game controller?)
+            total_stats.Add(record, 0);
+        }
         controller = data.controller;
         orientation = char_orient;
         Orient();
@@ -517,6 +535,7 @@ public class Character_Script : MonoBehaviour {
     /// <param name="condition">The new Condition to add.</param>
     public void Add_Condition(Condition condition)
     {
+        Increase_Turn_Stats(Character_Turn_Records.Conditions_Taken, 1);
         Color color = Color.red;
         //Check if the condition type is a cleanser
         if (condition.type == Conditions.Clarity)
@@ -754,6 +773,9 @@ public class Character_Script : MonoBehaviour {
 
     }
 
+    /// <summary>
+    /// Resets resources for the Character at the start of their turn.
+    /// </summary>
     public void Replenish_Resources()
     {
         reaction_curr = reaction_max;
@@ -765,14 +787,70 @@ public class Character_Script : MonoBehaviour {
         }
     }
 
-    public void Increase_Combo_Mod()
+    /// <summary>
+    /// Resets all turn stats.
+    /// </summary>
+    public void Reset_Turn_Stats()
     {
-        combo_mod += 0.1f;
+        foreach (Character_Turn_Records record in Enum.GetValues(typeof(Character_Turn_Records)))
+        {
+            turn_stats[record] = 0;
+        }
     }
 
-    public void Reset_Combo_Mod()
+    /// <summary>
+    /// Method to increase a character's turn statistics.
+    /// </summary>
+    /// <param name="record">The Character_Turn_Record to increase.</param>
+    /// <param name="amount">The amount to increase the record by.</param>
+    public void Increase_Turn_Stats(Character_Turn_Records record, float amount)
     {
-        combo_mod = 0;
+        if (record == Character_Turn_Records.Combo_Modifier)
+        {
+            turn_stats[record] += COMBO_MODIFIER_INCREASE;
+            if (turn_stats[record] > scenario_stats[Character_Total_Records.Highest_Combo_Mod])
+            {
+                scenario_stats[Character_Total_Records.Highest_Combo_Mod] = turn_stats[record];
+            }
+        } else if (record == Character_Turn_Records.Actions_Taken)
+        {
+            turn_stats[record] += 1;
+            scenario_stats[Character_Total_Records.Actions_Taken] += 1;
+        } else if (record == Character_Turn_Records.Reactions_Taken)
+        {
+            turn_stats[record] += 1;
+            scenario_stats[Character_Total_Records.Reactions_Taken] += 1;
+        } else if (record == Character_Turn_Records.Damage_Dealt)
+        {
+            turn_stats[record] += amount;
+            scenario_stats[Character_Total_Records.Damage_Dealt] += amount;
+        }
+        else if (record == Character_Turn_Records.Damage_Taken)
+        {
+            turn_stats[record] += amount;
+            scenario_stats[Character_Total_Records.Damage_Taken] += amount;
+        }
+        else if (record == Character_Turn_Records.Wounds_Taken)
+        {
+            turn_stats[record] += 1;
+            scenario_stats[Character_Total_Records.Wounds_Taken] += 1;
+        }
+        else if (record == Character_Turn_Records.Kills)
+        {
+            turn_stats[record] += amount;
+            scenario_stats[Character_Total_Records.Damage_Dealt] += amount;
+        }
+        else if (record == Character_Turn_Records.Conditions_Dealt)
+        {
+            turn_stats[record] += amount;
+            scenario_stats[Character_Total_Records.Conditions_Dealt] += amount;
+        }
+        else if (record == Character_Turn_Records.Conditions_Taken)
+        {
+            turn_stats[record] += amount;
+            scenario_stats[Character_Total_Records.Conditions_Taken] += amount;
+        }
+
     }
 
     /// <summary>
@@ -1388,6 +1466,7 @@ public class Character_Script : MonoBehaviour {
                 }
             }
             aura_curr -= (int)amount;
+            Increase_Turn_Stats(Character_Turn_Records.Damage_Taken, amount);
             if (aura_curr < 0)
             {
                 aura_curr = 0;
@@ -1615,6 +1694,8 @@ public class Character_Script : MonoBehaviour {
             Tile prev_tile = curr_tile.GetComponent<Tile>();
             Tile temp_tile = path[tile_index];
 
+            //Event_Manager.Broadcast(Event_Trigger.ON_TILE_EXIT, curr_action.Peek(), "" + move_type, curr_tile.gameObject);
+
             tile_index += 1;
             if (move_type != 4)
             {
@@ -1718,6 +1799,9 @@ public class Character_Script : MonoBehaviour {
                 //curr_tile.GetComponent<Tile>().traversible = false;
                 prev_obj = temp_tile.obj;
                 curr_tile.GetComponent<Tile>().obj = gameObject;
+
+                Increase_Turn_Stats(Character_Turn_Records.Tiles_Moved, 1);
+                //Event_Manager.Broadcast(Event_Trigger.ON_TILE_ENTER, curr_action.Peek(), ""+move_type, curr_tile.gameObject);
                 //Debug.Log("Curr tile: " + curr_tile.GetComponent<Tile>().index[0] + "," + curr_tile.GetComponent<Tile>().index[1]);
 
             }
@@ -1734,6 +1818,7 @@ public class Character_Script : MonoBehaviour {
                 prev_obj = temp_tile.obj;
                 //curr_tile.GetComponent<Tile>().traversible = false;
                 curr_tile.GetComponent<Tile>().obj = gameObject;
+                Increase_Turn_Stats(Character_Turn_Records.Tiles_Moved, 1);
                 yield return new WaitForEndOfFrame();
             }
         }

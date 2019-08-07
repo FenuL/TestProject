@@ -103,6 +103,7 @@ public class Tile_Grid : MonoBehaviour
     public int[,] tile_heights { get; private set; }
     public Transform[,] tiles { get; private set; }
     public Graph navmesh { get; private set; }
+    public bool idle { get; private set; }
 
     /// <summary>
     /// Empty Start Method for class. Loads prefabs and creates a generic grid.
@@ -162,6 +163,7 @@ public class Tile_Grid : MonoBehaviour
         //Generate the Tile transforms and navmesh
         tiles = new Transform[width, length];
         navmesh = new Graph();
+        idle = true;
     }
 
     /// <summary>
@@ -189,8 +191,9 @@ public class Tile_Grid : MonoBehaviour
     /// </summary>
     /// <param name="target">The target tile to Raise/Lower</param>
     /// <param name="height">The height to change the tile.</param>
-    public void Elevate(Transform target, int height)
+    public IEnumerator Elevate(Transform target, int height)
     {
+        idle = false;
         //Modify tile height
         Tile tile = target.GetComponent<Tile>();
         tile.height += height;
@@ -207,6 +210,52 @@ public class Tile_Grid : MonoBehaviour
 
         //Modify object
         string file = "Objects/Tiles/" + tile.height + "TCanvas";
+        tile.gameObject.GetComponentsInChildren<MeshFilter>()[0].mesh = Resources.Load(file, typeof(Mesh)) as Mesh;
+
+        //Move the tile and any objects on it to the right place.
+        float elapsedTime = 0;
+        float duration = 0.3f;
+        Vector3 tile_start = new Vector3(tile.transform.position.x,
+                        (float)(Tile_Grid.TILE_SCALE * (-height)),
+                        tile.transform.position.z); 
+        Vector3 tile_end = tile.transform.position;
+        Vector3 obj_start = new Vector3(0,0,0);
+        Vector3 obj_end = new Vector3(0, 0, 0);
+        if (tile.obj != null) {
+            obj_start = tile.obj.transform.position;
+            Vector3 camera_offset = new Vector3(0, 0, 0);
+            float height_offset = 0.5f;
+            Character_Script chara = tile.obj.GetComponent<Character_Script>();
+            if (chara != null)
+            {
+                camera_offset = chara.camera_position_offset;
+                height_offset = chara.height_offset;
+            }
+            obj_end = tile.transform.position + 
+                camera_offset + 
+                new Vector3(0, tile_scale * tile.height + height_offset, 0);
+        }
+        while (elapsedTime < duration)
+        {
+            tile.transform.position = Vector3.Lerp(tile_start, tile_end, elapsedTime / duration);
+            if (tile.obj!= null)
+            {
+                tile.obj.transform.position = Vector3.Lerp(obj_start, obj_end, elapsedTime / duration);
+            }
+            elapsedTime += Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+        }
+        tile.transform.position = tile_end;
+
+        //Modify the collider
+        BoxCollider collider =  tile.gameObject.GetComponent<BoxCollider>();
+        float NEWTILEWIDTH = 1.5f;
+        float NEWTILELENGTH = 1.5f;
+        float NEWSCALE = 2f;
+        collider.size = new Vector3(NEWTILELENGTH * NEWSCALE, 0, NEWTILEWIDTH * NEWSCALE);
+        collider.center = new Vector3(0, tile.height, 0);
+
+        /*string file = "Objects/Tiles/" + tile.height + "TCanvas";
         GameObject tile3d = Resources.Load(file, typeof(GameObject)) as GameObject;
         float NEWTILEWIDTH = 1.5f;
         float NEWTILELENGTH = 1.5f;
@@ -255,9 +304,10 @@ public class Tile_Grid : MonoBehaviour
 
         //Store the instantiated tile in our Tile Tranform Grid;
         tiles[tile.index[0], tile.index[1]] = instance.transform;
+        */
 
         //Modify navmesh
-        foreach (Edge e in instance.GetComponent<Tile>().edges)
+        foreach (Edge e in tile.edges)
         {
             //Modify local edges
             if (e != null)
@@ -282,7 +332,8 @@ public class Tile_Grid : MonoBehaviour
         }
 
         //Destroy old object 
-        Destroy(tile.gameObject);
+        //Destroy(tile.gameObject);
+        idle = true;
     }
 
     /// <summary>

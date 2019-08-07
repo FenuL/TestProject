@@ -13,11 +13,13 @@
     <TargetFrameworkIdentifier>.NETFramework</TargetFrameworkIdentifier>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
-    <CompilerResponseFile></CompilerResponseFile>
+    <CompilerResponseFile>
+    </CompilerResponseFile>
     <UnityProjectType>Game:1</UnityProjectType>
     <UnityBuildTarget>StandaloneWindows:5</UnityBuildTarget>
     <UnityVersion>5.4.5p5</UnityVersion>
-    <RootNamespace></RootNamespace>
+    <RootNamespace>
+    </RootNamespace>
     <LangVersion Condition=" '$(VisualStudioVersion)' != '10.0' ">4</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -75,6 +77,8 @@
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Armor_Types.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Character_States.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Character_Stats.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Character_Turn_Records.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Character_Total_Records.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Condition_Shortcuts.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Conditions.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Controlls.cs" />
@@ -101,23 +105,27 @@
     <Compile Include="Assets\Resources\Scripts\UI_Scripts\FloatingText.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Resources\Actions\Bleed.txt" />
-    <None Include="Assets\Resources\Actions\Blink.txt" />
-    <None Include="Assets\Resources\Actions\Channel.txt" />
-    <None Include="Assets\Resources\Actions\Cone.txt" />
-    <None Include="Assets\Resources\Actions\Counter.txt" />
-    <None Include="Assets\Resources\Actions\Cross.txt" />
-    <None Include="Assets\Resources\Actions\Flurry.txt" />
-    <None Include="Assets\Resources\Actions\Lower.txt" />
-    <None Include="Assets\Resources\Actions\Move.txt" />
-    <None Include="Assets\Resources\Actions\Opportunist.txt" />
-    <None Include="Assets\Resources\Actions\Raise.txt" />
-    <None Include="Assets\Resources\Actions\Ring.txt" />
-    <None Include="Assets\Resources\Actions\Rush.txt" />
-    <None Include="Assets\Resources\Actions\Shoot.txt" />
-    <None Include="Assets\Resources\Actions\Slash.txt" />
-    <None Include="Assets\Resources\Actions\Stun.txt" />
-    <None Include="Assets\Resources\Actions\Wait.txt" />
+    <None Include="Assets\Resources\Actions\General\Bleed.txt" />
+    <None Include="Assets\Resources\Actions\General\Blink.txt" />
+    <None Include="Assets\Resources\Actions\General\Channel.txt" />
+    <None Include="Assets\Resources\Actions\General\Cone.txt" />
+    <None Include="Assets\Resources\Actions\General\Counter.txt" />
+    <None Include="Assets\Resources\Actions\General\Cross.txt" />
+    <None Include="Assets\Resources\Actions\General\Flurry.txt" />
+    <None Include="Assets\Resources\Actions\General\Lower.txt" />
+    <None Include="Assets\Resources\Actions\General\Move.txt" />
+    <None Include="Assets\Resources\Actions\General\Opportunist.txt" />
+    <None Include="Assets\Resources\Actions\General\Raise.txt" />
+    <None Include="Assets\Resources\Actions\General\Ring.txt" />
+    <None Include="Assets\Resources\Actions\General\Rush.txt" />
+    <None Include="Assets\Resources\Actions\General\Shoot.txt" />
+    <None Include="Assets\Resources\Actions\General\Slash.txt" />
+    <None Include="Assets\Resources\Actions\General\Stun.txt" />
+    <None Include="Assets\Resources\Actions\General\Wait.txt" />
+    <None Include="Assets\Resources\Actions\Gravity_Gauntlets\Entropic_Blast.txt" />
+    <None Include="Assets\Resources\Actions\Gravity_Gauntlets\Graviton.txt" />
+    <None Include="Assets\Resources\Actions\Gravity_Gauntlets\Gravity_Smackdown.txt" />
+    <None Include="Assets\Resources\Actions\Gravity_Gauntlets\Gravity_Strike.txt" />
     <None Include="Assets\Resources\Characters\Monster_Characters\Monster_Character_Data.txt" />
     <None Include="Assets\Resources\Characters\Player_Characters\Player_Character_Data.txt" />
     <None Include="Assets\Resources\Equipment\Armors\Bard.txt" />

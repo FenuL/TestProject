@@ -11,14 +11,10 @@ using System.Text.RegularExpressions;
 public class Character_Action
 {
     /// <summary>
-    /// string PLAYER_ACTIONS_FILE - The actions file where all actions are stored
-    /// int HEADINGS - The number of headings in each action
     /// enum Activation_Types - The types of actions for abilities
     /// enum Origin_Types - The types of origin for abilities.
     /// enum Accepted_Shortcuts - Shortcuts used to read the actions from the action list.
     /// </summary>
-    private static string PLAYER_ACTIONS_FILE = "Assets/Resources/Actions/Action_List.txt";
-    private static int HEADINGS = 14;
     public enum Activation_Types { Active, Passive, Reactive }
     public enum Origin_Types { Innate, Soul, Weapon }
     public enum Operators { EQ, GT, LT, GTQ, LTQ }
@@ -381,7 +377,7 @@ public class Character_Action
     public static Dictionary<string, Character_Action> Load_Actions()
     {
         Dictionary<string, Character_Action> actions = new Dictionary<string, Character_Action>();
-        foreach (string file in System.IO.Directory.GetFiles("Assets/Resources/Actions"))
+        foreach (string file in System.IO.Directory.GetFiles("Assets/Resources/Actions","*.*", System.IO.SearchOption.AllDirectories))
         {
             string[] lines = System.IO.File.ReadAllLines(file);
             Character_Action action = Parse(lines);
@@ -569,6 +565,46 @@ public class Character_Action
                             {
                                 input = input.Replace(prefix + val.ToString(), "" + source.action_curr);
                             }
+                            else if (val.ToString().Contains("CMB"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.turn_stats[Character_Turn_Records.Combo_Modifier]);
+                            }
+                            else if (val.ToString().Contains("DTT"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.turn_stats[Character_Turn_Records.Damage_Taken]);
+                            }
+                            else if (val.ToString().Contains("DDT"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.turn_stats[Character_Turn_Records.Damage_Dealt]);
+                            }
+                            else if (val.ToString().Contains("WTT"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.turn_stats[Character_Turn_Records.Wounds_Taken]);
+                            }
+                            else if (val.ToString().Contains("TMT"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.turn_stats[Character_Turn_Records.Tiles_Moved]);
+                            }
+                            else if (val.ToString().Contains("ATT"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.turn_stats[Character_Turn_Records.Actions_Taken]);
+                            }
+                            else if (val.ToString().Contains("RTT"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.turn_stats[Character_Turn_Records.Reactions_Taken]);
+                            }
+                            else if (val.ToString().Contains("KTT"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.turn_stats[Character_Turn_Records.Kills]);
+                            }
+                            else if (val.ToString().Contains("CDT"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.turn_stats[Character_Turn_Records.Conditions_Dealt]);
+                            }
+                            else if (val.ToString().Contains("CTT"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.turn_stats[Character_Turn_Records.Conditions_Taken]);
+                            }
                             else if (val.ToString().Contains("DST"))
                             {
                                 input = input.Replace(prefix + val.ToString(), "" + source.aura_max);
@@ -630,6 +666,35 @@ public class Character_Action
     public float Convert_To_Float(string input, GameObject target_obj, Target target)
     {
         return Convert_To_Float(input, target_obj, target, 0);
+    }
+
+    /// <summary>
+    /// Method to convert a string to a specific list of Tiles. Used to determine movement path.
+    /// </summary>
+    /// <param name="input">String formula for where to find path. Example: CT_PATH returns the path of the current target</param>
+    /// <param name="target_obj">The object being targeted by the action.</param>
+    /// <param name="target">The current target of the action.</param>
+    /// <returns></returns>
+    public List<Tile> Convert_To_Tile_List(string input, GameObject target_obj, Target target)
+    {
+        List<Tile> move_path = new List<Tile>();
+        if (input == "CT_PATH")
+        {
+            move_path = target.curr_path;
+        } else if (input.Contains("TN_"))
+        {
+            int start = input.IndexOf("TN_") + 3;
+            int length = input.Substring(start).IndexOf("_");
+            int target_index;
+            if (int.TryParse(input.Substring(start, length), out target_index))
+            {
+                if (target_index < curr_targets.Count)
+                {
+                    move_path = curr_targets[target_index].curr_path;
+                }
+            }
+        }
+        return move_path;
     }
 
     /// <summary>
@@ -748,7 +813,7 @@ public class Character_Action
                             //Show the number of targets for the selected Action.
                             character.controller.action_menu.GetComponent<Action_Menu_Script>().Set_Text("Using " + name + " - Select " + num_targets + " Target(s)");
 
-                            Find_Reachable_Tiles();
+                            Find_Reachable_Tiles(true);
 
                             Game_Controller.curr_scenario.Clean_Reachable();
                             Game_Controller.curr_scenario.Mark_Reachable();
@@ -1166,7 +1231,7 @@ public class Character_Action
         }
         if (target_character != null)
         {
-            modifier = target_character.combo_mod;
+            modifier = target_character.turn_stats[Character_Turn_Records.Combo_Modifier];
         }
         return modifier;
     }
@@ -1321,6 +1386,23 @@ public class Character_Action
             not_flag = true;
             i++;
         }
+        if (conditionals[i] == "SELF")
+        {
+            valid = false;
+            if (targ.GetComponent<Tile>())
+            {
+                if (targ.GetComponent<Tile>().obj != null)
+                {
+                    if (targ.GetComponent<Tile>().obj.GetComponent<Character_Script>())
+                    {
+                        if (targ.GetComponent<Tile>().obj.GetComponent<Character_Script>().Equals(character))
+                        {
+                            valid = true;
+                        }
+                    }
+                }
+            }
+        }
         if (conditionals[i] == "EMPTY")
         {
             //Debug.Log("Check if the target is empty");
@@ -1373,16 +1455,18 @@ public class Character_Action
         }
         if (conditionals[i] == "TCND")
         {
-            Character_Script chara;
+            Character_Script chara = null;
             if (targ.GetComponent<Character_Script>())
             {
                 chara = targ.GetComponent<Character_Script>();
             }
             else
             {
-                chara = targ.GetComponent<Tile>().obj.GetComponent<Character_Script>();
+                if (targ.GetComponent<Tile>().obj != null)
+                {
+                    chara = targ.GetComponent<Tile>().obj.GetComponent<Character_Script>();
+                }
             }
-
             if (chara != null)
             {
                 valid = chara.Has_Condition(new Condition(conditionals[i + 2]).type);
@@ -1402,7 +1486,6 @@ public class Character_Action
         {
             valid = !valid;
         }
-        //Debug.Log("Condition is " + valid);
         return valid;
     }
 
@@ -1514,44 +1597,49 @@ public class Character_Action
         }
     }
 
-    public List<Tile> Find_Reachable_Tiles()
+    /// <summary>
+    /// Finds tiles in range of the ability
+    /// </summary>
+    /// <param name="update">Whether or not to update the scenario's reachable tiles.</param>
+    /// <returns>The tiles that are reachable</returns>
+    public List<Transform> Find_Reachable_Tiles(bool update)
     {
-        List<Tile> tiles = new List<Tile>();
+        List<Transform> tiles = new List<Transform>();
         if (action_type == Action_Types.Path)
         {
             //character.controller.curr_scenario.Find_Reachable((int)character.speed, (int)Convert_To_Float(range, null), 1);
             //Debug.Log((int)(Convert_To_Float(range, null) - curr_path_cost));
-            Game_Controller.curr_scenario.Find_Reachable((int)(Convert_To_Float(range, null, null)-curr_path_cost), (int)Convert_To_Float(range, null, null), 1);
+            tiles = Game_Controller.curr_scenario.Find_Reachable((int)(Convert_To_Float(range, null, null)-curr_path_cost), (int)Convert_To_Float(range, null, null), 1,update);
         }
         else if (action_type == Action_Types.Unrestricted_Path)
         {
             //character.controller.curr_scenario.Find_Reachable((int)character.speed * 2, (int)Convert_To_Float(range, null), 2);
-            Game_Controller.curr_scenario.Find_Reachable((int)character.speed * 2, (int)Convert_To_Float(range, null, null), 2);
+            tiles = Game_Controller.curr_scenario.Find_Reachable((int)character.speed * 2, (int)Convert_To_Float(range, null, null), 2, update);
         }
         else if (action_type == Action_Types.Ranged)
         {
             //character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Float(range, null), 3);
-            Game_Controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Float(range, null, null), 3);
+            tiles = Game_Controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Float(range, null, null), 3, update);
         }
         else if (action_type == Action_Types.Melee)
         {
             //character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Float(range, null), 3);
-            Game_Controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Float(range, null, null), 3);
+            tiles = Game_Controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Float(range, null, null), 3, update);
         }
         else if (action_type == Action_Types.Projectile)
         {
             //character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Float(range, null), 3);
-            Game_Controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Float(range, null, null), 3);
+            tiles = Game_Controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Float(range, null, null), 3, update);
         }
         else if (action_type == Action_Types.Instant)
         {
             //character.controller.curr_scenario.Find_Reachable((int)character.speed * 2, (int)Convert_To_Float(range, null), 2);
-            Game_Controller.curr_scenario.Find_Reachable((int)Convert_To_Float(range, null, null), (int)Convert_To_Float(range, null, null), 2);
+            tiles = Game_Controller.curr_scenario.Find_Reachable((int)Convert_To_Float(range, null, null), (int)Convert_To_Float(range, null, null), 2, update);
         }
         else if (action_type == Action_Types.None)
         {
             //character.controller.curr_scenario.Find_Reachable((int)character.speed * 2, (int)Convert_To_Float(range, null), 2);
-            Game_Controller.curr_scenario.Find_Reachable((int)Convert_To_Float(range, null, null), (int)Convert_To_Float(range, null, null), 3);
+            tiles = Game_Controller.curr_scenario.Find_Reachable((int)Convert_To_Float(range, null, null), (int)Convert_To_Float(range, null, null), 3, update);
         }
         return tiles;
     }
@@ -1582,126 +1670,148 @@ public class Character_Action
         bool result = true;
         string[] values = condition.Split(' ');
         string substring = "";
-        for (int x =0; x<values.Length; x++)
+        //Evaluate the first condition.
+        string str = values[0];
+        Character_Script target_chara = null;
+        Character_Script source_chara = act.character;
+        if (obj.GetComponent<Character_Script>())
         {
-            string str = values[x];
-            if (str == "&")
+            target_chara = obj.GetComponent<Character_Script>();
+        }
+        else
+        {
+            if (obj.GetComponent<Tile>())
             {
-                for (int y = x+1; y< values.Length; y++)
+                if (obj.GetComponent<Tile>().obj != null)
+                {
+                    target_chara = obj.GetComponent<Tile>().obj.GetComponent<Character_Script>();
+                }
+            }
+        }
+        if (str.Contains(Accepted_Tests.CHK_SRC_ENMY.ToString()))
+        {
+            if (source_chara != null)
+            {
+                result = source_chara.Check_Tag("Character (Enemy)");
+            }
+            else
+            {
+                result = false;
+            }
+        }
+        else if (str.Contains(Accepted_Tests.CHK_SRC_FRND.ToString()))
+        {
+            if (source_chara != null)
+            {
+                result = source_chara.Check_Tag("Character (Friend)");
+            }
+            else
+            {
+                result = false;
+            }
+        }
+        else if (str.Contains(Accepted_Tests.CHK_SRC_RANG.ToString()))
+        {
+            if (source_chara != null)
+            {
+                result = Check_Range(source_chara);
+            }
+            else
+            {
+                result = false;
+            }
+        }
+        else if (str.Contains(Accepted_Tests.CHK_SRC_SELF.ToString()))
+        {
+            if (source_chara != null)
+            {
+                result = source_chara.Equals(character);
+            }
+            else
+            {
+                result = false;
+            }
+        }
+        else if (str.Contains(Accepted_Tests.CHK_TARG_ENMY.ToString()))
+        {
+            if (target_chara != null)
+            {
+                result = target_chara.Check_Tag("Character (Enemy)");
+            }
+            else
+            {
+                result = false;
+            }
+        }
+        else if (str.Contains(Accepted_Tests.CHK_TARG_FRND.ToString()))
+        {
+
+            if (target_chara != null)
+            {
+                result = target_chara.Check_Tag("Character (Friend)");
+            }
+            else
+            {
+                result = false;
+            }
+        }
+        else if (str.Contains(Accepted_Tests.CHK_TARG_RANG.ToString()))
+        {
+            if (target_chara != null)
+            {
+                result = Check_Range(target_chara);
+            }
+            else
+            {
+                result = false;
+            }
+        }
+        else if (str.Contains(Accepted_Tests.CHK_TARG_SELF.ToString()))
+        {
+
+            if (target_chara != null)
+            {
+                result = target_chara.Equals(character);
+            }
+            else
+            {
+                result = false;
+            }
+        }
+        if (str.Contains("NOT_"))
+        {
+            result = !result;
+        }
+        //recurse for more conditions. 
+        if (values.Length > 1)
+        {
+            if (values[1] == "&")
+            {
+                for (int y = 2; y < values.Length; y++)
                 {
                     substring += values[y] + " ";
                 }
-                return (result && Evaluate_Conditional(substring, act, value, obj));
-            }else if (str == "|")
+                //break early if we detect a false &
+                if(!result)
+                {
+                    return false;
+                }else
+                {
+                    return (result && Evaluate_Conditional(substring, act, value, obj));
+                }
+            }
+            else if (values[1] == "|")
             {
-                for (int y = x + 1; y < values.Length; y++)
+                for (int y = 2; y < values.Length; y++)
                 {
                     substring += values[y] + " ";
                 }
                 return (result || Evaluate_Conditional(substring, act, value, obj));
             }
-            else
-            {
-                Character_Script target_chara = null;
-                if (obj.GetComponent<Character_Script>())
-                {
-                    target_chara = obj.GetComponent<Character_Script>();
-                }
-                else
-                {
-                    target_chara = obj.GetComponent<Tile>().obj.GetComponent<Character_Script>();
-                }
-                if (str.Contains(Accepted_Tests.CHK_SRC_ENMY.ToString()))
-                {
-                    if (act.character != null)
-                    {
-                        result = act.character.Check_Tag("Character (Enemy)");
-                    }
-                    else
-                    {
-                        result = false;
-                    }
-                }
-                else if (str.Contains(Accepted_Tests.CHK_SRC_FRND.ToString()))
-                {
-                    if (act.character != null)
-                    {
-                        result = act.character.Check_Tag("Character (Friend)");
-                    }
-                    else
-                    {
-                        result = false;
-                    }
-                }
-                else if (str.Contains(Accepted_Tests.CHK_SRC_RANG.ToString()))
-                {
-                    if (act.character != null)
-                    {
-                        result = Check_Range(act.character);
-                    }
-                    else
-                    {
-                        result = false;
-                    }
-                }
-                else if (str.Contains(Accepted_Tests.CHK_SRC_SELF.ToString()))
-                {
-                    if (act.character != null)
-                    {
-                        result = act.character.Equals(character);
-                    }
-                    else
-                    {
-                        result = false;
-                    }
-                }
-                else if (str.Contains(Accepted_Tests.CHK_TARG_ENMY.ToString()))
-                {
-                    if (target_chara != null)
-                    {
-                        result = target_chara.Check_Tag("Character (Enemy)");
-                    }
-                    else
-                    {
-                        result = false;
-                    }
-                }
-                else if (str.Contains(Accepted_Tests.CHK_TARG_FRND.ToString()))
-                {
-                    
-                    if (target_chara != null)
-                    {
-                        result = target_chara.Check_Tag("Character (Friend)");
-                    }
-                    else
-                    {
-                        result = false;
-                    }
-                }
-                else if (str.Contains(Accepted_Tests.CHK_TARG_RANG.ToString()))
-                {
-                    if (target_chara != null)
-                    {
-                        result = Check_Range(target_chara);
-                    }
-                    else
-                    {
-                        result = false;
-                    }
-                }
-                else if (str.Contains(Accepted_Tests.CHK_TARG_SELF.ToString()))
-                {
-
-                    if (target_chara != null)
-                    {
-                        result = target_chara.Equals(character);
-                    }
-                    else
-                    {
-                        result = false;
-                    }
-                }
-            }
+        }
+        else
+        {
+            return result;
         }
         return result;
     }
@@ -1713,8 +1823,15 @@ public class Character_Action
     /// <returns>True if in range, False otherwise</returns>
     public bool Check_Range(Character_Script chara)
     {
-        //TODO add more detailed check.
-        return true;
+        //if (Find_Reachable_Tiles(false).Contains(chara.curr_tile.transform))
+        //{
+            //TODO add more detailed check.
+            return true;
+        //}
+        //else
+        //{
+            //return false;
+        //}
     }
 
     /// <summary>
@@ -1725,8 +1842,9 @@ public class Character_Action
     {
         //Debug.Log("type " + type + " character actions " + character.action_curr);
 
-        if ((activation == Activation_Types.Active && character.action_curr >= (int)Convert_To_Float(ap_cost, null, null)) || 
-            (activation == Activation_Types.Reactive && character.reaction_curr >= (int)Convert_To_Float(ap_cost, null, null)))
+        if (((activation == Activation_Types.Active && character.action_curr >= (int)Convert_To_Float(ap_cost, null, null)) || 
+            (activation == Activation_Types.Reactive && character.reaction_curr >= (int)Convert_To_Float(ap_cost, null, null))) &&
+            character.mana_curr >= (int)Convert_To_Float(mp_cost, null, null))
         {
             return true;
         }
@@ -1923,7 +2041,7 @@ public class Character_Action
                     //TODO eventually add combo mods to Tile scripts as well.
                     foreach (Character_Script chara in target.affected_characters.Keys)
                     {
-                        chara.Increase_Combo_Mod();
+                        chara.Increase_Turn_Stats(Character_Turn_Records.Combo_Modifier,1);
                     }
                 }
             }
@@ -2100,7 +2218,8 @@ public class Character_Action
         //while(!character.GetComponent<Animator>(). GetCurrentAnimatorClipInfo(0) .animationClips[2])
 
         while (character.state == Character_States.Walking || 
-            character.state == Character_States.Orienting)
+            character.state == Character_States.Orienting ||
+            !Game_Controller.curr_scenario.tile_grid.idle)
         {
             //Debug.Log("State " + character.state.ToString());
             yield return new WaitForEndOfFrame();
@@ -2240,12 +2359,12 @@ public class Character_Action
                     //Check for a valid object to move.
                     if (chara != null)
                     {
+                        List<Tile> move_path = Convert_To_Tile_List(effect.values[1], target_tile.obj, target);
                         int move_type = (int)Convert_To_Float(effect.values[0], target_tile.obj, target, 0);
                         Tile start = chara.curr_tile.GetComponent<Tile>();
-                        //Check for valid move type.
 
                         //Actually move
-                        chara.MoveTo(move_type, target.curr_path);
+                        chara.MoveTo(move_type, move_path);
 
                         Debug.Log("Character " + chara.name + " Moved from: " + start.index[0] + ","
                             + start.index[1] + " to: " + target.center.index[0] + ","
@@ -2286,13 +2405,13 @@ public class Character_Action
             if (Check_Criteria(effect.checks, target_tile.gameObject))
             {
                 //TODO add damage to Tiles
-
                 if (target_tile.obj != null)
                 {
                     Character_Script chara = target_tile.obj.GetComponent<Character_Script>();
                     if (chara != null)
                     {
                         int damage = (int)(Convert_To_Float(effect.values[0], chara.gameObject, target) * target.affected_tiles[target_tile][1]);
+                        character.Increase_Turn_Stats(Character_Turn_Records.Damage_Dealt, damage);
                         Debug.Log("Character " + character.character_name + " Attacked: " + chara.character_name + "; Dealing " + damage + "(" + Convert_To_Float(effect.values[0], chara.gameObject, target) + ") damage and Using " + ap_cost + " AP");
                         chara.Take_Damage(damage, character.weapon.pierce);
                         Event_Manager.Broadcast(Event_Trigger.ON_DAMAGE, this, effect.values[0], target_tile.gameObject);
@@ -2300,6 +2419,7 @@ public class Character_Action
                     else
                     {
                         int damage = (int)(Convert_To_Float(effect.values[0], target_tile.obj, target) * target.affected_tiles[target_tile][1]);
+                        character.Increase_Turn_Stats(Character_Turn_Records.Damage_Dealt, damage);
                         Debug.Log("Character " + character.character_name + " Attacked: OBJECT" + "; Dealing " + damage + " damage and Using " + ap_cost + " AP");
                         Object_Script target_object = target_tile.obj.GetComponent<Object_Script>();
                         target_object.Take_Damage(damage, character.weapon.pierce);
@@ -2309,7 +2429,7 @@ public class Character_Action
             }
             else
             {
-                Debug.Log("Condition not met");
+                Debug.Log("Condition " + condition + " not met");
             }
         }
 
@@ -2404,6 +2524,7 @@ public class Character_Action
 
                     //Now we add the Condition to the target.
                     Character_Script target_character = target_tile.obj.GetComponent<Character_Script>();
+                    character.Increase_Turn_Stats(Character_Turn_Records.Conditions_Dealt, 1);
                     target_character.Add_Condition(condi);
 
                     Debug.Log("Character " + character.character_name + " Gave: " + target_character.character_name +
@@ -2504,7 +2625,7 @@ public class Character_Action
                 int elevation = (int)(Convert_To_Float(effect.values[0], target_tile.gameObject, target) * target.affected_tiles[target_tile][0]);
                 Debug.Log("Character " + character.character_name + " Elevated Tile: (" + target_tile.index[0] + "," + target_tile.index[1] + "); By " + elevation + " and Using " + ap_cost + " AP");
                 //character.controller.curr_scenario.tile_grid.Elevate(target.game_object.transform, elevation);
-                Game_Controller.curr_scenario.tile_grid.Elevate(target_tile.transform, elevation);
+                Game_Controller.curr_scenario.tile_grid.StartCoroutine(Game_Controller.curr_scenario.tile_grid.Elevate(target_tile.transform, elevation));
             }
             else
             {

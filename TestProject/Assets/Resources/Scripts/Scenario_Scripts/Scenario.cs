@@ -53,7 +53,10 @@ public class Scenario : MonoBehaviour {
     /// </summary>
     private static string PLAYER_STATS_FILE = "Assets/Resources/Characters/Player_Characters/Player_Character_Data.txt";
     private static string MONSTER_STATS_FILE = "Assets/Resources/Characters/Monster_Characters/Monster_Character_Data.txt";
-    private static string MAT_FOLDER = "Assets/Resources/Objects/Materials/";
+    private static string MAT_FOLDER = "Objects/Materials/";
+    private static string REACHABLE_MATS = MAT_FOLDER + "Reachable_Tile_Materials/";
+    private static string TILE_MATS = MAT_FOLDER + "Tile_Materials/";
+    private static string CURSOR_MATS = MAT_FOLDER + "Cursor_Materials/";
     private static Scenario scenario;
 
     public List<Material> Reachable_Materials { get; private set; }
@@ -261,7 +264,7 @@ public class Scenario : MonoBehaviour {
                     for (int j = i + 1; j < i + 10 + 1; j++)
                     {
                         string[] entries = lines[j].Split(' ');
-                        materials[(j-i-1)] = (Material)Resources.Load("Objects/Materials/TileMat0" + (j-i-1));
+                        materials[(j-i-1)] = (Material)Resources.Load(TILE_MATS + "TileMat0" + (j-i-1));
                         materials[(j - i - 1)].name = entries[1];
                         materials[(j-i-1)].mainTexture = (Texture)Resources.Load("Textures/" + entries[1]);
                         double modifier;
@@ -485,7 +488,8 @@ public class Scenario : MonoBehaviour {
         reachable_tile_materials = new List<Material>();
         for (int i =0; i< 2; i++)
         {
-            reachable_tile_materials.Add(Resources.Load(MAT_FOLDER + "Reachable_Tile_0"+i+".mat", typeof(Material)) as Material);
+            reachable_tile_materials.Add(Resources.Load(REACHABLE_MATS + "Reachable_Tile_0"+i, typeof(Material)) as Material);
+            //reachable_tile_materials.Add(Resources.Load(REACHABLE_MATS + "Reachable_Tile_0"+i+".mat", typeof(Material)) as Material);
         }
 
         //Load player and monster stats and come up with turn order
@@ -649,11 +653,12 @@ public class Scenario : MonoBehaviour {
         //Debug.Log("curr_player " + curr_player.Peek().GetComponent<Character_Script>().curr_action.Count);
         if (curr_player.Count > 0 && curr_player.Peek().GetComponent<Character_Script>().curr_action.Count > 0)
         {
-            int area_width = curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area.GetLength(0);
-            int area_length = curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area.GetLength(1);
+            Character_Script curr_character = curr_player.Peek().GetComponent<Character_Script>();
+            int area_width = curr_character.curr_action.Peek().area.GetLength(0);
+            int area_length = curr_character.curr_action.Peek().area.GetLength(1);
 
             //Update cursor type to match current Ability
-            if (cursor_name != curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().name)
+            if (cursor_name != curr_character.curr_action.Peek().name)
             {
 
                 //Destroy existing cursors
@@ -663,34 +668,34 @@ public class Scenario : MonoBehaviour {
                     GameObject.Destroy(game_object);
                 }
                 cursors = new List<GameObject>();
-                cursor_name = curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().name;
+                cursor_name = curr_character.curr_action.Peek().name;
 
                 //Recreate cursors based on type
                 for (int x = 0; x < area_width; x++)
                 {
                     for (int y = 0; y < area_length; y++)
                     {
-                        if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area[x, y] != 0)
+                        if (curr_character.curr_action.Peek().area[x, y] != 0)
                         {
                             GameObject instance = Instantiate(cursor);
-                            if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area[x, y] > 0 &&
-                                curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area[x, y] < .25f)
+                            if (curr_character.curr_action.Peek().area[x, y] > 0 &&
+                                curr_character.curr_action.Peek().area[x, y] < .25f)
                             {
-                                instance.GetComponent<Renderer>().material = (Material)Resources.Load("Objects/Materials/GoldMat");
+                                instance.GetComponent<Renderer>().material = (Material)Resources.Load(CURSOR_MATS + "GoldMat");
                             }
-                            if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area[x, y] >= .25f &&
-                                curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area[x, y] < .5f)
+                            if (curr_character.curr_action.Peek().area[x, y] >= .25f &&
+                                curr_character.curr_action.Peek().area[x, y] < .5f)
                             {
-                                instance.GetComponent<Renderer>().material = (Material)Resources.Load("Objects/Materials/GoldMat");
+                                instance.GetComponent<Renderer>().material = (Material)Resources.Load(CURSOR_MATS + "GoldMat");
                             }
-                            if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area[x, y] >= .5f &&
-                                curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area[x, y] < .75f)
+                            if (curr_character.curr_action.Peek().area[x, y] >= .5f &&
+                                curr_character.curr_action.Peek().area[x, y] < .75f)
                             {
-                                instance.GetComponent<Renderer>().material = (Material)Resources.Load("Objects/Materials/OrangeMat");
+                                instance.GetComponent<Renderer>().material = (Material)Resources.Load(CURSOR_MATS + "OrangeMat");
                             }
-                            if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area[x, y] > .75f)
+                            if (curr_character.curr_action.Peek().area[x, y] > .75f)
                             {
-                                instance.GetComponent<Renderer>().material = (Material)Resources.Load("Objects/Materials/RedMat");
+                                instance.GetComponent<Renderer>().material = (Material)Resources.Load(CURSOR_MATS + "RedMat");
                             }
                             instance.name = "Temp_Cursor";
                             instance.transform.parent = GameObject.Find("Cursors").transform;
@@ -701,8 +706,8 @@ public class Scenario : MonoBehaviour {
             }
             //Debug.Log("Moving Cursors");
             //Update cursor positions
-            if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Count == 0 ||
-                curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area.Length == 1)
+            if (curr_character.curr_action.Count == 0 ||
+                curr_character.curr_action.Peek().area.Length == 1)
             {
 
                 cursors[0].transform.position = new Vector3(
@@ -710,19 +715,19 @@ public class Scenario : MonoBehaviour {
                     selected_tile.position.y + 0.025f + Tile_Grid.TILE_SCALE * selected_tile.GetComponent<Tile>().height,
                     selected_tile.position.z);
             }
-            else if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area.Length > 1)
+            else if (curr_character.curr_action.Peek().area.Length > 1)
             {
                 int startX = 0;
                 int startY = 0;
-                if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().center == "Target")
+                if (curr_character.curr_action.Peek().center == "Target")
                 {
                     startX = selected_tile.GetComponent<Tile>().index[0];
                     startY = selected_tile.GetComponent<Tile>().index[1];
                 }
-                else if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().center == "Self")
+                else if (curr_character.curr_action.Peek().center == "Self")
                 {
-                    startX = curr_player.Peek().GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[0];
-                    startY = curr_player.Peek().GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[1];
+                    startX = curr_character.curr_tile.GetComponent<Tile>().index[0];
+                    startY = curr_character.curr_tile.GetComponent<Tile>().index[1];
                 }
                 startX -= area_width / 2;
                 startY -= area_length / 2;
@@ -763,7 +768,9 @@ public class Scenario : MonoBehaviour {
             curr_player.Count > 0 &&
             curr_player.Peek().GetComponent<Character_Script>().curr_action != null &&
             curr_player.Peek().GetComponent<Character_Script>().curr_action.Count > 0 &&
-            curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().action_type == Action_Types.Path) { 
+            curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().action_type == Action_Types.Path &&
+            curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Idle
+            ) { 
             Show_Path();
         }
         else
@@ -781,7 +788,8 @@ public class Scenario : MonoBehaviour {
         //Debug.Log("Showing Path");
         Tile cursor_tile = selected_tile.GetComponent<Tile>();
         Character_Script chara = curr_player.Peek().GetComponent<Character_Script>();
-        if ((cursor_tile.parent != null) &&
+        if (chara.curr_action.Peek().curr_path != null &&
+            (cursor_tile.parent != null || chara.curr_action.Peek().curr_path.Count > 1) &&
             curr_player.Peek() != null)
         {
             //Debug.Log("Testing");
@@ -795,7 +803,7 @@ public class Scenario : MonoBehaviour {
             int tri_x = 0;
             int curr_path_index = chara.curr_action.Peek().curr_path.Count - 1;
             //while (temp_tile != chara.curr_action.Peek().curr_path[chara.curr_action.Peek().curr_path.Count -1])
-            while (temp_tile != chara.curr_tile.GetComponent<Tile>())
+            while (temp_tile != chara.curr_tile.GetComponent<Tile>() || (curr_path_index > 0))
             {
                 //Calculate the difference in the x and y tile index
                 int delta_x;
@@ -804,17 +812,24 @@ public class Scenario : MonoBehaviour {
                 if (temp_tile != chara.curr_action.Peek().curr_path[curr_path_index] && curr_path_index == chara.curr_action.Peek().curr_path.Count - 1)
                 {
                     next_tile = temp_tile.parent;
+                    if(next_tile == null)
+                    {
 
-                }else
+                        temp_tile = chara.curr_action.Peek().curr_path[curr_path_index];
+                        next_tile = chara.curr_action.Peek().curr_path[curr_path_index-1];
+                        curr_path_index -= 2;
+                    }
+                }
+                else
                 {
                     next_tile = chara.curr_action.Peek().curr_path[curr_path_index];
                     curr_path_index -= 1;
                 }
-
                 delta_x = temp_tile.index[0] - next_tile.index[0];
                 delta_y = temp_tile.index[1] - next_tile.index[1];
 
-                if (temp_tile == cursor_tile)
+                if ((temp_tile == cursor_tile && !chara.curr_action.Peek().curr_path.Contains(cursor_tile)) || 
+                    (temp_tile == chara.curr_action.Peek().curr_path[chara.curr_action.Peek().curr_path.Count - 1] && cursor_tile.parent == null))
                 {
                     //Set up first triangle.
 
@@ -831,6 +846,22 @@ public class Scenario : MonoBehaviour {
                         vertices.Add(new Vector3(temp_tile.transform.position.x - tile_width * width_modifier,
                                     (temp_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * temp_tile.height),
                                     temp_tile.transform.position.z + tile_width * width_modifier * delta_x));
+                        vertices.Add(new Vector3(temp_tile.transform.position.x + tile_width * width_modifier,
+                                    (temp_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * temp_tile.height),
+                                    temp_tile.transform.position.z + tile_width * width_modifier * delta_x*2));
+                        vertices.Add(new Vector3(temp_tile.transform.position.x - tile_width * width_modifier,
+                                    (temp_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * temp_tile.height),
+                                    temp_tile.transform.position.z + tile_width * width_modifier * delta_x*2));
+                        vertices.Add(new Vector3(temp_tile.transform.position.x + tile_width * width_modifier*2,
+                                    (temp_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * temp_tile.height),
+                                    temp_tile.transform.position.z + tile_width * width_modifier * delta_x*2));
+                        vertices.Add(new Vector3(temp_tile.transform.position.x - tile_width * width_modifier*2,
+                                    (temp_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * temp_tile.height),
+                                    temp_tile.transform.position.z + tile_width * width_modifier * delta_x*2));
+                        uv.Add(new Vector2(1, 1));
+                        uv.Add(new Vector2(0, 0));
+                        uv.Add(new Vector2(1, 1));
+                        uv.Add(new Vector2(0, 0));
                         uv.Add(new Vector2(1, 1));
                         uv.Add(new Vector2(0, 0));
                     }
@@ -842,6 +873,22 @@ public class Scenario : MonoBehaviour {
                         vertices.Add(new Vector3(temp_tile.transform.position.x + tile_width * width_modifier * delta_y,
                                     (temp_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * temp_tile.height),
                                     temp_tile.transform.position.z - tile_width * width_modifier));
+                        vertices.Add(new Vector3(temp_tile.transform.position.x + tile_width * width_modifier * delta_y *2,
+            (temp_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * temp_tile.height),
+            temp_tile.transform.position.z + tile_width * width_modifier));
+                        vertices.Add(new Vector3(temp_tile.transform.position.x + tile_width * width_modifier * delta_y *2,
+                                    (temp_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * temp_tile.height),
+                                    temp_tile.transform.position.z - tile_width * width_modifier));
+                        vertices.Add(new Vector3(temp_tile.transform.position.x + tile_width * width_modifier * delta_y*2,
+            (temp_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * temp_tile.height),
+            temp_tile.transform.position.z + tile_width * width_modifier*2));
+                        vertices.Add(new Vector3(temp_tile.transform.position.x + tile_width * width_modifier * delta_y*2,
+                                    (temp_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * temp_tile.height),
+                                    temp_tile.transform.position.z - tile_width * width_modifier*2));
+                        uv.Add(new Vector2(1, 1));
+                        uv.Add(new Vector2(0, 0));
+                        uv.Add(new Vector2(1, 1));
+                        uv.Add(new Vector2(0, 0));
                         uv.Add(new Vector2(1, 1));
                         uv.Add(new Vector2(0, 0));
 
@@ -856,72 +903,100 @@ public class Scenario : MonoBehaviour {
                     triangles.Add(tri_x + 1);
                     triangles.Add(tri_x);
 
+                    triangles.Add(tri_x + 1);
+                    triangles.Add(tri_x + 2);
+                    triangles.Add(tri_x + 4);
+                    triangles.Add(tri_x + 4);
+                    triangles.Add(tri_x + 2);
+                    triangles.Add(tri_x + 1);
+
+                    triangles.Add(tri_x + 1);
+                    triangles.Add(tri_x + 4);
+                    triangles.Add(tri_x + 3);
+                    triangles.Add(tri_x + 3);
+                    triangles.Add(tri_x + 4);
+                    triangles.Add(tri_x + 1);
+
+                    triangles.Add(tri_x + 1);
+                    triangles.Add(tri_x + 3);
+                    triangles.Add(tri_x + 5);
+                    triangles.Add(tri_x + 5);
+                    triangles.Add(tri_x + 3);
+                    triangles.Add(tri_x + 1);
+
+                    triangles.Add(tri_x + 2);
+                    triangles.Add(tri_x + 4);
+                    triangles.Add(tri_x + 6);
+                    triangles.Add(tri_x + 6);
+                    triangles.Add(tri_x + 4);
+                    triangles.Add(tri_x + 2);
+
                     //If the height to the next tile is the same, we only need 2 duplicated triangles.
                     if (next_tile.height == temp_tile.height)
                     {
                         if (delta_x < 0)
                         {
-                            triangles.Add(tri_x + 1);
-                            triangles.Add(tri_x + 2);
-                            triangles.Add(tri_x + 6);
-                            triangles.Add(tri_x + 6);
+                            triangles.Add(tri_x + 3);
                             triangles.Add(tri_x + 4);
-                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 3);
 
-                            triangles.Add(tri_x + 6);
-                            triangles.Add(tri_x + 2);
-                            triangles.Add(tri_x + 1);
-                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 9);
+                            triangles.Add(tri_x + 7);
                             triangles.Add(tri_x + 4);
-                            triangles.Add(tri_x + 6);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 9);
                         }
                         else if (delta_x > 0)
                         {
-                            triangles.Add(tri_x + 2);
-                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 4);
                             triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 8);
                             triangles.Add(tri_x + 3);
-                            triangles.Add(tri_x + 5);
-                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 4);
 
-                            triangles.Add(tri_x + 3);
-                            triangles.Add(tri_x + 1);
-                            triangles.Add(tri_x + 2);
-                            triangles.Add(tri_x + 2);
-                            triangles.Add(tri_x + 5);
-                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 10);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 10);
+                            triangles.Add(tri_x + 8);
                         }
                         else if (delta_y < 0)
                         {
-                            triangles.Add(tri_x + 2);
-                            triangles.Add(tri_x + 1);
-                            triangles.Add(tri_x + 5);
-                            triangles.Add(tri_x + 5);
-                            triangles.Add(tri_x + 6);
-                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 4);
 
-                            triangles.Add(tri_x + 5);
-                            triangles.Add(tri_x + 1);
-                            triangles.Add(tri_x + 2);
-                            triangles.Add(tri_x + 2);
-                            triangles.Add(tri_x + 6);
-                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 8);
                         }
                         else if (delta_y > 0)
                         {
-                            triangles.Add(tri_x + 1);
-                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 3);
                             triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 9);
+                            triangles.Add(tri_x + 9);
                             triangles.Add(tri_x + 4);
                             triangles.Add(tri_x + 3);
-                            triangles.Add(tri_x + 1);
 
+                            triangles.Add(tri_x + 9);
+                            triangles.Add(tri_x + 10);
                             triangles.Add(tri_x + 4);
-                            triangles.Add(tri_x + 2);
-                            triangles.Add(tri_x + 1);
-                            triangles.Add(tri_x + 1);
-                            triangles.Add(tri_x + 3);
                             triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 10);
+                            triangles.Add(tri_x + 9);
                         }
                     }
                     //If not, we need to create an intermediate vertex and create more triangles.
@@ -938,7 +1013,7 @@ public class Scenario : MonoBehaviour {
                             x_pos = temp_tile.transform.position.x;
                             y_pos = next_tile.transform.position.y + 0.027f + Tile_Grid.TILE_SCALE * next_tile.height;
                             z_pos = temp_tile.transform.position.z;
-                            invert = -1;
+                            invert = -2;
                         }
 
                         if (delta_x != 0)
@@ -969,123 +1044,123 @@ public class Scenario : MonoBehaviour {
                         //Coordinates of vertices for triangles depends on the change in tile index. 
                         if (delta_x < 0)
                         {
-                            triangles.Add(tri_x + 1);
-                            triangles.Add(tri_x + 2);
-                            triangles.Add(tri_x + 4);
-                            triangles.Add(tri_x + 4);
-                            triangles.Add(tri_x + 3);
-                            triangles.Add(tri_x + 1);
-
-                            triangles.Add(tri_x + 4);
-                            triangles.Add(tri_x + 2);
-                            triangles.Add(tri_x + 1);
-                            triangles.Add(tri_x + 1);
-                            triangles.Add(tri_x + 3);
-                            triangles.Add(tri_x + 4);
-
                             triangles.Add(tri_x + 3);
                             triangles.Add(tri_x + 4);
                             triangles.Add(tri_x + 7);
                             triangles.Add(tri_x + 7);
-                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 4);
                             triangles.Add(tri_x + 3);
 
                             triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 8);
                             triangles.Add(tri_x + 4);
-                            triangles.Add(tri_x + 3);
-                            triangles.Add(tri_x + 3);
-                            triangles.Add(tri_x + 5);
+                            triangles.Add(tri_x + 4);
                             triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 8);
+
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 11);
+                            triangles.Add(tri_x + 11);
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 7);
+
+                            triangles.Add(tri_x + 9);
+                            triangles.Add(tri_x + 11);
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 11);
+                            triangles.Add(tri_x + 9);
                         }
                         else if (delta_x > 0)
                         {
-                            triangles.Add(tri_x + 2);
-                            triangles.Add(tri_x + 1);
+                            triangles.Add(tri_x + 4);
                             triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 7);
                             triangles.Add(tri_x + 3);
                             triangles.Add(tri_x + 4);
-                            triangles.Add(tri_x + 2);
 
-                            triangles.Add(tri_x + 3);
-                            triangles.Add(tri_x + 1);
-                            triangles.Add(tri_x + 2);
-                            triangles.Add(tri_x + 2);
-                            triangles.Add(tri_x + 4);
-                            triangles.Add(tri_x + 3);
-
-                            triangles.Add(tri_x + 4);
-                            triangles.Add(tri_x + 3);
-                            triangles.Add(tri_x + 6);
-                            triangles.Add(tri_x + 6);
+                            triangles.Add(tri_x + 7);
                             triangles.Add(tri_x + 8);
-                            triangles.Add(tri_x + 4);
-
-                            triangles.Add(tri_x + 6);
-                            triangles.Add(tri_x + 3);
                             triangles.Add(tri_x + 4);
                             triangles.Add(tri_x + 4);
                             triangles.Add(tri_x + 8);
-                            triangles.Add(tri_x + 6);
+                            triangles.Add(tri_x + 7);
+
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 12);
+                            triangles.Add(tri_x + 12);
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 7);
+
+                            triangles.Add(tri_x + 12);
+                            triangles.Add(tri_x + 10);
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 10);
+                            triangles.Add(tri_x + 12);
                         }
                         else if (delta_y < 0)
                         {
-                            triangles.Add(tri_x + 2);
-                            triangles.Add(tri_x + 1);
-                            triangles.Add(tri_x + 3);
                             triangles.Add(tri_x + 3);
                             triangles.Add(tri_x + 4);
-                            triangles.Add(tri_x + 2);
-
-                            triangles.Add(tri_x + 3);
-                            triangles.Add(tri_x + 1);
-                            triangles.Add(tri_x + 2);
-                            triangles.Add(tri_x + 2);
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 7);
                             triangles.Add(tri_x + 4);
                             triangles.Add(tri_x + 3);
 
-                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 8);
                             triangles.Add(tri_x + 4);
-                            triangles.Add(tri_x + 6);
-                            triangles.Add(tri_x + 6);
-                            triangles.Add(tri_x + 5);
-                            triangles.Add(tri_x + 3);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 7);
 
-                            triangles.Add(tri_x + 6);
-                            triangles.Add(tri_x + 4);
-                            triangles.Add(tri_x + 3);
-                            triangles.Add(tri_x + 3);
-                            triangles.Add(tri_x + 5);
-                            triangles.Add(tri_x + 6);
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 9);
+                            triangles.Add(tri_x + 9);
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 7);
+
+                            triangles.Add(tri_x + 9);
+                            triangles.Add(tri_x + 10);
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 10);
+                            triangles.Add(tri_x + 9);
                         }
                         else if (delta_y > 0)
                         {
-                            triangles.Add(tri_x + 1);
-                            triangles.Add(tri_x + 2);
-                            triangles.Add(tri_x + 4);
-                            triangles.Add(tri_x + 4);
-                            triangles.Add(tri_x + 3);
-                            triangles.Add(tri_x + 1);
-
-                            triangles.Add(tri_x + 4);
-                            triangles.Add(tri_x + 2);
-                            triangles.Add(tri_x + 1);
-                            triangles.Add(tri_x + 1);
                             triangles.Add(tri_x + 3);
                             triangles.Add(tri_x + 4);
-
-                            triangles.Add(tri_x + 3);
-                            triangles.Add(tri_x + 4);
-                            triangles.Add(tri_x + 8);
-                            triangles.Add(tri_x + 8);
                             triangles.Add(tri_x + 7);
-                            triangles.Add(tri_x + 3);
-
-                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 7);
                             triangles.Add(tri_x + 4);
                             triangles.Add(tri_x + 3);
-                            triangles.Add(tri_x + 3);
+
                             triangles.Add(tri_x + 7);
                             triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 4);
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 7);
+
+                            triangles.Add(tri_x + 7);
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 11);
+                            triangles.Add(tri_x + 11);
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 7);
+
+                            triangles.Add(tri_x + 11);
+                            triangles.Add(tri_x + 12);
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 8);
+                            triangles.Add(tri_x + 12);
+                            triangles.Add(tri_x + 11);
                         }
                     }
                 }
@@ -1359,10 +1434,12 @@ public class Scenario : MonoBehaviour {
             mesh.vertices = vertices.ToArray();
             mesh.uv = uv.ToArray();
             mesh.triangles = triangles.ToArray();
-            
+
             //Draw the mesh using the Scenario object's Mesh Renderer.
             scenario.GetComponent<MeshFilter>().mesh = mesh;
-        }else
+
+        }
+        else
         {
             //IF we have no path to follow the eliminate the current mesh.
             scenario.GetComponent<MeshFilter>().mesh = null;
@@ -1555,7 +1632,7 @@ public class Scenario : MonoBehaviour {
                     for (int j = i + 1; j < i + 10 + 1; j++)
                     {
                         string[] entries = lines[j].Split(' ');
-                        materials[(j - i - 1)] = (Material)Resources.Load("Objects/Materials/TileMat0" + (j - i - 1));
+                        materials[(j - i - 1)] = (Material)Resources.Load(TILE_MATS + "TileMat0" + (j - i - 1));
                         materials[(j - i - 1)].name = entries[1];
                         materials[(j - i - 1)].mainTexture = (Texture)Resources.Load("Textures/" + entries[1]);
                         double modifier;
@@ -1678,11 +1755,12 @@ public class Scenario : MonoBehaviour {
     /// <param name="cost_limit">The limit in cost for traversal. </param>
     /// <param name="distance_limit">The limit in distance (number of tiles away) for traversal. </param>
     /// <param name="type">The type of search. 1 for movement path, 2 for uninterrupted movement , 3 attack range, 4 for attack range with obstacles. </param>
-    public void Find_Reachable(int cost_limit, int distance_limit, int type)
+    public List<Transform> Find_Reachable(int cost_limit, int distance_limit, int type, bool update)
     {
         //Debug.Log("cost limit: " + cost_limit + "; distance limit: " + distance_limit);
         //Debug.Log(curr_player.Peek().GetComponent<Character_Script>().curr_tile.GetComponent<Tile>());
         Character_Script chara = curr_player.Peek().GetComponent<Character_Script>();
+        List<Transform> tiles = new List<Transform>();
         if (chara.curr_action != null && chara.curr_action.Count > 0)
         {
             //Debug.Log("Finding tiles");
@@ -1691,9 +1769,10 @@ public class Scenario : MonoBehaviour {
                 //Debug.Log("BFS");
                 //Debug.Log("BFS with cost limit " + cost_limit + ", distance limit " + distance_limit);
                 //tile_grid.navmesh.bfs(curr_player.Peek().GetComponent<Character_Script>().curr_tile.GetComponent<Tile>(), cost_limit, distance_limit);
-                tile_grid.navmesh.bfs(chara.curr_action.Peek().curr_path[chara.curr_action.Peek().curr_path.Count - 1], chara.tag, cost_limit, distance_limit);
 
-                reachable_tiles = new List<Transform>();
+                //TODO find a better way to do this so we don't change tile settings each time.
+                tile_grid.navmesh.bfs(chara.curr_action.Peek().curr_path[chara.curr_action.Peek().curr_path.Count - 1], chara.tag, cost_limit, distance_limit);
+                
                 Tile last_Tile = chara.curr_action.Peek().curr_path[chara.curr_action.Peek().curr_path.Count - 1];
                 int x_index = last_Tile.index[0];
                 int y_index = last_Tile.index[1];
@@ -1724,7 +1803,7 @@ public class Scenario : MonoBehaviour {
                                         tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().distance <= distance_limit)
                                     {
                                         
-                                        reachable_tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
+                                        tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
                                         //reachable_tiles.Add(new Tile(tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>()));
                                         //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight = -1;
                                         //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().parent = null;
@@ -1736,7 +1815,7 @@ public class Scenario : MonoBehaviour {
                                     {
                                         if ((Math.Abs(x_index - (x_index + i)) + Math.Abs(y_index - (y_index + j))) < cost_limit)
                                         {
-                                            reachable_tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
+                                            tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
                                             //reachable_tiles.Add(new Tile(tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>()));
                                             //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight = -1;
                                             //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().parent = null;
@@ -1751,7 +1830,7 @@ public class Scenario : MonoBehaviour {
                                     {
                                         if (Math.Abs(i) + Math.Abs(j) <= distance_limit)
                                         {
-                                            reachable_tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
+                                            tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
                                             //reachable_tiles.Add(new Tile(tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>()));
                                             //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight = -1;
                                             //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().parent = null;
@@ -1767,6 +1846,11 @@ public class Scenario : MonoBehaviour {
                 }
             }
         }
+        if (update)
+        {
+            reachable_tiles = tiles;
+        }
+        return tiles;
     }
 
     /// <summary>
@@ -1804,7 +1888,7 @@ public class Scenario : MonoBehaviour {
                     //Set Material to blue
                     //Debug.Log(tile_grid.reachable_prefab.GetComponent<Material>().name);
 
-                    tile_grid.reachable_prefab.GetComponent<Renderer>().sharedMaterial.color = new Color(0, 0, 255);
+                    tile_grid.reachable_prefab.GetComponent<Renderer>().sharedMaterial.color = new Color(0, 255, 255);
                 }
                 if (curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Attacking)
                 {
@@ -1817,7 +1901,18 @@ public class Scenario : MonoBehaviour {
                                                                tile.position.y + .015f + Tile_Grid.TILE_SCALE * tile.GetComponent<Tile>().height,
                                                                tile.position.z),
                                                                Quaternion.identity);
-                //obj.GetComponent<MeshRenderer>().material = reachable_tile_materials[0];
+                //Debug.Log(obj.GetComponent<MeshRenderer>().material.name);
+                obj.GetComponent<MeshRenderer>().material = reachable_tile_materials[0];
+                //TODO, find a better way to change tile material based on criteria
+                if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().name == "Move" && 
+                    (Math.Abs(tile.GetComponent<Tile>().index[0] - curr_player.Peek().GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[0]) +
+                    Math.Abs(tile.GetComponent<Tile>().index[1] - curr_player.Peek().GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[1]) >
+                    curr_player.Peek().GetComponent<Character_Script>().speed) ||
+                    tile.GetComponent<Tile>().weight + curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().curr_path_cost > 
+                    curr_player.Peek().GetComponent<Character_Script>().speed)
+                {
+                    obj.GetComponent<MeshRenderer>().material = reachable_tile_materials[1];
+                }
                 //Set the object Parent to the Scenario Reachable_Tiles
                 obj.transform.parent = Game_Controller.curr_scenario.transform.GetChild(4);
 
@@ -1854,7 +1949,7 @@ public class Scenario : MonoBehaviour {
         {
             Character_Script character = ((GameObject)characters[i]).GetComponent<Character_Script>();
             //Debug.Log("Processing " + character.name + " " + character.character_num);
-            character.Reset_Combo_Mod();
+            character.Reset_Turn_Stats();
             character.Update_Conditions();
             character.Progress_Conditions();
 
@@ -1918,7 +2013,7 @@ public class Scenario : MonoBehaviour {
     {
         foreach (GameObject chara in characters)
         {
-            chara.GetComponent<Character_Script>().Reset_Combo_Mod();
+            chara.GetComponent<Character_Script>().Reset_Turn_Stats();
             //Every turn update the conditions and progress them.
             chara.GetComponent<Character_Script>().Update_Conditions();
             chara.GetComponent<Character_Script>().Progress_Conditions();

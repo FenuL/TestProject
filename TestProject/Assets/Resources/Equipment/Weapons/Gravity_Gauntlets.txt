@@ -14,7 +14,7 @@ mod: 0 0 0.125 0.25 0.25 0.25 0.125 0 0
 mod: 0 0 0 0 0.125.25 0.125 0 0 0
 mod: 0 0 0 0 0.125 0 0 0 0
 Passive: Master_of_Positioning
-Reaction: Counter
-Active1: Slash
-Active2: Cone
-Active3: Stun
+Reaction: Gravity_Strike
+Active1: Graviton
+Active2: Entropic_Blast
+Active3: Gravity_Smackdown

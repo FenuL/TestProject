@@ -1,8 +1,8 @@
-name: Counter
-ap_cost: 1
-mp_cost: 0
+name: Gravity_Strike
+ap_cost: 0
+mp_cost: 5
 type: Melee
-range: CC_WPR
+range: 1
 tile_color: 0
 num_targets: 1
 target_checks: NULL
@@ -11,9 +11,10 @@ area: 1
 effects: 2
   self NULL 0,0 Orient Target
   target NULL 0,0 Damage CC_WPD+CC_STR
+  //target NULL 0,0 Move 2,CC_TILE,PUSH,CC_STR-CT_WGT
 activation: reactive
 origin: innate
 trigger: ON_DAMAGE
-condition: CHK_TARG_SELF & CHK_SRC_RANG
+condition: NOT_CHK_SRC_SELF & CHK_SRC_RANG
 enabled: true
 animation: Attack

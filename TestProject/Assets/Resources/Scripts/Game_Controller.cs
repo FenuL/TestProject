@@ -425,7 +425,7 @@ public class Game_Controller : MonoBehaviour {
                                 {
                                     //character.curr_action.Peek().Find_Path(curr_scenario.clicked_tile.gameObject);
                                     Game_Controller.curr_scenario.Reset_Reachable();
-                                    character.curr_action.Peek().Find_Reachable_Tiles();
+                                    character.curr_action.Peek().Find_Reachable_Tiles(true);
                                     Game_Controller.curr_scenario.Mark_Reachable();
                                 }
                                 
