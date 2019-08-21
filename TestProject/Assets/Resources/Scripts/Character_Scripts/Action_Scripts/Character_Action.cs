@@ -406,7 +406,8 @@ public class Character_Action
         //Base case 
         if (escape > 5)
         {
-            Debug.Log("TOOK TOO LONG TO PARSE");
+            Debug.Log(target_obj.name);
+            Debug.Log("Could not parse " + input);
             return -1;
         }
 
@@ -565,6 +566,10 @@ public class Character_Action
                             {
                                 input = input.Replace(prefix + val.ToString(), "" + source.action_curr);
                             }
+                            else if (val.ToString().Contains("ORI"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.orientation);
+                            }
                             else if (val.ToString().Contains("CMB"))
                             {
                                 input = input.Replace(prefix + val.ToString(), "" + source.turn_stats[Character_Turn_Records.Combo_Modifier]);
@@ -675,23 +680,116 @@ public class Character_Action
     /// <param name="target_obj">The object being targeted by the action.</param>
     /// <param name="target">The current target of the action.</param>
     /// <returns></returns>
-    public List<Tile> Convert_To_Tile_List(string input, GameObject target_obj, Target target)
+    public List<Tile> Convert_To_Tile_List(Action_Effect effect, GameObject target_obj, Target target)
     {
         List<Tile> move_path = new List<Tile>();
-        if (input == "CT_PATH")
+        if (effect.values[1] == "PATH")
         {
-            move_path = target.curr_path;
-        } else if (input.Contains("TN_"))
-        {
-            int start = input.IndexOf("TN_") + 3;
-            int length = input.Substring(start).IndexOf("_");
-            int target_index;
-            if (int.TryParse(input.Substring(start, length), out target_index))
+            if (effect.values[2] == "CT_PATH")
             {
-                if (target_index < curr_targets.Count)
+                move_path = target.curr_path;
+            }
+            else if (effect.values[2].Contains("TN_"))
+            {
+                string input = effect.values[2];
+                int start = input.IndexOf("TN_") + 3;
+                int length = input.Substring(start).IndexOf("_");
+                int target_index;
+                if (int.TryParse(input.Substring(start, length), out target_index))
                 {
-                    move_path = curr_targets[target_index].curr_path;
+                    if (target_index < curr_targets.Count)
+                    {
+                        move_path = curr_targets[target_index].curr_path;
+                    }
                 }
+            }
+        }
+        else if (effect.values[1] == "VECT")
+        {
+            float direction = Convert_To_Float(effect.values[2], target_obj, target);
+            float distance = Convert_To_Float(effect.values[3], target_obj, target);
+            Tile start = target_obj.GetComponent<Character_Script>().curr_tile;
+            Tile end = target_obj.GetComponent<Tile>();
+            Debug.Log("direction: " + direction);
+            Debug.Log("distance: " + distance);
+            Debug.Log("start: [" + start.index[0] + "," + start.index[1] + "]");
+            if (direction > 3)
+            {
+                direction = direction % 4;
+            }
+            if (direction >= 0)
+            {
+                if (direction == 0)
+                {
+                    float end_index = start.index[1] - distance;
+                    if (end_index < 0)
+                    {
+                        end_index = 0;
+                    }
+                    else if (end_index >= Game_Controller.curr_scenario.tile_grid.grid_width)
+                    {
+                        end_index = Game_Controller.curr_scenario.tile_grid.grid_width - 1;
+                    }
+                    end = Game_Controller.curr_scenario.tile_grid.getTile(start.index[0], (int)end_index);
+                }
+                else if (direction == 1)
+                {
+                    float end_index = start.index[0] + distance;
+                    if (end_index < 0)
+                    {
+                        end_index = 0;
+                    }
+                    else if (end_index >= Game_Controller.curr_scenario.tile_grid.grid_length)
+                    {
+                        end_index = Game_Controller.curr_scenario.tile_grid.grid_length - 1;
+                    }
+                    end = Game_Controller.curr_scenario.tile_grid.getTile((int)end_index, start.index[1]);
+                }
+                else if (direction == 2)
+                {
+                    float end_index = start.index[1] + distance;
+                    if (end_index < 0)
+                    {
+                        end_index = 0;
+                    }
+                    else if (end_index >= Game_Controller.curr_scenario.tile_grid.grid_width)
+                    {
+                        end_index = Game_Controller.curr_scenario.tile_grid.grid_width - 1;
+                    }
+                    end = Game_Controller.curr_scenario.tile_grid.getTile(start.index[0], (int)end_index);
+                }
+                else if (direction == 3)
+                {
+                    float end_index = start.index[0] - distance;
+                    if (end_index < 0)
+                    {
+                        end_index = 0;
+                    }
+                    else if (end_index >= Game_Controller.curr_scenario.tile_grid.grid_length)
+                    {
+                        end_index = Game_Controller.curr_scenario.tile_grid.grid_length - 1;
+                    }
+                    end = Game_Controller.curr_scenario.tile_grid.getTile((int)end_index, start.index[1]);
+                }
+
+                Debug.Log(" desired end: [" + end.index[0] + "," + end.index[1] + "]");
+
+                if (!Game_Controller.curr_scenario.reachable_tiles.Contains(end))
+                {
+                    Stack<Tile> stack = Find_Path(start, end);
+                    while (stack.Count != 0)
+                    {
+                        Tile path_tile = stack.Pop();
+                        //Debug.Log("Tile index: [" + path_tile.index[0] + "," + path_tile.index[1] + "]");
+                        //character.curr_action.Peek().curr_path.Add(curr_scenario.clicked_tile);
+                        move_path.Add(path_tile);
+                    }
+                }else
+                {
+                    Debug.Log("End out of target range");
+                }
+
+
             }
         }
         return move_path;
@@ -746,6 +844,12 @@ public class Character_Action
             {
                 string[] split = input.Split(new char[] { '/' }, 2);
                 return Parse_Equation("" + (Parse_Equation(split[0]) / Parse_Equation(split[1])));
+            }
+            //resolve mod
+            if (input.Contains("%"))
+            {
+                string[] split = input.Split(new char[] { '%' }, 2);
+                return Parse_Equation("" + (Parse_Equation(split[0]) % Parse_Equation(split[1])));
             }
             //resolve exponents
             if (input.Contains("^"))
@@ -813,7 +917,7 @@ public class Character_Action
                             //Show the number of targets for the selected Action.
                             character.controller.action_menu.GetComponent<Action_Menu_Script>().Set_Text("Using " + name + " - Select " + num_targets + " Target(s)");
 
-                            Find_Reachable_Tiles(true);
+                            Find_Reachable_Tiles(character, true);
 
                             Game_Controller.curr_scenario.Clean_Reachable();
                             Game_Controller.curr_scenario.Mark_Reachable();
@@ -874,15 +978,15 @@ public class Character_Action
         //Set the center of the ability
         if (center == "Self")
         {
-            startX = character.curr_tile.GetComponent<Tile>().index[0];
-            startY = character.curr_tile.GetComponent<Tile>().index[1];
+            startX = character.curr_tile.index[0];
+            startY = character.curr_tile.index[1];
         }
         else if (center == "Target")
         {
             if (target_tile != null)
             {
-                startX = target_tile.GetComponent<Tile>().index[0];
-                startY = target_tile.GetComponent<Tile>().index[1];
+                startX = target_tile.index[0];
+                startY = target_tile.index[1];
             }
         }
         //Set the start of the loop
@@ -931,8 +1035,8 @@ public class Character_Action
         //Set the center of the ability
         if (center == "Self")
         {
-            startX = character.curr_tile.GetComponent<Tile>().index[0];
-            startY = character.curr_tile.GetComponent<Tile>().index[1];
+            startX = character.curr_tile.index[0];
+            startY = character.curr_tile.index[1];
         }
         else if (center == "Target")
         {
@@ -1050,11 +1154,11 @@ public class Character_Action
         Character_Script target_character = target.GetComponent<Character_Script>();
         if (target_character != null)
         {
-            target_tile = target_character.curr_tile.GetComponent<Tile>();
+            target_tile = target_character.curr_tile;
         }
         if (target_tile != null)
         {
-            modifier = 0.125f * (character.curr_tile.GetComponent<Tile>().height - target_tile.height);
+            modifier = 0.125f * (character.curr_tile.height - target_tile.height);
             if (modifier > 0.25f)
             {
                 modifier = 0.25f;
@@ -1188,14 +1292,14 @@ public class Character_Action
             Character_Script target_character = target.GetComponent<Character_Script>();
             if (target_character != null)
             {
-                target_tile = target_character.curr_tile.GetComponent<Tile>();
+                target_tile = target_character.curr_tile;
             }
             else
             {
                 target_tile = target.GetComponent<Object_Script>().curr_tile.GetComponent<Tile>();
             }
         }
-        Tile char_tile = character.curr_tile.GetComponent<Tile>();
+        Tile char_tile = character.curr_tile;
         //Debug.Log(character.weapon.name + " range is " + character.weapon.modifier.GetLength(0)/2);
         int range = character.weapon.modifier.GetLength(0) / 2;
         int diff_x = Math.Abs(char_tile.index[0] - target_tile.index[0]);
@@ -1266,14 +1370,14 @@ public class Character_Action
                     }
                     else if (eff.type.ToString() == Action_Effect.Types.Heal.ToString())
                     {
-                        if (target_tile.GetComponent<Tile>().obj != null)
+                        if (target_tile.obj != null)
                         {
                             valid = true;
                         }
                     }
                     else if (eff.type.ToString() == Action_Effect.Types.Status.ToString())
                     {
-                        if (target_tile.GetComponent<Tile>().obj != null)
+                        if (target_tile.obj != null)
                         {
                             valid = true;
                         }
@@ -1292,8 +1396,8 @@ public class Character_Action
                 {
                     if (eff.type.ToString() == Action_Effect.Types.Move.ToString())
                     {
-                        if (target_tile.GetComponent<Tile>().obj == null && 
-                            target_tile.GetComponent<Tile>().traversible)
+                        if (target_tile.obj == null && 
+                            target_tile.traversible)
                         {
                             valid = true;
                         }
@@ -1544,18 +1648,18 @@ public class Character_Action
     /// Finds a path from the last tile in the curr_path for the Action to the given target Tile. Then updates curr_path with that path;
     /// </summary>
     /// <param name="target">The target. </param>
-    public void Find_Path(GameObject target)
+    public Stack<Tile> Find_Path(Tile start, Tile end)
     {
         Stack<Tile> path = new Stack<Tile>();
         //Character_Script chara = target.GetComponent<Character_Script>();
-        Tile target_tile = target.GetComponent<Tile>();
+        Tile target_tile = end;
         //Debug.Log("Finding Path");
         if (target_tile != null)
         {
             if(action_type == Action_Types.Path)
             {
                 //Debug.Log("Finding Path with Path rules");
-                path = Game_Controller.curr_scenario.tile_grid.navmesh.FindPath(curr_path[curr_path.Count - 1], target_tile);
+                path = Game_Controller.curr_scenario.tile_grid.navmesh.FindPath(start, target_tile);
             }
             else if (action_type == Action_Types.Instant)
             {
@@ -1567,11 +1671,12 @@ public class Character_Action
             }
             else if (action_type == Action_Types.Melee)
             {
-                path.Push(target_tile);
+                Debug.Log("PATHFINDING " + target_tile.index[0]);
+                path = Game_Controller.curr_scenario.tile_grid.navmesh.FindPath(start, target_tile);
             }
             else if (action_type == Action_Types.Unrestricted_Path)
             {
-                path = Game_Controller.curr_scenario.tile_grid.navmesh.FindPath(curr_path[curr_path.Count - 1], target_tile);
+                path = Game_Controller.curr_scenario.tile_grid.navmesh.FindPath(start, target_tile);
             }
             else if (action_type == Action_Types.Projectile)
             {
@@ -1587,59 +1692,82 @@ public class Character_Action
         }
 
         //Debug.Log("Path size " + path.Count);
-        //Add the Tiles in the stack to the current path.
-        while (path.Count !=0)
-        {
-            Tile path_tile = path.Pop();
-            //Debug.Log("Tile index: [" + path_tile.index[0] + "," + path_tile.index[1] + "]");
-            //character.curr_action.Peek().curr_path.Add(curr_scenario.clicked_tile.GetComponent<Tile>());
-            curr_path.Add(path_tile);
-        }
+        return path;
     }
 
     /// <summary>
-    /// Finds tiles in range of the ability
+    /// Function for finding tiles in range of an ability based on Action_Type.
     /// </summary>
+    /// <param name="chara">The character whose range we are checking.</param>
     /// <param name="update">Whether or not to update the scenario's reachable tiles.</param>
     /// <returns>The tiles that are reachable</returns>
-    public List<Transform> Find_Reachable_Tiles(bool update)
+    public List<Tile> Find_Reachable_Tiles(Character_Script chara, bool update)
     {
-        List<Transform> tiles = new List<Transform>();
+        List<Tile> tiles = new List<Tile>();
+        
         if (action_type == Action_Types.Path)
         {
             //character.controller.curr_scenario.Find_Reachable((int)character.speed, (int)Convert_To_Float(range, null), 1);
             //Debug.Log((int)(Convert_To_Float(range, null) - curr_path_cost));
-            tiles = Game_Controller.curr_scenario.Find_Reachable((int)(Convert_To_Float(range, null, null)-curr_path_cost), (int)Convert_To_Float(range, null, null), 1,update);
+            tiles = Game_Controller.curr_scenario.Find_Reachable(chara,(int)(Convert_To_Float(range, null, null)-curr_path_cost), (int)Convert_To_Float(range, null, null), 1,update);
         }
         else if (action_type == Action_Types.Unrestricted_Path)
         {
             //character.controller.curr_scenario.Find_Reachable((int)character.speed * 2, (int)Convert_To_Float(range, null), 2);
-            tiles = Game_Controller.curr_scenario.Find_Reachable((int)character.speed * 2, (int)Convert_To_Float(range, null, null), 2, update);
+            tiles = Game_Controller.curr_scenario.Find_Reachable(chara,(int)chara.speed * 2, (int)Convert_To_Float(range, null, null), 2, update);
         }
         else if (action_type == Action_Types.Ranged)
         {
             //character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Float(range, null), 3);
-            tiles = Game_Controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Float(range, null, null), 3, update);
+            tiles = Game_Controller.curr_scenario.Find_Reachable(chara, chara.action_curr, (int)Convert_To_Float(range, null, null), 3, update);
         }
         else if (action_type == Action_Types.Melee)
         {
             //character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Float(range, null), 3);
-            tiles = Game_Controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Float(range, null, null), 3, update);
+            tiles = Game_Controller.curr_scenario.Find_Reachable(chara, chara.action_curr, (int)Convert_To_Float(range, null, null), 3, update);
         }
         else if (action_type == Action_Types.Projectile)
         {
             //character.controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Float(range, null), 3);
-            tiles = Game_Controller.curr_scenario.Find_Reachable(character.action_curr, (int)Convert_To_Float(range, null, null), 3, update);
+            tiles = Game_Controller.curr_scenario.Find_Reachable(chara, chara.action_curr, (int)Convert_To_Float(range, null, null), 3, update);
         }
         else if (action_type == Action_Types.Instant)
         {
             //character.controller.curr_scenario.Find_Reachable((int)character.speed * 2, (int)Convert_To_Float(range, null), 2);
-            tiles = Game_Controller.curr_scenario.Find_Reachable((int)Convert_To_Float(range, null, null), (int)Convert_To_Float(range, null, null), 2, update);
+            tiles = Game_Controller.curr_scenario.Find_Reachable(chara, (int)Convert_To_Float(range, null, null), (int)Convert_To_Float(range, null, null), 2, update);
         }
         else if (action_type == Action_Types.None)
         {
             //character.controller.curr_scenario.Find_Reachable((int)character.speed * 2, (int)Convert_To_Float(range, null), 2);
-            tiles = Game_Controller.curr_scenario.Find_Reachable((int)Convert_To_Float(range, null, null), (int)Convert_To_Float(range, null, null), 3, update);
+            tiles = Game_Controller.curr_scenario.Find_Reachable(chara, (int)Convert_To_Float(range, null, null), (int)Convert_To_Float(range, null, null), 3, update);
+        }
+        return tiles;
+    }
+
+    /// <summary>
+    /// Function for finding reachable tiles based on movement type  and distance rather than Action_Type. 
+    /// </summary>
+    /// <param name="chara"> The Character performing the Action</param>
+    /// <param name="move_type">The type of movement (1-4)</param>
+    /// <param name="direction">The direction of the movement (0-3)</param>
+    /// <param name="distance">The distance to travel</param>
+    /// <param name="update">Whether or not to update the reachable tiles array for the scenario.</param>
+    /// <returns></returns>
+    public List<Tile> Find_Reachable_Tiles(Character_Script chara, int move_type, int direction, float distance, bool update)
+    {
+        List<Tile> tiles = new List<Tile>();
+        if (move_type >= 0)
+        {
+            if (move_type == 1)
+            {
+                //TODO, add something here
+            }
+            else if (move_type == 2)
+            {
+
+                tiles = Game_Controller.curr_scenario.Find_Reachable(chara, direction, distance, (int)distance, 5, update);
+                //Debug.Log(tiles.Count);
+            }
         }
         return tiles;
     }
@@ -1823,15 +1951,13 @@ public class Character_Action
     /// <returns>True if in range, False otherwise</returns>
     public bool Check_Range(Character_Script chara)
     {
-        //if (Find_Reachable_Tiles(false).Contains(chara.curr_tile.transform))
-        //{
+        //Debug.Log(character.name + " is using " + name + " on " + chara.name);
+        if (Find_Reachable_Tiles(character, false).Contains(chara.curr_tile))
+        {
             //TODO add more detailed check.
             return true;
-        //}
-        //else
-        //{
-            //return false;
-        //}
+        }
+        return false;
     }
 
     /// <summary>
@@ -1841,12 +1967,14 @@ public class Character_Action
     public bool Check_Resource()
     {
         //Debug.Log("type " + type + " character actions " + character.action_curr);
-
-        if (((activation == Activation_Types.Active && character.action_curr >= (int)Convert_To_Float(ap_cost, null, null)) || 
-            (activation == Activation_Types.Reactive && character.reaction_curr >= (int)Convert_To_Float(ap_cost, null, null))) &&
-            character.mana_curr >= (int)Convert_To_Float(mp_cost, null, null))
+        if (character != null)
         {
-            return true;
+            if (((activation == Activation_Types.Active && character.action_curr >= (int)Convert_To_Float(ap_cost, null, null)) ||
+                (activation == Activation_Types.Reactive && character.reaction_curr >= (int)Convert_To_Float(ap_cost, null, null))) &&
+                character.mana_curr >= (int)Convert_To_Float(mp_cost, null, null))
+            {
+                return true;
+            }
         }
         return false;
     }
@@ -1863,15 +1991,26 @@ public class Character_Action
         {
             //Debug.Log("Character " + character.name + " is reacting with " + name);
             //character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().Pause();
+
+            //Pause current Action.
             Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().Pause();
+
             //Debug.Log("Pausing Character " + character.controller.curr_scenario.curr_player.Peek().name + "'s current action " + character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().name);
             //Debug.Log("Character action count " + character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Count);
             //character.controller.curr_scenario.curr_player.Push(character.gameObject);
+
+            //Make this character the current character.
             Game_Controller.curr_scenario.curr_player.Push(character.gameObject);
+
             //character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Push(this);
+
+            //Add a Target for this Action.
             Add_Target(act.character.curr_tile.gameObject);
+
+            //Make this Action the current Action.
             Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Push(this);
-            Character_Script target_character = target.GetComponent<Character_Script>();
+
+            //Start the Action
             character.StartCoroutine(character.Act(this, act.character.curr_tile));
         }
 
@@ -1881,17 +2020,28 @@ public class Character_Action
     {
         //Debug.Log("Ending Reaction of " + character.name);
         //character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Pop();
+
+        //Remove the current Reaction from the Action stack.
         Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Pop();
+
         //character.controller.curr_scenario.curr_player.Pop();
+
+        //Remove the current Character from the Action stack.
         Game_Controller.curr_scenario.curr_player.Pop();
+
         //Debug.Log("Current player: " + character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Count);
         //if (character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Count > 0)
+
+        //Reset the Targets and Path for this Action.
         Reset_Targets();
         Reset_Path();
+
+        //If there was a previous character in the stack, resume their Action.
         if (Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Count > 0)
         {
             //character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().Resume();
             Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().Resume();
+            //Debug.Log("Resumed");
         }
     }
 
@@ -1901,7 +2051,7 @@ public class Character_Action
     /// </summary>
     public void Add_Target(GameObject target_tile)
     {
-        Tile tile = character.curr_tile.GetComponent<Tile>();
+        Tile tile = character.curr_tile;
         if (center == "Target") {
             tile = target_tile.GetComponent<Tile>();
         }
@@ -1950,14 +2100,33 @@ public class Character_Action
                 if(target_tile.traversible)
                 {
                     curr_path_cost += (float)target_tile.weight;
-                    Find_Path(obj);
+                    Stack<Tile> path = Find_Path(curr_path[curr_path.Count - 1], target_tile);
+                    //Add the Tiles in the stack to the current path.
+                    while (path.Count != 0)
+                    {
+                        Tile path_tile = path.Pop();
+                        //Debug.Log("Tile index: [" + path_tile.index[0] + "," + path_tile.index[1] + "]");
+                        //character.curr_action.Peek().curr_path.Add(curr_scenario.clicked_tile);
+                        curr_path.Add(path_tile);
+                    }
                     added = true;
                 }
             }
             else
             {
-                Find_Path(obj);
-                added = true;
+                if (curr_path.Count > 0)
+                {
+                    Stack<Tile> path = Find_Path(curr_path[curr_path.Count - 1], target_tile);
+                    //Add the Tiles in the stack to the current path.
+                    while (path.Count != 0)
+                    {
+                        Tile path_tile = path.Pop();
+                        //Debug.Log("Tile index: [" + path_tile.index[0] + "," + path_tile.index[1] + "]");
+                        //character.curr_action.Peek().curr_path.Add(curr_scenario.clicked_tile);
+                        curr_path.Add(path_tile);
+                    }
+                    added = true;
+                }
             }
         }
         return added;
@@ -1991,7 +2160,7 @@ public class Character_Action
     public void Reset_Path()
     {
         curr_path = new List<Tile>();
-        curr_path.Add(character.curr_tile.GetComponent<Tile>());
+        curr_path.Add(character.curr_tile);
         curr_path_cost = 0;
     }
 
@@ -2006,6 +2175,7 @@ public class Character_Action
     {
         float duration = 1;
         AnimationClip anim_clip = new AnimationClip();
+        character.state.Push(Character_States.Enacting);
         if (activation == Activation_Types.Active)
         {
             anim_clip = character.GetComponent<Animator>().runtimeAnimatorController.animationClips[anim_num - 99];
@@ -2029,11 +2199,8 @@ public class Character_Action
             //TODO find a way to carry over self modifier
             float[,] self_mod = new float[1, 1];
             self_mod[0, 0] = Calculate_Total_Modifier(character.gameObject, 1);
-            Target self = new Target(character.curr_tile.GetComponent<Tile>(), self_mod);
+            Target self = new Target(character.curr_tile, self_mod);
 
-
-
-            //Functions.Push(Enact_Damage("", targets[0]));
             if (curr_targets.Count > 0)
             {
                 foreach (Target target in curr_targets)
@@ -2105,10 +2272,10 @@ public class Character_Action
                             yield return new WaitForEndOfFrame();
                         }
 
-                        //stop procing if Character is Orienting.
-                        while (character.state == Character_States.Walking ||
-                            character.state == Character_States.Orienting)
+                        //stop procing if Character is current Effect has not been resolved.
+                        while (character.state.Peek() != Character_States.Enacting)
                         {
+                            Debug.Log("character "  + character.name + " performing " + name + " is " + character.state.Peek());
                             yield return new WaitForEndOfFrame();
                         }
 
@@ -2217,8 +2384,8 @@ public class Character_Action
         //Wait for animation and effects to end to reset the character state.
         //while(!character.GetComponent<Animator>(). GetCurrentAnimatorClipInfo(0) .animationClips[2])
 
-        while (character.state == Character_States.Walking || 
-            character.state == Character_States.Orienting ||
+        //Wait for the effects to be completed.
+        while ((character.state.Peek() != Character_States.Enacting && ! paused)||
             !Game_Controller.curr_scenario.tile_grid.idle)
         {
             //Debug.Log("State " + character.state.ToString());
@@ -2226,7 +2393,7 @@ public class Character_Action
         }
 
         //Return the character to idle state.
-        character.state = Character_States.Idle;
+        character.state.Pop();
         character.gameObject.GetComponent<Animator>().SetTrigger("Done_Acting");
 
         proc_effect_num = 0;
@@ -2302,7 +2469,7 @@ public class Character_Action
                     if(effect.values[0] == "Select")
                     {
                         target_character.StartCoroutine(target_character.Choose_Orientation());
-                        while(target_character.state == Character_States.Orienting)
+                        while(target_character.state.Peek() == Character_States.Orienting)
                         {
                             yield return new WaitForEndOfFrame();
                         }
@@ -2310,7 +2477,7 @@ public class Character_Action
                     else if (effect.values[0] == "Target")
                     {
                         target_character.Choose_Orientation(target.center.gameObject);
-                        while (target_character.state == Character_States.Orienting)
+                        while (target_character.state.Peek() == Character_States.Orienting)
                         {
                             yield return new WaitForEndOfFrame();
                         }
@@ -2359,16 +2526,31 @@ public class Character_Action
                     //Check for a valid object to move.
                     if (chara != null)
                     {
-                        List<Tile> move_path = Convert_To_Tile_List(effect.values[1], target_tile.obj, target);
-                        int move_type = (int)Convert_To_Float(effect.values[0], target_tile.obj, target, 0);
-                        Tile start = chara.curr_tile.GetComponent<Tile>();
+                        int move_type = (int)Convert_To_Float(effect.values[0], target_tile.obj, target);
+                        int direction = 0;
+                        float distance = 0;
+                        List<Tile> move_path = new List<Tile>();
+
+                        if (effect.values[1] == "PATH"){
+                            Find_Reachable_Tiles(chara, false);
+                            move_path = Convert_To_Tile_List(effect, target_tile.obj, target);
+                        }
+                        else if (effect.values[1] == "VECT")
+                        {
+                            direction = (int)Convert_To_Float(effect.values[2], target_tile.obj, target);
+                            distance = Convert_To_Float(effect.values[3], target_tile.obj, target);
+                            move_path = Find_Reachable_Tiles(chara, move_type, direction, distance, true);
+                        }
+                        
+                        Tile start = move_path[0];
+                        Tile end = move_path[move_path.Count-1];
 
                         //Actually move
                         chara.MoveTo(move_type, move_path);
 
                         Debug.Log("Character " + chara.name + " Moved from: " + start.index[0] + ","
-                            + start.index[1] + " to: " + target.center.index[0] + ","
-                            + target.center.index[1]);
+                            + start.index[1] + " to: " + end.index[0] + ","
+                            + end.index[1]);
                     }
                     else
                     {
@@ -2589,7 +2771,7 @@ public class Character_Action
                     int duration = (int)Convert_To_Float(effect.values[1], target_tile.gameObject, target);
                     Tile_Effect tile_effect = new Tile_Effect(effect.values[0], effect.values[2], duration, values, target.affected_tiles[target_tile][0], target_tile.gameObject);
                     tile_effect.Instantiate();
-                    //Debug.Log("Character " + character.character_name + " Created Effect: " + name + " on tile (" + target_tile.gameObject.GetComponent<Tile>().index[0] + "," + target_tile.gameObject.GetComponent<Tile>().index[1] + "); For " + duration + " and Using " + ap_cost + " AP");
+                    //Debug.Log("Character " + character.character_name + " Created Effect: " + name + " on tile (" + target_tile.index[0] + "," + target_tile.index[1] + "); For " + duration + " and Using " + ap_cost + " AP");
                 }
                 else
                 {

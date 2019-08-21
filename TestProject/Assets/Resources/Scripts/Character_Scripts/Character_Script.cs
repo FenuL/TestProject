@@ -117,10 +117,10 @@ public class Character_Script : MonoBehaviour {
     public List<Character_Action> actions { get; private set; }
     public List<Character_Action> reactions { get; private set; }
     public Stack<Character_Action> curr_action { get; set; }
-    public Character_States state = Character_States.Idle;
+    public Stack<Character_States> state;
     public Dictionary<Conditions, List<Condition>> conditions { get; private set; }
     public Game_Controller controller { get; set; }
-    public Transform curr_tile { get; set; }
+    public Tile curr_tile { get; set; }
     public bool ending_turn = false;
     private AnimatorOverrideController s_controller;
     private AnimatorOverrideController w_controller;
@@ -172,7 +172,8 @@ public class Character_Script : MonoBehaviour {
         orientation = 2;
         canister_curr = canister_max;
         conditions = new Dictionary<Conditions, List<Condition>>();
-        state = Character_States.Idle;
+        state = new Stack<Character_States>();
+        state.Push(Character_States.Idle);
         all_actions = controller.all_actions;
         actions.Add(new Character_Action(Find_Action_Global("Move"), this));
         Weapon temp_weapon;
@@ -481,7 +482,7 @@ public class Character_Script : MonoBehaviour {
         //controller.curr_scenario.Clean_Reachable();
         while (! this.gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle") || 
             this.GetComponent<Animator>().GetBool("Act") ||
-            state == Character_States.Orienting )
+            state.Peek() == Character_States.Orienting )
         {
             //Debug.Log("Character " + name + " is " + state + " animator is " + this.gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle") + " and bool is " + this.GetComponent<Animator>().GetBool("Act"));
             yield return new WaitForEndOfFrame();
@@ -523,7 +524,11 @@ public class Character_Script : MonoBehaviour {
         //Now happens every turn in scenario.
         //Progress_Conditions();
         ending_turn = false;
-        state = Character_States.Idle;
+        while(state.Count!= 0)
+        {
+            state.Pop();
+        }
+        state.Push(Character_States.Idle);
         //controller.curr_scenario.Next_Player();
         Game_Controller.curr_scenario.Next_Player();
     }
@@ -859,10 +864,11 @@ public class Character_Script : MonoBehaviour {
     /// <returns>The status of the Coroutine.</returns>
     public IEnumerator Choose_Orientation()
     {
-        Character_States prev_state = state;
+        //Character_States prev_state = state;
+        state.Push(Character_States.Orienting);
+        //Debug.Log(name + " entering state" + state.Peek());
         while (!Input.GetMouseButton(0))
         {
-            state = Character_States.Orienting;
 
             //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             //RaycastHit hit;
@@ -871,27 +877,27 @@ public class Character_Script : MonoBehaviour {
             //if (Physics.Raycast(ray, out hit, 100))
             //{
             //Tile tile_data = hit.transform.GetComponent<Tile>();
-            //Tile tile_data = controller.curr_scenario.selected_tile.GetComponent<Tile>();
-            Tile tile_data = Game_Controller.curr_scenario.selected_tile.GetComponent<Tile>();
+            //Tile tile_data = controller.curr_scenario.selected_tile;
+            Tile tile_data = Game_Controller.curr_scenario.selected_tile;
             if (tile_data != null)
             {
-                if (tile_data.index[0] >= curr_tile.GetComponent<Tile>().index[0] &&
-                    tile_data.index[1] < curr_tile.GetComponent<Tile>().index[1])
+                if (tile_data.index[0] >= curr_tile.index[0] &&
+                    tile_data.index[1] < curr_tile.index[1])
                 {
                     orientation = 0 + camera_orientation_offset;
                 }
-                if (tile_data.index[0] > curr_tile.GetComponent<Tile>().index[0] &&
-                    tile_data.index[1] >= curr_tile.GetComponent<Tile>().index[1])
+                if (tile_data.index[0] > curr_tile.index[0] &&
+                    tile_data.index[1] >= curr_tile.index[1])
                 {
                     orientation = 1 + camera_orientation_offset;
                 }
-                if (tile_data.index[0] <= curr_tile.GetComponent<Tile>().index[0] &&
-                    tile_data.index[1] > curr_tile.GetComponent<Tile>().index[1])
+                if (tile_data.index[0] <= curr_tile.index[0] &&
+                    tile_data.index[1] > curr_tile.index[1])
                 {
                     orientation = 2 + camera_orientation_offset;
                 }
-                if (tile_data.index[0] < curr_tile.GetComponent<Tile>().index[0] &&
-                    tile_data.index[1] <= curr_tile.GetComponent<Tile>().index[1])
+                if (tile_data.index[0] < curr_tile.index[0] &&
+                    tile_data.index[1] <= curr_tile.index[1])
                 {
                     orientation = 3 + camera_orientation_offset;
                 }
@@ -909,7 +915,8 @@ public class Character_Script : MonoBehaviour {
             Orient();
             yield return new WaitForEndOfFrame();
         }
-        state = prev_state;
+        state.Pop();
+        //Debug.Log(name + " returning to state " + state.Peek());
     }
 
     /// <summary>
@@ -918,36 +925,37 @@ public class Character_Script : MonoBehaviour {
     /// <param name="target">The Target for the Character to Orient towards.</param>
     public void Choose_Orientation(GameObject target)
     {
-        Character_States prev_state = state;
-        state = Character_States.Orienting;
+        state.Push(Character_States.Orienting);
+        //Debug.Log(name + " entering to state " + state.Peek());
         Tile tile_data = target.GetComponent<Tile>();
         if (tile_data != null)
         {
             //Debug.Log("Target tile is " + tile_data.index[0] + ","+tile_data.index[1]);
-            if (tile_data.index[0] >= curr_tile.GetComponent<Tile>().index[0] &&
-                tile_data.index[1] < curr_tile.GetComponent<Tile>().index[1])
+            if (tile_data.index[0] >= curr_tile.index[0] &&
+                tile_data.index[1] < curr_tile.index[1])
             {
                 orientation = 0;
             }
-            if (tile_data.index[0] > curr_tile.GetComponent<Tile>().index[0] &&
-                tile_data.index[1] >= curr_tile.GetComponent<Tile>().index[1])
+            if (tile_data.index[0] > curr_tile.index[0] &&
+                tile_data.index[1] >= curr_tile.index[1])
             {
                 orientation = 1;
             }
-            if (tile_data.index[0] <= curr_tile.GetComponent<Tile>().index[0] &&
-                tile_data.index[1] > curr_tile.GetComponent<Tile>().index[1])
+            if (tile_data.index[0] <= curr_tile.index[0] &&
+                tile_data.index[1] > curr_tile.index[1])
             {
                 orientation = 2;
             }
-            if (tile_data.index[0] < curr_tile.GetComponent<Tile>().index[0] &&
-                tile_data.index[1] <= curr_tile.GetComponent<Tile>().index[1])
+            if (tile_data.index[0] < curr_tile.index[0] &&
+                tile_data.index[1] <= curr_tile.index[1])
             {
                 orientation = 3;
             }
             orientation = (orientation + camera_orientation_offset) % 4;
         }
         Orient();
-        state = prev_state;
+        state.Pop();
+        //Debug.Log(name + " returning to state " + state.Peek());
     }
 
     /// <summary>
@@ -1046,9 +1054,9 @@ public class Character_Script : MonoBehaviour {
         float elapsedTime = 0;
         float duration = .3f;
         Vector3 start = transform.position;
-        Vector3 target = curr_tile.position + 
+        Vector3 target = curr_tile.transform.position + 
             camera_position_offset + 
-            new Vector3(0, height_offset + Tile_Grid.TILE_SCALE * (curr_tile.GetComponent<Tile>().height), 0);
+            new Vector3(0, height_offset + Tile_Grid.TILE_SCALE * (curr_tile.height), 0);
         while (elapsedTime < duration)
         {
             transform.position = Vector3.Lerp(start,
@@ -1065,7 +1073,7 @@ public class Character_Script : MonoBehaviour {
     /// <returns>True if the Character's state is Walking. False otherwise.</returns>
     public bool Not_Walking()
     {
-        if (state != Character_States.Walking)
+        if (state.Peek() != Character_States.Walking)
         {
             return true;
         }
@@ -1157,7 +1165,7 @@ public class Character_Script : MonoBehaviour {
     public bool Is_Idle()
     {
         //Debug.Log("Current State: " + state);
-        if (state == Character_States.Idle)
+        if (state.Peek() == Character_States.Idle)
         {
             //Debug.Log("Is Idle");
             return true;
@@ -1170,64 +1178,70 @@ public class Character_Script : MonoBehaviour {
     /// </summary>
     /// <param name="target_tile">The target for the Character_Action.</param>
     /// <returns>The current status of the Coroutine.</returns>
-    public IEnumerator Act(Character_Action action, Transform target_tile)
+    public IEnumerator Act(Character_Action action, Tile target_tile)
     {
         //Debug.Log("Current action: " + curr_action.Peek().name);
         //Debug.Log("Current action 2: " + action.name);
 
-            while (!curr_action.Peek().Equals(action))
-            {
-                yield return new WaitForEndOfFrame();
-            }
-            state = Character_States.Acting;
-            /*if (action.orient == "target")
-            {
-                Choose_Orientation(target_tile.gameObject);
-            }*/
+        while (!curr_action.Peek().Equals(action))
+        {
+            yield return new WaitForEndOfFrame();
+        }
 
-            //action.Enact(target_tile.gameObject);
-            StartCoroutine(action.Enact());
+        state.Push(Character_States.Acting);
+        //Debug.Log(name + " entering to state " + state.Peek());
+        /*if (action.orient == "target")
+        {
+            Choose_Orientation(target_tile.gameObject);
+        }*/
 
-            //Update reachable tiles
-            //controller.curr_scenario.Reset_Reachable();
-            //controller.curr_scenario.Clean_Reachable();
-            Game_Controller.curr_scenario.Clean_Reachable();
+        //action.Enact(target_tile.gameObject);
+        StartCoroutine(action.Enact());
 
-            //update AP and MP
-            if (action.activation == Character_Action.Activation_Types.Active)
-            {
-                action_curr -= (int)action.Convert_To_Float(action.ap_cost, target_tile.gameObject.GetComponent<Tile>().obj, null);
-            }
-            else if (action.activation == Character_Action.Activation_Types.Reactive)
-            {
-                reaction_curr -= (int)action.Convert_To_Float(action.ap_cost, target_tile.gameObject.GetComponent<Tile>().obj, null);
-            }
-            mana_curr -= (int)action.Convert_To_Float(action.mp_cost, target_tile.gameObject.GetComponent<Tile>().obj, null);
+        //Update reachable tiles
+        //controller.curr_scenario.Reset_Reachable();
+        //controller.curr_scenario.Clean_Reachable();
+        Game_Controller.curr_scenario.Clean_Reachable();
 
-            while (!Is_Idle() || action.paused)
-            //gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle") && 
-            //!gameObject.GetComponent<Animator>().IsInTransition(0))
-            {
-                //Debug.Log("Waiting for Unpause");
-                //Debug.Log("Current state: " + state + ";" + "Current animator idle: " + gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle") + "; is transitioning: " + gameObject.GetComponent<Animator>().IsInTransition(0));
-                yield return new WaitForEndOfFrame();
-            }
-            //Debug.Log("Current state: " + state + ";" + "Current animator idle: " + gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle") + "; is transitioning: " + gameObject.GetComponent<Animator>().IsInTransition(0));
-            //Debug.Log("Action over");
+        //update AP and MP
+        if (action.activation == Character_Action.Activation_Types.Active)
+        {
+            action_curr -= (int)action.Convert_To_Float(action.ap_cost, target_tile.obj, null);
+        }
+        else if (action.activation == Character_Action.Activation_Types.Reactive)
+        {
+            reaction_curr -= (int)action.Convert_To_Float(action.ap_cost, target_tile.obj, null);
+        }
+        mana_curr -= (int)action.Convert_To_Float(action.mp_cost, target_tile.obj, null);
 
-            //controller.curr_scenario.Reset_Reachable();
-            Game_Controller.curr_scenario.Reset_Reachable();
+        while (state.Peek() != Character_States.Acting || action.paused)
+        //gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle") && 
+        //!gameObject.GetComponent<Animator>().IsInTransition(0))
+        {
+            //Debug.Log("Waiting for Unpause");
+            //Debug.Log("Character name: " + name + " Current state: " + state.Peek() + ";" + "Current animator idle: " + gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle") + "; is transitioning: " + gameObject.GetComponent<Animator>().IsInTransition(0));
+            yield return new WaitForEndOfFrame();
+        }
+        //Debug.Log("Character name " + name + " Current state: " + state.Peek() + ";" + "Current animator idle: " + gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle") + "; is transitioning: " + gameObject.GetComponent<Animator>().IsInTransition(0));
+        //Debug.Log("Action over");
 
-            if (action_curr > action_max)
-            {
-                action_curr = action_max;
-            }
+        //controller.curr_scenario.Reset_Reachable();
+        Game_Controller.curr_scenario.Reset_Reachable();
 
-            //Debug.Log(action.name + " state: " + action.paused);
-            if (action.activation != Character_Action.Activation_Types.Reactive)
-            {
-                //Remove the action from the stack.
-                curr_action.Pop();
+        if (action_curr > action_max)
+        {
+            action_curr = action_max;
+        }
+
+        //Exit the Acting state
+        state.Pop();
+        //Debug.Log(name + " returning to state " + state.Peek());
+
+        //Debug.Log(action.name + " state: " + action.paused);
+        if (action.activation != Character_Action.Activation_Types.Reactive)
+        {
+            //Remove the action from the stack.
+            curr_action.Pop();
             //Debug.Log("REMOVING ACTION FROM STACK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
             //if (action_curr <= 0 && controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().character_num == character_num)
@@ -1247,7 +1261,7 @@ public class Character_Script : MonoBehaviour {
                     controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
                     Find_Action_Local("Move").Select();
                 }
-            }  
+            }
         }
         //curr_action.Peek().Enact(this, target_tile.gameObject);
 
@@ -1359,7 +1373,9 @@ public class Character_Script : MonoBehaviour {
         reactions = new List<Character_Action>();
         canister_max = UnityEngine.Random.Range(0, 3);
         canister_curr = canister_max;
-		state = Character_States.Idle;
+        state = new Stack<Character_States>();
+        state.Push(Character_States.Idle);
+        //Debug.Log(name + " entering to state " + state.Peek());
 
         //Randomize Equipment
         int w = UnityEngine.Random.Range(0, 10);
@@ -1446,7 +1462,7 @@ public class Character_Script : MonoBehaviour {
     public void Take_Damage(float amount, float armor_penetration)
     {
         Debug.Log("Character " + character_name + " takes " + amount + " damage!");
-        if (aura_curr == 0 && state != Character_States.Dead)
+        if (aura_curr == 0 && state.Peek() != Character_States.Dead)
         {
             Die();
         }
@@ -1605,10 +1621,10 @@ public class Character_Script : MonoBehaviour {
     /// </summary>
     public void Die()
     {
-        state = Character_States.Dead;
+        state.Push(Character_States.Dead);
         //reset the tile traversible state and empty the tile
-        curr_tile.GetComponent<Tile>().traversible = true;
-        curr_tile.GetComponent<Tile>().obj = null;
+        curr_tile.traversible = true;
+        curr_tile.obj = null;
 
         //remove the character from the turn order and character list
         Debug.Log("Character " + name + " (" + character_num + ") has died");
@@ -1662,7 +1678,7 @@ public class Character_Script : MonoBehaviour {
         //{
         //    Debug.Log("Walking");
         //}
-        //clicked_tile.GetComponent<Tile>().obj = this.gameObject;
+        //clicked_tile..obj = this.gameObject;
     }
 
     /// <summary>
@@ -1677,8 +1693,8 @@ public class Character_Script : MonoBehaviour {
         // 3 = fly
         // 4 = warp
 
-        Character_States prev_state = state;
-        state = Character_States.Walking;
+        state.Push(Character_States.Walking);
+        //Debug.Log(name + " entering state" + state.Peek());
 
         //Debug.Log("path " + path.Count);
 
@@ -1691,10 +1707,10 @@ public class Character_Script : MonoBehaviour {
             {
                 yield return new WaitForEndOfFrame();
             }
-            Tile prev_tile = curr_tile.GetComponent<Tile>();
+            Tile prev_tile = curr_tile;
             Tile temp_tile = path[tile_index];
 
-            //Event_Manager.Broadcast(Event_Trigger.ON_TILE_EXIT, curr_action.Peek(), "" + move_type, curr_tile.gameObject);
+            Event_Manager.Broadcast(Event_Trigger.ON_TILE_EXIT, curr_action.Peek(), "" + move_type, curr_tile.gameObject);
 
             tile_index += 1;
             if (move_type != 4)
@@ -1793,16 +1809,16 @@ public class Character_Script : MonoBehaviour {
 
                 //gameObject.GetComponent<SpriteRenderer>().sortingOrder = controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<SpriteRenderer>().sortingOrder + 1;
                 //set new tile information
-                //curr_tile.GetComponent<Tile>().traversible = true;
-                curr_tile.GetComponent<Tile>().obj = prev_obj;
-                curr_tile = temp_tile.gameObject.transform;
-                //curr_tile.GetComponent<Tile>().traversible = false;
+                //curr_tile.traversible = true;
+                curr_tile.obj = prev_obj;
+                curr_tile = temp_tile;
+                //curr_tile.traversible = false;
                 prev_obj = temp_tile.obj;
-                curr_tile.GetComponent<Tile>().obj = gameObject;
+                curr_tile.obj = gameObject;
 
                 Increase_Turn_Stats(Character_Turn_Records.Tiles_Moved, 1);
-                //Event_Manager.Broadcast(Event_Trigger.ON_TILE_ENTER, curr_action.Peek(), ""+move_type, curr_tile.gameObject);
-                //Debug.Log("Curr tile: " + curr_tile.GetComponent<Tile>().index[0] + "," + curr_tile.GetComponent<Tile>().index[1]);
+                Event_Manager.Broadcast(Event_Trigger.ON_TILE_ENTER, curr_action.Peek(), ""+move_type, curr_tile.gameObject);
+                //Debug.Log("Curr tile: " + curr_tile.index[0] + "," + curr_tile.index[1]);
 
             }
             else
@@ -1812,12 +1828,12 @@ public class Character_Script : MonoBehaviour {
                 transform.position = new Vector3(temp_tile.transform.position.x,
                                 (float)(temp_tile.transform.position.y + Tile_Grid.TILE_SCALE * (temp_tile.height) + height_offset),
                                temp_tile.transform.position.z) + camera_position_offset;
-                //curr_tile.GetComponent<Tile>().traversible = true;
-                curr_tile.GetComponent<Tile>().obj = prev_obj;
-                curr_tile = temp_tile.gameObject.transform;
+                //curr_tile.traversible = true;
+                curr_tile.obj = prev_obj;
+                curr_tile = temp_tile;
                 prev_obj = temp_tile.obj;
-                //curr_tile.GetComponent<Tile>().traversible = false;
-                curr_tile.GetComponent<Tile>().obj = gameObject;
+                //curr_tile.traversible = false;
+                curr_tile.obj = gameObject;
                 Increase_Turn_Stats(Character_Turn_Records.Tiles_Moved, 1);
                 yield return new WaitForEndOfFrame();
             }
@@ -1825,8 +1841,8 @@ public class Character_Script : MonoBehaviour {
         //transform.position = new Vector3(curr_tile.position.x, (float)(curr_tile.position.y + (curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z);
         
         //this.gameObject.GetComponent<Animator>().SetTrigger("Done_Acting"); 
-        state = prev_state;
-        //Debug.Log("Done Walking, returning to " + state);
+        state.Pop();
+        //Debug.Log("Done Walking, returning to " + state.Peek());
 
     }
 
@@ -1874,7 +1890,7 @@ public class Character_Script : MonoBehaviour {
         float rot = rotation * 4 * Time.deltaTime;
         if (curr_tile != null)
         {
-            transform.RotateAround(curr_tile.position, Vector3.up, rot);
+            transform.RotateAround(curr_tile.transform.position, Vector3.up, rot);
             transform.eulerAngles = new Vector3(0, Camera.main.transform.rotation.eulerAngles.y, 0);
         }
         //rotationAmount -= rotationAmount * CAMERA_TURN_SPEED * Time.deltaTime;

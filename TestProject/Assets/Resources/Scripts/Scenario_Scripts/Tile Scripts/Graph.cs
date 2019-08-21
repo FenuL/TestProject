@@ -583,7 +583,7 @@ public class Graph
     /// <param name="tag">The the tag to ignore for collision detection.</param>
     /// <param name="cost_limit">The range limit in cost of Edges for how far to look. </param>
     /// <param name="distace_limit">The range limit in distance for how far to look.</param>
-    public void bfs(Tile start, string tag, int cost_limit, int distace_limit)
+    public void Breadth_First_Search(Tile start, string tag, float cost_limit, int distace_limit)
     {
         //reset the previously visited tiles
         Tile n;
@@ -647,6 +647,50 @@ public class Graph
         }
     }
 
+    /// <summary>
+    /// Searches a specific direction for tiles within a certain distance and cost. 
+    /// </summary>
+    /// <param name="start">The tile from which to start the search.</param>
+    /// <param name="direction">The direction to search in (0-3)</param>
+    /// <param name="cost_limit">The cost limit to search.</param>
+    /// <param name="distance_limit">The number of tiles away ot search.</param>
+    public Tile Directional_Search(Tile start, int direction, float cost_limit, int distance_limit)
+    {
+        //reset the previously visited tiles
+        Tile n;
+        //Debug.Log("visited tiles " + visitedTiles.Count);
+        while (visitedTiles.Count != 0)
+        {
+            n = visitedTiles.Pop();
+            n.weight = -1;
+            n.parent = null;
+            n.visited = false;
+        }
+        visitedTiles = new Stack<Tile>();
+
+        Tile current = start;
+        start.weight = 0;
+        start.distance = 0;
+        visitedTiles.Push(start);
+
+        for (int i = 1; i < distance_limit+1; i ++)
+        {
+            Edge e = current.edges[direction];
+            if (e.cost + current.weight <= cost_limit)
+            {
+                e.tile2.weight = current.weight + e.cost;
+                e.tile2.parent = current;
+                current = e.tile2;
+                visitedTiles.Push(current);
+            }else
+            {
+                i = distance_limit + 2;
+            }
+        }
+
+        return current;
+    }
+
     public Stack<Tile> FindPath(Tile start, Tile finish)
     {
         Stack<Tile> path = new Stack<Tile>();
@@ -657,14 +701,21 @@ public class Graph
         {
             Tile temp_tile = finish;
             Tile prev_tile = start;
-
             //Construct a stack that is a path from the clicked tile to the source.
             while (!(temp_tile.index[0] == start.index[0] && temp_tile.index[1] == start.index[1]))
             {
                 path.Push(temp_tile);
                 //Look at the parent tile.
                 //Debug.Log("parent tile: " + temp_tile.parent.index[0] + "," + temp_tile.parent.index[1]);
-                temp_tile = temp_tile.parent;
+                if (temp_tile.parent != null)
+                {
+                    temp_tile = temp_tile.parent;
+                }
+                else
+                {
+                    temp_tile = start;
+                    //Debug.Log("PATHING could not find route.");
+                }
                 
             }
 

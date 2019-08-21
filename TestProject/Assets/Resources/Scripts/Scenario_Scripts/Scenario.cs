@@ -87,9 +87,9 @@ public class Scenario : MonoBehaviour {
     public Character_Script[] player_character_data { get; private set; }
     public Character_Script[] monster_character_data { get; private set; }
     public List<GameObject> turn_order { get; private set; }
-    public Transform clicked_tile { get; set; }
-    public Transform selected_tile { get; set; }
-    public List<Transform> reachable_tiles { get; private set; }
+    public Tile clicked_tile { get; set; }
+    public Tile selected_tile { get; set; }
+    public List<Tile> reachable_tiles { get; private set; }
     public List<GameObject> reachable_tile_objects { get; private set; }
     public int curr_round { get; private set; }
 
@@ -331,7 +331,7 @@ public class Scenario : MonoBehaviour {
             curr_round = 0;
             curr_character_num = 0;
             turn_order = new List<GameObject>();
-            reachable_tiles = new List<Transform>();
+            reachable_tiles = new List<Tile>();
             reachable_tile_objects = new List<GameObject>();
             tile_objects = new List<GameObject>();
         }
@@ -563,6 +563,11 @@ public class Scenario : MonoBehaviour {
         //FindReachable(curr_player.GetComponent<Character_Script>().action_curr, curr_player.GetComponent<Character_Script>().SPEED);
         //MarkReachable();
 
+        //Set empty triggers to populate Event Dictionary.
+        foreach (Event_Trigger eve in Enum.GetValues(typeof(Event_Trigger)))
+        {
+            Event_Manager.AddHandler(eve, controller.all_actions["Move"].React);
+        }
 
         //set initial values for selected and clicked tiles.
         selected_tile = tile_grid.tiles[0, 0];
@@ -574,6 +579,12 @@ public class Scenario : MonoBehaviour {
     /// </summary>
     public void Unload_Scenario()
     {
+        //Remove all Empty Events in the event manager.
+        foreach (Event_Trigger eve in Enum.GetValues(typeof(Event_Trigger)))
+        {
+            Event_Manager.RemoveHandler(eve, controller.all_actions["Move"].React);
+        }
+
         //destroy the old map
         GameObject[] objects = GameObject.FindGameObjectsWithTag("Tile");
         foreach (GameObject game_object in objects)
@@ -600,12 +611,11 @@ public class Scenario : MonoBehaviour {
         {
             int random_x = (int)(UnityEngine.Random.value * 100) % tile_grid.tiles.GetLength(0);
             int random_y = (int)(UnityEngine.Random.value * 100) % tile_grid.tiles.GetLength(1);
-            GameObject obj = tile_grid.tiles[random_x, random_y].gameObject;
-            Tile tile = obj.GetComponent<Tile>();
+            Tile tile = tile_grid.tiles[random_x, random_y];
             if (tile.effect == null && tile.obj == null && tile.traversible)
             {
                 Debug.Log("Spawned manawell at: " + random_x + "," + random_y );
-                Tile_Effect effect = new Tile_Effect("Manawell", "Heal", 10, value, 1, obj);
+                Tile_Effect effect = new Tile_Effect("Manawell", "Heal", 10, value, 1, tile.gameObject);
                 effect.Instantiate();
                 spawned = true;
             }
@@ -648,7 +658,7 @@ public class Scenario : MonoBehaviour {
     /// Function to update the Cursor Object to match the current Character's current Action's Area of Effect. 
     /// </summary>
     /// <param name="selected_tile">The tile on which the Cursor Object is currently.</param>
-    public void Update_Cursor(Transform selected_tile)
+    public void Update_Cursor(Tile selected_tile)
     {
         //Debug.Log("curr_player " + curr_player.Peek().GetComponent<Character_Script>().curr_action.Count);
         if (curr_player.Count > 0 && curr_player.Peek().GetComponent<Character_Script>().curr_action.Count > 0)
@@ -711,9 +721,9 @@ public class Scenario : MonoBehaviour {
             {
 
                 cursors[0].transform.position = new Vector3(
-                    selected_tile.position.x,
-                    selected_tile.position.y + 0.025f + Tile_Grid.TILE_SCALE * selected_tile.GetComponent<Tile>().height,
-                    selected_tile.position.z);
+                    selected_tile.transform.position.x,
+                    selected_tile.transform.position.y + 0.025f + Tile_Grid.TILE_SCALE * selected_tile.height,
+                    selected_tile.transform.position.z);
             }
             else if (curr_character.curr_action.Peek().area.Length > 1)
             {
@@ -721,13 +731,13 @@ public class Scenario : MonoBehaviour {
                 int startY = 0;
                 if (curr_character.curr_action.Peek().center == "Target")
                 {
-                    startX = selected_tile.GetComponent<Tile>().index[0];
-                    startY = selected_tile.GetComponent<Tile>().index[1];
+                    startX = selected_tile.index[0];
+                    startY = selected_tile.index[1];
                 }
                 else if (curr_character.curr_action.Peek().center == "Self")
                 {
-                    startX = curr_character.curr_tile.GetComponent<Tile>().index[0];
-                    startY = curr_character.curr_tile.GetComponent<Tile>().index[1];
+                    startX = curr_character.curr_tile.index[0];
+                    startY = curr_character.curr_tile.index[1];
                 }
                 startX -= area_width / 2;
                 startY -= area_length / 2;
@@ -738,13 +748,13 @@ public class Scenario : MonoBehaviour {
                     {
                         if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area[x, y] != 0)
                         {
-                            Transform tile = tile_grid.getTile(startX + x, startY + y);
+                            Tile tile = tile_grid.getTile(startX + x, startY + y);
                             if (tile != null)
                             {
                                 cursors[curs_index].transform.position = new Vector3(
-                                    tile.position.x,
-                                    tile.position.y + 0.025f + Tile_Grid.TILE_SCALE * tile.GetComponent<Tile>().height,
-                                    tile.position.z);
+                                    tile.transform.position.x,
+                                    tile.transform.position.y + 0.025f + Tile_Grid.TILE_SCALE * tile.height,
+                                    tile.transform.position.z);
                                 curs_index++;
                             }
                             else
@@ -760,16 +770,16 @@ public class Scenario : MonoBehaviour {
         else
         {
             cursors[0].transform.position = new Vector3(
-                selected_tile.position.x,
-                selected_tile.position.y + 0.025f + Tile_Grid.TILE_SCALE * selected_tile.GetComponent<Tile>().height,
-                selected_tile.position.z);
+                selected_tile.transform.position.x,
+                selected_tile.transform.position.y + 0.025f + Tile_Grid.TILE_SCALE * selected_tile.height,
+                selected_tile.transform.position.z);
         }
         if (curr_player != null &&
             curr_player.Count > 0 &&
             curr_player.Peek().GetComponent<Character_Script>().curr_action != null &&
             curr_player.Peek().GetComponent<Character_Script>().curr_action.Count > 0 &&
             curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().action_type == Action_Types.Path &&
-            curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Idle
+            curr_player.Peek().GetComponent<Character_Script>().state.Peek() == Character_States.Idle
             ) { 
             Show_Path();
         }
@@ -786,7 +796,7 @@ public class Scenario : MonoBehaviour {
     public void Show_Path()
     {
         //Debug.Log("Showing Path");
-        Tile cursor_tile = selected_tile.GetComponent<Tile>();
+        Tile cursor_tile = selected_tile;
         Character_Script chara = curr_player.Peek().GetComponent<Character_Script>();
         if (chara.curr_action.Peek().curr_path != null &&
             (cursor_tile.parent != null || chara.curr_action.Peek().curr_path.Count > 1) &&
@@ -803,7 +813,7 @@ public class Scenario : MonoBehaviour {
             int tri_x = 0;
             int curr_path_index = chara.curr_action.Peek().curr_path.Count - 1;
             //while (temp_tile != chara.curr_action.Peek().curr_path[chara.curr_action.Peek().curr_path.Count -1])
-            while (temp_tile != chara.curr_tile.GetComponent<Tile>() || (curr_path_index > 0))
+            while (temp_tile != chara.curr_tile || (curr_path_index > 0))
             {
                 //Calculate the difference in the x and y tile index
                 int delta_x;
@@ -1699,7 +1709,7 @@ public class Scenario : MonoBehaviour {
             curr_round = 0;
             curr_character_num = 0;
             turn_order = new List<GameObject>();
-            reachable_tiles = new List<Transform>();
+            reachable_tiles = new List<Tile>();
             reachable_tile_objects = new List<GameObject>();
             tile_objects = new List<GameObject>();
         }
@@ -1724,7 +1734,7 @@ public class Scenario : MonoBehaviour {
             foreach (GameObject character in characters)
             {
                 character.GetComponent<Character_Script>().Update();
-                if (character.GetComponent<Character_Script>().state == Character_States.Dead)
+                if (character.GetComponent<Character_Script>().state.Peek() == Character_States.Dead)
                 {
                     character.tag = "Delete";
                 }
@@ -1752,103 +1762,134 @@ public class Scenario : MonoBehaviour {
     /// Function to find all tiles within a certain distance and/or travel cost to the current player. 
     /// Adds tiles to the reachable_tiles List if they are reachable. 
     /// </summary>
+    /// <param name="chara">The character from which to start the search. </param>
     /// <param name="cost_limit">The limit in cost for traversal. </param>
     /// <param name="distance_limit">The limit in distance (number of tiles away) for traversal. </param>
     /// <param name="type">The type of search. 1 for movement path, 2 for uninterrupted movement , 3 attack range, 4 for attack range with obstacles. </param>
-    public List<Transform> Find_Reachable(int cost_limit, int distance_limit, int type, bool update)
+    public List<Tile> Find_Reachable(Character_Script chara, float cost_limit, int distance_limit, int type, bool update)
     {
         //Debug.Log("cost limit: " + cost_limit + "; distance limit: " + distance_limit);
-        //Debug.Log(curr_player.Peek().GetComponent<Character_Script>().curr_tile.GetComponent<Tile>());
-        Character_Script chara = curr_player.Peek().GetComponent<Character_Script>();
-        List<Transform> tiles = new List<Transform>();
+        //Debug.Log(curr_player.Peek().GetComponent<Character_Script>().curr_tile);
+        List<Tile> tiles = new List<Tile>();
+        Tile last_Tile = chara.curr_tile;
         if (chara.curr_action != null && chara.curr_action.Count > 0)
         {
             //Debug.Log("Finding tiles");
             if (chara.curr_action.Peek().curr_path[chara.curr_action.Peek().curr_path.Count - 1])
             {
+                //Debug.Log("Current Character " + chara.name);
                 //Debug.Log("BFS");
                 //Debug.Log("BFS with cost limit " + cost_limit + ", distance limit " + distance_limit);
-                //tile_grid.navmesh.bfs(curr_player.Peek().GetComponent<Character_Script>().curr_tile.GetComponent<Tile>(), cost_limit, distance_limit);
+                //tile_grid.navmesh.bfs(curr_player.Peek().GetComponent<Character_Script>().curr_tile, cost_limit, distance_limit);
 
                 //TODO find a better way to do this so we don't change tile settings each time.
-                tile_grid.navmesh.bfs(chara.curr_action.Peek().curr_path[chara.curr_action.Peek().curr_path.Count - 1], chara.tag, cost_limit, distance_limit);
-                
-                Tile last_Tile = chara.curr_action.Peek().curr_path[chara.curr_action.Peek().curr_path.Count - 1];
-                int x_index = last_Tile.index[0];
-                int y_index = last_Tile.index[1];
-                //Debug.Log("["+x_index+","+y_index+"]");
-                int i = -distance_limit;
-                int j = -distance_limit;
-                while (i <= distance_limit)
+                tile_grid.navmesh.Breadth_First_Search(chara.curr_action.Peek().curr_path[chara.curr_action.Peek().curr_path.Count - 1], chara.tag, cost_limit, distance_limit);
+
+                last_Tile = chara.curr_action.Peek().curr_path[chara.curr_action.Peek().curr_path.Count - 1];
+            }
+        }
+        else
+        {
+            tile_grid.navmesh.Breadth_First_Search(last_Tile, chara.tag, cost_limit, distance_limit);
+        }
+        int x_index = last_Tile.index[0];
+        int y_index = last_Tile.index[1];
+        //Debug.Log("["+x_index+","+y_index+"]");
+        int i = -distance_limit;
+        int j = -distance_limit;
+        while (i <= distance_limit)
+        {
+            while (j <= distance_limit)
+            {
+                if (x_index + i >= 0 && x_index + i < tile_grid.grid_width)
                 {
-                    while (j <= distance_limit)
+                    if (y_index + j >= 0 && y_index + j < tile_grid.grid_length)
                     {
-                        if (x_index + i >= 0 && x_index + i < tile_grid.grid_width)
+                        int h = tile_grid.getTile(x_index + i, y_index + j).height - 1;
+                        if (type == 1)
                         {
-                            if (y_index + j >= 0 && y_index + j < tile_grid.grid_length)
+                            //if (grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j).traversible){
+                            //    if ((Math.Abs(x_index - (x_index + i)) * (int)(armor.weight + weapon.weight) + Math.Abs(y_index - (y_index + j)) * (int)(armor.weight + weapon.weight) + (grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j).tile_height - curr_tile.tile_height) * 2) < action_curr)
+                            //    {
+                            //        reachable_tiles.Add(grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j));
+                            //    }
+                            //}
+                            //Debug.Log("tile weight: " + tile_grid.getTile(x_index + i, y_index + j).weight + " cost_limit: " + cost_limit);
+                            //Debug.Log("tile_distance: " + tile_grid.getTile(x_index + i, y_index + j).distance + " distance_limit: " + distance_limit);
+                            if (tile_grid.getTile(x_index + i, y_index + j).weight <= cost_limit &&
+                                tile_grid.getTile(x_index + i, y_index + j).weight >= 0 &&
+                                tile_grid.getTile(x_index + i, y_index + j).distance <= distance_limit)
                             {
-                                int h = tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().height - 1;
-                                if (type == 1)
+
+                                tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
+                                //reachable_tiles.Add(new Tile(tile_grid.getTile(x_index + i, y_index + j)));
+                                //tile_grid.getTile(x_index + i, y_index + j).weight = -1;
+                                //tile_grid.getTile(x_index + i, y_index + j).parent = null;
+                            }
+                        }
+                        if (type == 2)
+                        {
+                            if (tile_grid.getTile(x_index + i, y_index + j).traversible)
+                            {
+                                if ((Math.Abs(x_index - (x_index + i)) + Math.Abs(y_index - (y_index + j))) < cost_limit)
                                 {
-                                    //if (grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().traversible){
-                                    //    if ((Math.Abs(x_index - (x_index + i)) * (int)(armor.weight + weapon.weight) + Math.Abs(y_index - (y_index + j)) * (int)(armor.weight + weapon.weight) + (grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().tile_height - curr_tile.GetComponent<Tile>().tile_height) * 2) < action_curr)
-                                    //    {
-                                    //        reachable_tiles.Add(grid.GetComponent<Scenario>().tile_grid.getTile(x_index + i, y_index + j));
-                                    //    }
-                                    //}
-                                    //Debug.Log("tile weight: " + tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight + " cost_limit: " + cost_limit);
-                                    //Debug.Log("tile_distance: " + tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().distance + " distance_limit: " + distance_limit);
-                                    if (tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight <= cost_limit &&
-                                        tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight >= 0 &&
-                                        tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().distance <= distance_limit)
-                                    {
-                                        
-                                        tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
-                                        //reachable_tiles.Add(new Tile(tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>()));
-                                        //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight = -1;
-                                        //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().parent = null;
-                                    }
-                                }
-                                if (type == 2)
-                                {
-                                    if (tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().traversible)
-                                    {
-                                        if ((Math.Abs(x_index - (x_index + i)) + Math.Abs(y_index - (y_index + j))) < cost_limit)
-                                        {
-                                            tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
-                                            //reachable_tiles.Add(new Tile(tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>()));
-                                            //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight = -1;
-                                            //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().parent = null;
-                                        }
-                                    }
-                                }
-                                if (type == 3)
-                                {
-                                    //print ("scanned x index: " + x_index + i )
-                                    //Prevent Self-Harm
-                                    if (i != 0 || j != 0)
-                                    {
-                                        if (Math.Abs(i) + Math.Abs(j) <= distance_limit)
-                                        {
-                                            tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
-                                            //reachable_tiles.Add(new Tile(tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>()));
-                                            //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().weight = -1;
-                                            //tile_grid.getTile(x_index + i, y_index + j).GetComponent<Tile>().parent = null;
-                                        }
-                                    }
+                                    tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
+                                    //reachable_tiles.Add(new Tile(tile_grid.getTile(x_index + i, y_index + j)));
+                                    //tile_grid.getTile(x_index + i, y_index + j).weight = -1;
+                                    //tile_grid.getTile(x_index + i, y_index + j).parent = null;
                                 }
                             }
                         }
-                        j += 1;
+                        if (type == 3)
+                        {
+                            //print ("scanned x index: " + x_index + i )
+                            //Prevent Self-Harm
+                            if (i != 0 || j != 0)
+                            {
+                                if (Math.Abs(i) + Math.Abs(j) <= distance_limit)
+                                {
+                                    tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
+                                    //reachable_tiles.Add(new Tile(tile_grid.getTile(x_index + i, y_index + j)));
+                                    //tile_grid.getTile(x_index + i, y_index + j).weight = -1;
+                                    //tile_grid.getTile(x_index + i, y_index + j).parent = null;
+                                }
+                            }
+                        }
                     }
-                    j = -distance_limit;
-                    i += 1;
                 }
+                j += 1;
             }
+            j = -distance_limit;
+            i += 1;
         }
+
         if (update)
         {
             reachable_tiles = tiles;
+        }
+        return tiles;
+    }
+
+    public List<Tile> Find_Reachable(Character_Script chara, int direction, float cost_limit, int distance_limit, int type, bool update)
+    {
+        List<Tile> tiles = new List<Tile>();
+        Tile start = chara.curr_tile;
+        Tile end = chara.curr_tile;
+        if (direction > 3)
+        {
+            direction = direction % 4;
+        }
+        if (direction >= 0)
+        {
+            end = tile_grid.navmesh.Directional_Search(start, direction, cost_limit, distance_limit);
+            Stack<Tile> path = tile_grid.navmesh.FindPath(start, end);
+            while (path.Count != 0)
+            {
+                Tile path_tile = path.Pop();
+                Debug.Log("Tile index: [" + path_tile.index[0] + "," + path_tile.index[1] + "]");
+                //character.curr_action.Peek().curr_path.Add(curr_scenario.clicked_tile);
+                tiles.Add(path_tile);
+            }
         }
         return tiles;
     }
@@ -1859,12 +1900,12 @@ public class Scenario : MonoBehaviour {
     public void Reset_Reachable()
     {
         //Debug.Log("Resetting");
-        foreach (Transform t in reachable_tiles)
+        foreach (Tile t in reachable_tiles)
         {
-            t.GetComponent<Tile>().weight = -1;
-            t.GetComponent<Tile>().parent = null;
+            t.weight = -1;
+            t.parent = null;
         }
-        reachable_tiles = new List<Transform>();
+        reachable_tiles = new List<Tile>();
         Clean_Reachable();
     }
 
@@ -1879,36 +1920,37 @@ public class Scenario : MonoBehaviour {
         {
             reachable_tile_objects = new List<GameObject>();
             //Debug.Log("reachable tile count " + curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().reachable_tiles.Count);
-            foreach (Transform tile in reachable_tiles)
+            foreach (Tile tile in reachable_tiles)
             {
 
                 //tile_grid.reachable_prefab.GetComponent<SpriteRenderer>().sortingOrder = tile.GetComponent<SpriteRenderer>().sortingOrder;
-                if (curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Moving || curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Blinking)
+                if (curr_player.Peek().GetComponent<Character_Script>().state.Peek() == Character_States.Moving || 
+                    curr_player.Peek().GetComponent<Character_Script>().state.Peek() == Character_States.Blinking)
                 {
                     //Set Material to blue
                     //Debug.Log(tile_grid.reachable_prefab.GetComponent<Material>().name);
 
                     tile_grid.reachable_prefab.GetComponent<Renderer>().sharedMaterial.color = new Color(0, 255, 255);
                 }
-                if (curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Attacking)
+                if (curr_player.Peek().GetComponent<Character_Script>().state.Peek() == Character_States.Attacking)
                 {
                     //set material to red.
                     //tile_grid.reachable_prefab.GetComponent<Renderer>().sharedMaterial.color = new Color(0, 255, 0);
                 }
-                GameObject obj = (GameObject)Instantiate(tile_grid.reachable_prefab, new Vector3(tile.position.x,
+                GameObject obj = (GameObject)Instantiate(tile_grid.reachable_prefab, new Vector3(tile.transform.position.x,
                                                                //tile.position.y+0.08f,
                                                                //(float)(tile.position.y + (tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) - .24f,
-                                                               tile.position.y + .015f + Tile_Grid.TILE_SCALE * tile.GetComponent<Tile>().height,
-                                                               tile.position.z),
+                                                               tile.transform.position.y + .015f + Tile_Grid.TILE_SCALE * tile.height,
+                                                               tile.transform.position.z),
                                                                Quaternion.identity);
                 //Debug.Log(obj.GetComponent<MeshRenderer>().material.name);
                 obj.GetComponent<MeshRenderer>().material = reachable_tile_materials[0];
                 //TODO, find a better way to change tile material based on criteria
                 if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().name == "Move" && 
-                    (Math.Abs(tile.GetComponent<Tile>().index[0] - curr_player.Peek().GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[0]) +
-                    Math.Abs(tile.GetComponent<Tile>().index[1] - curr_player.Peek().GetComponent<Character_Script>().curr_tile.GetComponent<Tile>().index[1]) >
+                    (Math.Abs(tile.index[0] - curr_player.Peek().GetComponent<Character_Script>().curr_tile.index[0]) +
+                    Math.Abs(tile.index[1] - curr_player.Peek().GetComponent<Character_Script>().curr_tile.index[1]) >
                     curr_player.Peek().GetComponent<Character_Script>().speed) ||
-                    tile.GetComponent<Tile>().weight + curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().curr_path_cost > 
+                    tile.weight + curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().curr_path_cost > 
                     curr_player.Peek().GetComponent<Character_Script>().speed)
                 {
                     obj.GetComponent<MeshRenderer>().material = reachable_tile_materials[1];
@@ -1953,7 +1995,7 @@ public class Scenario : MonoBehaviour {
             character.Update_Conditions();
             character.Progress_Conditions();
 
-            if (character.state == Character_States.Dead)
+            if (character.state.Peek() == Character_States.Dead)
             {
                 i--;
             }
@@ -1990,7 +2032,7 @@ public class Scenario : MonoBehaviour {
         //Debug.Log("Current char name: " + turn_order[curr_character_num].name + " " + turn_order[curr_character_num].GetComponent<Character_Script>().character_num);
         curr_player.Push(turn_order[curr_character_num]);
         
-        if (curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Dead)
+        if (curr_player.Peek().GetComponent<Character_Script>().state.Peek() == Character_States.Dead)
         {
             Next_Player();
         }
@@ -2037,7 +2079,7 @@ public class Scenario : MonoBehaviour {
         curr_player.Pop();
         curr_player.Push(turn_order[curr_character_num]);
         //Debug.Log("Current character num " + curr_character_num);
-        if (curr_player.Peek().GetComponent<Character_Script>().state == Character_States.Dead)
+        if (curr_player.Peek().GetComponent<Character_Script>().state.Peek() == Character_States.Dead)
         {
             Prev_Player();
         }

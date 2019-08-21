@@ -101,7 +101,7 @@ public class Tile_Grid : MonoBehaviour
     public int[,] object_sprite_ids { get; private set; }
     public int[,] character_ids { get; private set; }
     public int[,] tile_heights { get; private set; }
-    public Transform[,] tiles { get; private set; }
+    public Tile[,] tiles { get; private set; }
     public Graph navmesh { get; private set; }
     public bool idle { get; private set; }
 
@@ -161,7 +161,7 @@ public class Tile_Grid : MonoBehaviour
         }
 
         //Generate the Tile transforms and navmesh
-        tiles = new Transform[width, length];
+        tiles = new Tile[width, length];
         navmesh = new Graph();
         idle = true;
     }
@@ -404,7 +404,7 @@ public class Tile_Grid : MonoBehaviour
                 instance.GetComponent<Tile>().Instantiate(x, y, tile_heights[x, y], tile_mat_ids[x, y], modifiers);
 
                 //Store the instantiated tile in our Tile Tranform Grid;
-                tiles[x, y] = instance.transform;
+                tiles[x, y] = instance.GetComponent<Tile>();
 
                 //Add a node to the navmesh
                 navmesh.addTile(tiles[x, y].GetComponent<Tile>());
@@ -472,7 +472,7 @@ public class Tile_Grid : MonoBehaviour
                     //Set the parent to be the Scenario object Tile_Objects
                     obj.transform.parent = Game_Controller.curr_scenario.transform.GetChild(1);
 
-                    obj.GetComponent<Object_Script>().curr_tile = tiles[x, y];
+                    obj.GetComponent<Object_Script>().curr_tile = tiles[x, y].transform;
 
                     //Set the name to be the name of the object.
                     obj.name = "TEST_OBJ";
@@ -518,7 +518,7 @@ public class Tile_Grid : MonoBehaviour
     /// <param name="x">X index for the lookup.</param>
     /// <param name="y">Y index for the lookup.</param>
     /// <returns>Returns the Tile at the specified Index, or null if that index does not exist.</returns>
-    public Transform getTile(int x, int y)
+    public Tile getTile(int x, int y)
     {
         if (x >= 0 && y >= 0 && x < grid_width && y < grid_length)
         {

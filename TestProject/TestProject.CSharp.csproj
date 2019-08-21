@@ -79,6 +79,7 @@
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Character_Stats.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Character_Turn_Records.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Character_Total_Records.cs" />
+    <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Movement_Types.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Condition_Shortcuts.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Conditions.cs" />
     <Compile Include="Assets\Resources\Scripts\Character_Scripts\Enums\Controlls.cs" />

@@ -409,10 +409,10 @@ public class Game_Controller : MonoBehaviour {
                 {
                     curr_scenario.clicked_tile = curr_scenario.selected_tile;
                 }
-                if ((character.state != Character_States.Idle ||
-                    character.state != Character_States.Dead))
+                if ((character.state.Peek() != Character_States.Idle ||
+                    character.state.Peek() != Character_States.Dead))
                 {
-                    foreach (Transform tile in curr_scenario.reachable_tiles)
+                    foreach (Tile tile in curr_scenario.reachable_tiles)
                     {
                         if (tile.Equals(curr_scenario.clicked_tile))
                         {
@@ -425,7 +425,7 @@ public class Game_Controller : MonoBehaviour {
                                 {
                                     //character.curr_action.Peek().Find_Path(curr_scenario.clicked_tile.gameObject);
                                     Game_Controller.curr_scenario.Reset_Reachable();
-                                    character.curr_action.Peek().Find_Reachable_Tiles(true);
+                                    character.curr_action.Peek().Find_Reachable_Tiles(character,true);
                                     Game_Controller.curr_scenario.Mark_Reachable();
                                 }
                                 
@@ -433,7 +433,7 @@ public class Game_Controller : MonoBehaviour {
                             else
                             {
                                 character.curr_action.Peek().Add_Target(curr_scenario.clicked_tile.gameObject);
-                                if (character.curr_action.Peek().Has_Valid_Targets() && character.state == Character_States.Idle)
+                                if (character.curr_action.Peek().Has_Valid_Targets() && character.state.Peek() == Character_States.Idle)
                                 {
                                     //Debug.Log("Acting");
 
@@ -470,7 +470,7 @@ public class Game_Controller : MonoBehaviour {
         //Camera Turning
         //Debug.Log(curr_scenario.curr_player.GetComponent<Character_Script>().state);
         if ((Input.GetKeyDown(controlls[Controlls.Camera_Turn_Right][0]) || Input.GetKeyDown(controlls[Controlls.Camera_Turn_Right][1])) 
-            && curr_scenario.curr_player.Peek().GetComponent<Character_Script>().state != Character_States.Walking)
+            && curr_scenario.curr_player.Peek().GetComponent<Character_Script>().state.Peek() != Character_States.Walking)
         {
             //Debug.Log("x:" + main_camera.transform.rotation.x + ", y:" + main_camera.transform.rotation.y + "z:" + main_camera.transform.rotation.z + ", w:" + main_camera.transform.rotation.w);
 
@@ -497,7 +497,7 @@ public class Game_Controller : MonoBehaviour {
             
         }
         if ((Input.GetKeyDown(controlls[Controlls.Camera_Turn_Left][0]) || Input.GetKeyDown(controlls[Controlls.Camera_Turn_Left][1])) &&
-            curr_scenario.curr_player.Peek().GetComponent<Character_Script>().state != Character_States.Walking)
+            curr_scenario.curr_player.Peek().GetComponent<Character_Script>().state.Peek() != Character_States.Walking)
         {
             //Debug.Log("x:" + main_camera.transform.rotation.x + ", y:" + main_camera.transform.rotation.y + "z:" + main_camera.transform.rotation.z + ", w:" + main_camera.transform.rotation.w);
             //transform.rotation = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w);
@@ -537,7 +537,7 @@ public class Game_Controller : MonoBehaviour {
             if (tile_data != null)
             {
                 //update cursor location
-                curr_scenario.selected_tile = hit.transform;
+                curr_scenario.selected_tile = tile_data;
                 curr_scenario.Update_Cursor(curr_scenario.selected_tile);
             }
         }

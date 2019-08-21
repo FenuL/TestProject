@@ -28,6 +28,7 @@ public class FloatingText : MonoBehaviour {
 	public void Set_Text(string text)
     {
         animator.GetComponent<Text>().text = text;
+        animator.GetComponent<Text>().fontSize = 28;
     }
 
     /// <summary>

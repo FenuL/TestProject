@@ -11,7 +11,7 @@ area: 1
 effects: 3
   self NULL 0,1 Orient Target
   target NULL 0,1 Damage CC_WPD+2
-  target NULL 0,1 Move 2,CC_TILE,PULL,CC_STR-CT_WGT
+  target NULL 0,1 Move 2,VECT,(CC_ORI+2)%4,CC_STR
 activation: active
 origin: innate
 trigger: NUL

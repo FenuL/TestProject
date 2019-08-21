@@ -58,7 +58,7 @@ public class Camera_Controller : MonoBehaviour {
         {
             mana_color = "red";
         }
-        if (curr_player.state == Character_States.Idle)
+        if (curr_player.state.Peek() == Character_States.Idle)
         {
             GUI.TextArea(new Rect(10, Screen.height - 120, 200, 110), curr_player.character_name + "\n" +
               "AU: " + curr_player.aura_curr + " / " + curr_player.aura_max + "     " +
@@ -141,7 +141,7 @@ public class Camera_Controller : MonoBehaviour {
             Character_Script highlighted_character = highlighted_obj.GetComponent<Character_Script>();
             if (highlighted_character != null)
             {
-                if (curr_player.curr_action.Count > 0 && curr_player.state != Character_States.Acting)
+                if (curr_player.curr_action.Count > 0 && curr_player.state.Peek() != Character_States.Acting)
                 {
                     bool preview = false;
                     foreach (Action_Effect eff in curr_player.curr_action.Peek().effects)

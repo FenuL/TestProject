@@ -9,7 +9,7 @@ target_checks: CHK_EMPTY
 center: Target 1x1
 area: .2
 effects: 1
-  self NULL 0,0 Move 1,CT_PATH
+  self NULL 0,0 Move 1,PATH,CT_PATH
 activation: active
 origin: innate
 trigger: NUL

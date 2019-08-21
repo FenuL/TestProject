@@ -10,7 +10,7 @@ center: Target 1x1
 area: .2
 effects: 2
   self NULL 0,0 Orient Target
-  self NULL 0,0 Move 4,CT_PATH
+  self NULL 0,0 Move 4,PATH,CT_PATH
 activation: active
 origin: innate
 trigger: NUL

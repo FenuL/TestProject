@@ -53,6 +53,7 @@ public enum Accepted_Shortcuts {
     ARM,
     WGT,
     MOC,
+    ORI,
     CMB,
     DTT,
     DDT,

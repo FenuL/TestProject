@@ -8,13 +8,13 @@ num_targets: 1
 target_checks: NULL
 center: Target 1x1
 area: 1
-effects: 2
+effects: 3
   self NULL 0,0 Orient Target
   target NULL 0,0 Damage CC_WPD+CC_STR
-  //target NULL 0,0 Move 2,CC_TILE,PUSH,CC_STR-CT_WGT
+  target NULL 0,0 Move 2,VECT,CC_ORI,CC_STR
 activation: reactive
 origin: innate
-trigger: ON_DAMAGE
-condition: NOT_CHK_SRC_SELF & CHK_SRC_RANG
+trigger: ON_TILE_ENTER
+condition: NOT_CHK_SRC_SELF & CHK_TARG_RANG
 enabled: true
 animation: Attack

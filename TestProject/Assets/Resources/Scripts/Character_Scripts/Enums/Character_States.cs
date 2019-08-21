@@ -5,6 +5,7 @@ public enum Character_States {
     Moving,
     Attacking,
     Acting,
+    Enacting,
     Idle,
     Dead,
     Blinking,
