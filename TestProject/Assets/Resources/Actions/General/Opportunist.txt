@@ -12,6 +12,7 @@ effects: 2
   self NULL 0,0 Orient Target
   target NULL 0,0 Damage CC_WPD+CC_STR+5
 activation: reactive
+interrupt: false
 origin: innate
 trigger: ON_TILE_ENTER
 enabled: true

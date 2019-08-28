@@ -12,6 +12,7 @@ effects: 2
   self NULL 0,0 Orient Target
   target CHK_NOT_TCND_EQ_STUN 0,0 Status Stun,2
 activation: active
+interrupt: false
 origin: innate
 trigger: NUL
 enabled: true

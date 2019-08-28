@@ -654,41 +654,88 @@ public class Graph
     /// <param name="direction">The direction to search in (0-3)</param>
     /// <param name="cost_limit">The cost limit to search.</param>
     /// <param name="distance_limit">The number of tiles away ot search.</param>
-    public Tile Directional_Search(Tile start, int direction, float cost_limit, int distance_limit)
+    /// <param name="curr_path">The current path to travel.</param>
+    public List<Tile> Directional_Search(Tile start, int direction, float cost_limit, int distance_limit, List<Tile> curr_path)
     {
         //reset the previously visited tiles
         Tile n;
-        //Debug.Log("visited tiles " + visitedTiles.Count);
-        while (visitedTiles.Count != 0)
-        {
-            n = visitedTiles.Pop();
-            n.weight = -1;
-            n.parent = null;
-            n.visited = false;
-        }
-        visitedTiles = new Stack<Tile>();
-
         Tile current = start;
-        start.weight = 0;
-        start.distance = 0;
-        visitedTiles.Push(start);
-
-        for (int i = 1; i < distance_limit+1; i ++)
+        start.traversible = true;
+        start.obj = null;
+        if (curr_path == null)
+        {
+            //Debug.Log("visited tiles " + visitedTiles.Count);
+            while (visitedTiles.Count != 0)
+            {
+                n = visitedTiles.Pop();
+                n.weight = -1;
+                n.parent = null;
+                n.visited = false;
+            }
+            visitedTiles = new Stack<Tile>();
+            curr_path = new List<Tile>();
+            start.weight = 0;
+            start.distance = 0;
+            visitedTiles.Push(start);
+            curr_path.Add(start);
+        }
+        while(distance_limit > 0)
         {
             Edge e = current.edges[direction];
-            if (e.cost + current.weight <= cost_limit)
+            //Check we have enough energy to move forward.
+            if (e!= null &&
+                e.cost + current.weight <= cost_limit &&
+                (e.tile2.traversible && (e.tile2.obj == null)))
+            {
+                e.tile2.weight = current.weight + e.cost;
+                e.tile2.parent = current;
+                current = e.tile2;
+                if (!visitedTiles.Contains(current))
+                {
+                    visitedTiles.Push(current);
+                }
+                curr_path.Add(current);
+                distance_limit -= 1;
+            }
+            else
+            {
+                return Directional_Search(current, (direction + 2) % 4, cost_limit, distance_limit -1, curr_path);
+            }
+        }
+        /*for (int i = 1; i < distance_limit+1; i ++)
+        {
+            Edge e = current.edges[direction];
+            //Check we have enough energy to move forward.
+            if (e.cost + current.weight <= cost_limit &&
+                (e.tile2.traversible && e.tile2.obj == null))
             {
                 e.tile2.weight = current.weight + e.cost;
                 e.tile2.parent = current;
                 current = e.tile2;
                 visitedTiles.Push(current);
+                path.Push(current);
             }else
             {
-                i = distance_limit + 2;
+                //Check we have enough energy to move backwards.
+                e = current.edges[(direction + 2) % 4];
+                if (e.cost + current.weight <= cost_limit)
+                {
+                    e.tile2.weight = current.weight + e.cost;
+                    e.tile2.parent = current;
+                    current = e.tile2;
+                    if (!visitedTiles.Contains(current))
+                    {
+                        visitedTiles.Push(current);
+                    }
+                    path.Push(current);
+                }
+                else
+                {
+                    i = distance_limit + 2;
+                }
             }
-        }
-
-        return current;
+        }*/
+        return curr_path;
     }
 
     public Stack<Tile> FindPath(Tile start, Tile finish)

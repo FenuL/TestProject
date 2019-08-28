@@ -54,6 +54,7 @@ public enum Accepted_Shortcuts {
     WGT,
     MOC,
     ORI,
+    COO,
     CMB,
     DTT,
     DDT,

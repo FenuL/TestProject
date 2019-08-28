@@ -11,6 +11,7 @@ area: .2
 effects: 1
   self NULL 0,0 Move 1,PATH,CT_PATH
 activation: active
+interrupt: false
 origin: innate
 trigger: NUL
 enabled: true

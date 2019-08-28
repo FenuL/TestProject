@@ -1881,15 +1881,10 @@ public class Scenario : MonoBehaviour {
         }
         if (direction >= 0)
         {
-            end = tile_grid.navmesh.Directional_Search(start, direction, cost_limit, distance_limit);
-            Stack<Tile> path = tile_grid.navmesh.FindPath(start, end);
-            while (path.Count != 0)
-            {
-                Tile path_tile = path.Pop();
-                Debug.Log("Tile index: [" + path_tile.index[0] + "," + path_tile.index[1] + "]");
-                //character.curr_action.Peek().curr_path.Add(curr_scenario.clicked_tile);
-                tiles.Add(path_tile);
-            }
+            tiles = tile_grid.navmesh.Directional_Search(start, direction, cost_limit, distance_limit,null);
+            end = tiles[tiles.Count-1];
+            Debug.Log("End: " + end.index[0] + "," + end.index[1]);
+            //Stack<Tile> path = tile_grid.navmesh.FindPath(start, end);
         }
         return tiles;
     }

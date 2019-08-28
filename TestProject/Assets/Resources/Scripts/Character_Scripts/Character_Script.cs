@@ -1174,6 +1174,58 @@ public class Character_Script : MonoBehaviour {
     }
 
     /// <summary>
+    /// Interrupt the current Character_Action
+    /// </summary>
+    public void Interrupt()
+    {
+        Game_Controller.curr_scenario.Reset_Reachable();
+
+        if (action_curr > action_max)
+        {
+            action_curr = action_max;
+        }
+
+        if (state.Peek() == Character_States.Walking)
+        {
+            state.Pop();
+        }
+        if (state.Peek() == Character_States.Enacting)
+        {
+            state.Pop();
+        }
+        if (state.Peek() == Character_States.Acting)
+        {
+            state.Pop();
+        }
+        if (state.Count == 0)
+        {
+            state.Push(Character_States.Idle);
+        }
+        StopAllCoroutines();
+
+        if (action_curr <= 0 && Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().character_num == character_num)
+        {
+            if (!ending_turn)
+            {
+                Debug.Log("No more actions");
+                StartCoroutine(End_Turn());
+            }
+        }
+        else
+        {
+            //if (this.Equals(controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>()))
+            Debug.Log("character "+ character_name + " " + state.Peek().ToString());
+            if (this.Equals(Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>()))
+            {
+                controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
+                Find_Action_Local("Move").Select();
+                Debug.Log("Selected");
+            }
+        }
+        //curr_action.Pop();
+    }
+
+    /// <summary>
     /// Coroutine to perform an Character_Action.
     /// </summary>
     /// <param name="target_tile">The target for the Character_Action.</param>
@@ -1703,14 +1755,20 @@ public class Character_Script : MonoBehaviour {
         GameObject prev_obj = null;
         while (tile_index < path.Count)
         {
-            while (curr_action.Peek().paused)
+            while (curr_action.Count > 0 && curr_action.Peek().paused)
             {
                 yield return new WaitForEndOfFrame();
             }
             Tile prev_tile = curr_tile;
             Tile temp_tile = path[tile_index];
 
-            Event_Manager.Broadcast(Event_Trigger.ON_TILE_EXIT, curr_action.Peek(), "" + move_type, curr_tile.gameObject);
+            if (curr_action.Count > 0)
+            {
+                Event_Manager.Broadcast(Event_Trigger.ON_TILE_EXIT, curr_action.Peek(), "" + move_type, curr_tile.gameObject);
+            }else
+            {
+                Event_Manager.Broadcast(Event_Trigger.ON_TILE_EXIT, Find_Action_Local("Move"), "" + move_type, curr_tile.gameObject);
+            }
 
             tile_index += 1;
             if (move_type != 4)
@@ -1735,23 +1793,26 @@ public class Character_Script : MonoBehaviour {
                 }
                 while (elapsedTime < duration)
                 {
-                    if (prev_tile.index[0] == temp_tile.index[0] && prev_tile.index[1] > temp_tile.index[1])
+                    if (move_type != 2)
                     {
-                        orientation = (0 + camera_orientation_offset) % 4;
+                        if (prev_tile.index[0] == temp_tile.index[0] && prev_tile.index[1] > temp_tile.index[1])
+                        {
+                            orientation = (0 + camera_orientation_offset) % 4;
+                        }
+                        else if (prev_tile.index[0] < temp_tile.index[0] && prev_tile.index[1] == temp_tile.index[1])
+                        {
+                            orientation = (1 + camera_orientation_offset) % 4;
+                        }
+                        else if (prev_tile.index[0] == temp_tile.index[0] && prev_tile.index[1] < temp_tile.index[1])
+                        {
+                            orientation = (2 + camera_orientation_offset) % 4;
+                        }
+                        else if (prev_tile.index[0] > temp_tile.index[0] && prev_tile.index[1] == temp_tile.index[1])
+                        {
+                            orientation = (3 + camera_orientation_offset) % 4;
+                        }
+                        Orient();
                     }
-                    else if (prev_tile.index[0] < temp_tile.index[0] && prev_tile.index[1] == temp_tile.index[1])
-                    {
-                        orientation = (1 + camera_orientation_offset) % 4;
-                    }
-                    else if (prev_tile.index[0] == temp_tile.index[0] && prev_tile.index[1] < temp_tile.index[1])
-                    {
-                        orientation = (2 + camera_orientation_offset) % 4;
-                    }
-                    else if (prev_tile.index[0] > temp_tile.index[0] && prev_tile.index[1] == temp_tile.index[1])
-                    {
-                        orientation = (3 + camera_orientation_offset) % 4;
-                    }
-                    Orient();
                     if (prev_tile.height - 2 >= temp_tile.height)
                     {
                         //Debug.Log("Fall");
@@ -1817,14 +1878,28 @@ public class Character_Script : MonoBehaviour {
                 curr_tile.obj = gameObject;
 
                 Increase_Turn_Stats(Character_Turn_Records.Tiles_Moved, 1);
-                Event_Manager.Broadcast(Event_Trigger.ON_TILE_ENTER, curr_action.Peek(), ""+move_type, curr_tile.gameObject);
+                if (curr_action.Count > 0)
+                {
+                    Event_Manager.Broadcast(Event_Trigger.ON_TILE_ENTER, curr_action.Peek(), "" + move_type, curr_tile.gameObject);
+                }
+                else
+                {
+                    Event_Manager.Broadcast(Event_Trigger.ON_TILE_ENTER, Find_Action_Local("Move"), "" + move_type, curr_tile.gameObject);
+                }
                 //Debug.Log("Curr tile: " + curr_tile.index[0] + "," + curr_tile.index[1]);
 
             }
             else
             {
                 //warp to new tile.
-
+                if (curr_action.Count > 0)
+                {
+                    Event_Manager.Broadcast(Event_Trigger.ON_TILE_EXIT, curr_action.Peek(), "" + move_type, curr_tile.gameObject);
+                }
+                else
+                {
+                    Event_Manager.Broadcast(Event_Trigger.ON_TILE_EXIT, Find_Action_Local("Move"), "" + move_type, curr_tile.gameObject);
+                }
                 transform.position = new Vector3(temp_tile.transform.position.x,
                                 (float)(temp_tile.transform.position.y + Tile_Grid.TILE_SCALE * (temp_tile.height) + height_offset),
                                temp_tile.transform.position.z) + camera_position_offset;
@@ -1835,6 +1910,14 @@ public class Character_Script : MonoBehaviour {
                 //curr_tile.traversible = false;
                 curr_tile.obj = gameObject;
                 Increase_Turn_Stats(Character_Turn_Records.Tiles_Moved, 1);
+                if (curr_action.Count > 0)
+                {
+                    Event_Manager.Broadcast(Event_Trigger.ON_TILE_ENTER, curr_action.Peek(), "" + move_type, curr_tile.gameObject);
+                }
+                else
+                {
+                    Event_Manager.Broadcast(Event_Trigger.ON_TILE_ENTER, Find_Action_Local("Move"), "" + move_type, curr_tile.gameObject);
+                }
                 yield return new WaitForEndOfFrame();
             }
         }

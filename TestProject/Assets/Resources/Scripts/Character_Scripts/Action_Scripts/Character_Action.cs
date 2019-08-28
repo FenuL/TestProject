@@ -33,6 +33,7 @@ public class Character_Action
     /// List<Target> curr_targets the current list of targets for the ability.
     /// List<Tile> curr_path The current path of the ability. 
     /// bool paused - If the Character_Action is paused or not. 
+    /// bool interrupt - If the Character_Action can interrupt another Action.
     /// List<Action_Effect> self_effect - The Effect the Character will have on itself when using this Character_Action
     /// List<Action_Effect> target_effect - the Effect the Character will have on a target when using this Character_Action
     /// Activation_Types action_type - The type of Activation for the Skill. Active skills must be Selected. Passive Skills are always active. Reactive Skills have a Trigger.
@@ -58,6 +59,7 @@ public class Character_Action
     public List<Tile> curr_path { get; private set; }
     public float curr_path_cost { get; private set; }
     public bool paused { get; private set; }
+    public bool interrupt { get; private set; }
     public List<Action_Effect> effects { get; private set; }
     public Activation_Types activation { get; private set; }
     public Event_Trigger trigger { get; private set; }
@@ -88,6 +90,7 @@ public class Character_Action
         curr_path_cost = 0;
         paused = false;
         effects = null;
+        interrupt = false;
         activation = Activation_Types.Active;
         trigger = Event_Trigger.ON_DAMAGE;
         condition = "";
@@ -119,6 +122,7 @@ public class Character_Action
         curr_path = new List<Tile>();
         curr_path_cost = 0;
         paused = act.paused;
+        interrupt = act.interrupt;
         effects = act.effects;
         activation = act.activation;
         trigger = act.trigger;
@@ -300,6 +304,9 @@ public class Character_Action
 
                         }
                         break;
+                    case "interrupt":
+                        act.interrupt = values.Trim()=="true";
+                        break;
                     case "activation":
                         if (values.Trim() == "Reactive" ||
                             values.Trim() == "reactive")
@@ -465,6 +472,12 @@ public class Character_Action
             string[] end_string = start_string[1].Split("]".ToCharArray(), 2);
             return Mathf.Floor(Convert_To_Float(end_string[0], target_obj, target, escape+1));
         }
+        if (input.Contains("ABSL"))
+        {
+            string[] start_string = input.Replace("ABSL", "").Split("[".ToCharArray(), 2);
+            string[] end_string = start_string[1].Split("]".ToCharArray(), 2);
+            return Mathf.Abs(Convert_To_Float(end_string[0], target_obj, target, escape + 1));
+        }
         if (float.TryParse(input, out output))
         {
             return output;
@@ -569,6 +582,12 @@ public class Character_Action
                             else if (val.ToString().Contains("ORI"))
                             {
                                 input = input.Replace(prefix + val.ToString(), "" + source.orientation);
+                                //Debug.Log("Orientation: " + source.orientation);
+                            }
+                            else if (val.ToString().Contains("COO"))
+                            {
+                                input = input.Replace(prefix + val.ToString(), "" + source.camera_orientation_offset);
+                                //Debug.Log("Camera offset: " + source.camera_orientation_offset);
                             }
                             else if (val.ToString().Contains("CMB"))
                             {
@@ -1993,8 +2012,13 @@ public class Character_Action
             //character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().Pause();
 
             //Pause current Action.
-            Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().Pause();
-
+            if (!interrupt || interrupt)
+            {
+                Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().Pause();
+            }else
+            {
+                Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().Interrupt();
+            }
             //Debug.Log("Pausing Character " + character.controller.curr_scenario.curr_player.Peek().name + "'s current action " + character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().name);
             //Debug.Log("Character action count " + character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Count);
             //character.controller.curr_scenario.curr_player.Push(character.gameObject);
@@ -2039,9 +2063,15 @@ public class Character_Action
         //If there was a previous character in the stack, resume their Action.
         if (Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Count > 0)
         {
-            //character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().Resume();
-            Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().Resume();
-            //Debug.Log("Resumed");
+            if (!interrupt || interrupt)
+            {
+                //character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().Resume();
+                Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().Resume();
+                //Debug.Log("Resumed");
+            }else
+            {
+                //Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Pop();
+            }
         }
     }
 
@@ -2538,6 +2568,7 @@ public class Character_Action
                         else if (effect.values[1] == "VECT")
                         {
                             direction = (int)Convert_To_Float(effect.values[2], target_tile.obj, target);
+                            //Debug.Log("direction " + direction);
                             distance = Convert_To_Float(effect.values[3], target_tile.obj, target);
                             move_path = Find_Reachable_Tiles(chara, move_type, direction, distance, true);
                         }

@@ -12,6 +12,7 @@ effects: 2
   self NULL 0,0 Orient Target
   self NULL 0,0 Move 4,PATH,CT_PATH
 activation: active
+interrupt: false
 origin: innate
 trigger: NUL
 enabled: true

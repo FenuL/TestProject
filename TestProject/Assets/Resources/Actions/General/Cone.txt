@@ -16,6 +16,7 @@ effects: 2
   self NULL 0,0 Orient Target
   target NULL 0,0 Damage CC_WPD+5
 activation: active
+interrupt: false
 origin: innate
 trigger: NUL
 enabled: true

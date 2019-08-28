@@ -16,6 +16,7 @@ effects: 4
   target NULL 0,1 Damage CC_STR*CC_RTT+CC_WPD
   target NULL 0,1 Move 2,CC_TILE,PUSH,CC_STR*CC_RTT+1
 activation: active
+interrupt: false
 origin: innate
 trigger: NUL
 enabled: true

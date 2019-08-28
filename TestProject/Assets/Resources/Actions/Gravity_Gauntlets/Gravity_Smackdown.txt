@@ -15,6 +15,7 @@ effects: 3
   target NULL 0,0 Elevate 2
   target CHK_NOT_SELF 0,0 Damage 2*CC_STR+CC_WPD
 activation: active
+interrupt: false
 origin: innate
 trigger: NUL
 enabled: true

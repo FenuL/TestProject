@@ -15,6 +15,7 @@ effects: 5
   target NULL 0,0 Damage CC_WPD+CC_STR+2
   self NULL 0,0 Enable Flurry,false
 activation: active
+interrupt: false
 origin: weapon
 trigger: NUL
 enabled: true
