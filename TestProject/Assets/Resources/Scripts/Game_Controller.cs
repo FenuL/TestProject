@@ -443,7 +443,7 @@ public class Game_Controller : MonoBehaviour {
                         }
                     }
                 }
-
+                curr_scenario.clicked_tile = null;
             }
         }
 

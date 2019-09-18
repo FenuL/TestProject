@@ -16,6 +16,7 @@ public class Character_Action
     /// enum Accepted_Shortcuts - Shortcuts used to read the actions from the action list.
     /// </summary>
     public enum Activation_Types { Active, Passive, Reactive }
+    public enum Trigger_Target_Types { Source, Target, None }
     public enum Origin_Types { Innate, Soul, Weapon }
     public enum Operators { EQ, GT, LT, GTQ, LTQ }
 
@@ -59,10 +60,12 @@ public class Character_Action
     public List<Tile> curr_path { get; private set; }
     public float curr_path_cost { get; private set; }
     public bool paused { get; private set; }
+    public bool interrupted { get; private set; }
     public bool interrupt { get; private set; }
     public List<Action_Effect> effects { get; private set; }
     public Activation_Types activation { get; private set; }
     public Event_Trigger trigger { get; private set; }
+    public Trigger_Target_Types trigger_target { get; private set; }
     public string condition { get; private set; }
     public Origin_Types origin { get; private set; }
     public bool enabled { get; set; }
@@ -89,10 +92,12 @@ public class Character_Action
         curr_path = new List<Tile>();
         curr_path_cost = 0;
         paused = false;
+        interrupted = false;
         effects = null;
         interrupt = false;
         activation = Activation_Types.Active;
         trigger = Event_Trigger.ON_DAMAGE;
+        trigger_target = Trigger_Target_Types.None;
         condition = "";
         origin = Origin_Types.Innate;
         enabled = true;
@@ -122,10 +127,12 @@ public class Character_Action
         curr_path = new List<Tile>();
         curr_path_cost = 0;
         paused = act.paused;
+        interrupted = act.interrupted;
         interrupt = act.interrupt;
         effects = act.effects;
         activation = act.activation;
         trigger = act.trigger;
+        trigger_target = act.trigger_target;
         condition = act.condition;
         origin = act.origin;
         enabled = act.enabled;
@@ -215,6 +222,7 @@ public class Character_Action
     public static Character_Action Parse(string[] input)
     {
         Character_Action act = new Character_Action();
+        act.trigger_target = Trigger_Target_Types.None;
         int area_x_index = 0;
         int area_y_index = 0;
         act.paused = false;
@@ -346,6 +354,16 @@ public class Character_Action
                             if (values.Trim() == tri.ToString())
                             {
                                 act.trigger = tri;
+                            }
+                        }
+                        break;
+                    case "trigger_target":
+                        array = Enum.GetValues(typeof(Trigger_Target_Types));
+                        foreach (Trigger_Target_Types tri in array)
+                        {
+                            if (values.Trim() == tri.ToString())
+                            {
+                                act.trigger_target = tri;
                             }
                         }
                         break;
@@ -535,17 +553,17 @@ public class Character_Action
                             {
                                 input = input.Replace(prefix + val.ToString(), "" + source.strength);
                             }
-                            else if (val.ToString().Contains("CRD"))
+                            else if (val.ToString().Contains("DEX"))
                             {
-                                input = input.Replace(prefix + val.ToString(), "" + source.coordination);
+                                input = input.Replace(prefix + val.ToString(), "" + source.dexterity);
                             }
                             else if (val.ToString().Contains("SPT"))
                             {
                                 input = input.Replace(prefix + val.ToString(), "" + source.spirit);
                             }
-                            else if (val.ToString().Contains("DEX"))
+                            else if (val.ToString().Contains("INI"))
                             {
-                                input = input.Replace(prefix + val.ToString(), "" + source.dexterity);
+                                input = input.Replace(prefix + val.ToString(), "" + source.initiative);
                             }
                             else if (val.ToString().Contains("VIT"))
                             {
@@ -573,7 +591,7 @@ public class Character_Action
                             }
                             else if (val.ToString().Contains("WGT"))
                             {
-                                input = input.Replace(prefix + val.ToString(), "" + source.armor.weight);
+                                input = input.Replace(prefix + val.ToString(), "" + source.weight);
                             }
                             else if (val.ToString().Contains("MOC"))
                             {
@@ -944,6 +962,7 @@ public class Character_Action
                         else { 
                             //character.curr_action.Push(this);
                             character.StartCoroutine(character.Act(this, character.curr_tile));
+
                         }
                     }
                    
@@ -1690,7 +1709,7 @@ public class Character_Action
             }
             else if (action_type == Action_Types.Melee)
             {
-                Debug.Log("PATHFINDING " + target_tile.index[0]);
+                //Debug.Log("PATHFINDING start " + start.index[0] + "," + start.index[1] + " end " + target_tile.index[0] + "," + target_tile.index[1]);
                 path = Game_Controller.curr_scenario.tile_grid.navmesh.FindPath(start, target_tile);
             }
             else if (action_type == Action_Types.Unrestricted_Path)
@@ -2001,23 +2020,30 @@ public class Character_Action
     /// <summary>
     /// Trigger a Reaction type action.
     /// </summary>
-    /// <param name="act">The action being taken</param>
+    /// <param name="act">The action that triggered this reaction</param>
     /// <param name="value">The value of the action being taken</param>
     /// <param name="target">The target of the action</param>
     public void React(Character_Action act, string value, GameObject target)
     {
         if (Evaluate_Conditional(condition, act, value, target) && Check_Resource())
         {
-            //Debug.Log("Character " + character.name + " is reacting with " + name);
+            GameObject true_target = act.character.curr_tile.gameObject;
+            if (trigger_target == Trigger_Target_Types.Target)
+            {
+                true_target = target;
+            }
+            Debug.Log("Character " + character.name + " is reacting with " + name + " targeting" + true_target.name);
+            //Debug.Log("Current character " + Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().name);
+            //Debug.Log("Current action " + Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().name);
             //character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().Pause();
 
             //Pause current Action.
-            if (!interrupt || interrupt)
+            Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().Pause();
+            if (interrupt)
             {
-                Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().Pause();
-            }else
-            {
-                Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().Interrupt();
+                Debug.Log("Interrupting " + Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().name);
+                Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().interrupted = true;
+                //Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().Interrupt();
             }
             //Debug.Log("Pausing Character " + character.controller.curr_scenario.curr_player.Peek().name + "'s current action " + character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().name);
             //Debug.Log("Character action count " + character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Count);
@@ -2029,13 +2055,13 @@ public class Character_Action
             //character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Push(this);
 
             //Add a Target for this Action.
-            Add_Target(act.character.curr_tile.gameObject);
+            Add_Target(true_target);
 
             //Make this Action the current Action.
             Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Push(this);
 
             //Start the Action
-            character.StartCoroutine(character.Act(this, act.character.curr_tile));
+            character.StartCoroutine(character.Act(this, true_target.GetComponent<Tile>()));
         }
 
     }
@@ -2063,10 +2089,11 @@ public class Character_Action
         //If there was a previous character in the stack, resume their Action.
         if (Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Count > 0)
         {
-            if (!interrupt || interrupt)
+            Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().Resume();
+            if (!interrupt)
             {
                 //character.controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().Resume();
-                Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().Resume();
+                
                 //Debug.Log("Resumed");
             }else
             {
@@ -2250,9 +2277,16 @@ public class Character_Action
             int target_index = 0;
             foreach (Target target in curr_targets)
             {
-
+                if (interrupted)
+                {
+                    break;
+                }
                 foreach (Action_Effect eff in effects)
                 {
+                    if (interrupted)
+                    {
+                        break;
+                    }
                     //Debug.Log("Using " + eff.type + " on " + target.center.index[0] + "," + target.center.index[1]);
                     //Debug.Log("lower limit " + eff.target_limit[0] + " higher limit " + eff.target_limit[1]);
                     //Debug.Log("target_index " + target_index);
@@ -2287,7 +2321,7 @@ public class Character_Action
                         //Debug.Log(character.name + " " + name + "Num of target effects: " + effects.Count);
                         //Debug.Log(character.name + " " + name + "effect_num " + proc_effect_num);
                         //Debug.Log(character.name + " " + name + "effect type " + eff.type);
-                        while (proc_effect_num == 0 || paused)
+                        while (proc_effect_num == 0 || paused && !interrupted)
                         {
                             //Escape if too much time has passed.
                             elapsedTime += Time.deltaTime;
@@ -2299,13 +2333,19 @@ public class Character_Action
                             }
                             //Debug.Log(character.name + " " + name + "Paused? " + paused);
                             //Debug.Log(character.name + " " + name + "Proc num " + proc_effect_num);
+
                             yield return new WaitForEndOfFrame();
                         }
 
+                        if (interrupted)
+                        {
+                            break;
+                        }
                         //stop procing if Character is current Effect has not been resolved.
-                        while (character.state.Peek() != Character_States.Enacting)
+                        while (character.state.Peek() != Character_States.Enacting || !is_Current_Action())
                         {
                             Debug.Log("character "  + character.name + " performing " + name + " is " + character.state.Peek());
+                            Debug.Log("Current Action is " + Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().name);
                             yield return new WaitForEndOfFrame();
                         }
 
@@ -2317,6 +2357,7 @@ public class Character_Action
                             foreach (Target effect_target in temp_targets)
                             {
                                 character.StartCoroutine(Enact_Orient(eff, effect_target, target));
+                                //Debug.Log(coroutines[coroutines.Count-1]);
                             }
                         }
                         else if (eff.type == Action_Effect.Types.Move)
@@ -2327,6 +2368,7 @@ public class Character_Action
                             foreach (Target effect_target in temp_targets)
                             {
                                 character.StartCoroutine(Enact_Move(eff, effect_target, target));
+                                //Debug.Log(coroutines[coroutines.Count - 1].ToString());
                             }
                         }
                         else if (eff.type == Action_Effect.Types.Damage)
@@ -2415,15 +2457,18 @@ public class Character_Action
         //while(!character.GetComponent<Animator>(). GetCurrentAnimatorClipInfo(0) .animationClips[2])
 
         //Wait for the effects to be completed.
-        while ((character.state.Peek() != Character_States.Enacting && ! paused)||
+        while (character.state.Peek() != Character_States.Enacting || 
+            !is_Current_Action()||
             !Game_Controller.curr_scenario.tile_grid.idle)
         {
             //Debug.Log("State " + character.state.ToString());
             yield return new WaitForEndOfFrame();
         }
 
-        //Return the character to idle state.
+        //Return the character to Acting state.
+        //Debug.Log(character.name + " is " + character.state.Peek());
         character.state.Pop();
+        //Debug.Log(character.name + " is " + character.state.Peek());
         character.gameObject.GetComponent<Animator>().SetTrigger("Done_Acting");
 
         proc_effect_num = 0;
@@ -2431,11 +2476,9 @@ public class Character_Action
         //Reset the action's targets and Path.
         Reset_Targets();
         Reset_Path();
+        interrupted = false;
 
-        if (activation == Activation_Types.Reactive)
-        {
-            End_Reaction();
-        }
+        //Debug.Log("Finished Enacting " + name);
     }
 
     /// <summary>
@@ -2448,7 +2491,23 @@ public class Character_Action
         //Debug.Log("Set Animation Number to " + num);
     }
 
-    
+
+    /// <summary>
+    /// Checks to see if this action is currently on top of the action stack for the character currently on top of the player stack.
+    /// </summary>
+    /// <returns>True if this action's character is on top of the current player stack and this action is on top of their action stack.</returns>
+    public bool is_Current_Action()
+    {
+        if (character.is_Current_Character())
+        {
+            if(character.has_Current_Action() && 
+               this == character.curr_action.Peek())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /// <summary>
     /// Pause the current action
@@ -2485,10 +2544,14 @@ public class Character_Action
     {
         foreach (Tile target_tile in to_orient.affected_tiles.Keys)
         {
-            while (paused)
+            while (paused && !interrupted)
             {
                 //TODO add an interrupt here.
                 yield return new WaitForEndOfFrame();
+            }
+            if (interrupted)
+            {
+                break;
             }
             if (Check_Criteria(effect.checks, target_tile.gameObject))
             {
@@ -2543,13 +2606,18 @@ public class Character_Action
         // 4 = warp
         foreach (Tile target_tile in to_move.affected_tiles.Keys)
         {
-            while (paused)
+            while (paused && !interrupted)
             {
                 //TODO add an interrupt here.
                 yield return new WaitForEndOfFrame();
             }
+            if (interrupted)
+            {
+                break;
+            }
             if (Check_Criteria(effect.checks, target_tile.gameObject))
             {
+                //Debug.Log("target tile: " + target_tile.index[0] + "," + target_tile.index[1]);
                 if (target_tile.obj != null)
                 {
                     Character_Script chara = target_tile.obj.GetComponent<Character_Script>();
@@ -2577,7 +2645,7 @@ public class Character_Action
                         Tile end = move_path[move_path.Count-1];
 
                         //Actually move
-                        chara.MoveTo(move_type, move_path);
+                        chara.StartCoroutine(chara.Move(this, move_type, move_path));
 
                         Debug.Log("Character " + chara.name + " Moved from: " + start.index[0] + ","
                             + start.index[1] + " to: " + end.index[0] + ","
@@ -2610,10 +2678,14 @@ public class Character_Action
     {
         foreach (Tile target_tile in target.affected_tiles.Keys)
         {
-            while (paused)
+            while (paused && !interrupted)
             {
                 //TODO add an interrupt here.
                 yield return new WaitForEndOfFrame();
+            }
+            if (interrupted)
+            {
+                break;
             }
             if (Check_Criteria(effect.checks, target_tile.gameObject))
             {
@@ -2658,10 +2730,14 @@ public class Character_Action
     {
         foreach (Tile target_tile in target.affected_tiles.Keys)
         {
-            while (paused)
+            while (paused && !interrupted)
             {
                 //TODO add an interrupt here.
                 yield return new WaitForEndOfFrame();
+            }
+            if (interrupted)
+            {
+                break;
             }
             if (Check_Criteria(effect.checks, target_tile.gameObject))
             {
@@ -2710,10 +2786,14 @@ public class Character_Action
     {
         foreach (Tile target_tile in target.affected_tiles.Keys)
         {
-            while (paused)
+            while (paused && !interrupted)
             {
                 //TODO add an interrupt here.
                 yield return new WaitForEndOfFrame();
+            }
+            if (interrupted)
+            {
+                break;
             }
             if (Check_Criteria(effect.checks, target_tile.gameObject))
             {
@@ -2768,10 +2848,14 @@ public class Character_Action
     {
         foreach (Tile target_tile in target.affected_tiles.Keys)
         {
-            while (paused)
+            while (paused && !interrupted)
             {
                 //TODO add an interrupt here.
                 yield return new WaitForEndOfFrame();
+            }
+            if (interrupted)
+            {
+                break;
             }
             if (Check_Criteria(effect.checks, target_tile.gameObject))
             {
@@ -2828,10 +2912,14 @@ public class Character_Action
     {
         foreach (Tile target_tile in target.affected_tiles.Keys)
         {
-            while (paused)
+            while (paused && !interrupted)
             {
                 //TODO add an interrupt here.
                 yield return new WaitForEndOfFrame();
+            }
+            if (interrupted)
+            {
+                break;
             }
             if (Check_Criteria(effect.checks, target_tile.gameObject))
             {
@@ -2859,10 +2947,14 @@ public class Character_Action
     {
         foreach (Tile target_tile in target.affected_tiles.Keys)
         {
-            while (paused)
+            while (paused && !interrupted)
             {
                 //TODO add an interrupt here.
                 yield return new WaitForEndOfFrame();
+            }
+            if (interrupted)
+            {
+                break;
             }
             if (Check_Criteria(effect.checks, target_tile.gameObject))
             {
@@ -2908,10 +3000,14 @@ public class Character_Action
     {
         foreach (Tile target_tile in target.affected_tiles.Keys)
         {
-            while (paused)
+            while (paused && !interrupted)
             {
                 //TODO add an interrupt here.
                 yield return new WaitForEndOfFrame();
+            }
+            if (interrupted)
+            {
+                break;
             }
             if (Check_Criteria(checks, target_tile.gameObject))
             {

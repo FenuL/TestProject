@@ -65,9 +65,10 @@ public class Camera_Controller : MonoBehaviour {
               "MP: <color=" + mana_color + ">" + mana_remaining + "</color> / " + curr_player.mana_max + "\n" +
               "AP: <color=" + action_color + ">" + actions_remaining + "</color> / " + curr_player.action_max + "     " +
               "RP: " + curr_player.reaction_curr + " / " + curr_player.reaction_max + "\n" +
-              "Str: " + curr_player.strength + "   Crd: " + curr_player.coordination + "    Spt: " + curr_player.spirit + "\n" +
-              "Dex: " + curr_player.dexterity + "   Vit: " + curr_player.vitality + "   Spd: " + curr_player.speed + "\n" +
-              "Wep: " + curr_player.weapon.name + "   Armor: " + curr_player.armor.name, style);
+              "Str: " + curr_player.strength + "   Dex: " + curr_player.dexterity + "    Spt: " + curr_player.spirit + "\n" +
+              "Ini: " + curr_player.initiative + "   Vit: " + curr_player.vitality + "   Spd: " + curr_player.speed + "\n" +
+              "Wep: " + curr_player.weapon.name + " (" + curr_player.weapon.weight + ")\n" + 
+              "Armor: " + curr_player.armor.name + " (" + curr_player.armor.weight + ")", style);
         }
         else
         {
@@ -76,9 +77,10 @@ public class Camera_Controller : MonoBehaviour {
               "MP: " + curr_player.mana_curr + " / " + curr_player.mana_max + "\n" +
               "AP: " + curr_player.action_curr + " / " + curr_player.action_max + "     " +
               "RP: " + curr_player.reaction_curr + " / " + curr_player.reaction_max + "\n" +
-              "Str: " + curr_player.strength + "   Crd: " + curr_player.coordination + "    Spt: " + curr_player.spirit + "\n" +
-              "Dex: " + curr_player.dexterity + "   Vit: " + curr_player.vitality + "   Spd: " + curr_player.speed + "\n" +
-              "Wep: " + curr_player.weapon.name + "   Armor: " + curr_player.armor.name, style);
+              "Str: " + curr_player.strength + "   Dex: " + curr_player.dexterity + "    Spt: " + curr_player.spirit + "\n" +
+              "Ini: " + curr_player.initiative + "   Vit: " + curr_player.vitality + "   Spd: " + curr_player.speed + "\n" +
+              "Wep: " + curr_player.weapon.name + " (" + curr_player.weapon.weight + ")\n" +
+              "Armor: " + curr_player.armor.name + " (" + curr_player.armor.weight + ")", style);
         }
     }
 
@@ -119,8 +121,9 @@ public class Camera_Controller : MonoBehaviour {
                     tile_effect_string = tile.effect.name + " " + tile.effect.GetComponent<Tile_Effect>().type.ToString() + " " + tile.effect.GetComponent<Tile_Effect>().value[0];
                 }
             }
-            GUI.TextArea(new Rect(Screen.width - 110, Screen.height - 120, 100, 110),
+            GUI.TextArea(new Rect(Screen.width - 115, Screen.height - 120, 110, 110),
             "Tile: " + tile.GetComponentInChildren<Renderer>().material.name.Split(' ')[0] + "\n" +
+            "Index: " + tile.index[0] + "," + tile.index[1] + "\n" +
             "Height: " + tile.height + "\n" +
             "Effects: " + tile_effect_string + "\n" +
             "Action Mod: <color=" + mod_color + ">" + action_mod + "</color> \n" +
@@ -164,9 +167,10 @@ public class Camera_Controller : MonoBehaviour {
                               "MP: " + highlighted_character.mana_curr + " / " + highlighted_character.mana_max + "\n" +
                               "AP: " + highlighted_character.action_curr + " / " + highlighted_character.action_max + "    " +
                               "RP: " + highlighted_character.reaction_curr + " / " + highlighted_character.reaction_max + "\n" +
-                              "Str: " + highlighted_character.strength + "   Crd: " + highlighted_character.coordination + "    Spt: " + highlighted_character.spirit + "\n" +
-                              "Dex: " + highlighted_character.dexterity + "   Vit: " + highlighted_character.vitality + "   Spd: " + highlighted_character.speed + "\n" +
-                              "Wep: " + highlighted_character.weapon.name + "   Armor: " + highlighted_character.armor.name, style);
+                              "Str: " + highlighted_character.strength + "   Dex: " + highlighted_character.dexterity + "    Spt: " + highlighted_character.spirit + "\n" +
+                              "Ini: " + highlighted_character.initiative + "   Vit: " + highlighted_character.vitality + "   Spd: " + highlighted_character.speed + "\n" +
+                              "Wep: " + highlighted_character.weapon.name + " (" + highlighted_character.weapon.weight + ")\n" +
+                              "Armor: " + highlighted_character.armor.name + " (" + highlighted_character.armor.weight + ")", style);
                             preview = true;
                             break;
                         }
@@ -187,9 +191,10 @@ public class Camera_Controller : MonoBehaviour {
                               "MP: " + highlighted_character.mana_curr + " / " + highlighted_character.mana_max + "\n" +
                               "AP: " + highlighted_character.action_curr + " / " + highlighted_character.action_max + "     " +
                               "RP: " + highlighted_character.reaction_curr + " / " + highlighted_character.reaction_max + "\n" +
-                              "Str: " + highlighted_character.strength + "   Crd: " + highlighted_character.coordination + "    Spt: " + highlighted_character.spirit + "\n" +
-                              "Dex: " + highlighted_character.dexterity + "   Vit: " + highlighted_character.vitality + "   Spd: " + highlighted_character.speed + "\n" +
-                              "Wep: " + highlighted_character.weapon.name + "   Armor: " + highlighted_character.armor.name, style);
+                              "Str: " + highlighted_character.strength + "   Dex: " + highlighted_character.dexterity + "    Spt: " + highlighted_character.spirit + "\n" +
+                              "Ini: " + highlighted_character.initiative + "   Vit: " + highlighted_character.vitality + "   Spd: " + highlighted_character.speed + "\n" +
+                              "Wep: " + highlighted_character.weapon.name + " (" + highlighted_character.weapon.weight + ")\n" +
+                              "Armor: " + highlighted_character.armor.name + " (" + highlighted_character.armor.weight + ")", style);
                             preview = true;
                             break;
                         }
@@ -201,9 +206,10 @@ public class Camera_Controller : MonoBehaviour {
                             "MP: " + highlighted_character.mana_curr + " / " + highlighted_character.mana_max + "\n" +
                             "AP: " + highlighted_character.action_curr + " / " + highlighted_character.action_max + "     " +
                             "RP: " + highlighted_character.reaction_curr + " / " + highlighted_character.reaction_max + "\n" +
-                            "Str: " + highlighted_character.strength + "   Crd: " + highlighted_character.coordination + "    Spt: " + highlighted_character.spirit + "\n" +
-                            "Dex: " + highlighted_character.dexterity + "   Vit: " + highlighted_character.vitality + "   Spd: " + highlighted_character.speed + "\n" +
-                            "Wep: " + highlighted_character.weapon.name + "   Armor: " + highlighted_character.armor.name, style);
+                            "Str: " + highlighted_character.strength + "   Dex: " + highlighted_character.dexterity + "    Spt: " + highlighted_character.spirit + "\n" +
+                            "Ini: " + highlighted_character.initiative + "   Vit: " + highlighted_character.vitality + "   Spd: " + highlighted_character.speed + "\n" +
+                            "Wep: " + highlighted_character.weapon.name + " (" + highlighted_character.weapon.weight + ")\n" +
+                            "Armor: " + highlighted_character.armor.name + " (" + highlighted_character.armor.weight + ")", style);
                     }
                 }else
                 {
@@ -212,9 +218,10 @@ public class Camera_Controller : MonoBehaviour {
                             "MP: " + highlighted_character.mana_curr + " / " + highlighted_character.mana_max + "\n" +
                             "AP: " + highlighted_character.action_curr + " / " + highlighted_character.action_max + "     " +
                             "RP: " + highlighted_character.reaction_curr + " / " + highlighted_character.reaction_max + "\n" +
-                            "Str: " + highlighted_character.strength + "   Crd: " + highlighted_character.coordination + "    Spt: " + highlighted_character.spirit + "\n" +
-                            "Dex: " + highlighted_character.dexterity + "   Vit: " + highlighted_character.vitality + "   Spd: " + highlighted_character.speed + "\n" +
-                            "Wep: " + highlighted_character.weapon.name + "   Armor: " + highlighted_character.armor.name, style);
+                            "Str: " + highlighted_character.strength + "   Dex: " + highlighted_character.dexterity + "    Spt: " + highlighted_character.spirit + "\n" +
+                            "Ini: " + highlighted_character.initiative + "   Vit: " + highlighted_character.vitality + "   Spd: " + highlighted_character.speed + "\n" +
+                            "Wep: " + highlighted_character.weapon.name + " (" + highlighted_character.weapon.weight + ")\n" +
+                            "Armor: " + highlighted_character.armor.name + " (" + highlighted_character.armor.weight + ")", style); ;
                 }
             }
             else

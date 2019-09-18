@@ -143,17 +143,17 @@ public class Tile_Effect : MonoBehaviour {
                         {
                             input = input.Replace(val.ToString(), "" + source.strength);
                         }
-                        else if (val.ToString().Contains("CRD"))
+                        else if (val.ToString().Contains("DEX"))
                         {
-                            input = input.Replace(val.ToString(), "" + source.coordination);
+                            input = input.Replace(val.ToString(), "" + source.dexterity);
                         }
                         else if (val.ToString().Contains("SPT"))
                         {
                             input = input.Replace(val.ToString(), "" + source.spirit);
                         }
-                        else if (val.ToString().Contains("DEX"))
+                        else if (val.ToString().Contains("INI"))
                         {
-                            input = input.Replace(val.ToString(), "" + source.dexterity);
+                            input = input.Replace(val.ToString(), "" + source.initiative);
                         }
                         else if (val.ToString().Contains("VIT"))
                         {

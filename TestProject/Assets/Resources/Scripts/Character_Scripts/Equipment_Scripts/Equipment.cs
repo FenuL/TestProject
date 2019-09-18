@@ -28,7 +28,7 @@ public class Equipment
     public Equip_Effect[] effects { get; protected set; }
     public int durability { get; protected set; }
     public string description { get; protected set; }
-    public double weight { get; protected set; }
+    public float weight { get; protected set; }
     public SpriteRenderer sprite { get; protected set; }
 
     /// <summary>
@@ -93,17 +93,17 @@ public class Equipment
                     {
                         input = input.Replace(val.ToString(), "" + obj.strength);
                     }
-                    else if (val.ToString() == "CRD")
+                    else if (val.ToString() == "DEX")
                     {
-                        input = input.Replace(val.ToString(), "" + obj.coordination);
+                        input = input.Replace(val.ToString(), "" + obj.dexterity);
                     }
                     else if (val.ToString() == "SPT")
                     {
                         input = input.Replace(val.ToString(), "" + obj.spirit);
                     }
-                    else if (val.ToString() == "DEX")
+                    else if (val.ToString() == "INI")
                     {
-                        input = input.Replace(val.ToString(), "" + obj.dexterity);
+                        input = input.Replace(val.ToString(), "" + obj.initiative);
                     }
                     else if (val.ToString() == "VIT")
                     {

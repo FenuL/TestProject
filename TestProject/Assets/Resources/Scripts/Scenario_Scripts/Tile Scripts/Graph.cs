@@ -702,39 +702,6 @@ public class Graph
                 return Directional_Search(current, (direction + 2) % 4, cost_limit, distance_limit -1, curr_path);
             }
         }
-        /*for (int i = 1; i < distance_limit+1; i ++)
-        {
-            Edge e = current.edges[direction];
-            //Check we have enough energy to move forward.
-            if (e.cost + current.weight <= cost_limit &&
-                (e.tile2.traversible && e.tile2.obj == null))
-            {
-                e.tile2.weight = current.weight + e.cost;
-                e.tile2.parent = current;
-                current = e.tile2;
-                visitedTiles.Push(current);
-                path.Push(current);
-            }else
-            {
-                //Check we have enough energy to move backwards.
-                e = current.edges[(direction + 2) % 4];
-                if (e.cost + current.weight <= cost_limit)
-                {
-                    e.tile2.weight = current.weight + e.cost;
-                    e.tile2.parent = current;
-                    current = e.tile2;
-                    if (!visitedTiles.Contains(current))
-                    {
-                        visitedTiles.Push(current);
-                    }
-                    path.Push(current);
-                }
-                else
-                {
-                    i = distance_limit + 2;
-                }
-            }
-        }*/
         return curr_path;
     }
 
@@ -754,7 +721,7 @@ public class Graph
                 path.Push(temp_tile);
                 //Look at the parent tile.
                 //Debug.Log("parent tile: " + temp_tile.parent.index[0] + "," + temp_tile.parent.index[1]);
-                if (temp_tile.parent != null)
+                if (temp_tile.parent != null && temp_tile.parent.parent != temp_tile)
                 {
                     temp_tile = temp_tile.parent;
                 }

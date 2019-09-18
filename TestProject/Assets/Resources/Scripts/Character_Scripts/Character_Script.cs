@@ -44,15 +44,16 @@ public class Character_Script : MonoBehaviour {
     /// int canister_max - The maximum amount of Mana Canisters that the Character can carry.
     /// int canister_curr - The current number of Mana Canisters for the Character. If this hits 0 the Character won't be able to rapidly recover Mana.
     /// int strength  - The Character's Strength stat. Influences damage with Melee Weapons.
-    /// int coordination - The Character's Coordination stat. Influences damage with Ranged Weapons.
+    /// int dexterity - The Character's Coordination stat. Influences damage with Ranged Weapons.
     /// int spirit - The Character's Spirit stat. Influences Maximum MP.
-    /// int dexterity - The Character's Dexterity stat. Used for determining turn order.
+    /// int initiative - The Character's Dexterity stat. Used for determining turn order.
     /// int vitality - The Character's Vitality stat. Used to determine Maximum Aura. 
     /// float accuracy - The Character's Accuracy. Used to determine their total Ability Modifier.
     /// float resistance - The Character's Resistance. Used to determine the total Ability Modifier of Abilities used against them.
     /// float lethality - The Character's Lethality. Used to determine their maximum Ability Modifier.
     /// float finesse - The Character's Finesse. Used to determine the Ability Modifier threshold for a Critical Hit.
     /// double speed - The distance a Character can traverse with a Move.
+    /// float weight - The weight of the current character's total equipment.
     /// int level - The level for the Character. Leveling can raise your other stats.
     /// Dictionary<Character_Turn_Records, float> turn_stats - The character's stats for the current turn. Keeps track of tiles moved, damage dealt, etc.
     /// Dictionary<Character_Total_Records, float> scenario_stats - The character's stats for the whole scenario.
@@ -92,15 +93,16 @@ public class Character_Script : MonoBehaviour {
     public int canister_max { get; private set; }
     public int canister_curr { get; private set; }
     public int strength { get; private set; }
-    public int coordination { get; private set; }
-    public int spirit { get; private set; }
     public int dexterity { get; private set; }
+    public int spirit { get; private set; }
+    public int initiative { get; private set; }
     public int vitality { get; private set; }
     public float accuracy { get; private set; }
     public float resistance { get; private set; }
     public float lethality { get; private set; }
     public float finesse { get; private set; }
     public double speed { get; private set; }
+    public float weight { get; private set; }
     public int level { get; private set; }
     public Dictionary<Character_Turn_Records, float> turn_stats { get; private set; }
     public Dictionary<Character_Total_Records, float> scenario_stats { get; private set; }
@@ -132,30 +134,30 @@ public class Character_Script : MonoBehaviour {
     /// <param name="nm">Character name</param>
     /// <param name="lvl">Character level</param>
     /// <param name="str">Character Strength</param>
-    /// <param name="crd">Character Coordination</param>
-    /// <param name="spt">Character Spirit</param>
     /// <param name="dex">Character Dexterity</param>
+    /// <param name="spt">Character Spirit</param>
+    /// <param name="ini">Character Inititative</param>
     /// <param name="vit">Character Vitality</param>
     /// <param name="spd">Character Speed</param>
     /// <param name="can">Character Canisters</param>
     /// <param name="wep">Character Weapon</param>
     /// <param name="arm">Character Armor</param>
-    public Character_Script(string nm, int lvl, int str, int crd, int spt, int dex, int vit, int spd, int can, string wep, string arm, string animator, float[] scale)
+    public Character_Script(string nm, int lvl, int str, int dex, int spt, int ini, int vit, int spd, int can, string wep, string arm, string animator, float[] scale)
     {
         character_scale = scale;
         controller = Game_Controller.controller;
         character_name = nm.TrimStart();
         level = lvl;
         strength = str;
-        coordination = crd;
-        spirit = spt;
         dexterity = dex;
+        spirit = spt;
+        initiative = ini;
         vitality = vit;
         speed = spd;
         accuracy = 0;
         resistance = 0;
-        lethality = 2;
-        finesse = 1.75f;
+        lethality = 1.5f;
+        finesse = 1.5f;
         aura_max = vitality * AURA_MULTIPLIER;
         aura_curr = aura_max;
         action_max = AP_MAX;
@@ -179,6 +181,7 @@ public class Character_Script : MonoBehaviour {
         Weapon temp_weapon;
         controller.all_weapons.TryGetValue(wep.TrimStart().TrimEnd(), out temp_weapon);
         weapon = temp_weapon;
+        weight = 0;
         //TODO ADD info for PASSIVES AND REACTIONS AS WELL
         Equip(weapon);
         Armor temp_armor;
@@ -222,15 +225,16 @@ public class Character_Script : MonoBehaviour {
         canister_max = chara.canister_max;
         canister_curr = chara.canister_curr;
         strength = chara.strength;
-        coordination = chara.coordination;
-        spirit = chara.spirit;
         dexterity = chara.dexterity;
-        vitality = chara.dexterity;
+        spirit = chara.spirit;
+        initiative = chara.initiative;
+        vitality = chara.vitality;
         accuracy = chara.accuracy;
         resistance = chara.resistance;
         lethality = chara.lethality;
         finesse = chara.finesse;
         speed = chara.speed;
+        weight = chara.weight;
         level = chara.level;
         total_stats = chara.total_stats;
         orientation = chara.orientation;
@@ -311,9 +315,9 @@ public class Character_Script : MonoBehaviour {
         character_name = data.character_name;
         level = data.level;
         strength = data.strength;
-        coordination = data.coordination;
-        spirit = data.spirit;
         dexterity = data.dexterity;
+        spirit = data.spirit;
+        initiative = data.initiative;
         vitality = data.vitality;
         accuracy = 0;
         resistance = 0;
@@ -323,6 +327,7 @@ public class Character_Script : MonoBehaviour {
         canister_max = data.canister_max;
         weapon = data.weapon;
         armor = data.armor;
+        weight = data.weight;
         aura_max = data.aura_max;
         aura_curr = data.aura_curr;
         action_max = data.action_max;
@@ -475,7 +480,7 @@ public class Character_Script : MonoBehaviour {
         {
             StartCoroutine(Choose_Orientation());
         }*/
-        //Debug.Log("Ending Turn");
+        Debug.Log( name + " is Ending Turn");
 
         //controller.curr_scenario.Reset_Reachable();
         Game_Controller.curr_scenario.Reset_Reachable();
@@ -1174,58 +1179,6 @@ public class Character_Script : MonoBehaviour {
     }
 
     /// <summary>
-    /// Interrupt the current Character_Action
-    /// </summary>
-    public void Interrupt()
-    {
-        Game_Controller.curr_scenario.Reset_Reachable();
-
-        if (action_curr > action_max)
-        {
-            action_curr = action_max;
-        }
-
-        if (state.Peek() == Character_States.Walking)
-        {
-            state.Pop();
-        }
-        if (state.Peek() == Character_States.Enacting)
-        {
-            state.Pop();
-        }
-        if (state.Peek() == Character_States.Acting)
-        {
-            state.Pop();
-        }
-        if (state.Count == 0)
-        {
-            state.Push(Character_States.Idle);
-        }
-        StopAllCoroutines();
-
-        if (action_curr <= 0 && Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().character_num == character_num)
-        {
-            if (!ending_turn)
-            {
-                Debug.Log("No more actions");
-                StartCoroutine(End_Turn());
-            }
-        }
-        else
-        {
-            //if (this.Equals(controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>()))
-            Debug.Log("character "+ character_name + " " + state.Peek().ToString());
-            if (this.Equals(Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>()))
-            {
-                controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
-                Find_Action_Local("Move").Select();
-                Debug.Log("Selected");
-            }
-        }
-        //curr_action.Pop();
-    }
-
-    /// <summary>
     /// Coroutine to perform an Character_Action.
     /// </summary>
     /// <param name="target_tile">The target for the Character_Action.</param>
@@ -1235,12 +1188,13 @@ public class Character_Script : MonoBehaviour {
         //Debug.Log("Current action: " + curr_action.Peek().name);
         //Debug.Log("Current action 2: " + action.name);
 
-        while (!curr_action.Peek().Equals(action))
+        while (!action.is_Current_Action())
         {
             yield return new WaitForEndOfFrame();
         }
 
         state.Push(Character_States.Acting);
+
         //Debug.Log(name + " entering to state " + state.Peek());
         /*if (action.orient == "target")
         {
@@ -1249,6 +1203,7 @@ public class Character_Script : MonoBehaviour {
 
         //action.Enact(target_tile.gameObject);
         StartCoroutine(action.Enact());
+        //action.Enact();
 
         //Update reachable tiles
         //controller.curr_scenario.Reset_Reachable();
@@ -1266,16 +1221,31 @@ public class Character_Script : MonoBehaviour {
         }
         mana_curr -= (int)action.Convert_To_Float(action.mp_cost, target_tile.obj, null);
 
-        while (state.Peek() != Character_States.Acting || action.paused)
-        //gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle") && 
-        //!gameObject.GetComponent<Animator>().IsInTransition(0))
+        while ((state.Peek() != Character_States.Acting || action.paused) || 
+               !action.is_Current_Action())
+               //gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle") && 
+               //!gameObject.GetComponent<Animator>().IsInTransition(0))
         {
             //Debug.Log("Waiting for Unpause");
-            //Debug.Log("Character name: " + name + " Current state: " + state.Peek() + ";" + "Current animator idle: " + gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle") + "; is transitioning: " + gameObject.GetComponent<Animator>().IsInTransition(0));
+            //Debug.Log("Character name: " + name + " Current state: " + state.Peek() + "; paused: " + action.paused );
+            /*if (Game_Controller.curr_scenario.has_Current_Character())
+            {
+                if (has_Current_Action())
+                {
+                    Debug.Log("Current character is " + Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>() + " Current Action is " + Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().name);
+                }else
+                {
+                    Debug.Log("Current character is " + Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>() + " Could not find current action");
+                }
+            }
+            else
+            {
+                Debug.Log("Could not find current player.");
+            }*/
             yield return new WaitForEndOfFrame();
         }
-        //Debug.Log("Character name " + name + " Current state: " + state.Peek() + ";" + "Current animator idle: " + gameObject.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).IsName("Idle") + "; is transitioning: " + gameObject.GetComponent<Animator>().IsInTransition(0));
-        //Debug.Log("Action over");
+        //Debug.Log("Character name " + name + " Current state: " + state.Peek() + ";paused: " + action.paused);
+        //Debug.Log("Action " + action.name + " by " + name + " is over");
 
         //controller.curr_scenario.Reset_Reachable();
         Game_Controller.curr_scenario.Reset_Reachable();
@@ -1292,31 +1262,70 @@ public class Character_Script : MonoBehaviour {
         //Debug.Log(action.name + " state: " + action.paused);
         if (action.activation != Character_Action.Activation_Types.Reactive)
         {
+            while (!action.is_Current_Action())
+            {
+                Debug.Log("Current Action is " + Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().name);
+                yield return new WaitForEndOfFrame();
+            }
             //Remove the action from the stack.
             curr_action.Pop();
-            //Debug.Log("REMOVING ACTION FROM STACK!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
-            //if (action_curr <= 0 && controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().character_num == character_num)
-            if (action_curr <= 0 && Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().character_num == character_num)
+            //Debug.Log("Current Character is " + Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().name);
+            if (is_Current_Character())
             {
-                if (!ending_turn)
+                if (action_curr <= 0)
                 {
-                    //Debug.Log("No more actions");
-                    StartCoroutine(End_Turn());
+                    if (!ending_turn)
+                    {
+                        //Debug.Log("No more actions");
+                        StartCoroutine(End_Turn());
+                    }
                 }
-            }
-            else
-            {
-                //if (this.Equals(controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>()))
-                if (this.Equals(Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>()))
+                else
                 {
                     controller.action_menu.GetComponent<Action_Menu_Script>().resetActions();
                     Find_Action_Local("Move").Select();
                 }
             }
+            else
+            {
+                //Debug.Log(name + " is not current character");
+            }
+
+        }else
+        {
+            action.End_Reaction();
         }
         //curr_action.Peek().Enact(this, target_tile.gameObject);
+        //Debug.Log("Completed action " + action.name);
+    }
 
+    /// <summary>
+    /// Checks whether the character is the current top of the curr_player character stack.
+    /// </summary>
+    /// <param name="chara">The character to check.</param>
+    /// <returns>True if the character is equal to the one on top of curr_player stack, False otherwise.</returns>
+    public bool is_Current_Character()
+    {
+        if (Game_Controller.curr_scenario.has_Current_Character() &&
+            this == Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>())
+        {
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
+    /// Checks to see if there is a current action.
+    /// </summary>
+    /// <returns>True if an action exists in the stack, False otherwise.</returns>
+    public bool has_Current_Action()
+    {
+        if(curr_action != null && curr_action.Count > 0)
+        {
+            return true;
+        }
+        return false;
     }
 
     /// <summary>
@@ -1353,11 +1362,11 @@ public class Character_Script : MonoBehaviour {
                     case Character_Stats.canister_max:
                         canister_max += eff.effect;
                         break;
-                    case Character_Stats.coordination:
-                        coordination += eff.effect;
-                        break;
                     case Character_Stats.dexterity:
                         dexterity += eff.effect;
+                        break;
+                    case Character_Stats.initiative:
+                        initiative += eff.effect;
                         break;
                     case Character_Stats.speed:
                         speed += eff.effect;
@@ -1375,10 +1384,23 @@ public class Character_Script : MonoBehaviour {
                         aura_max += eff.effect * AURA_MULTIPLIER;
                         aura_curr += eff.effect * AURA_MULTIPLIER;
                         break;
+                    case Character_Stats.accuracy:
+                        accuracy += eff.effect;
+                        break;
+                    case Character_Stats.resistance:
+                        resistance += eff.effect;
+                        break;
+                    case Character_Stats.lethality:
+                        lethality += eff.effect;
+                        break;
+                    case Character_Stats.finesse:
+                        finesse += eff.effect;
+                        break;
                 }
             }
         }
-        speed -= e.weight;
+        weight += e.weight;
+        speed = SPEED-weight;
         if( speed <= 0)
         {
             speed = 1;
@@ -1410,9 +1432,9 @@ public class Character_Script : MonoBehaviour {
     public void Randomize(){
         //Randomize stats
 		strength = UnityEngine.Random.Range (1,7);
-		coordination = UnityEngine.Random.Range (1, 7);
-		spirit = UnityEngine.Random.Range (1, 7);
 		dexterity = UnityEngine.Random.Range (1, 7);
+		spirit = UnityEngine.Random.Range (1, 7);
+		initiative = UnityEngine.Random.Range (1, 7);
 		vitality = UnityEngine.Random.Range (1, 7);
 
         //Formulas
@@ -1716,36 +1738,22 @@ public class Character_Script : MonoBehaviour {
     }
 
     /// <summary>
-    /// This is a wrapper script for the Move Coroutine. 
-    /// We can't call Move from Scenario because it is not attached to any object in Unity.
-    /// Since it was created using New rather than AddComponent() it exists in the C backend but Unity doesn't know it.
-    /// TODO ADD CHARACTER_SCRIPT TO SCENARIO.
-    /// </summary>
-    /// <param name="clicked_tile"></param>
-    public void MoveTo(int move_type, List<Tile> path)
-    {
-        //state = Character_States.Walking;
-        StartCoroutine(Move(move_type, path));
-        //while (state == Character_States.Walking)
-        //{
-        //    Debug.Log("Walking");
-        //}
-        //clicked_tile..obj = this.gameObject;
-    }
-
-    /// <summary>
     /// Coroutine to perform a Move Character_Action. 
     /// </summary>
     /// <param name="clicked_tile">The Tile for the Character to Move to.</param>
     /// <returns>The current status of the Coroutine</returns>
-    public IEnumerator Move(int move_type, List<Tile> path)
+    public IEnumerator Move(Character_Action act, int move_type, List<Tile> path)
     {
         // 1 = standard move
         // 2 = push/pull
         // 3 = fly
         // 4 = warp
-
+        //Debug.Log("moving because of " + act.name);
         state.Push(Character_States.Walking);
+        /*if(this != act.character)
+        {
+            act.character.state.Push(Character_States.Waiting);
+        }*/
         //Debug.Log(name + " entering state" + state.Peek());
 
         //Debug.Log("path " + path.Count);
@@ -1755,30 +1763,30 @@ public class Character_Script : MonoBehaviour {
         GameObject prev_obj = null;
         while (tile_index < path.Count)
         {
-            while (curr_action.Count > 0 && curr_action.Peek().paused)
+            yield return new WaitForEndOfFrame();
+            while (act.paused && !act.interrupted)
             {
                 yield return new WaitForEndOfFrame();
+            }
+            if (act.interrupted)
+            {
+                Debug.Log(act.name + " was interrupted");
+                break;
             }
             Tile prev_tile = curr_tile;
             Tile temp_tile = path[tile_index];
 
-            if (curr_action.Count > 0)
-            {
-                Event_Manager.Broadcast(Event_Trigger.ON_TILE_EXIT, curr_action.Peek(), "" + move_type, curr_tile.gameObject);
-            }else
-            {
-                Event_Manager.Broadcast(Event_Trigger.ON_TILE_EXIT, Find_Action_Local("Move"), "" + move_type, curr_tile.gameObject);
-            }
+            Event_Manager.Broadcast(Event_Trigger.ON_TILE_EXIT, act, "" + move_type, curr_tile.gameObject);
 
             tile_index += 1;
             if (move_type != 4)
             {
                 //transform.position = new Vector3(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.x, (float)(controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].position.y + (controller.curr_scenario.tile_grid.tiles[temp_tile.index[0], temp_tile.index[1]].GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z);
                 //
-                //yield return new WaitForSeconds(.3f);
+                //yield return new WaitForSeconds(.5f);
                 float elapsedTime = 0;
 
-                float duration = .3f;
+                float duration = 0.35f;
                 //print("duration: " +duration);
                 Vector3 start = new Vector3(prev_tile.transform.position.x,
                                 (float)(prev_tile.transform.position.y + Tile_Grid.TILE_SCALE * (prev_tile.height) + height_offset),
@@ -1878,28 +1886,18 @@ public class Character_Script : MonoBehaviour {
                 curr_tile.obj = gameObject;
 
                 Increase_Turn_Stats(Character_Turn_Records.Tiles_Moved, 1);
-                if (curr_action.Count > 0)
-                {
-                    Event_Manager.Broadcast(Event_Trigger.ON_TILE_ENTER, curr_action.Peek(), "" + move_type, curr_tile.gameObject);
-                }
-                else
-                {
-                    Event_Manager.Broadcast(Event_Trigger.ON_TILE_ENTER, Find_Action_Local("Move"), "" + move_type, curr_tile.gameObject);
-                }
+
+                //Debug.Log(character_name + " entered " + curr_tile.index[0] + "," + curr_tile.index[1] + " object status " + curr_tile.obj.name);
+                Event_Manager.Broadcast(Event_Trigger.ON_TILE_ENTER, act, "" + move_type, curr_tile.gameObject);
+
                 //Debug.Log("Curr tile: " + curr_tile.index[0] + "," + curr_tile.index[1]);
 
             }
             else
             {
                 //warp to new tile.
-                if (curr_action.Count > 0)
-                {
-                    Event_Manager.Broadcast(Event_Trigger.ON_TILE_EXIT, curr_action.Peek(), "" + move_type, curr_tile.gameObject);
-                }
-                else
-                {
-                    Event_Manager.Broadcast(Event_Trigger.ON_TILE_EXIT, Find_Action_Local("Move"), "" + move_type, curr_tile.gameObject);
-                }
+                Event_Manager.Broadcast(Event_Trigger.ON_TILE_EXIT, act, "" + move_type, curr_tile.gameObject);
+                
                 transform.position = new Vector3(temp_tile.transform.position.x,
                                 (float)(temp_tile.transform.position.y + Tile_Grid.TILE_SCALE * (temp_tile.height) + height_offset),
                                temp_tile.transform.position.z) + camera_position_offset;
@@ -1908,16 +1906,11 @@ public class Character_Script : MonoBehaviour {
                 curr_tile = temp_tile;
                 prev_obj = temp_tile.obj;
                 //curr_tile.traversible = false;
-                curr_tile.obj = gameObject;
+                curr_tile.obj = this.gameObject;
                 Increase_Turn_Stats(Character_Turn_Records.Tiles_Moved, 1);
-                if (curr_action.Count > 0)
-                {
-                    Event_Manager.Broadcast(Event_Trigger.ON_TILE_ENTER, curr_action.Peek(), "" + move_type, curr_tile.gameObject);
-                }
-                else
-                {
-                    Event_Manager.Broadcast(Event_Trigger.ON_TILE_ENTER, Find_Action_Local("Move"), "" + move_type, curr_tile.gameObject);
-                }
+                
+                Event_Manager.Broadcast(Event_Trigger.ON_TILE_ENTER, act, "" + move_type, curr_tile.gameObject);
+
                 yield return new WaitForEndOfFrame();
             }
         }
@@ -1925,6 +1918,10 @@ public class Character_Script : MonoBehaviour {
         
         //this.gameObject.GetComponent<Animator>().SetTrigger("Done_Acting"); 
         state.Pop();
+        /*if (this != act.character)
+        {
+            act.character.state.Pop();
+        }*/
         //Debug.Log("Done Walking, returning to " + state.Peek());
 
     }

@@ -213,6 +213,10 @@ public class Tile : MonoBehaviour{
     /// <returns></returns>
     public bool Equals(Tile tile)
     {
+        if (tile == null || tile.index == null || index == null)
+        {
+            return false;
+        }
         if (index[0] == tile.index[0] &&
             index[1] == tile.index[1])
         {

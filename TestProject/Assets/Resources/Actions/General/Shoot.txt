@@ -11,7 +11,7 @@ area: 1
 effects: 3
   self NULL 0,0 Enable Shoot,false
   self NULL 0,1 Orient Target
-  target NULL 0,1 Damage CC_WPD+CC_CRD+5
+  target NULL 0,1 Damage CC_WPD+CC_DEX+5
 activation: active
 origin: innate
 interrupt: false

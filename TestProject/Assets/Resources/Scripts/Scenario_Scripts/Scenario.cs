@@ -50,6 +50,7 @@ public class Scenario : MonoBehaviour {
     /// List<Transform> reachable_tiles - The List of tiles that are reachable for the current Character's current Action
     /// List<GameObject> reachable_tile_objects - The List of Objects used to mark what Tiles are Reachable.
     /// int curr_round - The number of the current round. Not currently in Use.
+
     /// </summary>
     private static string PLAYER_STATS_FILE = "Assets/Resources/Characters/Player_Characters/Player_Character_Data.txt";
     private static string MONSTER_STATS_FILE = "Assets/Resources/Characters/Monster_Characters/Monster_Character_Data.txt";
@@ -351,9 +352,9 @@ public class Scenario : MonoBehaviour {
         string name = "";
         int level = 1;
         int strength = 1;
-        int coordination = 1;
-        int spirit = 1;
         int dexterity = 1;
+        int spirit = 1;
+        int initiative = 1;
         int vitality = 1;
         int speed = 6;
         int canister_max = 1;
@@ -380,9 +381,9 @@ public class Scenario : MonoBehaviour {
                     if (int.TryParse(elements[1], out strength))
                     { }
                 }
-                else if (elements[0] == "coordination")
+                else if (elements[0] == "dexterity")
                 {
-                    if (int.TryParse(elements[1], out coordination))
+                    if (int.TryParse(elements[1], out dexterity))
                     { }
                 }
                 else if (elements[0] == "spirit")
@@ -390,9 +391,9 @@ public class Scenario : MonoBehaviour {
                     if (int.TryParse(elements[1], out spirit))
                     { }
                 }
-                else if (elements[0] == "dexterity")
+                else if (elements[0] == "initiative")
                 {
-                    if (int.TryParse(elements[1], out dexterity))
+                    if (int.TryParse(elements[1], out initiative))
                     { }
                 }
                 else if (elements[0] == "vitality")
@@ -447,7 +448,7 @@ public class Scenario : MonoBehaviour {
             }
             if (elements[0] == "")
             {
-                objects[count] = new Character_Script(name, level, strength, coordination, spirit, dexterity, vitality, speed, canister_max, weapon, armor, animator, scale);
+                objects[count] = new Character_Script(name, level, strength, dexterity, spirit, initiative, vitality, speed, canister_max, weapon, armor, animator, scale);
                 count++;
             }
         }
@@ -459,21 +460,57 @@ public class Scenario : MonoBehaviour {
     /// </summary>
     /// <param name="o1">The first Object to Compare</param>
     /// <param name="o2">The second Object to Compare</param>
-    /// <returns>1 if the first Object's Dexterity is greater, 0 if they are equal, -1 if the second Object's Dexterity is greater. </returns>
+    /// <returns>1 if the first Object's Initiative is greater, 0 if they are equal, -1 if the second Object's Initiative is greater. </returns>
     public static int Sort_By_Dex(GameObject o1, GameObject o2)
     {
-        if (o1.GetComponent<Character_Script>().dexterity > o2.GetComponent<Character_Script>().dexterity)
+        Character_Script char1 = o1.GetComponent<Character_Script>();
+        Character_Script char2 = o2.GetComponent<Character_Script>();
+        if (char1 != null && char2 != null)
         {
-            return 1;
+            //Debug.Log("comparing " + char1.name + " and " + char2.name);
+            //Debug.Log("init " + char1.initiative + " and " + char2.initiative);
+            //Debug.Log("weight " + char1.weight + " and " + char2.weight);
+            if (char1.initiative > char2.initiative)
+            {
+                //Debug.Log(char1.name + " has higher init than " + char2.name);
+                return 1;
+            }
+            else if (char1.initiative < char2.initiative)
+            {
+                //Debug.Log(char1.name + " has lower init than " + char2.name);
+                return -1;
+            }
+            else
+            {
+                if (char1.weight < char2.weight)
+                {
+                    //Debug.Log(char1.name + " has lower weight than " + char2.name);
+                    return 1;
+                }
+                else if (char1.weight > char2.weight)
+                {
+                    //Debug.Log(char1.name + " has higher weight than " + char2.name);
+                    return -1;
+                }
+                else
+                {
+                    //Debug.Log(char1.name + " has equal weight and init than " + char2.name);
+                    float rand1  = UnityEngine.Random.Range(0f, 10.0f);
+                    float rand2 = UnityEngine.Random.Range(0f, 10.0f);
+                    //Debug.Log(rand1 + " and " + rand2);
+                    if (rand1 < rand2)
+                    {
+                        return -1;
+                    }
+                    else if (rand1 > rand2)
+                    {
+                        return 1;
+                    }
+                    return 0;
+                }
+            }
         }
-        else if (o1.GetComponent<Character_Script>().dexterity < o2.GetComponent<Character_Script>().dexterity)
-        {
-            return -1;
-        }
-        else
-        {
-            return 0;
-        }
+        return 0;
     }
 
     /// <summary>
@@ -774,13 +811,12 @@ public class Scenario : MonoBehaviour {
                 selected_tile.transform.position.y + 0.025f + Tile_Grid.TILE_SCALE * selected_tile.height,
                 selected_tile.transform.position.z);
         }
-        if (curr_player != null &&
-            curr_player.Count > 0 &&
-            curr_player.Peek().GetComponent<Character_Script>().curr_action != null &&
-            curr_player.Peek().GetComponent<Character_Script>().curr_action.Count > 0 &&
+        if ( has_Current_Character() &&
+            curr_player.Peek().GetComponent<Character_Script>().has_Current_Action() &&
             curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().action_type == Action_Types.Path &&
             curr_player.Peek().GetComponent<Character_Script>().state.Peek() == Character_States.Idle
-            ) { 
+            ) {
+            //Debug.Log("Current action is " + curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().name);
             Show_Path();
         }
         else
@@ -822,9 +858,8 @@ public class Scenario : MonoBehaviour {
                 if (temp_tile != chara.curr_action.Peek().curr_path[curr_path_index] && curr_path_index == chara.curr_action.Peek().curr_path.Count - 1)
                 {
                     next_tile = temp_tile.parent;
-                    if(next_tile == null)
+                    if(next_tile == null && curr_path_index > 0)
                     {
-
                         temp_tile = chara.curr_action.Peek().curr_path[curr_path_index];
                         next_tile = chara.curr_action.Peek().curr_path[curr_path_index-1];
                         curr_path_index -= 2;
@@ -834,6 +869,10 @@ public class Scenario : MonoBehaviour {
                 {
                     next_tile = chara.curr_action.Peek().curr_path[curr_path_index];
                     curr_path_index -= 1;
+                }
+                if(next_tile == null)
+                {
+                    break;
                 }
                 delta_x = temp_tile.index[0] - next_tile.index[0];
                 delta_y = temp_tile.index[1] - next_tile.index[1];
@@ -1716,6 +1755,21 @@ public class Scenario : MonoBehaviour {
     }
 
     /// <summary>
+    /// Check to see if the current Character stack has a character in it.
+    /// </summary>
+    /// <returns>True if a character exists in the stack, false otherwise.</returns>
+    public bool has_Current_Character()
+    {
+        if (curr_player != null &&
+            curr_player.Count > 0)
+        {
+            //Debug.Log("There is a current character");
+            return true;
+        }
+        return false;
+    }
+
+    /// <summary>
     /// Called once per frame to:
     ///     Check for victory.
     ///     Update all Characters.
@@ -1775,7 +1829,9 @@ public class Scenario : MonoBehaviour {
         if (chara.curr_action != null && chara.curr_action.Count > 0)
         {
             //Debug.Log("Finding tiles");
-            if (chara.curr_action.Peek().curr_path[chara.curr_action.Peek().curr_path.Count - 1])
+            if (chara.curr_action.Peek().curr_path != null &&
+                chara.curr_action.Peek().curr_path.Count - 1 > 0 && 
+                chara.curr_action.Peek().curr_path[chara.curr_action.Peek().curr_path.Count - 1])
             {
                 //Debug.Log("Current Character " + chara.name);
                 //Debug.Log("BFS");
@@ -1786,6 +1842,10 @@ public class Scenario : MonoBehaviour {
                 tile_grid.navmesh.Breadth_First_Search(chara.curr_action.Peek().curr_path[chara.curr_action.Peek().curr_path.Count - 1], chara.tag, cost_limit, distance_limit);
 
                 last_Tile = chara.curr_action.Peek().curr_path[chara.curr_action.Peek().curr_path.Count - 1];
+            }
+            else
+            {
+                tile_grid.navmesh.Breadth_First_Search(last_Tile, chara.tag, cost_limit, distance_limit);
             }
         }
         else
@@ -1883,7 +1943,7 @@ public class Scenario : MonoBehaviour {
         {
             tiles = tile_grid.navmesh.Directional_Search(start, direction, cost_limit, distance_limit,null);
             end = tiles[tiles.Count-1];
-            Debug.Log("End: " + end.index[0] + "," + end.index[1]);
+            //Debug.Log("End: " + end.index[0] + "," + end.index[1]);
             //Stack<Tile> path = tile_grid.navmesh.FindPath(start, end);
         }
         return tiles;

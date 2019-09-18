@@ -11,11 +11,12 @@ area: 1
 effects: 3
   self NULL 0,0 Orient Target
   target NULL 0,0 Damage CC_WPD+CC_STR
-  target NULL 0,0 Move 2,VECT,ABSL[4-(CC_COO-CC_ORI)%4],CC_STR
+  target NULL 0,0 Move 2,VECT,ABSL[4-(CC_COO-CC_ORI)%4],CC_STR/2
 activation: reactive
 interrupt: true
 origin: innate
 trigger: ON_TILE_ENTER
-condition: NOT_CHK_SRC_SELF & CHK_TARG_RANG
+trigger_target: Target
+condition: NOT_CHK_TARG_SELF & CHK_TARG_RANG
 enabled: true
 animation: Attack

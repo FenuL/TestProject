@@ -1,11 +1,11 @@
 #Monster Data
 name: Beetleboar
 level: 1  
-strength: 5
-coordination: 1
+strength: 8
+dexterity: 5
 spirit: 4
-dexterity: 2
-vitality: 5
+initative: 1
+vitality: 10
 speed: 5
 canister_max: 0
 weapon: Daggers
@@ -16,11 +16,11 @@ scale: 3.25,3.25,3.25
 
 name: King
 level: 3  
-strength: 7
-coordination: 1
-spirit: 4
-dexterity: 2
-vitality: 7
+strength: 10
+dexterity: 5
+spirit: 6
+initiative: 2
+vitality: 12
 speed: 7
 canister_max: 0
 weapon: Daggers

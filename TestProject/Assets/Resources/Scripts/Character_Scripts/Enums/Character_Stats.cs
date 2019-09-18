@@ -6,9 +6,13 @@ public enum Character_Stats {
     action_max,
     canister_max,
     strength,
-    coordination,
-    spirit,
     dexterity,
+    spirit,
+    initiative,
     vitality,
-    speed
+    speed,
+    accuracy,
+    resistance,
+    lethality,
+    finesse
 };
