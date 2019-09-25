@@ -7,6 +7,7 @@ using UnityEngine.UI;
 /// <summary>
 /// Script for handling Character interaction. Should be attached to every Character object. 
 /// </summary>
+[Serializable]
 public class Character_Script : MonoBehaviour {
     public bool Animation_Complete;
 
@@ -18,6 +19,8 @@ public class Character_Script : MonoBehaviour {
     private int AP_MAX = 2;
     //public int AP_RECOVERY = 10;
     private int SPEED = 6;
+    private float normal_move_duration = 0.25f;
+    private float push_move_duration = 0.15f;
 
     /// <summary>
     /// Constants:
@@ -1763,7 +1766,8 @@ public class Character_Script : MonoBehaviour {
         GameObject prev_obj = null;
         while (tile_index < path.Count)
         {
-            yield return new WaitForEndOfFrame();
+            Game_Controller.curr_scenario.idle = false;
+            //yield return new WaitForEndOfFrame();
             while (act.paused && !act.interrupted)
             {
                 yield return new WaitForEndOfFrame();
@@ -1776,6 +1780,7 @@ public class Character_Script : MonoBehaviour {
             Tile prev_tile = curr_tile;
             Tile temp_tile = path[tile_index];
 
+
             Event_Manager.Broadcast(Event_Trigger.ON_TILE_EXIT, act, "" + move_type, curr_tile.gameObject);
 
             tile_index += 1;
@@ -1786,7 +1791,15 @@ public class Character_Script : MonoBehaviour {
                 //yield return new WaitForSeconds(.5f);
                 float elapsedTime = 0;
 
-                float duration = 0.35f;
+                float duration = normal_move_duration;
+                if (move_type == 2)
+                {
+                    duration = push_move_duration + 0.05f * (tile_index - 2);
+                    if (duration > normal_move_duration + 0.1f)
+                    {
+                        duration = normal_move_duration + 0.1f;
+                    }
+                }
                 //print("duration: " +duration);
                 Vector3 start = new Vector3(prev_tile.transform.position.x,
                                 (float)(prev_tile.transform.position.y + Tile_Grid.TILE_SCALE * (prev_tile.height) + height_offset),
@@ -1798,6 +1811,15 @@ public class Character_Script : MonoBehaviour {
                 if (temp_tile.effect && move_type != 3)
                 {
                     StartCoroutine(temp_tile.effect.GetComponent<Tile_Effect>().Enact(this));
+                }
+                while (act.paused && !act.interrupted)
+                {
+                    yield return new WaitForEndOfFrame();
+                }
+                if (act.interrupted)
+                {
+                    Debug.Log(act.name + " was interrupted");
+                    break;
                 }
                 while (elapsedTime < duration)
                 {
@@ -1915,8 +1937,9 @@ public class Character_Script : MonoBehaviour {
             }
         }
         //transform.position = new Vector3(curr_tile.position.x, (float)(curr_tile.position.y + (curr_tile.GetComponent<SpriteRenderer>().sprite.rect.height) / 100) + 0.15f, curr_tile.position.z);
-        
+
         //this.gameObject.GetComponent<Animator>().SetTrigger("Done_Acting"); 
+        Game_Controller.curr_scenario.idle = true;
         state.Pop();
         /*if (this != act.character)
         {

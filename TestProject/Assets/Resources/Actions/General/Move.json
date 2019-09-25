@@ -1,0 +1,34 @@
+﻿{
+  "name":"Move",
+  "ap_cost":"CEIL[TN_0_CST/CC_SPD]",
+  "mp_cost":"0",
+  "path_type":4,
+  "tile_color":"",
+  "range":"(2-CC_APM-CC_APC)*CC_SPD",
+  "center":1,
+  "area":
+  [
+    { "values":[ 0.2 ] }
+  ],
+  "num_targets":"1",
+  "target_checks":["CHK_EMPTY"],
+  "interrupt":false,
+  "effects":
+  [
+    {
+      "type":1, 
+ 	  "target":0,
+	  "checks":["CHK_TDST_LTQ_CRNG"],
+	  "values":["1","PATH","CT_PATH"],
+	  "min_target_limit":0,
+	  "max_target_limit":0
+    }
+  ],
+  "activation":0,
+  "trigger":2,
+  "trigger_target":2,
+  "condition":null,
+  "origin":0,
+  "enabled":true,
+  "animation":"Move"
+}

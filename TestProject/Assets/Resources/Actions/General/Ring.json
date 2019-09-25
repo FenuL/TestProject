@@ -1,0 +1,44 @@
+﻿{
+  "name":"Ring",
+  "ap_cost":"1",
+  "mp_cost":"5",
+  "path_type":2,
+  "tile_color":null,
+  "range":"CC_WPR",
+  "center":"Self",
+  "area":
+  [
+    {"values": [ 0.3, 0.6, 0.3 ] },
+	{"values": [ 0.6, 0.0, 0.6 ] },
+	{"values": [ 0.3, 0.6, 0.3 ] }
+  ],
+  "num_targets":"1",
+  "target_checks":[ ],
+  "interrupt":false,
+  "effects":
+  [
+    {
+	  "type":0,
+	  "target":0,
+	  "checks":["CHK_TDST_LTQ_CRNG"],
+	  "values":["Target"],
+	  "min_target_limit":0,
+	  "max_target_limit":0
+	},
+	{
+	  "type":3,
+	  "target":1,
+	  "checks":["CHK_TDST_LTQ_CRNG"],
+	  "values":["CC_WPD+5"],
+	  "min_target_limit":0,
+	  "max_target_limit":0
+	}
+  ],
+  "activation":0,
+  "trigger":2,
+  "trigger_target":2,
+  "condition":null,
+  "origin":0,
+  "enabled":true,
+  "animation":"Attack"
+}

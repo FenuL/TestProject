@@ -101,7 +101,7 @@ public class Camera_Controller : MonoBehaviour {
                 action_mod = curr_player.curr_action.Peek().Calculate_Total_Modifier(
                     //controller.curr_scenario.selected_tile.gameObject,
                     Game_Controller.curr_scenario.selected_tile.gameObject,
-                    curr_player.curr_action.Peek().area[curr_player.curr_action.Peek().area.GetLength(0) / 2, curr_player.curr_action.Peek().area.GetLength(1) / 2]);
+                    curr_player.curr_action.Peek().area[curr_player.curr_action.Peek().area.Count / 2][curr_player.curr_action.Peek().area[0].Count / 2]);
             }
             string mod_color = "white";
             if (action_mod >= curr_player.finesse)
@@ -149,10 +149,10 @@ public class Camera_Controller : MonoBehaviour {
                     bool preview = false;
                     foreach (Action_Effect eff in curr_player.curr_action.Peek().effects)
                     {
-                        if (eff.type.ToString() == "Damage")
+                        if (eff.get_Type().ToString() == "Damage")
                         {
                             //TODO: This is inaccurate because it doesn't take into account the target modifier.
-                            int damage_dealt = highlighted_character.Estimate_Damage(curr_player.curr_action.Peek().Convert_To_Float(eff.values[0], highlighted_character.gameObject, null), (int)curr_player.weapon.pierce);
+                            int damage_dealt = highlighted_character.Estimate_Damage(curr_player.curr_action.Peek().Convert_To_Float(eff.get_Values()[0], highlighted_character.gameObject, null), (int)curr_player.weapon.pierce);
                             int new_aura = highlighted_character.aura_curr - damage_dealt;
                             if (new_aura < 0)
                             {
@@ -174,9 +174,9 @@ public class Camera_Controller : MonoBehaviour {
                             preview = true;
                             break;
                         }
-                        else if (eff.type.ToString() == "Heal")
+                        else if (eff.get_Type().ToString() == "Heal")
                         {
-                            int healing = (int)curr_player.curr_action.Peek().Convert_To_Float(eff.values[0], highlighted_character.gameObject, null);
+                            int healing = (int)curr_player.curr_action.Peek().Convert_To_Float(eff.get_Values()[0], highlighted_character.gameObject, null);
                             int new_aura = highlighted_character.aura_curr + healing;
                             if (new_aura < 0)
                             {

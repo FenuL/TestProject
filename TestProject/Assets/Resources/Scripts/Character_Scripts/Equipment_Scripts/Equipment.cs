@@ -5,6 +5,7 @@ using System;
 /// <summary>
 /// Class for storing information of Character Equipment
 /// </summary>
+[Serializable]
 public class Equipment
 {
     /// <summary>

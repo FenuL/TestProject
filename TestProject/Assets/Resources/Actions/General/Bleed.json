@@ -1,0 +1,43 @@
+﻿{
+  "name":"Bleed",
+  "ap_cost":"0",
+  "mp_cost":"0",
+  "path_type":0,
+  "tile_color":null,
+  "range":"CC_WPR",
+  "center":1,
+  "area":
+  [
+    { "values": [ 1.0 ] }
+  ],
+  "num_targets":"3",
+  "target_checks": [ "CHK_CHAR" ],
+  "interrupt":false,
+  "effects":
+  [
+    {
+      "type":0,
+      "target":0,
+      "checks": [ "CHK_TDST_LTQ_CRNG" ],
+      "values": [ "Target" ],
+      "min_target_limit":0,
+      "max_target_limit":2
+    },
+    {
+      "type":5,
+      "target":1,
+      "checks": [ "CHK_NOT_TCND_EQ_BLD" ],
+      "values": [ "Bleed", "3", "2" ],
+      "min_target_limit":0,
+      "max_target_limit":2
+    }
+  ],
+  "activation":0,
+  "trigger":2,
+  "trigger_target":2,
+  "condition":null,
+  "origin":0,
+  "enabled":true,
+  "animation":"Attack"
+  
+}

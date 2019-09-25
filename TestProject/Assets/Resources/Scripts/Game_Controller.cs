@@ -418,7 +418,7 @@ public class Game_Controller : MonoBehaviour {
                         {
                             //Debug.Log(character.name + " num of curr_action " + character.curr_action.Count);
                             //Add selected tile to list of targets. If the right number of targets is met, trigger the Action.
-                            if (character.curr_action.Peek().action_type == Action_Types.Path && Input.GetKey(KeyCode.LeftShift))
+                            if (character.curr_action.Peek().path_type == Path_Types.Path && Input.GetKey(KeyCode.LeftShift))
                             {
                                 //Get the current path to the clicked tile and save it under the current path for the Action.
                                 if (character.curr_action.Peek().Add_Waypoint(curr_scenario.clicked_tile.gameObject))

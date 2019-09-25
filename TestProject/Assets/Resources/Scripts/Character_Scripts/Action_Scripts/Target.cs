@@ -27,7 +27,7 @@ public class Target
     /// </summary>
     /// <param name="new_target">The GameObject to target.</param>
     /// <param name="new_modifier">The modifier to attach to the Target.</param>
-    public Target(Tile new_center, float[,] area)
+    public Target(Tile new_center, List<MDFloat> area)
     {
         center = new_center;
         affected_tiles = new Dictionary<Tile, float[]>();
@@ -41,33 +41,33 @@ public class Target
         int startY = center.index[1];
         
         //Set the start of the loop
-        startX -= (area.GetLength(0) / 2);
-        startY -= (area.GetLength(1) / 2);
+        startX -= (area.Count / 2);
+        startY -= (area[0].Count / 2);
         //Loop through the area and find valid targets
-        for (int x = 0; x < area.GetLength(0); x++)
+        for (int x = 0; x < area.Count; x++)
         {
-            for (int y = 0; y < area.GetLength(1); y++)
+            for (int y = 0; y < area[x].Count; y++)
             {
-                if (area[x, y] != 0)
+                if (area[x][y] != 0)
                 {
                     //Transform target = character.controller.curr_scenario.tile_grid.getTile(startX + x, startY + y);
                     Tile target = Game_Controller.curr_scenario.tile_grid.getTile(startX + x, startY + y).GetComponent<Tile>();
                     if (target != null)
                     {
                         float[] modifiers = new float[2];
-                        modifiers[0] = area[x, y];
+                        modifiers[0] = area[x][y];
                         modifiers[1] = 0;
                         if (target.obj != null)
                         {
                             Character_Script chara = target.obj.GetComponent<Character_Script>();
                             if (chara != null)
                             {
-                                affected_characters.Add(chara, area[x,y]);
+                                affected_characters.Add(chara, area[x][y]);
                             }else
                             {
-                                affected_objects.Add(target.obj.GetComponent<Object_Script>(), area [x,y]);
+                                affected_objects.Add(target.obj.GetComponent<Object_Script>(), area [x][y]);
                             }
-                            modifiers[1] = area[x, y];
+                            modifiers[1] = area[x][y];
                         }
                         affected_tiles.Add(target, modifiers);
                     }

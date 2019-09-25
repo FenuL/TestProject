@@ -5,6 +5,7 @@ using System;
 /// <summary>
 /// Class to parse out the effect of an Action from the action list
 /// </summary>
+[Serializable]
 public class Action_Effect
 {
     /// <summary>
@@ -23,14 +24,41 @@ public class Action_Effect
     /// string[] checks - The checks to perform before activating the effect.
     /// string[] values - A list of strings that detail the effect of the Action.
     /// </summary>
-    public enum Types { Orient, Move, Damage, Heal, Status, Effect, Elevate, Enable, Pass }
-    public enum Target { self, target, path }
+    public enum Types { Orient, Move, Damage, Heal, Status, Condition, Effect, Elevate, Enable, Pass }
+    public enum Target { Self, Target, Path }
 
-    public Types type { get; private set; }
-    public Target target { get; private set; }
-    public string[] checks { get; private set; }
-    public string[] values { get; private set; }
-    public int[] target_limit { get; private set; }
+    [SerializeField] private Types type;
+    [SerializeField] private Target target;
+    [SerializeField] private string[] checks;
+    [SerializeField] private string[] values;
+    [SerializeField] private int min_target_limit;
+    [SerializeField] private int max_target_limit;
+
+    //Getters
+    public Types get_Type()
+    {
+        return type;
+    }
+    public Target get_Target()
+    {
+        return target;
+    }
+    public string[] get_Checks()
+    {
+        return checks;
+    }
+    public string[] get_Values()
+    {
+        return values;
+    }
+    public int get_Min_Target_Limit()
+    {
+        return min_target_limit;
+    }
+    public int get_Max_Target_Limit()
+    {
+        return max_target_limit;
+    }
 
     /// <summary>
     /// Constructor for the class
@@ -73,10 +101,9 @@ public class Action_Effect
         if (split_input.Length >= 3)
         {
             string[] target_limit_string = split_input[2].Split(',');
-            //Debug.Log(target_limit_string[0]);
-            target_limit = new int[2];
-            int.TryParse(target_limit_string[0], out target_limit[0]);
-            int.TryParse(target_limit_string[1], out target_limit[1]);
+            //Debug.Log(target_limit_string[0]); 
+            int.TryParse(target_limit_string[0], out min_target_limit);
+            int.TryParse(target_limit_string[1], out max_target_limit);
         }
         if (split_input.Length >= 4)
         {
@@ -108,5 +135,8 @@ public class Action_Effect
         {
             values = new string[0];
         }
+        //string json = JsonUtility.ToJson(this);
+        //Debug.Log("Effect:" + json);
     }
+
 }

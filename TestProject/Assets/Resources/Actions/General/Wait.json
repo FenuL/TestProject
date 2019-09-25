@@ -1,0 +1,42 @@
+﻿{
+  "name":"Wait",
+  "ap_cost":"CC_APC",
+  "mp_cost":"-5",
+  "path_type":6,
+  "tile_color":null,
+  "range":"1",
+  "center":1,
+  "area":
+  [
+    {"values":[1.0] }
+  ],
+  "num_targets":"1",
+  "target_checks":[ ],
+  "interrupt":false,
+  "effects":
+  [
+    {
+	  "type":0,
+	  "target":0,
+	  "checks":["CHK_TDST_LTQ_CRNG"],
+	  "values":["Target"],
+	  "min_target_limit":0,
+	  "max_target_limit":0
+	},
+	{
+	  "type":9,
+	  "target":0,
+	  "checks":["CHK_TDST_LTQ_CRNG"],
+	  "values":[],
+	  "min_target_limit":0,
+	  "max_target_limit":0
+	}
+  ],
+  "activation":0,
+  "trigger":2,
+  "trigger_target":2,
+  "condition":null,
+  "origin":0,
+  "enabled":true,
+  "animation":"Attack"
+}

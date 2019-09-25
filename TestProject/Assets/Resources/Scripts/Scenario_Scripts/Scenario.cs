@@ -93,6 +93,7 @@ public class Scenario : MonoBehaviour {
     public List<Tile> reachable_tiles { get; private set; }
     public List<GameObject> reachable_tile_objects { get; private set; }
     public int curr_round { get; private set; }
+    public bool idle;
 
     /// <summary>
     /// Constructor for the Class. Asks for a file from which to parse its fields.
@@ -100,6 +101,7 @@ public class Scenario : MonoBehaviour {
     /// <param name="filename">The file from which to get its fields.</param>
     public Scenario(string filename)
     {
+        idle = true;
         controller = Game_Controller.controller;
         scenario_file = filename;
         //Initialize Lists
@@ -701,8 +703,10 @@ public class Scenario : MonoBehaviour {
         if (curr_player.Count > 0 && curr_player.Peek().GetComponent<Character_Script>().curr_action.Count > 0)
         {
             Character_Script curr_character = curr_player.Peek().GetComponent<Character_Script>();
-            int area_width = curr_character.curr_action.Peek().area.GetLength(0);
-            int area_length = curr_character.curr_action.Peek().area.GetLength(1);
+            //Debug.Log("area Count " + curr_character.curr_action.Peek().area.Count);
+            //Debug.Log("area Count " + curr_character.curr_action.Peek().area[0].Count);
+            int area_width = curr_character.curr_action.Peek().area.Count;
+            int area_length = curr_character.curr_action.Peek().area[0].Count;
 
             //Update cursor type to match current Ability
             if (cursor_name != curr_character.curr_action.Peek().name)
@@ -722,25 +726,25 @@ public class Scenario : MonoBehaviour {
                 {
                     for (int y = 0; y < area_length; y++)
                     {
-                        if (curr_character.curr_action.Peek().area[x, y] != 0)
+                        if (curr_character.curr_action.Peek().area[x][y] != 0)
                         {
                             GameObject instance = Instantiate(cursor);
-                            if (curr_character.curr_action.Peek().area[x, y] > 0 &&
-                                curr_character.curr_action.Peek().area[x, y] < .25f)
+                            if (curr_character.curr_action.Peek().area[x][y] > 0 &&
+                                curr_character.curr_action.Peek().area[x][y] < .25f)
                             {
                                 instance.GetComponent<Renderer>().material = (Material)Resources.Load(CURSOR_MATS + "GoldMat");
                             }
-                            if (curr_character.curr_action.Peek().area[x, y] >= .25f &&
-                                curr_character.curr_action.Peek().area[x, y] < .5f)
+                            if (curr_character.curr_action.Peek().area[x][y] >= .25f &&
+                                curr_character.curr_action.Peek().area[x][y] < .5f)
                             {
                                 instance.GetComponent<Renderer>().material = (Material)Resources.Load(CURSOR_MATS + "GoldMat");
                             }
-                            if (curr_character.curr_action.Peek().area[x, y] >= .5f &&
-                                curr_character.curr_action.Peek().area[x, y] < .75f)
+                            if (curr_character.curr_action.Peek().area[x][y] >= .5f &&
+                                curr_character.curr_action.Peek().area[x][y] < .75f)
                             {
                                 instance.GetComponent<Renderer>().material = (Material)Resources.Load(CURSOR_MATS + "OrangeMat");
                             }
-                            if (curr_character.curr_action.Peek().area[x, y] > .75f)
+                            if (curr_character.curr_action.Peek().area[x][y] > .75f)
                             {
                                 instance.GetComponent<Renderer>().material = (Material)Resources.Load(CURSOR_MATS + "RedMat");
                             }
@@ -754,7 +758,7 @@ public class Scenario : MonoBehaviour {
             //Debug.Log("Moving Cursors");
             //Update cursor positions
             if (curr_character.curr_action.Count == 0 ||
-                curr_character.curr_action.Peek().area.Length == 1)
+                curr_character.curr_action.Peek().area.Count == 1)
             {
 
                 cursors[0].transform.position = new Vector3(
@@ -762,16 +766,16 @@ public class Scenario : MonoBehaviour {
                     selected_tile.transform.position.y + 0.025f + Tile_Grid.TILE_SCALE * selected_tile.height,
                     selected_tile.transform.position.z);
             }
-            else if (curr_character.curr_action.Peek().area.Length > 1)
+            else if (curr_character.curr_action.Peek().area.Count > 1)
             {
                 int startX = 0;
                 int startY = 0;
-                if (curr_character.curr_action.Peek().center == "Target")
+                if (curr_character.curr_action.Peek().center == Character_Action.Center_Types.Target)
                 {
                     startX = selected_tile.index[0];
                     startY = selected_tile.index[1];
                 }
-                else if (curr_character.curr_action.Peek().center == "Self")
+                else if (curr_character.curr_action.Peek().center == Character_Action.Center_Types.Self)
                 {
                     startX = curr_character.curr_tile.index[0];
                     startY = curr_character.curr_tile.index[1];
@@ -783,7 +787,7 @@ public class Scenario : MonoBehaviour {
                 {
                     for (int y = 0; y < area_length; y++)
                     {
-                        if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area[x, y] != 0)
+                        if (curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().area[x][y] != 0)
                         {
                             Tile tile = tile_grid.getTile(startX + x, startY + y);
                             if (tile != null)
@@ -813,7 +817,7 @@ public class Scenario : MonoBehaviour {
         }
         if ( has_Current_Character() &&
             curr_player.Peek().GetComponent<Character_Script>().has_Current_Action() &&
-            curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().action_type == Action_Types.Path &&
+            curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().path_type == Path_Types.Path &&
             curr_player.Peek().GetComponent<Character_Script>().state.Peek() == Character_States.Idle
             ) {
             //Debug.Log("Current action is " + curr_player.Peek().GetComponent<Character_Script>().curr_action.Peek().name);
@@ -1826,10 +1830,12 @@ public class Scenario : MonoBehaviour {
         //Debug.Log(curr_player.Peek().GetComponent<Character_Script>().curr_tile);
         List<Tile> tiles = new List<Tile>();
         Tile last_Tile = chara.curr_tile;
+        //Debug.Log("Character: " + chara.name + " current tile " + last_Tile.name);
         if (chara.curr_action != null && chara.curr_action.Count > 0)
         {
             //Debug.Log("Finding tiles");
-            if (chara.curr_action.Peek().curr_path != null &&
+            if (chara.curr_action.Peek().path_type == Path_Types.Path &&
+                chara.curr_action.Peek().curr_path != null &&
                 chara.curr_action.Peek().curr_path.Count - 1 > 0 && 
                 chara.curr_action.Peek().curr_path[chara.curr_action.Peek().curr_path.Count - 1])
             {
@@ -1909,6 +1915,9 @@ public class Scenario : MonoBehaviour {
                                 if (Math.Abs(i) + Math.Abs(j) <= distance_limit)
                                 {
                                     tiles.Add(tile_grid.getTile(x_index + i, y_index + j));
+                                    //Debug.Log("x index: " + x_index + "; i: " + i);
+                                    //Debug.Log("y index: " + y_index + "; j: " + j);
+                                    //Debug.Log("Added " + tile_grid.getTile(x_index + i, y_index + j));
                                     //reachable_tiles.Add(new Tile(tile_grid.getTile(x_index + i, y_index + j)));
                                     //tile_grid.getTile(x_index + i, y_index + j).weight = -1;
                                     //tile_grid.getTile(x_index + i, y_index + j).parent = null;

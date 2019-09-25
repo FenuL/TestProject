@@ -1,0 +1,52 @@
+﻿{
+  "name":"Gravity_Smackdown",
+  "ap_cost":"1",
+  "mp_cost":"10",
+  "path_type":0,
+  "tile_color":null,
+  "range":"1",
+  "center":1,
+  "area":
+  [
+    {"values": [ 0.0, 0.5, 0.0 ] },
+	{"values": [ 0.5, 1.0, 0.5 ] },
+	{"values": [ 0.0, 0.5, 0.0 ] }
+  ],
+  "num_targets":"1",
+  "target_checks":[ ],
+  "interrupt":false,
+  "effects":
+  [
+    {
+	  "type":0,
+	  "target":0,
+	  "checks":["CHK_TDST_LTQ_CRNG"],
+	  "values":["Target"],
+	  "min_target_limit":0,
+	  "max_target_limit":0
+	},
+	{
+	  "type":7,
+	  "target":1,
+	  "checks":["CHK_TDST_LTQ_CRNG"],
+	  "values":["2"],
+	  "min_target_limit":0,
+	  "max_target_limit":0
+	},
+	{
+	  "type":2,
+	  "target":1,
+	  "checks":["CHK_NOT_SELF"],
+	  "values":["2*CC_STR+CC_WPD"],
+	  "min_target_limit":0,
+	  "max_target_limit":0
+	}
+  ],
+  "activation":0,
+  "trigger":2,
+  "trigger_target":2,
+  "condition":null,
+  "origin":0,
+  "enabled":true,
+  "animation":"Attack"
+}

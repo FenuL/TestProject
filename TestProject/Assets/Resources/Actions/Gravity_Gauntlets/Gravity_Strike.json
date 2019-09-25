@@ -1,0 +1,50 @@
+﻿{
+  "name":"Gravity_Strike",
+  "ap_cost":"0",
+  "mp_cost":"5",
+  "path_type":0,
+  "tile_color":null,
+  "range":"1",
+  "center":1,
+  "area":
+  [
+    {"values":[1.0]}
+  ],
+  "num_targets":"1",
+  "target_checks":[ ],
+  "interrupt":true,
+  "effects":
+  [
+    {  
+	  "type":0,
+	  "target":0,
+	  "checks":["CHK_TDST_LTQ_CRNG"],
+	  "values":["Target"],
+	  "min_target_limit":0,
+	  "max_target_limit":0
+    },
+	{
+	  "type":2,
+	  "target":1,
+	  "checks":["CHK_TDST_LTQ_CRNG"],
+	  "values":["CC_WPD+CC_STR"],
+	  "min_target_limit":0,
+	  "max_target_limit":0
+	},
+	{
+	  "type":1,
+	  "target":1,
+	  "checks":["CHK_TDST_LTQ_CRNG"],
+	  "values":["2","VECT","ABSL[4-(CC_COO-CC_ORI)%4]","CC_STR/2"],
+	  "min_target_limit":0,
+	  "max_target_limit":0
+	}
+  ],
+  "activation":2,
+  "trigger":0,
+  "trigger_target":1,
+  "condition":"NOT_CHK_TARG_SELF & CHK_TARG_RANG",
+  "origin":0,
+  "enabled":true,
+  "animation":"Attack"
+}

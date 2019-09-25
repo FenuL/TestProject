@@ -1,0 +1,60 @@
+﻿{
+  "name":"Entropic_Blast",
+  "ap_cost":"1",
+  "mp_cost":"0",
+  "path_type":0,
+  "tile_color":null,
+  "range":"1",
+  "center":0,
+  "area":
+  [
+    {"values": [ 0.0, 0.6, 0.0 ] },
+	{"values": [ 0.6, 0.0, 0.6 ] },
+	{"values": [ 0.0, 0.6, 0.0 ] }
+  ],
+  "num_targets":"1",
+  "target_checks":[ ],
+  "interrupt":false,
+  "effects":
+  [
+    {
+	  "type":0,
+	  "target":0,
+	  "checks":["CHK_TDST_LTQ_CRNG"],
+	  "values":["Target"],
+	  "min_target_limit":0,
+	  "max_target_limit":0
+	},
+	{
+	  "type":5,
+	  "target":1,
+	  "checks":["CHK_NOT_TCND_EQ_WEAK"],
+	  "values":["Weakness","3","2"],
+	  "min_target_limit":0,
+	  "max_target_limit":2
+	},
+	{
+	  "type":2,
+	  "target":1,
+	  "checks":["CHK_TDST_LTQ_CRNG"],
+	  "values":["CC_STR*CC_RTT+CC_WPD"],
+	  "min_target_limit":0,
+	  "max_target_limit":1
+	},
+	{
+	  "type":1,
+	  "target":1,
+	  "checks":["CHK_TDST_LTQ_CRNG"],
+	  "values":["2","CC_TILE","PUSH","CC_STR*CC_RTT+1"],
+	  "min_target_limit":0,
+	  "max_target_limit":1
+	}
+  ],
+  "activation":0,
+  "trigger":2,
+  "trigger_target":2,
+  "condition":null,
+  "origin":0,
+  "enabled":true,
+  "animation":"Attack"
+}

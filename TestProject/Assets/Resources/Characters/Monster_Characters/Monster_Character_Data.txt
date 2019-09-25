@@ -4,7 +4,7 @@ level: 1
 strength: 8
 dexterity: 5
 spirit: 4
-initative: 1
+initative: 8
 vitality: 10
 speed: 5
 canister_max: 0
@@ -19,7 +19,7 @@ level: 3
 strength: 10
 dexterity: 5
 spirit: 6
-initiative: 2
+initiative: 9
 vitality: 12
 speed: 7
 canister_max: 0

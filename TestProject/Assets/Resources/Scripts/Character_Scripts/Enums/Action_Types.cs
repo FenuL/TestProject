@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public enum Action_Types
+public enum Path_Types
 {
     Melee,
     Projectile,
