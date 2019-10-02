@@ -115,6 +115,9 @@ public class Character_Script : MonoBehaviour {
     public Vector3 camera_position_offset { get; private set; }
     public float height_offset { get; private set; }
     public bool rotate { get; set; }
+    public string weapon_name;
+    public string armor_name;
+    public string[] accessory_names;
     public Weapon weapon { get; private set; }
     public Armor armor { get; private set; }
     public Accessory[] accessories { get; private set; }
@@ -1352,65 +1355,16 @@ public class Character_Script : MonoBehaviour {
             default:
                 break;
         }
-        if (e.effects != null)
-        {
-            foreach (Equipment.Equip_Effect eff in e.effects)
-            {
-                switch (eff.stat)
-                {
-                    case Character_Stats.aura_max:
-                        aura_max += eff.effect * AURA_MULTIPLIER;
-                        aura_max += eff.effect * AURA_MULTIPLIER;
-                        break;
-                    case Character_Stats.canister_max:
-                        canister_max += eff.effect;
-                        break;
-                    case Character_Stats.dexterity:
-                        dexterity += eff.effect;
-                        break;
-                    case Character_Stats.initiative:
-                        initiative += eff.effect;
-                        break;
-                    case Character_Stats.speed:
-                        speed += eff.effect;
-                        break;
-                    case Character_Stats.spirit:
-                        spirit += eff.effect;
-                        mana_max += eff.effect * MP_MULTIPLIER;
-                        //action_curr += eff.effect * MP_MULTIPLIER;
-                        break;
-                    case Character_Stats.strength:
-                        strength += eff.effect;
-                        break;
-                    case Character_Stats.vitality:
-                        vitality += eff.effect;
-                        aura_max += eff.effect * AURA_MULTIPLIER;
-                        aura_curr += eff.effect * AURA_MULTIPLIER;
-                        break;
-                    case Character_Stats.accuracy:
-                        accuracy += eff.effect;
-                        break;
-                    case Character_Stats.resistance:
-                        resistance += eff.effect;
-                        break;
-                    case Character_Stats.lethality:
-                        lethality += eff.effect;
-                        break;
-                    case Character_Stats.finesse:
-                        finesse += eff.effect;
-                        break;
-                }
-            }
-        }
+
         weight += e.weight;
         speed = SPEED-weight;
         if( speed <= 0)
         {
             speed = 1;
         }
-        if (e.actions != null)
+        if (e.action_names != null)
         {
-            foreach(String str in e.actions)
+            foreach(String str in e.action_names)
             {
                 Character_Action act = Find_Action_Global(str.TrimStart().TrimEnd());
                 if (act != null)

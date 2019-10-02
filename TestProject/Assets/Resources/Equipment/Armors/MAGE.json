@@ -1,0 +1,11 @@
+﻿{
+  "name":"MAGE",
+  "type":1,
+  "image":null,
+  "description":"Armor for MP balance",
+  "weight":1.5,
+  "armor":1,
+  "sprite":null,
+  "action_names":["Blink", "Channel"]
+  
+}

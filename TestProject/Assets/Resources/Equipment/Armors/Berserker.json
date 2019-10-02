@@ -1,0 +1,11 @@
+﻿{
+  "name":"Berserker",
+  "type":1,
+  "image":null,
+  "description":"Armor for sustaining",
+  "weight":0.5,
+  "armor":0,
+  "sprite":null,
+  "action_names":["Blink", "Channel"]
+  
+}

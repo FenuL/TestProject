@@ -165,11 +165,11 @@ public class Tile_Effect : MonoBehaviour {
                         }
                         else if (val.ToString().Contains("WPR"))
                         {
-                            input = input.Replace(val.ToString(), "" + source.weapon.modifier.GetLength(0) / 2);
+                            input = input.Replace(val.ToString(), "" + source.weapon.modifier.Count / 2);
                         }
                         else if (val.ToString().Contains("WPD"))
                         {
-                            input = input.Replace(val.ToString(), "" + source.weapon.attack);
+                            input = input.Replace(val.ToString(), "" + source.weapon.damage);
                         }
                         else if (val.ToString().Contains("WPN"))
                         {

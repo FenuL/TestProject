@@ -108,22 +108,6 @@
   <ItemGroup>
     <None Include="Assets\Resources\Characters\Monster_Characters\Monster_Character_Data.txt" />
     <None Include="Assets\Resources\Characters\Player_Characters\Player_Character_Data.txt" />
-    <None Include="Assets\Resources\Equipment\Armors\Bard.txt" />
-    <None Include="Assets\Resources\Equipment\Armors\Berserker.txt" />
-    <None Include="Assets\Resources\Equipment\Armors\Carapace.txt" />
-    <None Include="Assets\Resources\Equipment\Armors\MAGE.txt" />
-    <None Include="Assets\Resources\Equipment\Armors\Ranger.txt" />
-    <None Include="Assets\Resources\Equipment\Armors\Savior.txt" />
-    <None Include="Assets\Resources\Equipment\Weapons\Alchemyst.txt" />
-    <None Include="Assets\Resources\Equipment\Weapons\Daggers.txt" />
-    <None Include="Assets\Resources\Equipment\Weapons\Explosives.txt" />
-    <None Include="Assets\Resources\Equipment\Weapons\Gravity_Gauntlets.txt" />
-    <None Include="Assets\Resources\Equipment\Weapons\Handguns.txt" />
-    <None Include="Assets\Resources\Equipment\Weapons\Longsword.txt" />
-    <None Include="Assets\Resources\Equipment\Weapons\Rifle.txt" />
-    <None Include="Assets\Resources\Equipment\Weapons\Rocket_Spear.txt" />
-    <None Include="Assets\Resources\Equipment\Weapons\Shotgun.txt" />
-    <None Include="Assets\Resources\Equipment\Weapons\Titan_Shield.txt" />
     <None Include="Assets\Resources\Maps\New Text Document.txt" />
     <None Include="Assets\Resources\Maps\RuinedSteps_map.txt" />
     <None Include="Assets\Resources\Maps\falls_map.txt" />

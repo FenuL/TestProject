@@ -1,24 +1,29 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 /// <summary>
 /// Class for Armor class Equipment. Inherits from Equipment. 
 /// </summary>
+[Serializable]
 public class Armor : Equipment
 {
-    public int armor { get; protected set; }
-    public string passive { get; protected set; }
-    public string reaction { get; protected set; }
-    public string active1 { get; protected set; }
-    public string active2 { get; protected set; }
+    [SerializeField]
+    public int armor;
+
+    public static Armor ParseJSON(string json)
+    {
+        Armor armor = JsonUtility.FromJson<Armor>(json);
+        return armor;
+    }
 
     /// <summary>
     /// Takes a List of strings and returns a usable Armor object.
     /// </summary>
     /// <param name="input">The list of armor stats to create the Armor.</param>
     /// <returns>The Armor object.</returns>
-    public static Armor Parse(string[] input)
+    /*public static Armor Parse(string[] input)
     {
         Armor armor = new Armor();
         float number = 0;
@@ -70,7 +75,7 @@ public class Armor : Equipment
         armor.actions[1] = armor.active2;
         armor.actions[2] = armor.reaction;
         return armor;
-    }
+    }*/
 
     /// <summary>
     /// Used in conjustion with the Parse method to create a Dictionary of all known armor types.
@@ -81,11 +86,24 @@ public class Armor : Equipment
         Dictionary<string, Armor> armor_types = new Dictionary<string, Armor>();
         foreach (string file in System.IO.Directory.GetFiles("Assets/Resources/Equipment/Armors/"))
         {
-            string[] lines = System.IO.File.ReadAllLines(file);
-            Armor armor = Parse(lines);
+            //string[] lines = System.IO.File.ReadAllLines(file);
+            //Armor armor = Parse(lines);
+            Armor armor = null;
+            if (file.EndsWith(".json"))
+            {
+                armor = ParseJSON(System.IO.File.ReadAllText(file));
+                //string json = JsonUtility.ToJson(armor);
+                //Debug.Log("Armor:" + json);
+            }
             if (armor != null && armor.name != "")
             {
-                armor_types.Add(armor.name, armor);
+                if (!armor_types.ContainsKey(armor.name))
+                {
+                    armor_types.Add(armor.name, armor);
+                }else
+                {
+                    Debug.Log(armor.name + " already exists!");
+                }
             }
         }
         return armor_types;
@@ -98,11 +116,7 @@ public class Armor : Equipment
     {
         type = Equipment_Type.Armor;
         name = "";
-        passive = "";
-        reaction = "";
-        active1 = "";
-        active2 = "";
-        actions = new string[3];
+        action_names = new string[3];
     }
 
     /// <summary>
@@ -112,7 +126,6 @@ public class Armor : Equipment
     public Armor(string str)
     {
         type = Equipment_Type.Armor;
-        durability = 100;
     }
 
     /// <summary>
@@ -122,6 +135,5 @@ public class Armor : Equipment
     public Armor(Armor_Types ar)
     {
         type = Equipment_Type.Armor;
-        durability = 100;
     }
 }

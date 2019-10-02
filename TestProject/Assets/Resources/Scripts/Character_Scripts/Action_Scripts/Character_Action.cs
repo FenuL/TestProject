@@ -399,11 +399,11 @@ public class Character_Action
                             }
                             else if (val.ToString().Contains("WPR"))
                             {
-                                input = input.Replace(prefix + val.ToString(), "" + source.weapon.modifier.GetLength(0) / 2);
+                                input = input.Replace(prefix + val.ToString(), "" + source.weapon.modifier.Count / 2);
                             }
                             else if (val.ToString().Contains("WPD"))
                             {
-                                input = input.Replace(prefix + val.ToString(), "" + source.weapon.attack);
+                                input = input.Replace(prefix + val.ToString(), "" + source.weapon.damage);
                             }
                             else if (val.ToString().Contains("WPN"))
                             {
@@ -1163,15 +1163,15 @@ public class Character_Action
         }
         Tile char_tile = character.curr_tile;
         //Debug.Log(character.weapon.name + " range is " + character.weapon.modifier.GetLength(0)/2);
-        int range = character.weapon.modifier.GetLength(0) / 2;
+        int range = character.weapon.modifier.Count / 2;
         int diff_x = Math.Abs(char_tile.index[0] - target_tile.index[0]);
         int diff_y = Math.Abs(char_tile.index[1] - target_tile.index[1]);
-        if (diff_x + range < character.weapon.modifier.GetLength(0) &&
+        if (diff_x + range < character.weapon.modifier.Count &&
             diff_x >= 0 &&
-            diff_y + range < character.weapon.modifier.GetLength(0) &&
+            diff_y + range < character.weapon.modifier.Count &&
             diff_y >= 0)
         {
-            modifier = character.weapon.modifier[diff_x + range, diff_y + range];
+            modifier = character.weapon.modifier[diff_x + range][diff_y + range];
         }
         //Debug.Log("Weapon Modifier is: " + modifier);
         return modifier;

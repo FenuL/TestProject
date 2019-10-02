@@ -1,7 +1,0 @@
-name: MAGE
-armor: 1
-weight: 1.5
-Passive: Stuff
-Reaction: Stuff
-Active1: Blink
-Active2: Channel

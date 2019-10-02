@@ -1,7 +1,0 @@
-name: Savior
-armor: 1
-weight: 1
-Passive: Stuff
-Reaction: Stuff
-Active1: Blink
-Active2: Channel

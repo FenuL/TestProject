@@ -23,14 +23,13 @@ public class Equipment
     /// SpriteRenderer sprite - The sprite for the this piece of Equipment
     /// </summary>
     public enum Equipment_Type { Weapon, Armor, Accessory };
-    public string name { get; protected set; }
-    public Equipment_Type type { get; protected set; }
-    public String[] actions { get; protected set; }
-    public Equip_Effect[] effects { get; protected set; }
-    public int durability { get; protected set; }
-    public string description { get; protected set; }
-    public float weight { get; protected set; }
-    public SpriteRenderer sprite { get; protected set; }
+    public string name;
+    public Equipment_Type type;
+    public string[] action_names;
+    public string image;
+    public string description;
+    public float weight;
+    public string sprite;
 
     /// <summary>
     /// Converts the String parameters from the File into a double. 
@@ -116,11 +115,11 @@ public class Equipment
                     }
                     else if (val.ToString() == "WPR")
                     {
-                        input = input.Replace(val.ToString(), "" + obj.weapon.modifier.Length/2);
+                        input = input.Replace(val.ToString(), "" + obj.weapon.modifier.Count/2);
                     }
                     else if (val.ToString() == "WPD")
                     {
-                        input = input.Replace(val.ToString(), "" + obj.weapon.attack);
+                        input = input.Replace(val.ToString(), "" + obj.weapon.damage);
                     }
                     else if (val.ToString() == "WPN")
                     {

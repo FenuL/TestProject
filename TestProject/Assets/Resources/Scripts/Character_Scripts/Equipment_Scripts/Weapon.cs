@@ -1,10 +1,12 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System;
 
 /// <summary>
 /// Class for Weapon class Equipment. Inherits from Equipment.
 /// </summary>
+[Serializable]
 public class Weapon : Equipment
 {
     /// <summary>
@@ -14,23 +16,22 @@ public class Weapon : Equipment
     /// bool ranged - Whether the Weapon is Ranged or Melee.
     /// int armor_pierce - How much armor the Weapon ignores when dealing damage.
     /// </summary>
-    public string category { get; private set;  }
-    public string scaling { get; private set; }
-    public float[,] modifier { get; private set; }
-    public float attack { get; private set; }
-    public float pierce { get; private set; }
-    public string passive { get; private set; }
-    public string reaction { get; private set; }
-    public string active1 { get; private set; }
-    public string active2 { get; private set; }
-    public string active3 { get; private set; }
+    public List<MDFloat> modifier;
+    public int damage;
+    public float pierce;
+
+    public static Weapon ParseJSON(string json)
+    {
+        Weapon weapon = JsonUtility.FromJson<Weapon>(json);
+        return weapon;
+    }
 
     /// <summary>
     /// Takes a List of strings and returns a usable Weapon object.
     /// </summary>
     /// <param name="input">The list of weapon stats to create the Weapon.</param>
     /// <returns>The Weapon object.</returns>
-    public static Weapon Parse(string[] input)
+/*    public static Weapon Parse(string[] input)
     {
         Weapon weapon = new Weapon();
         int mod_x_index = 0;
@@ -114,7 +115,7 @@ public class Weapon : Equipment
         weapon.actions[2] = weapon.active3;
         weapon.actions[3] = weapon.reaction;
         return weapon;
-    }
+    }*/
 
     /// <summary>
     /// Used in conjustion with the Parse method to create a Dictionary of all known weapon types.
@@ -125,12 +126,25 @@ public class Weapon : Equipment
         Dictionary<string, Weapon> weapon_types = new Dictionary<string, Weapon>();
         foreach (string file in System.IO.Directory.GetFiles("Assets/Resources/Equipment/Weapons/"))
         {
-            string[] lines = System.IO.File.ReadAllLines(file);
-            Weapon weapon = Parse(lines);
+            //string[] lines = System.IO.File.ReadAllLines(file);
+            Weapon weapon = null;
+            if (file.EndsWith(".json"))
+            {
+                weapon = ParseJSON(System.IO.File.ReadAllText(file));
+                //string json = JsonUtility.ToJson(weapon);
+                //Debug.Log("Weapon:" + json);
+            }
             if (weapon != null && weapon.name != "")
             {
                 //Debug.Log("Added " + weapon.name);
-                weapon_types.Add(weapon.name, weapon);
+                if (!weapon_types.ContainsKey(weapon.name))
+                {
+                    weapon_types.Add(weapon.name, weapon);
+                }
+                else
+                {
+                    Debug.Log(weapon.name + " already exists!");
+                }
             }
         }
         return weapon_types;
@@ -143,14 +157,9 @@ public class Weapon : Equipment
     {
         type = Equipment_Type.Weapon;
         name = "";
-        attack = 0;
+        damage = 0;
         pierce = 0;
-        passive = "";
-        reaction = "";
-        active1 = "";
-        active2 = "";
-        active3 = "";
-        actions = new string[4];  
+        action_names = new string[4];  
 }
 
     /// <summary>
@@ -160,7 +169,6 @@ public class Weapon : Equipment
     public Weapon(string str)
     {
         type = Equipment_Type.Weapon;
-        durability = 100;
     }
 
     /// <summary>
@@ -170,7 +178,6 @@ public class Weapon : Equipment
     public Weapon(Weapon_Types wep)
     {
         type = Equipment_Type.Weapon;
-        durability = 100;
         
     }
 }

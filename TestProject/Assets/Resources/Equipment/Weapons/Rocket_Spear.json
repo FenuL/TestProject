@@ -1,0 +1,20 @@
+﻿{
+  "name":"Rocket_Spear",
+  "type":0,
+  "image":null,
+  "description":"Weapon for Movement",
+  "weight":1.5,
+  "damage":2,
+  "pierce":1,
+  "sprite":null,
+  "action_names":["Counter", "Slash", "Elevate", "Lower"],
+  "modifier": 
+  [
+    {"values": [ 0.000,  0.000,  0.500,  0.000,  0.000  ] },
+    {"values": [ 0.000,  0.500,  0.250,  0.500,  0.000  ] },
+    {"values": [ 0.500,  0.250,  0.500,  0.250,  0.500  ] },
+    {"values": [ 0.000,  0.500,  0.250,  0.500,  0.000  ] },
+	{"values": [ 0.000,  0.000,  0.500,  0.000,  0.000  ] }
+  ]
+  
+}

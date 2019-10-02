@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 /// <summary>
 /// Class for Accesory class Equipment. Inherits from Equipment.
 /// </summary>
+[Serializable]
 public class Accessory : Equipment
 {
     /// <summary>
@@ -12,7 +14,6 @@ public class Accessory : Equipment
     public Accessory()
     {
         type = Equipment_Type.Accessory;
-        durability = 100;
     }
 
     //TODO ADD OTHER ACCESSORY FUNCTIONALITY
