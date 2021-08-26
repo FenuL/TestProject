@@ -1,0 +1,41 @@
+AUM-Aura Maximum
+AUC-Aura Current
+APM-Action Point Maximum
+APC-Action Point Current
+MPM-Mana Point Maximum
+MPC-Mana Point Current
+CAM-Canister Maximum
+CAC-Canister Current
+SPD-Speed
+STR-Strength
+DEX-Dexterity
+SPT-Spirit
+INI-Initiative
+VIT-Vitality
+LVL-Level
+WPR-Weapon Range
+WPD-Weapon Damage
+ARM-Armor Value
+WGT-Weight
+MOC-Movement Cost
+ORI-Orientation
+COO-Camera Offset
+CMB-Combo Modifier
+ADV-Current Advantage
+ADR-Advantage Requirement
+DTT-Damage Taken this Turn
+DDT-Damage Done this Turn
+WTT-Wounds Taken this Turn
+TMT-Tiles Moved this Turn
+ATT-Actions Taken this Turn
+RTT-Reactions Taken this Turn
+KTT-Kills this Turn
+CDT-Conditions Dealt this Turn
+CTT-Conditions Taken this Turn
+DST-Distance to Target
+CST-Path Cost
+HGT-Tile Height
+INX-Tile X Index
+INY-Tile Y Index
+MOD-Tile Modifier
+NUL-None

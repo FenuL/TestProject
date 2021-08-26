@@ -1,5 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
+using UnityEngine.EventSystems;
 
 /// <summary>
 /// Script to Control the Camera. 
@@ -30,15 +32,13 @@ public class Camera_Controller : MonoBehaviour {
     private Character_Script curr_player = new Character_Script();
     private GameObject highlighted_obj;
 
-    Game_Controller controller;// = Game_Controller.controller;
-
     /// <summary>
     /// Method to create a GUI window to show the 
     /// currently slected Player's stats.
     /// </summary>
     public void Current_Character_Preview()
     {
-        int actions_remaining = (int)(curr_player.action_curr - curr_player.curr_action.Peek().Convert_To_Float(curr_player.curr_action.Peek().ap_cost, null, null));
+        int actions_remaining = (int)(curr_player.action_curr - Game_Controller.Convert_To_Float(curr_player.Get_Curr_Action().ap_cost, curr_player.gameObject));
         string action_color = "white";
         if (actions_remaining > curr_player.action_curr)
         {
@@ -48,7 +48,7 @@ public class Camera_Controller : MonoBehaviour {
         {
             action_color = "red";
         }
-        int mana_remaining = (int)(curr_player.mana_curr - curr_player.curr_action.Peek().Convert_To_Float(curr_player.curr_action.Peek().mp_cost, null, null));
+        int mana_remaining = (int)(curr_player.mana_curr - Game_Controller.Convert_To_Float(curr_player.Get_Curr_Action().mp_cost, curr_player.gameObject));
         string mana_color = "white";
         if (mana_remaining > curr_player.mana_curr)
         {
@@ -67,8 +67,8 @@ public class Camera_Controller : MonoBehaviour {
               "RP: " + curr_player.reaction_curr + " / " + curr_player.reaction_max + "\n" +
               "Str: " + curr_player.strength + "   Dex: " + curr_player.dexterity + "    Spt: " + curr_player.spirit + "\n" +
               "Ini: " + curr_player.initiative + "   Vit: " + curr_player.vitality + "   Spd: " + curr_player.speed + "\n" +
-              "Wep: " + curr_player.weapon.name + " (" + curr_player.weapon.weight + ")\n" + 
-              "Armor: " + curr_player.armor.name + " (" + curr_player.armor.weight + ")", style);
+              "Wep: " + curr_player.weapon.equip_name + " (" + curr_player.weapon.weight + ")\n" + 
+              "Armor: " + curr_player.armor.equip_name + " (" + curr_player.armor.weight + ")", style);
         }
         else
         {
@@ -79,9 +79,15 @@ public class Camera_Controller : MonoBehaviour {
               "RP: " + curr_player.reaction_curr + " / " + curr_player.reaction_max + "\n" +
               "Str: " + curr_player.strength + "   Dex: " + curr_player.dexterity + "    Spt: " + curr_player.spirit + "\n" +
               "Ini: " + curr_player.initiative + "   Vit: " + curr_player.vitality + "   Spd: " + curr_player.speed + "\n" +
-              "Wep: " + curr_player.weapon.name + " (" + curr_player.weapon.weight + ")\n" +
-              "Armor: " + curr_player.armor.name + " (" + curr_player.armor.weight + ")", style);
+              "Wep: " + curr_player.weapon.equip_name + " (" + curr_player.weapon.weight + ")\n" +
+              "Armor: " + curr_player.armor.equip_name + " (" + curr_player.armor.weight + ")", style);
         }
+    }
+
+    public void Center_Camera()
+    {
+        gameObject.transform.position = new Vector3(-25, 19, -25);
+        gameObject.transform.eulerAngles = new Vector3(30,45,0);
     }
 
     /// <summary>
@@ -90,18 +96,18 @@ public class Camera_Controller : MonoBehaviour {
     /// </summary>
     public void Current_Tile_Preview()
     {
-        //Tile tile = controller.curr_scenario.selected_tile.GetComponent<Tile>();
+        //Tile tile = Game_Controller.controller.Get_Curr_Scenario().selected_tile.GetComponent<Tile>();
 
-        if (Game_Controller.curr_scenario.selected_tile)
+        if (Game_Controller.Get_Curr_Scenario().selected_tile)
         {
-            Tile tile = Game_Controller.curr_scenario.selected_tile.GetComponent<Tile>();
+            Tile tile = Game_Controller.Get_Curr_Scenario().selected_tile.GetComponent<Tile>();
             float action_mod = 0;
-            if (curr_player.curr_action.Count > 0)
+            if (curr_player.Get_Curr_Actions().Count > 0)
             {
-                action_mod = curr_player.curr_action.Peek().Calculate_Total_Modifier(
-                    //controller.curr_scenario.selected_tile.gameObject,
-                    Game_Controller.curr_scenario.selected_tile.gameObject,
-                    curr_player.curr_action.Peek().area[curr_player.curr_action.Peek().area.Count / 2][curr_player.curr_action.Peek().area[0].Count / 2]);
+                action_mod = curr_player.Get_Curr_Action().Calculate_Total_Modifier(
+                    //Game_Controller.controller.Get_Curr_Scenario().selected_tile.gameObject,
+                    Game_Controller.Get_Curr_Scenario().selected_tile.gameObject,
+                    curr_player.Get_Curr_Action().area[curr_player.Get_Curr_Action().area.GetLength(0) / 2,curr_player.Get_Curr_Action().area.GetLength(1) / 2]);
             }
             string mod_color = "white";
             if (action_mod >= curr_player.finesse)
@@ -110,15 +116,16 @@ public class Camera_Controller : MonoBehaviour {
             }
 
             string tile_effect_string = "";
-            if (tile.effect)
+            if (tile.hazard)
             {
-                if (tile.effect.GetComponent<Tile_Effect>().type.ToString() == "Heal")
+                if (tile.hazard.GetComponent<Hazard>().Has_Effect(Effect_Types.Heal))
                 {
-                    tile_effect_string = tile.effect.name + " " + tile.effect.GetComponent<Tile_Effect>().type.ToString() + " " + tile.effect.GetComponent<Tile_Effect>().value[1];
+                    //TODO, MAKE PREVIEW BETTER
+                    tile_effect_string = tile.hazard.name + " HAZARD";
                 }
                 else
                 {
-                    tile_effect_string = tile.effect.name + " " + tile.effect.GetComponent<Tile_Effect>().type.ToString() + " " + tile.effect.GetComponent<Tile_Effect>().value[0];
+                    tile_effect_string = tile.hazard.name + " HAZARD";
                 }
             }
             GUI.TextArea(new Rect(Screen.width - 115, Screen.height - 120, 110, 110),
@@ -137,22 +144,22 @@ public class Camera_Controller : MonoBehaviour {
     /// </summary>
     public void Current_Target_Preview()
     {
-        //highlighted_obj = controller.curr_scenario.selected_tile.GetComponent<Tile>().obj;
-        highlighted_obj = Game_Controller.curr_scenario.selected_tile.GetComponent<Tile>().obj;
+        //highlighted_obj = Game_Controller.controller.Get_Curr_Scenario().selected_tile.GetComponent<Tile>().obj;
+        highlighted_obj = Game_Controller.Get_Curr_Scenario().selected_tile.GetComponent<Tile>().obj;
         if (highlighted_obj != null)
         {
             Character_Script highlighted_character = highlighted_obj.GetComponent<Character_Script>();
             if (highlighted_character != null)
             {
-                if (curr_player.curr_action.Count > 0 && curr_player.state.Peek() != Character_States.Acting)
+                if (curr_player.Get_Curr_Actions().Count > 0 && curr_player.state.Peek() != Character_States.Acting)
                 {
                     bool preview = false;
-                    foreach (Action_Effect eff in curr_player.curr_action.Peek().effects)
+                    foreach (Action_Effect eff in curr_player.Get_Curr_Action().effects)
                     {
-                        if (eff.get_Type().ToString() == "Damage")
+                        if (eff.type == Effect_Types.Damage)
                         {
                             //TODO: This is inaccurate because it doesn't take into account the target modifier.
-                            int damage_dealt = highlighted_character.Estimate_Damage(curr_player.curr_action.Peek().Convert_To_Float(eff.get_Values()[0], highlighted_character.gameObject, null), (int)curr_player.weapon.pierce);
+                            int damage_dealt = highlighted_character.Estimate_Damage(Game_Controller.Convert_To_Float(eff.values[0], highlighted_character.gameObject, null), (int)curr_player.weapon.pierce);
                             int new_aura = highlighted_character.aura_curr - damage_dealt;
                             if (new_aura < 0)
                             {
@@ -169,14 +176,14 @@ public class Camera_Controller : MonoBehaviour {
                               "RP: " + highlighted_character.reaction_curr + " / " + highlighted_character.reaction_max + "\n" +
                               "Str: " + highlighted_character.strength + "   Dex: " + highlighted_character.dexterity + "    Spt: " + highlighted_character.spirit + "\n" +
                               "Ini: " + highlighted_character.initiative + "   Vit: " + highlighted_character.vitality + "   Spd: " + highlighted_character.speed + "\n" +
-                              "Wep: " + highlighted_character.weapon.name + " (" + highlighted_character.weapon.weight + ")\n" +
-                              "Armor: " + highlighted_character.armor.name + " (" + highlighted_character.armor.weight + ")", style);
+                              "Wep: " + highlighted_character.weapon.equip_name + " (" + highlighted_character.weapon.weight + ")\n" +
+                              "Armor: " + highlighted_character.armor.equip_name + " (" + highlighted_character.armor.weight + ")", style);
                             preview = true;
                             break;
                         }
-                        else if (eff.get_Type().ToString() == "Heal")
+                        else if (eff.type == Effect_Types.Heal)
                         {
-                            int healing = (int)curr_player.curr_action.Peek().Convert_To_Float(eff.get_Values()[0], highlighted_character.gameObject, null);
+                            int healing = (int)Game_Controller.Convert_To_Float(eff.values[0], highlighted_character.gameObject, null);
                             int new_aura = highlighted_character.aura_curr + healing;
                             if (new_aura < 0)
                             {
@@ -193,8 +200,8 @@ public class Camera_Controller : MonoBehaviour {
                               "RP: " + highlighted_character.reaction_curr + " / " + highlighted_character.reaction_max + "\n" +
                               "Str: " + highlighted_character.strength + "   Dex: " + highlighted_character.dexterity + "    Spt: " + highlighted_character.spirit + "\n" +
                               "Ini: " + highlighted_character.initiative + "   Vit: " + highlighted_character.vitality + "   Spd: " + highlighted_character.speed + "\n" +
-                              "Wep: " + highlighted_character.weapon.name + " (" + highlighted_character.weapon.weight + ")\n" +
-                              "Armor: " + highlighted_character.armor.name + " (" + highlighted_character.armor.weight + ")", style);
+                              "Wep: " + highlighted_character.weapon.equip_name + " (" + highlighted_character.weapon.weight + ")\n" +
+                              "Armor: " + highlighted_character.armor.equip_name + " (" + highlighted_character.armor.weight + ")", style);
                             preview = true;
                             break;
                         }
@@ -208,8 +215,8 @@ public class Camera_Controller : MonoBehaviour {
                             "RP: " + highlighted_character.reaction_curr + " / " + highlighted_character.reaction_max + "\n" +
                             "Str: " + highlighted_character.strength + "   Dex: " + highlighted_character.dexterity + "    Spt: " + highlighted_character.spirit + "\n" +
                             "Ini: " + highlighted_character.initiative + "   Vit: " + highlighted_character.vitality + "   Spd: " + highlighted_character.speed + "\n" +
-                            "Wep: " + highlighted_character.weapon.name + " (" + highlighted_character.weapon.weight + ")\n" +
-                            "Armor: " + highlighted_character.armor.name + " (" + highlighted_character.armor.weight + ")", style);
+                            "Wep: " + highlighted_character.weapon.equip_name + " (" + highlighted_character.weapon.weight + ")\n" +
+                            "Armor: " + highlighted_character.armor.equip_name + " (" + highlighted_character.armor.weight + ")", style);
                     }
                 }else
                 {
@@ -220,8 +227,8 @@ public class Camera_Controller : MonoBehaviour {
                             "RP: " + highlighted_character.reaction_curr + " / " + highlighted_character.reaction_max + "\n" +
                             "Str: " + highlighted_character.strength + "   Dex: " + highlighted_character.dexterity + "    Spt: " + highlighted_character.spirit + "\n" +
                             "Ini: " + highlighted_character.initiative + "   Vit: " + highlighted_character.vitality + "   Spd: " + highlighted_character.speed + "\n" +
-                            "Wep: " + highlighted_character.weapon.name + " (" + highlighted_character.weapon.weight + ")\n" +
-                            "Armor: " + highlighted_character.armor.name + " (" + highlighted_character.armor.weight + ")", style); ;
+                            "Wep: " + highlighted_character.weapon.equip_name + " (" + highlighted_character.weapon.weight + ")\n" +
+                            "Armor: " + highlighted_character.armor.equip_name + " (" + highlighted_character.armor.weight + ")", style); ;
                 }
             }
             else
@@ -238,17 +245,17 @@ public class Camera_Controller : MonoBehaviour {
     public void Update_Turn_Order()
     {
         string text = "";
-        //foreach (GameObject obj in Game_Controller.controller.curr_scenario.turn_order)
-        foreach (GameObject obj in Game_Controller.curr_scenario.turn_order)
+        //foreach (GameObject obj in Game_Controller.Game_Controller.controller.Get_Curr_Scenario().turn_order)
+        foreach (GameObject obj in Game_Controller.Get_Curr_Scenario().turn_order)
         {
             Character_Script chara = obj.GetComponent<Character_Script>();
             if (chara.Equals(curr_player))
             {
-                text = text + "<color=red>" + chara.name + " " + chara.character_num + "</color> \n";
+                text = text + "<color=red>" + chara.name + " " + chara.Get_Scenario_ID() + "</color> \n";
             }
             else
             {
-                text = text + chara.name + " " + chara.character_num + "\n";
+                text = text + chara.name + " " + chara.Get_Scenario_ID() + "\n";
             }
         }
         turn_order = text;
@@ -259,8 +266,8 @@ public class Camera_Controller : MonoBehaviour {
     /// </summary>
     public void Turn_Order_Preview()
     {
-        //GUI.TextArea(new Rect(10, Screen.height - 170-17* Game_Controller.controller.curr_scenario.turn_order.Count, 100 , 17* Game_Controller.controller.curr_scenario.turn_order.Count), turn_order, style);
-        GUI.TextArea(new Rect(10, Screen.height - 170 - 17 * Game_Controller.curr_scenario.turn_order.Count, 100, 17 * Game_Controller.curr_scenario.turn_order.Count), turn_order, style);
+        //GUI.TextArea(new Rect(10, Screen.height - 170-17* Game_Controller.controller.Get_Curr_Scenario().turn_order.Count, 100 , 17* Game_Controller.controller.Get_Curr_Scenario().turn_order.Count), turn_order, style);
+        GUI.TextArea(new Rect(10, Screen.height - 170 - 17 * Game_Controller.Get_Curr_Scenario().turn_order.Count, 100, 17 * Game_Controller.Get_Curr_Scenario().turn_order.Count), turn_order, style);
     }
 
     /// <summary>
@@ -279,46 +286,66 @@ public class Camera_Controller : MonoBehaviour {
 		if (GUI.Button (new Rect (10, 140, 100, 30), "Load")) {
 			Game_Controller.controller.Save();
 		}*/
-        if (GUI.Button (new Rect (10, Screen.height-160, 50, 30), "Prev")) {
-            //Game_Controller.controller.curr_scenario.Prev_Player();
-            Game_Controller.curr_scenario.Prev_Player();
-        }
-		if (GUI.Button (new Rect (70, Screen.height-160, 50, 30), "Next")) {
-            //Game_Controller.controller.curr_scenario.Next_Player();
-            Game_Controller.curr_scenario.Next_Player();
-        }
 
-        //print (controller.curr_scenario.curr_player.GetComponent<Character_Script> ().character_name);
-        //if (controller.curr_scenario.curr_player.Count > 0)
-        if (Game_Controller.curr_scenario.curr_player.Count > 0)
+        Scene currentScene = SceneManager.GetActiveScene();
+
+        // Retrieve the name of this scene.
+        string scene_name = currentScene.name;
+        if (scene_name == "Main_Menu")
         {
-            //if (!curr_player.Equals(controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>()))
-            if (!curr_player.Equals(Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>()))
-            {
-                //curr_player = controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>();
-                curr_player = Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>();
-                Update_Turn_Order();
-            }
-            
-            //Debug.Log("Current player " + curr_player.name + " action count " + curr_player.curr_action.Count);
-            if (curr_player.curr_action.Count > 0)
-            {
-                //Debug.Log(curr_player.curr_action.Peek().name);
-                Current_Character_Preview();
-            }
         }
-
-        Turn_Order_Preview();
-
-        Current_Tile_Preview();
-
-        //if (controller.curr_scenario.selected_tile.GetComponent<Tile>() != null)
-        if (Game_Controller.curr_scenario.selected_tile)
+        else if (scene_name == "Editor")
         {
-            if (Game_Controller.curr_scenario.selected_tile.GetComponent<Tile>() != null)
+
+        }
+        else
+        {
+            if (Game_Controller.Get_Curr_Scenario() != null)
             {
-                //Debug.Log("Selecting");
-                Current_Target_Preview();
+                if (GUI.Button(new Rect(10, Screen.height - 160, 50, 30), "Prev"))
+                {
+                    //Game_Controller.controller.Get_Curr_Scenario().Prev_Player();
+                    Game_Controller.Get_Curr_Scenario().Prev_Player();
+                }
+                if (GUI.Button(new Rect(70, Screen.height - 160, 50, 30), "Next"))
+                {
+                    //Game_Controller.controller.Get_Curr_Scenario().Next_Player();
+                    Game_Controller.Get_Curr_Scenario().Next_Player();
+                }
+
+                //print (controller.Get_Curr_Scenario().curr_player.GetComponent<Character_Script> ().character_name);
+                //if (controller.Get_Curr_Scenario().curr_player.Count > 0)
+                if (Game_Controller.Get_Curr_Scenario().characters.Count > 0)
+                {
+                    //if (!curr_player.Equals(controller.Get_Curr_Scenario().curr_player.Peek().GetComponent<Character_Script>()))
+                    if (!curr_player.Equals(Game_Controller.Get_Curr_Scenario().Get_Curr_Character()))
+                    {
+                        //curr_player = controller.Get_Curr_Scenario().curr_player.Peek().GetComponent<Character_Script>();
+                        curr_player = Game_Controller.Get_Curr_Scenario().Get_Curr_Character();
+                        Update_Turn_Order();
+                    }
+
+                    //Debug.Log("Current player " + curr_player.name + " action count " + curr_player.Get_Curr_Actions().Count);
+                    if (curr_player.Get_Curr_Actions().Count > 0)
+                    {
+                        //Debug.Log(curr_playercurr_player.Get_Curr_Action().name);
+                        Current_Character_Preview();
+                    }
+                }
+
+                Turn_Order_Preview();
+
+                Current_Tile_Preview();
+
+                //if (controller.Get_Curr_Scenario().selected_tile.GetComponent<Tile>() != null)
+                if (Game_Controller.Get_Curr_Scenario().selected_tile)
+                {
+                    if (Game_Controller.Get_Curr_Scenario().selected_tile.GetComponent<Tile>() != null)
+                    {
+                        //Debug.Log("Selecting");
+                        Current_Target_Preview();
+                    }
+                }
             }
         }
     }
@@ -355,7 +382,6 @@ public class Camera_Controller : MonoBehaviour {
     /// </summary>
 	void Start () {
 		//Screen.SetResolution(resolution_x, resolution_y, true);
-		controller = Game_Controller.controller;
         rotating = false;
     }
 
@@ -370,81 +396,84 @@ public class Camera_Controller : MonoBehaviour {
         //transform.Translate(horizontal_speed* Input.GetAxis("Mouse Y"),vertical_speed* Input.GetAxis("Mouse X"),0);
 
         //Camera Scrolling
-        if (Input.mousePosition.x <= HOR_BORDER ||
-            Input.GetKey(controller.controlls[Controlls.Camera_Scroll_Left][0]) ||
-            Input.GetKey(controller.controlls[Controlls.Camera_Scroll_Left][1]))
+        if (EventSystem.current.currentSelectedGameObject == null)
         {
-            transform.Translate(-HOR_SPD, 0, 0);// (transform.position.x-1,transform.position.y, transform.position.z);
-        }
-        if (Input.mousePosition.x >= Screen.width - HOR_BORDER ||
-            Input.GetKey(controller.controlls[Controlls.Camera_Scroll_Right][0]) ||
-            Input.GetKey(controller.controlls[Controlls.Camera_Scroll_Right][1]))
-        {
-            transform.Translate(HOR_SPD, 0, 0);
-        }
-        if (Input.mousePosition.y >= Screen.height - VER_BORDER ||
-            Input.GetKey(controller.controlls[Controlls.Camera_Scroll_Up][0]) ||
-            Input.GetKey(controller.controlls[Controlls.Camera_Scroll_Up][1]))
-        {
-            transform.Translate(0, 0, VER_SPD);
-        }
-        if (Input.mousePosition.y <= VER_BORDER ||
-            Input.GetKey(controller.controlls[Controlls.Camera_Scroll_Down][0]) ||
-            Input.GetKey(controller.controlls[Controlls.Camera_Scroll_Down][1]))
-        {
-            transform.Translate(0, 0, -VER_SPD);// (transform.position.x-1,transform.position.y, transform.position.z);
-        }
-        transform.position = new Vector3(transform.position.x, CAMERA_HEIGHT, transform.position.z);
-
-        //Camera Zooming
-        if (Input.GetAxis("Mouse ScrollWheel") > 0f && this.GetComponent<Camera>().orthographicSize > 5) // forward
-        {
-            this.GetComponent<Camera>().orthographicSize--;
-        }
-        if (Input.GetAxis("Mouse ScrollWheel")< 0f && this.GetComponent<Camera>().orthographicSize < 15) // backwards
-        {
-            this.GetComponent<Camera>().orthographicSize++;
-        }
-
-        //Camera turning
-        /*Vector3 rot = transform.rotation.eulerAngles;
-        rot.y = rot.y + rotationAmount * Time.deltaTime * 2;
-        rotationAmount = rotationAmount - rotationAmount * Time.deltaTime * 2;
-        if (rot.y > 360)
-            rot.y -= 360;
-        else if (rot.y < 360)
-            rot.y += 360;
-        transform.eulerAngles = rot;*/
-
-        //Handle turning
-        float rot = rotationAmount * CAMERA_TURN_SPEED * Time.deltaTime;
-        transform.RotateAround(transform.position + Camera.main.transform.forward * 35, Vector3.up, rot);
-        rotationAmount -= rotationAmount * CAMERA_TURN_SPEED * Time.deltaTime;
-        if (rotationAmount > -15 && rotationAmount < 15)
-        {
-            rotating = false;
-        }
-
-        //Bound the camera
-        /*if (transform.position.x >= -4) {
-            if (Input.mousePosition.x <= 20) {
-                transform.Translate (-.2f, 0, 0);// (transform.position.x-1,transform.position.y, transform.position.z);
+            if (Input.mousePosition.x <= HOR_BORDER ||
+            Input.GetKey(Game_Controller.controller.Get_Controlls()[Controlls.Camera_Scroll_Left][0]) ||
+            Input.GetKey(Game_Controller.controller.Get_Controlls()[Controlls.Camera_Scroll_Left][1]))
+            {
+                transform.Translate(-HOR_SPD, 0, 0);// (transform.position.x-1,transform.position.y, transform.position.z);
             }
-        }
-        if (transform.position.x <= 4) {
-            if (Input.mousePosition.x >= Screen.width - 20) {
-                transform.Translate (.2f, 0, 0);
+            if (Input.mousePosition.x >= Screen.width - HOR_BORDER ||
+                Input.GetKey(Game_Controller.controller.Get_Controlls()[Controlls.Camera_Scroll_Right][0]) ||
+                Input.GetKey(Game_Controller.controller.Get_Controlls()[Controlls.Camera_Scroll_Right][1]))
+            {
+                transform.Translate(HOR_SPD, 0, 0);
             }
-        }
-        if (transform.position.y >= -5) {
-            if (Input.mousePosition.y <= 10) {
-                transform.Translate (0, -.2f, 0);// (transform.position.x-1,transform.position.y, transform.position.z);
+            if (Input.mousePosition.y >= Screen.height - VER_BORDER ||
+                Input.GetKey(Game_Controller.controller.Get_Controlls()[Controlls.Camera_Scroll_Up][0]) ||
+                Input.GetKey(Game_Controller.controller.Get_Controlls()[Controlls.Camera_Scroll_Up][1]))
+            {
+                transform.Translate(0, 0, VER_SPD);
             }
-        }
-        if (transform.position.y <= 1) {
-            if (Input.mousePosition.y >= Screen.height - 10) {
-                transform.Translate (0, .2f, 0);
+            if (Input.mousePosition.y <= VER_BORDER ||
+                Input.GetKey(Game_Controller.controller.Get_Controlls()[Controlls.Camera_Scroll_Down][0]) ||
+                Input.GetKey(Game_Controller.controller.Get_Controlls()[Controlls.Camera_Scroll_Down][1]))
+            {
+                transform.Translate(0, 0, -VER_SPD);// (transform.position.x-1,transform.position.y, transform.position.z);
             }
-        }*/
+            transform.position = new Vector3(transform.position.x, CAMERA_HEIGHT, transform.position.z);
+
+            //Camera Zooming
+            if (Input.GetAxis("Mouse ScrollWheel") > 0f && this.GetComponent<Camera>().orthographicSize > 5) // forward
+            {
+                this.GetComponent<Camera>().orthographicSize--;
+            }
+            if (Input.GetAxis("Mouse ScrollWheel") < 0f && this.GetComponent<Camera>().orthographicSize < 15) // backwards
+            {
+                this.GetComponent<Camera>().orthographicSize++;
+            }
+
+            //Camera turning
+            /*Vector3 rot = transform.rotation.eulerAngles;
+            rot.y = rot.y + rotationAmount * Time.deltaTime * 2;
+            rotationAmount = rotationAmount - rotationAmount * Time.deltaTime * 2;
+            if (rot.y > 360)
+                rot.y -= 360;
+            else if (rot.y < 360)
+                rot.y += 360;
+            transform.eulerAngles = rot;*/
+
+            //Handle turning
+            float rot = rotationAmount * CAMERA_TURN_SPEED * Time.deltaTime;
+            transform.RotateAround(transform.position + Camera.main.transform.forward * 35, Vector3.up, rot);
+            rotationAmount -= rotationAmount * CAMERA_TURN_SPEED * Time.deltaTime;
+            if (rotationAmount > -15 && rotationAmount < 15)
+            {
+                rotating = false;
+            }
+
+            //Bound the camera
+            /*if (transform.position.x >= -4) {
+                if (Input.mousePosition.x <= 20) {
+                    transform.Translate (-.2f, 0, 0);// (transform.position.x-1,transform.position.y, transform.position.z);
+                }
+            }
+            if (transform.position.x <= 4) {
+                if (Input.mousePosition.x >= Screen.width - 20) {
+                    transform.Translate (.2f, 0, 0);
+                }
+            }
+            if (transform.position.y >= -5) {
+                if (Input.mousePosition.y <= 10) {
+                    transform.Translate (0, -.2f, 0);// (transform.position.x-1,transform.position.y, transform.position.z);
+                }
+            }
+            if (transform.position.y <= 1) {
+                if (Input.mousePosition.y >= Screen.height - 10) {
+                    transform.Translate (0, .2f, 0);
+                }
+            }*/
+        }
     }
 }

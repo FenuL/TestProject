@@ -43,7 +43,12 @@
   "activation":2,
   "trigger":0,
   "trigger_target":1,
-  "condition":"NOT_CHK_TARG_SELF & CHK_TARG_RANG",
+  "trigger_checks":
+  [
+    "CHK_NOT_TARG_EQ_SELF",
+	"&",
+	"CHK_TARG_RANG"
+  ],
   "origin":0,
   "enabled":true,
   "animation":"Attack"

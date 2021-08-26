@@ -1,0 +1,62 @@
+{
+    "name": "Testa",
+    "type": 0,
+    "action_names": [
+        "Bleed",
+        "Blink",
+        "Counter"
+    ],
+    "image": "Map",
+    "description": "Teast",
+    "weight": 1.0,
+    "sprite": "temp_main_menu",
+    "modifier": [
+        {
+            "values": [
+                0.5,
+                0.5,
+                0.5,
+                0.5,
+                0.5
+            ]
+        },
+        {
+            "values": [
+                0.5,
+                0.5,
+                0.5,
+                0.5,
+                0.5
+            ]
+        },
+        {
+            "values": [
+                0.5,
+                0.5,
+                0.5,
+                0.5,
+                0.5
+            ]
+        },
+        {
+            "values": [
+                0.5,
+                0.5,
+                0.5,
+                0.5,
+                0.5
+            ]
+        },
+        {
+            "values": [
+                0.5,
+                0.5,
+                0.5,
+                0.5,
+                0.5
+            ]
+        }
+    ],
+    "damage": 10,
+    "pierce": 0.5
+}

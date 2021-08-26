@@ -1,0 +1,9 @@
+SELF-Target is self	
+FRND-Target tag is same
+ENMY-Target tag differs
+HCHR-Target has Character
+HOBJ-Tile has Object
+HHAZ-Tile has Hazard
+TRAV-Tile is traversible
+IRNG-Target in range
+COND-Target has Condition

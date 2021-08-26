@@ -1,0 +1,3238 @@
+fileFormatVersion: 2
+guid: 0af57c14209a30c46a96538ee3c38d1a
+timeCreated: 1583874798
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: sprite_magus_transparent_0
+    21300002: sprite_magus_transparent_1
+    21300004: sprite_magus_transparent_2
+    21300006: sprite_magus_transparent_3
+    21300008: sprite_magus_transparent_4
+    21300010: sprite_magus_transparent_5
+    21300012: sprite_magus_transparent_6
+    21300014: sprite_magus_transparent_7
+    21300016: sprite_magus_transparent_8
+    21300018: sprite_magus_transparent_9
+    21300020: sprite_magus_transparent_10
+    21300022: sprite_magus_transparent_11
+    21300024: sprite_magus_transparent_12
+    21300026: sprite_magus_transparent_13
+    21300028: sprite_magus_transparent_14
+    21300030: sprite_magus_transparent_15
+    21300032: sprite_magus_transparent_16
+    21300034: sprite_magus_transparent_17
+    21300036: sprite_magus_transparent_18
+    21300038: sprite_magus_transparent_19
+    21300040: sprite_magus_transparent_20
+    21300042: sprite_magus_transparent_21
+    21300044: sprite_magus_transparent_22
+    21300046: sprite_magus_transparent_23
+    21300048: sprite_magus_transparent_24
+    21300050: sprite_magus_transparent_25
+    21300052: sprite_magus_transparent_26
+    21300054: sprite_magus_transparent_27
+    21300056: sprite_magus_transparent_28
+    21300058: sprite_magus_transparent_29
+    21300060: sprite_magus_transparent_30
+    21300062: sprite_magus_transparent_31
+    21300064: sprite_magus_transparent_32
+    21300066: sprite_magus_transparent_33
+    21300068: sprite_magus_transparent_34
+    21300070: sprite_magus_transparent_35
+    21300072: sprite_magus_transparent_36
+    21300074: sprite_magus_transparent_37
+    21300076: sprite_magus_transparent_38
+    21300078: sprite_magus_transparent_39
+    21300080: sprite_magus_transparent_40
+    21300082: sprite_magus_transparent_41
+    21300084: sprite_magus_transparent_42
+    21300086: sprite_magus_transparent_43
+    21300088: sprite_magus_transparent_44
+    21300090: sprite_magus_transparent_45
+    21300092: sprite_magus_transparent_46
+    21300094: sprite_magus_transparent_47
+    21300096: sprite_magus_transparent_48
+    21300098: sprite_magus_transparent_49
+    21300100: sprite_magus_transparent_50
+    21300102: sprite_magus_transparent_51
+    21300104: sprite_magus_transparent_52
+    21300106: sprite_magus_transparent_53
+    21300108: sprite_magus_transparent_54
+    21300110: sprite_magus_transparent_55
+    21300112: sprite_magus_transparent_56
+    21300114: sprite_magus_transparent_57
+    21300116: sprite_magus_transparent_58
+    21300118: sprite_magus_transparent_59
+    21300120: sprite_magus_transparent_60
+    21300122: sprite_magus_transparent_61
+    21300124: sprite_magus_transparent_62
+    21300126: sprite_magus_transparent_63
+    21300128: sprite_magus_transparent_64
+    21300130: sprite_magus_transparent_65
+    21300132: sprite_magus_transparent_66
+    21300134: sprite_magus_transparent_67
+    21300136: sprite_magus_transparent_68
+    21300138: sprite_magus_transparent_69
+    21300140: sprite_magus_transparent_70
+    21300142: sprite_magus_transparent_71
+    21300144: sprite_magus_transparent_72
+    21300146: sprite_magus_transparent_73
+    21300148: sprite_magus_transparent_74
+    21300150: sprite_magus_transparent_75
+    21300152: sprite_magus_transparent_76
+    21300154: sprite_magus_transparent_77
+    21300156: sprite_magus_transparent_78
+    21300158: sprite_magus_transparent_79
+    21300160: sprite_magus_transparent_80
+    21300162: sprite_magus_transparent_81
+    21300164: sprite_magus_transparent_82
+    21300166: sprite_magus_transparent_83
+    21300168: sprite_magus_transparent_84
+    21300170: sprite_magus_transparent_85
+    21300172: sprite_magus_transparent_86
+    21300174: sprite_magus_transparent_87
+    21300176: sprite_magus_transparent_88
+    21300178: sprite_magus_transparent_89
+    21300180: sprite_magus_transparent_90
+    21300182: sprite_magus_transparent_91
+    21300184: sprite_magus_transparent_92
+    21300186: sprite_magus_transparent_93
+    21300188: sprite_magus_transparent_94
+    21300190: sprite_magus_transparent_95
+    21300192: sprite_magus_transparent_96
+    21300194: sprite_magus_transparent_97
+    21300196: sprite_magus_transparent_98
+    21300198: sprite_magus_transparent_99
+    21300200: sprite_magus_transparent_100
+    21300202: sprite_magus_transparent_101
+    21300204: sprite_magus_transparent_102
+    21300206: sprite_magus_transparent_103
+    21300208: sprite_magus_transparent_104
+    21300210: sprite_magus_transparent_105
+    21300212: sprite_magus_transparent_106
+    21300214: sprite_magus_transparent_107
+    21300216: sprite_magus_transparent_108
+    21300218: sprite_magus_transparent_109
+    21300220: sprite_magus_transparent_110
+    21300222: sprite_magus_transparent_111
+    21300224: sprite_magus_transparent_112
+    21300226: sprite_magus_transparent_113
+    21300228: sprite_magus_transparent_114
+    21300230: sprite_magus_transparent_115
+    21300232: sprite_magus_transparent_116
+    21300234: sprite_magus_transparent_117
+    21300236: sprite_magus_transparent_118
+    21300238: sprite_magus_transparent_119
+    21300240: sprite_magus_transparent_120
+    21300242: sprite_magus_transparent_121
+    21300244: sprite_magus_transparent_122
+    21300246: sprite_magus_transparent_123
+    21300248: sprite_magus_transparent_124
+    21300250: sprite_magus_transparent_125
+    21300252: sprite_magus_transparent_126
+    21300254: sprite_magus_transparent_127
+    21300256: sprite_magus_transparent_128
+    21300258: sprite_magus_transparent_129
+    21300260: sprite_magus_transparent_130
+    21300262: sprite_magus_transparent_131
+    21300264: sprite_magus_transparent_132
+    21300266: sprite_magus_transparent_133
+    21300268: sprite_magus_transparent_134
+    21300270: sprite_magus_transparent_135
+    21300272: sprite_magus_transparent_136
+    21300274: sprite_magus_transparent_137
+    21300276: sprite_magus_transparent_138
+    21300278: sprite_magus_transparent_139
+    21300280: sprite_magus_transparent_140
+    21300282: sprite_magus_transparent_141
+    21300284: sprite_magus_transparent_142
+    21300286: sprite_magus_transparent_143
+    21300288: sprite_magus_transparent_144
+    21300290: sprite_magus_transparent_145
+    21300292: sprite_magus_transparent_146
+    21300294: sprite_magus_transparent_147
+    21300296: sprite_magus_transparent_148
+    21300298: sprite_magus_transparent_149
+    21300300: sprite_magus_transparent_150
+    21300302: sprite_magus_transparent_151
+    21300304: sprite_magus_transparent_152
+    21300306: sprite_magus_transparent_153
+    21300308: sprite_magus_transparent_154
+    21300310: sprite_magus_transparent_155
+    21300312: sprite_magus_transparent_156
+    21300314: sprite_magus_transparent_157
+    21300316: sprite_magus_transparent_158
+    21300318: sprite_magus_transparent_159
+    21300320: sprite_magus_transparent_160
+    21300322: sprite_magus_transparent_161
+    21300324: sprite_magus_transparent_162
+    21300326: sprite_magus_transparent_163
+    21300328: sprite_magus_transparent_164
+    21300330: sprite_magus_transparent_165
+    21300332: sprite_magus_transparent_166
+    21300334: sprite_magus_transparent_167
+    21300336: sprite_magus_transparent_168
+    21300338: sprite_magus_transparent_169
+    21300340: sprite_magus_transparent_170
+    21300342: sprite_magus_transparent_171
+    21300344: sprite_magus_transparent_172
+    21300346: sprite_magus_transparent_173
+    21300348: sprite_magus_transparent_174
+    21300350: sprite_magus_transparent_175
+    21300352: sprite_magus_transparent_176
+    21300354: sprite_magus_transparent_177
+    21300356: sprite_magus_transparent_178
+    21300358: sprite_magus_transparent_179
+    21300360: sprite_magus_transparent_180
+    21300362: sprite_magus_transparent_181
+    21300364: sprite_magus_transparent_182
+    21300366: sprite_magus_transparent_183
+    21300368: sprite_magus_transparent_184
+    21300370: sprite_magus_transparent_185
+    21300372: sprite_magus_transparent_186
+    21300374: sprite_magus_transparent_187
+    21300376: sprite_magus_transparent_188
+    21300378: sprite_magus_transparent_189
+    21300380: sprite_magus_transparent_190
+    21300382: sprite_magus_transparent_191
+    21300384: sprite_magus_transparent_192
+    21300386: sprite_magus_transparent_193
+    21300388: sprite_magus_transparent_194
+    21300390: sprite_magus_transparent_195
+    21300392: sprite_magus_transparent_196
+    21300394: sprite_magus_transparent_197
+    21300396: sprite_magus_transparent_198
+    21300398: sprite_magus_transparent_199
+    21300400: sprite_magus_transparent_200
+    21300402: sprite_magus_transparent_201
+    21300404: sprite_magus_transparent_202
+    21300406: sprite_magus_transparent_203
+    21300408: sprite_magus_transparent_204
+    21300410: sprite_magus_transparent_205
+    21300412: sprite_magus_transparent_206
+    21300414: sprite_magus_transparent_207
+    21300416: sprite_magus_transparent_208
+    21300418: sprite_magus_transparent_209
+    21300420: sprite_magus_transparent_210
+    21300422: sprite_magus_transparent_211
+    21300424: SpriteMagusTransparent_0
+    21300426: SpriteMagusTransparent_1
+    21300428: SpriteMagusTransparent_2
+    21300430: SpriteMagusTransparent_3
+    21300432: SpriteMagusTransparent_4
+    21300434: SpriteMagusTransparent_5
+    21300436: SpriteMagusTransparent_6
+    21300438: SpriteMagusTransparent_7
+    21300440: SpriteMagusTransparent_8
+    21300442: SpriteMagusTransparent_9
+    21300444: SpriteMagusTransparent_10
+    21300446: SpriteMagusTransparent_11
+    21300448: SpriteMagusTransparent_12
+    21300450: SpriteMagusTransparent_13
+    21300452: SpriteMagusTransparent_14
+    21300454: SpriteMagusTransparent_15
+    21300456: SpriteMagusTransparent_16
+    21300458: SpriteMagusTransparent_17
+    21300460: SpriteMagusTransparent_18
+    21300462: SpriteMagusTransparent_19
+    21300464: SpriteMagusTransparent_20
+    21300466: SpriteMagusTransparent_21
+    21300468: SpriteMagusTransparent_22
+    21300470: SpriteMagusTransparent_23
+    21300472: SpriteMagusTransparent_24
+    21300474: SpriteMagusTransparent_25
+    21300476: SpriteMagusTransparent_26
+    21300478: SpriteMagusTransparent_27
+    21300480: SpriteMagusTransparent_28
+    21300482: SpriteMagusTransparent_29
+    21300484: SpriteMagusTransparent_30
+    21300486: SpriteMagusTransparent_31
+    21300488: SpriteMagusTransparent_32
+    21300490: SpriteMagusTransparent_33
+    21300492: SpriteMagusTransparent_34
+    21300494: SpriteMagusTransparent_35
+    21300496: SpriteMagusTransparent_36
+    21300498: SpriteMagusTransparent_37
+    21300500: SpriteMagusTransparent_38
+    21300502: SpriteMagusTransparent_39
+    21300504: SpriteMagusTransparent_40
+    21300506: SpriteMagusTransparent_41
+    21300508: SpriteMagusTransparent_42
+    21300510: SpriteMagusTransparent_43
+    21300512: SpriteMagusTransparent_44
+    21300514: SpriteMagusTransparent_45
+    21300516: SpriteMagusTransparent_46
+    21300518: SpriteMagusTransparent_47
+    21300520: SpriteMagusTransparent_48
+    21300522: SpriteMagusTransparent_49
+    21300524: SpriteMagusTransparent_50
+    21300526: SpriteMagusTransparent_51
+    21300528: SpriteMagusTransparent_52
+    21300530: SpriteMagusTransparent_53
+    21300532: SpriteMagusTransparent_54
+    21300534: SpriteMagusTransparent_55
+    21300536: SpriteMagusTransparent_56
+    21300538: SpriteMagusTransparent_57
+    21300540: SpriteMagusTransparent_58
+    21300542: SpriteMagusTransparent_59
+    21300544: SpriteMagusTransparent_60
+    21300546: SpriteMagusTransparent_61
+    21300548: SpriteMagusTransparent_62
+    21300550: SpriteMagusTransparent_63
+    21300552: SpriteMagusTransparent_64
+    21300554: SpriteMagusTransparent_65
+    21300556: SpriteMagusTransparent_66
+    21300558: SpriteMagusTransparent_67
+    21300560: SpriteMagusTransparent_68
+    21300562: SpriteMagusTransparent_69
+    21300564: SpriteMagusTransparent_70
+    21300566: SpriteMagusTransparent_71
+    21300568: SpriteMagusTransparent_72
+    21300570: SpriteMagusTransparent_73
+    21300572: SpriteMagusTransparent_74
+    21300574: SpriteMagusTransparent_75
+    21300576: SpriteMagusTransparent_76
+    21300578: SpriteMagusTransparent_77
+    21300580: SpriteMagusTransparent_78
+    21300582: SpriteMagusTransparent_79
+    21300584: SpriteMagusTransparent_80
+    21300586: SpriteMagusTransparent_81
+    21300588: SpriteMagusTransparent_82
+    21300590: SpriteMagusTransparent_83
+    21300592: SpriteMagusTransparent_84
+    21300594: SpriteMagusTransparent_85
+    21300596: SpriteMagusTransparent_86
+    21300598: SpriteMagusTransparent_87
+    21300600: SpriteMagusTransparent_88
+    21300602: SpriteMagusTransparent_89
+    21300604: SpriteMagusTransparent_90
+    21300606: SpriteMagusTransparent_91
+    21300608: SpriteMagusTransparent_92
+    21300610: SpriteMagusTransparent_93
+    21300612: SpriteMagusTransparent_94
+    21300614: SpriteMagusTransparent_95
+    21300616: SpriteMagusTransparent_96
+    21300618: SpriteMagusTransparent_97
+    21300620: SpriteMagusTransparent_98
+    21300622: SpriteMagusTransparent_99
+    21300624: SpriteMagusTransparent_100
+    21300626: SpriteMagusTransparent_101
+    21300628: SpriteMagusTransparent_102
+    21300630: SpriteMagusTransparent_103
+    21300632: SpriteMagusTransparent_104
+    21300634: SpriteMagusTransparent_105
+    21300636: SpriteMagusTransparent_106
+    21300638: SpriteMagusTransparent_107
+    21300640: SpriteMagusTransparent_108
+    21300642: SpriteMagusTransparent_109
+    21300644: SpriteMagusTransparent_110
+    21300646: SpriteMagusTransparent_111
+    21300648: SpriteMagusTransparent_112
+    21300650: SpriteMagusTransparent_113
+    21300652: SpriteMagusTransparent_114
+    21300654: SpriteMagusTransparent_115
+    21300656: SpriteMagusTransparent_116
+    21300658: SpriteMagusTransparent_117
+    21300660: SpriteMagusTransparent_118
+    21300662: SpriteMagusTransparent_119
+    21300664: SpriteMagusTransparent_120
+    21300666: SpriteMagusTransparent_121
+    21300668: SpriteMagusTransparent_122
+    21300670: SpriteMagusTransparent_123
+    21300672: SpriteMagusTransparent_124
+    21300674: SpriteMagusTransparent_125
+    21300676: SpriteMagusTransparent_126
+    21300678: SpriteMagusTransparent_127
+    21300680: SpriteMagusTransparent_128
+    21300682: SpriteMagusTransparent_129
+    21300684: SpriteMagusTransparent_130
+    21300686: SpriteMagusTransparent_131
+    21300688: SpriteMagusTransparent_132
+    21300690: SpriteMagusTransparent_133
+    21300692: SpriteMagusTransparent_134
+    21300694: SpriteMagusTransparent_135
+    21300696: SpriteMagusTransparent_136
+    21300698: SpriteMagusTransparent_137
+    21300700: SpriteMagusTransparent_138
+    21300702: SpriteMagusTransparent_139
+    21300704: SpriteMagusTransparent_140
+    21300706: SpriteMagusTransparent_141
+    21300708: SpriteMagusTransparent_142
+    21300710: SpriteMagusTransparent_143
+    21300712: SpriteMagusTransparent_144
+    21300714: SpriteMagusTransparent_145
+    21300716: SpriteMagusTransparent_146
+    21300718: SpriteMagusTransparent_147
+    21300720: SpriteMagusTransparent_148
+    21300722: SpriteMagusTransparent_149
+    21300724: SpriteMagusTransparent_150
+    21300726: SpriteMagusTransparent_151
+    21300728: SpriteMagusTransparent_152
+    21300730: SpriteMagusTransparent_153
+    21300732: SpriteMagusTransparent_154
+    21300734: SpriteMagusTransparent_155
+    21300736: SpriteMagusTransparent_156
+    21300738: SpriteMagusTransparent_157
+    21300740: SpriteMagusTransparent_158
+    21300742: SpriteMagusTransparent_159
+    21300744: SpriteMagusTransparent_160
+    21300746: SpriteMagusTransparent_161
+    21300748: SpriteMagusTransparent_162
+    21300750: SpriteMagusTransparent_163
+    21300752: SpriteMagusTransparent_164
+    21300754: SpriteMagusTransparent_165
+    21300756: SpriteMagusTransparent_166
+    21300758: SpriteMagusTransparent_167
+    21300760: SpriteMagusTransparent_168
+    21300762: SpriteMagusTransparent_169
+    21300764: SpriteMagusTransparent_170
+    21300766: SpriteMagusTransparent_171
+    21300768: SpriteMagusTransparent_172
+    21300770: SpriteMagusTransparent_173
+    21300772: SpriteMagusTransparent_174
+    21300774: SpriteMagusTransparent_175
+    21300776: SpriteMagusTransparent_176
+    21300778: SpriteMagusTransparent_177
+    21300780: SpriteMagusTransparent_178
+    21300782: SpriteMagusTransparent_179
+    21300784: SpriteMagusTransparent_180
+    21300786: SpriteMagusTransparent_181
+    21300788: SpriteMagusTransparent_182
+    21300790: SpriteMagusTransparent_183
+    21300792: SpriteMagusTransparent_184
+    21300794: SpriteMagusTransparent_185
+    21300796: SpriteMagusTransparent_186
+    21300798: SpriteMagusTransparent_187
+    21300800: SpriteMagusTransparent_188
+    21300802: SpriteMagusTransparent_189
+    21300804: SpriteMagusTransparent_190
+    21300806: SpriteMagusTransparent_191
+    21300808: SpriteMagusTransparent_192
+    21300810: SpriteMagusTransparent_193
+    21300812: SpriteMagusTransparent_194
+    21300814: SpriteMagusTransparent_195
+    21300816: SpriteMagusTransparent_196
+    21300818: SpriteMagusTransparent_197
+    21300820: SpriteMagusTransparent_198
+    21300822: SpriteMagusTransparent_199
+    21300824: SpriteMagusTransparent_200
+    21300826: SpriteMagusTransparent_201
+    21300828: SpriteMagusTransparent_202
+    21300830: SpriteMagusTransparent_203
+    21300832: SpriteMagusTransparent_204
+    21300834: SpriteMagusTransparent_205
+    21300836: SpriteMagusTransparent_206
+    21300838: SpriteMagusTransparent_207
+    21300840: SpriteMagusTransparent_208
+    21300842: SpriteMagusTransparent_209
+    21300844: SpriteMagusTransparent_210
+    21300846: SpriteMagusTransparent_211
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 8
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 8192
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_0
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 790
+        width: 18
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_1
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 790
+        width: 15
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_2
+      rect:
+        serializedVersion: 2
+        x: 251
+        y: 790
+        width: 19
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_3
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 790
+        width: 15
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_4
+      rect:
+        serializedVersion: 2
+        x: 326
+        y: 790
+        width: 30
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_5
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 791
+        width: 24
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_6
+      rect:
+        serializedVersion: 2
+        x: 405
+        y: 790
+        width: 32
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_7
+      rect:
+        serializedVersion: 2
+        x: 449
+        y: 791
+        width: 24
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_8
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 748
+        width: 16
+        height: 16
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_9
+      rect:
+        serializedVersion: 2
+        x: 80
+        y: 748
+        width: 15
+        height: 16
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_10
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 750
+        width: 18
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_11
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 750
+        width: 15
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_12
+      rect:
+        serializedVersion: 2
+        x: 251
+        y: 750
+        width: 19
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_13
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 750
+        width: 15
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_14
+      rect:
+        serializedVersion: 2
+        x: 325
+        y: 750
+        width: 32
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_15
+      rect:
+        serializedVersion: 2
+        x: 365
+        y: 751
+        width: 32
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_16
+      rect:
+        serializedVersion: 2
+        x: 405
+        y: 750
+        width: 32
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_17
+      rect:
+        serializedVersion: 2
+        x: 445
+        y: 751
+        width: 32
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_18
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 710
+        width: 16
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_19
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 710
+        width: 21
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_20
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 710
+        width: 21
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_21
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 710
+        width: 18
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_22
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 710
+        width: 15
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_23
+      rect:
+        serializedVersion: 2
+        x: 251
+        y: 710
+        width: 19
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_24
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 710
+        width: 15
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_25
+      rect:
+        serializedVersion: 2
+        x: 326
+        y: 710
+        width: 30
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_26
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 711
+        width: 24
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_27
+      rect:
+        serializedVersion: 2
+        x: 449
+        y: 711
+        width: 24
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_28
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 671
+        width: 32
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_29
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 671
+        width: 32
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_30
+      rect:
+        serializedVersion: 2
+        x: 125
+        y: 671
+        width: 32
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_31
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 670
+        width: 18
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_32
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 670
+        width: 15
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_33
+      rect:
+        serializedVersion: 2
+        x: 251
+        y: 670
+        width: 19
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_34
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 670
+        width: 15
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_35
+      rect:
+        serializedVersion: 2
+        x: 329
+        y: 670
+        width: 24
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_36
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 670
+        width: 24
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_37
+      rect:
+        serializedVersion: 2
+        x: 411
+        y: 670
+        width: 20
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_38
+      rect:
+        serializedVersion: 2
+        x: 449
+        y: 670
+        width: 24
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_39
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 630
+        width: 24
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_40
+      rect:
+        serializedVersion: 2
+        x: 86
+        y: 630
+        width: 30
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_41
+      rect:
+        serializedVersion: 2
+        x: 126
+        y: 630
+        width: 30
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_42
+      rect:
+        serializedVersion: 2
+        x: 171
+        y: 630
+        width: 19
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_43
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 630
+        width: 16
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_44
+      rect:
+        serializedVersion: 2
+        x: 253
+        y: 630
+        width: 16
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_45
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 630
+        width: 16
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_46
+      rect:
+        serializedVersion: 2
+        x: 327
+        y: 631
+        width: 28
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_47
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 631
+        width: 24
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_48
+      rect:
+        serializedVersion: 2
+        x: 410
+        y: 630
+        width: 21
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_49
+      rect:
+        serializedVersion: 2
+        x: 449
+        y: 631
+        width: 24
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_50
+      rect:
+        serializedVersion: 2
+        x: 48
+        y: 592
+        width: 26
+        height: 29
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_51
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 598
+        width: 32
+        height: 16
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_52
+      rect:
+        serializedVersion: 2
+        x: 125
+        y: 598
+        width: 32
+        height: 16
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_53
+      rect:
+        serializedVersion: 2
+        x: 171
+        y: 591
+        width: 19
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_54
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 591
+        width: 16
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_55
+      rect:
+        serializedVersion: 2
+        x: 253
+        y: 590
+        width: 16
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_56
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 591
+        width: 16
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_57
+      rect:
+        serializedVersion: 2
+        x: 326
+        y: 591
+        width: 30
+        height: 30
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_58
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 591
+        width: 24
+        height: 30
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_59
+      rect:
+        serializedVersion: 2
+        x: 405
+        y: 590
+        width: 32
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_60
+      rect:
+        serializedVersion: 2
+        x: 449
+        y: 591
+        width: 24
+        height: 30
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_61
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 550
+        width: 31
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_62
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 550
+        width: 23
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_63
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 550
+        width: 23
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_64
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 550
+        width: 18
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_65
+      rect:
+        serializedVersion: 2
+        x: 213
+        y: 550
+        width: 15
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_66
+      rect:
+        serializedVersion: 2
+        x: 293
+        y: 550
+        width: 15
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_67
+      rect:
+        serializedVersion: 2
+        x: 327
+        y: 551
+        width: 28
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_68
+      rect:
+        serializedVersion: 2
+        x: 369
+        y: 551
+        width: 24
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_69
+      rect:
+        serializedVersion: 2
+        x: 410
+        y: 550
+        width: 21
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_70
+      rect:
+        serializedVersion: 2
+        x: 449
+        y: 551
+        width: 24
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_71
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 510
+        width: 30
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_72
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 510
+        width: 23
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_73
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 510
+        width: 23
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_74
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 515
+        width: 24
+        height: 23
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_75
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 513
+        width: 22
+        height: 26
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_76
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 514
+        width: 24
+        height: 24
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_77
+      rect:
+        serializedVersion: 2
+        x: 290
+        y: 513
+        width: 22
+        height: 26
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_78
+      rect:
+        serializedVersion: 2
+        x: 329
+        y: 511
+        width: 23
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_79
+      rect:
+        serializedVersion: 2
+        x: 368
+        y: 511
+        width: 26
+        height: 30
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_80
+      rect:
+        serializedVersion: 2
+        x: 408
+        y: 510
+        width: 26
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_81
+      rect:
+        serializedVersion: 2
+        x: 448
+        y: 511
+        width: 26
+        height: 30
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_82
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 470
+        width: 18
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_83
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 468
+        width: 23
+        height: 36
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_84
+      rect:
+        serializedVersion: 2
+        x: 129
+        y: 468
+        width: 23
+        height: 36
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_85
+      rect:
+        serializedVersion: 2
+        x: 169
+        y: 474
+        width: 24
+        height: 24
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_86
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 473
+        width: 22
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_87
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 475
+        width: 24
+        height: 23
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_88
+      rect:
+        serializedVersion: 2
+        x: 290
+        y: 473
+        width: 22
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_89
+      rect:
+        serializedVersion: 2
+        x: 325
+        y: 471
+        width: 31
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_90
+      rect:
+        serializedVersion: 2
+        x: 370
+        y: 471
+        width: 22
+        height: 30
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_91
+      rect:
+        serializedVersion: 2
+        x: 411
+        y: 470
+        width: 20
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_92
+      rect:
+        serializedVersion: 2
+        x: 450
+        y: 471
+        width: 22
+        height: 30
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_93
+      rect:
+        serializedVersion: 2
+        x: 43
+        y: 430
+        width: 36
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_94
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 430
+        width: 36
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_95
+      rect:
+        serializedVersion: 2
+        x: 123
+        y: 430
+        width: 36
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_96
+      rect:
+        serializedVersion: 2
+        x: 170
+        y: 430
+        width: 21
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_97
+      rect:
+        serializedVersion: 2
+        x: 207
+        y: 430
+        width: 29
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_98
+      rect:
+        serializedVersion: 2
+        x: 253
+        y: 430
+        width: 16
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_99
+      rect:
+        serializedVersion: 2
+        x: 286
+        y: 430
+        width: 29
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_100
+      rect:
+        serializedVersion: 2
+        x: 332
+        y: 428
+        width: 18
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_101
+      rect:
+        serializedVersion: 2
+        x: 370
+        y: 428
+        width: 21
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_102
+      rect:
+        serializedVersion: 2
+        x: 410
+        y: 428
+        width: 21
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_103
+      rect:
+        serializedVersion: 2
+        x: 450
+        y: 428
+        width: 21
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_104
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 390
+        width: 18
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_105
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 390
+        width: 22
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_106
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 390
+        width: 22
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_107
+      rect:
+        serializedVersion: 2
+        x: 171
+        y: 390
+        width: 20
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_108
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 390
+        width: 20
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_109
+      rect:
+        serializedVersion: 2
+        x: 252
+        y: 390
+        width: 18
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_110
+      rect:
+        serializedVersion: 2
+        x: 291
+        y: 390
+        width: 20
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_111
+      rect:
+        serializedVersion: 2
+        x: 333
+        y: 388
+        width: 15
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_112
+      rect:
+        serializedVersion: 2
+        x: 371
+        y: 388
+        width: 20
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_113
+      rect:
+        serializedVersion: 2
+        x: 413
+        y: 388
+        width: 16
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_114
+      rect:
+        serializedVersion: 2
+        x: 451
+        y: 388
+        width: 20
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_115
+      rect:
+        serializedVersion: 2
+        x: 46
+        y: 350
+        width: 29
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_116
+      rect:
+        serializedVersion: 2
+        x: 90
+        y: 350
+        width: 22
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_117
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 350
+        width: 22
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_118
+      rect:
+        serializedVersion: 2
+        x: 170
+        y: 350
+        width: 21
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_119
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 350
+        width: 21
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_120
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 350
+        width: 23
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_121
+      rect:
+        serializedVersion: 2
+        x: 290
+        y: 350
+        width: 21
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_122
+      rect:
+        serializedVersion: 2
+        x: 333
+        y: 348
+        width: 15
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_123
+      rect:
+        serializedVersion: 2
+        x: 371
+        y: 348
+        width: 20
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_124
+      rect:
+        serializedVersion: 2
+        x: 413
+        y: 348
+        width: 16
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_125
+      rect:
+        serializedVersion: 2
+        x: 451
+        y: 348
+        width: 20
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_126
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 310
+        width: 22
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_127
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 310
+        width: 20
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_128
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 310
+        width: 20
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_129
+      rect:
+        serializedVersion: 2
+        x: 170
+        y: 310
+        width: 22
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_130
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 310
+        width: 22
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_131
+      rect:
+        serializedVersion: 2
+        x: 252
+        y: 310
+        width: 18
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_132
+      rect:
+        serializedVersion: 2
+        x: 290
+        y: 310
+        width: 22
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_133
+      rect:
+        serializedVersion: 2
+        x: 333
+        y: 308
+        width: 15
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_134
+      rect:
+        serializedVersion: 2
+        x: 370
+        y: 308
+        width: 21
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_135
+      rect:
+        serializedVersion: 2
+        x: 450
+        y: 308
+        width: 21
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_136
+      rect:
+        serializedVersion: 2
+        x: 50
+        y: 270
+        width: 22
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_137
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 270
+        width: 20
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_138
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 270
+        width: 20
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_139
+      rect:
+        serializedVersion: 2
+        x: 170
+        y: 270
+        width: 22
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_140
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 270
+        width: 22
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_141
+      rect:
+        serializedVersion: 2
+        x: 290
+        y: 270
+        width: 22
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_142
+      rect:
+        serializedVersion: 2
+        x: 329
+        y: 269
+        width: 23
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_143
+      rect:
+        serializedVersion: 2
+        x: 373
+        y: 268
+        width: 16
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_144
+      rect:
+        serializedVersion: 2
+        x: 410
+        y: 268
+        width: 21
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_145
+      rect:
+        serializedVersion: 2
+        x: 453
+        y: 268
+        width: 16
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_146
+      rect:
+        serializedVersion: 2
+        x: 53
+        y: 229
+        width: 22
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_147
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 230
+        width: 24
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_148
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 232
+        width: 25
+        height: 29
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_149
+      rect:
+        serializedVersion: 2
+        x: 170
+        y: 230
+        width: 22
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_150
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 230
+        width: 22
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_151
+      rect:
+        serializedVersion: 2
+        x: 252
+        y: 230
+        width: 18
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_152
+      rect:
+        serializedVersion: 2
+        x: 290
+        y: 230
+        width: 22
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_153
+      rect:
+        serializedVersion: 2
+        x: 329
+        y: 228
+        width: 23
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_154
+      rect:
+        serializedVersion: 2
+        x: 373
+        y: 228
+        width: 16
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_155
+      rect:
+        serializedVersion: 2
+        x: 409
+        y: 228
+        width: 24
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_156
+      rect:
+        serializedVersion: 2
+        x: 453
+        y: 228
+        width: 16
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_157
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 191
+        width: 30
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_158
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 191
+        width: 30
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_159
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 191
+        width: 24
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_160
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 191
+        width: 30
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_161
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 190
+        width: 21
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_162
+      rect:
+        serializedVersion: 2
+        x: 249
+        y: 190
+        width: 23
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_163
+      rect:
+        serializedVersion: 2
+        x: 290
+        y: 190
+        width: 21
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_164
+      rect:
+        serializedVersion: 2
+        x: 330
+        y: 189
+        width: 22
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_165
+      rect:
+        serializedVersion: 2
+        x: 370
+        y: 189
+        width: 22
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_166
+      rect:
+        serializedVersion: 2
+        x: 409
+        y: 189
+        width: 23
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_167
+      rect:
+        serializedVersion: 2
+        x: 450
+        y: 189
+        width: 22
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_168
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 151
+        width: 31
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_169
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 151
+        width: 31
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_170
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 151
+        width: 24
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_171
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 151
+        width: 31
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_172
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 150
+        width: 22
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_173
+      rect:
+        serializedVersion: 2
+        x: 253
+        y: 150
+        width: 16
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_174
+      rect:
+        serializedVersion: 2
+        x: 290
+        y: 150
+        width: 22
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_175
+      rect:
+        serializedVersion: 2
+        x: 329
+        y: 149
+        width: 23
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_176
+      rect:
+        serializedVersion: 2
+        x: 371
+        y: 148
+        width: 20
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_177
+      rect:
+        serializedVersion: 2
+        x: 410
+        y: 148
+        width: 21
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_178
+      rect:
+        serializedVersion: 2
+        x: 451
+        y: 148
+        width: 20
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_179
+      rect:
+        serializedVersion: 2
+        x: 49
+        y: 112
+        width: 22
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_180
+      rect:
+        serializedVersion: 2
+        x: 89
+        y: 112
+        width: 22
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_181
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 112
+        width: 21
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_182
+      rect:
+        serializedVersion: 2
+        x: 173
+        y: 113
+        width: 22
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_183
+      rect:
+        serializedVersion: 2
+        x: 210
+        y: 110
+        width: 22
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_184
+      rect:
+        serializedVersion: 2
+        x: 253
+        y: 110
+        width: 16
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_185
+      rect:
+        serializedVersion: 2
+        x: 290
+        y: 110
+        width: 22
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_186
+      rect:
+        serializedVersion: 2
+        x: 329
+        y: 108
+        width: 23
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_187
+      rect:
+        serializedVersion: 2
+        x: 373
+        y: 108
+        width: 16
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_188
+      rect:
+        serializedVersion: 2
+        x: 409
+        y: 108
+        width: 24
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_189
+      rect:
+        serializedVersion: 2
+        x: 453
+        y: 108
+        width: 16
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_190
+      rect:
+        serializedVersion: 2
+        x: 45
+        y: 72
+        width: 30
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_191
+      rect:
+        serializedVersion: 2
+        x: 85
+        y: 72
+        width: 30
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_192
+      rect:
+        serializedVersion: 2
+        x: 134
+        y: 72
+        width: 16
+        height: 36
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_193
+      rect:
+        serializedVersion: 2
+        x: 171
+        y: 74
+        width: 22
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_194
+      rect:
+        serializedVersion: 2
+        x: 211
+        y: 73
+        width: 22
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_195
+      rect:
+        serializedVersion: 2
+        x: 253
+        y: 73
+        width: 18
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_196
+      rect:
+        serializedVersion: 2
+        x: 290
+        y: 73
+        width: 23
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_197
+      rect:
+        serializedVersion: 2
+        x: 333
+        y: 73
+        width: 18
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_198
+      rect:
+        serializedVersion: 2
+        x: 365
+        y: 71
+        width: 32
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_199
+      rect:
+        serializedVersion: 2
+        x: 407
+        y: 70
+        width: 28
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_200
+      rect:
+        serializedVersion: 2
+        x: 445
+        y: 71
+        width: 32
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_201
+      rect:
+        serializedVersion: 2
+        x: 44
+        y: 32
+        width: 32
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_202
+      rect:
+        serializedVersion: 2
+        x: 84
+        y: 32
+        width: 32
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_203
+      rect:
+        serializedVersion: 2
+        x: 130
+        y: 32
+        width: 24
+        height: 36
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_204
+      rect:
+        serializedVersion: 2
+        x: 167
+        y: 34
+        width: 30
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_205
+      rect:
+        serializedVersion: 2
+        x: 206
+        y: 32
+        width: 31
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_206
+      rect:
+        serializedVersion: 2
+        x: 246
+        y: 32
+        width: 32
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_207
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 32
+        width: 27
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_208
+      rect:
+        serializedVersion: 2
+        x: 326
+        y: 32
+        width: 32
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_209
+      rect:
+        serializedVersion: 2
+        x: 367
+        y: 29
+        width: 24
+        height: 36
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_210
+      rect:
+        serializedVersion: 2
+        x: 403
+        y: 31
+        width: 32
+        height: 32
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: SpriteMagusTransparent_211
+      rect:
+        serializedVersion: 2
+        x: 443
+        y: 30
+        width: 31
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

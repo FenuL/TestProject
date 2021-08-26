@@ -1,0 +1,76 @@
+{
+    "character_id": 0,
+    "character_name": "En",
+    "animator_name": "En",
+    "character_scale": [
+        1.0,
+        1.0,
+        1.0
+    ],
+    "aura_max": 100,
+    "aura_curr": 100,
+    "action_max": 2,
+    "action_curr": 2,
+    "mana_max": 20,
+    "mana_curr": 20,
+    "reaction_max": 2,
+    "reaction_curr": 2,
+    "strength": 5,
+    "dexterity": 5,
+    "spirit": 4,
+    "initiative": 10,
+    "vitality": 10,
+    "accuracy": 0.0,
+    "resistance": 0.0,
+    "lethality": 1.5,
+    "finesse": 1.5,
+    "default_speed": 6.0,
+    "speed": 6.0,
+    "weight": 0.0,
+    "level": 1,
+    "orientation": 0,
+    "camera_orientation_offset": 0,
+    "camera_position_offset": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "height_offset": 0.0,
+    "curr_tile_index": [],
+    "weapon": {
+        "name": "",
+        "type": 0,
+        "action_names": [
+            "",
+            "",
+            "",
+            ""
+        ],
+        "image": "",
+        "description": "",
+        "weight": 0.0,
+        "sprite": "",
+        "modifier": [],
+        "damage": 0,
+        "pierce": 0.0
+    },
+    "armor": {
+        "name": "",
+        "type": 1,
+        "action_names": [
+            "",
+            "",
+            ""
+        ],
+        "image": "",
+        "description": "",
+        "weight": 0.0,
+        "sprite": "",
+        "armor": 0
+    },
+    "accessories": [],
+    "actions": [],
+    "reactions": [],
+    "background": "En is a fun guy",
+    "spritesheet": "Player_Sprites/En"
+}

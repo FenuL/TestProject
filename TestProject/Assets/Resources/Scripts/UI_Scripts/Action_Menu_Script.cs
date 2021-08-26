@@ -20,7 +20,6 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
     public RectTransform container;
     public Text text;
     public List<Transform> buttons;
-    public Game_Controller controller { get; private set; }
     public bool is_open { get; private set; }
     public bool toggle_open { get; private set; }
 
@@ -57,7 +56,6 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
 
     // Use this for initialization
     void Start () {
-        controller = Game_Controller.controller;
         //container = transform.FindChild("Action Menu").GetComponent<RectTransform>();
         //resetActions();
         is_open = false;
@@ -97,13 +95,11 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
         int x = 0;
         buttons = new List<Transform>();
         Transform button;
-        double ap_cost;
-        double mp_cost;
         //Center the action menu based on available actions
         //container.GetComponent<RectTransform>().position = new Vector3(Screen.width/2+200 - 50f* controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().actions.Count/2, this.GetComponent<RectTransform>().position.y+15, 0);
-        container.GetComponent<RectTransform>().position = new Vector3(Screen.width / 2 + 200 - 50f * Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().actions.Count / 2, this.GetComponent<RectTransform>().position.y + 15, 0);
+        container.GetComponent<RectTransform>().position = new Vector3(Screen.width / 2 + 200 - 50f * Game_Controller.Get_Curr_Scenario().Get_Curr_Character().Get_Curr_Actions().Count / 2, this.GetComponent<RectTransform>().position.y + 15, 0);
         //foreach (Character_Action a in controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().actions)
-        foreach (Character_Action a in Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().actions)
+        foreach (Character_Action a in Game_Controller.Get_Curr_Scenario().Get_Curr_Character().Get_Curr_Actions())
         {
             button = container.GetComponent<RectTransform>().GetChild(x);
             buttons.Add(button);
@@ -116,15 +112,9 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
             button.GetComponent<Button>().onClick.RemoveAllListeners();
 
             //check if the cost of the action is too high
-            ap_cost = a.Convert_To_Float(a.ap_cost, null, null);
-            mp_cost = a.Convert_To_Float(a.mp_cost, null, null);
-            /*if (ap_cost > controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().action_curr ||
-                mp_cost > controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().mana_curr ||
-                !a.enabled || a.activation != Character_Action.Activation_Types.Active)
-                */
-            if (ap_cost > Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().action_curr ||
-                mp_cost > Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().mana_curr ||
-                !a.enabled || a.activation != Character_Action.Activation_Types.Active)
+            if (a.Check_Resource() ||
+                !a.enabled || 
+                a.activation != Character_Action.Activation_Types.Active)
             {
                 button.GetComponent<Image>().color = Color.red;
             }else
@@ -132,7 +122,7 @@ public class Action_Menu_Script : MonoBehaviour, IPointerEnterHandler, IPointerE
                 int index = x;
 
                 //button.GetComponent<Button>().onClick.AddListener(() => { controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().actions[index].Select(); });
-                button.GetComponent<Button>().onClick.AddListener(() => { Game_Controller.curr_scenario.curr_player.Peek().GetComponent<Character_Script>().actions[index].Select(); });
+                button.GetComponent<Button>().onClick.AddListener(() => { Game_Controller.Get_Curr_Scenario().Get_Curr_Character().actions[index].Select(); });
             }
             button_num = x + 1;
             x++;

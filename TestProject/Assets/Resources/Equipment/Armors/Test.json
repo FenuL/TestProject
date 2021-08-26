@@ -1,0 +1,13 @@
+{
+    "name": "Test",
+    "type": 1,
+    "action_names": [
+        "Channel",
+        "Slash"
+    ],
+    "image": "Larken_9",
+    "description": "Test Armor",
+    "weight": 0.0,
+    "sprite": "temp_main_menu",
+    "armor": 0
+}

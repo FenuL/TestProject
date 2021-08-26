@@ -1,0 +1,433 @@
+fileFormatVersion: 2
+guid: 4f7d742591830fd4aa805dbd76671f72
+timeCreated: 1583907435
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: Beetleboar_Sprite_01_0
+    21300002: Beetleboar_Sprite_01_1
+    21300004: Beetleboar_Sprite_01_2
+    21300006: Beetleboar_Sprite_01_3
+    21300008: Beetleboar_Sprite_01_4
+    21300010: Beetleboar_Sprite_01_5
+    21300012: Beetleboar_Sprite_01_6
+    21300014: Beetleboar_Sprite_01_7
+    21300016: Beetleboar_Sprite_01_8
+    21300018: Beetleboar_Sprite_01_9
+    21300020: Beetleboar_Sprite_01_10
+    21300022: Beetleboar_Sprite_01_11
+    21300024: Beetleboar_Sprite_01_12
+    21300026: Beetleboar_Sprite_01_13
+    21300028: Beetleboar_Sprite_01_14
+    21300030: Beetleboar_Sprite_01_15
+    21300032: Beetleboar_Sprite_01_16
+    21300034: Beetleboar_Sprite_01_17
+    21300036: Beetleboar_Sprite_01_18
+    21300038: Beetleboar_Sprite_01_19
+    21300040: Beetleboar_Sprite_01_20
+    21300042: Beetleboar_Sprite_01_21
+    21300044: Beetleboar_Sprite_01_22
+    21300046: Beetleboar_Sprite_01_23
+    21300048: Beetleboar_Sprite_01_24
+    21300050: Beetleboar_0
+    21300052: Beetleboar_1
+    21300054: Beetleboar_2
+    21300056: Beetleboar_3
+    21300058: Beetleboar_4
+    21300060: Beetleboar_5
+    21300062: Beetleboar_6
+    21300064: Beetleboar_7
+    21300066: Beetleboar_8
+    21300068: Beetleboar_9
+    21300070: Beetleboar_10
+    21300072: Beetleboar_11
+    21300074: Beetleboar_12
+    21300076: Beetleboar_13
+    21300078: Beetleboar_14
+    21300080: Beetleboar_15
+    21300082: Beetleboar_16
+    21300084: Beetleboar_17
+    21300086: Beetleboar_18
+    21300088: Beetleboar_19
+    21300090: Beetleboar_20
+    21300092: Beetleboar_21
+    21300094: Beetleboar_22
+    21300096: Beetleboar_23
+    21300098: Beetleboar_24
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Beetleboar_0
+      rect:
+        serializedVersion: 2
+        x: 10
+        y: 194
+        width: 32
+        height: 47
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_1
+      rect:
+        serializedVersion: 2
+        x: 51
+        y: 199
+        width: 40
+        height: 42
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_2
+      rect:
+        serializedVersion: 2
+        x: 101
+        y: 197
+        width: 39
+        height: 43
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_3
+      rect:
+        serializedVersion: 2
+        x: 147
+        y: 195
+        width: 43
+        height: 46
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_4
+      rect:
+        serializedVersion: 2
+        x: 196
+        y: 196
+        width: 42
+        height: 44
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_5
+      rect:
+        serializedVersion: 2
+        x: 242
+        y: 194
+        width: 46
+        height: 44
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_6
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 150
+        width: 39
+        height: 43
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_7
+      rect:
+        serializedVersion: 2
+        x: 100
+        y: 148
+        width: 41
+        height: 44
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_8
+      rect:
+        serializedVersion: 2
+        x: 147
+        y: 147
+        width: 44
+        height: 44
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_9
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 149
+        width: 43
+        height: 44
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_10
+      rect:
+        serializedVersion: 2
+        x: 242
+        y: 153
+        width: 45
+        height: 40
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_11
+      rect:
+        serializedVersion: 2
+        x: 56
+        y: 101
+        width: 37
+        height: 40
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_12
+      rect:
+        serializedVersion: 2
+        x: 101
+        y: 103
+        width: 40
+        height: 41
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_13
+      rect:
+        serializedVersion: 2
+        x: 148
+        y: 101
+        width: 40
+        height: 43
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_14
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 101
+        width: 42
+        height: 43
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_15
+      rect:
+        serializedVersion: 2
+        x: 242
+        y: 102
+        width: 47
+        height: 43
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_16
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 53
+        width: 41
+        height: 41
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_17
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 53
+        width: 44
+        height: 40
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_18
+      rect:
+        serializedVersion: 2
+        x: 149
+        y: 52
+        width: 42
+        height: 44
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_19
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 52
+        width: 45
+        height: 44
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_20
+      rect:
+        serializedVersion: 2
+        x: 242
+        y: 54
+        width: 45
+        height: 43
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_21
+      rect:
+        serializedVersion: 2
+        x: 52
+        y: 4
+        width: 45
+        height: 37
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_22
+      rect:
+        serializedVersion: 2
+        x: 113
+        y: 8
+        width: 26
+        height: 17
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_23
+      rect:
+        serializedVersion: 2
+        x: 147
+        y: 3
+        width: 45
+        height: 38
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Beetleboar_24
+      rect:
+        serializedVersion: 2
+        x: 205
+        y: 4
+        width: 23
+        height: 19
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

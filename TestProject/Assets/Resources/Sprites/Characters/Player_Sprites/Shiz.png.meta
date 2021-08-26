@@ -1,0 +1,778 @@
+fileFormatVersion: 2
+guid: fac72a112e77944479214a7b1a593819
+timeCreated: 1583907475
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: spritesheet_03_0
+    21300002: spritesheet_03_1
+    21300004: spritesheet_03_2
+    21300006: spritesheet_03_3
+    21300008: spritesheet_03_4
+    21300010: spritesheet_03_5
+    21300012: spritesheet_03_6
+    21300014: spritesheet_03_7
+    21300016: spritesheet_03_8
+    21300018: spritesheet_03_9
+    21300020: spritesheet_03_10
+    21300022: spritesheet_03_11
+    21300024: spritesheet_03_12
+    21300026: spritesheet_03_13
+    21300028: spritesheet_03_14
+    21300030: spritesheet_03_15
+    21300032: spritesheet_03_16
+    21300034: spritesheet_03_17
+    21300036: spritesheet_03_18
+    21300038: spritesheet_03_19
+    21300040: spritesheet_03_20
+    21300042: spritesheet_03_21
+    21300044: spritesheet_03_22
+    21300046: spritesheet_03_23
+    21300048: spritesheet_03_24
+    21300050: spritesheet_03_25
+    21300052: spritesheet_03_26
+    21300054: spritesheet_03_27
+    21300056: spritesheet_03_28
+    21300058: spritesheet_03_29
+    21300060: spritesheet_03_30
+    21300062: spritesheet_03_31
+    21300064: spritesheet_03_32
+    21300066: spritesheet_03_33
+    21300068: spritesheet_03_34
+    21300070: spritesheet_03_35
+    21300072: spritesheet_03_36
+    21300074: spritesheet_03_37
+    21300076: spritesheet_03_38
+    21300078: spritesheet_03_39
+    21300080: spritesheet_03_40
+    21300082: spritesheet_03_41
+    21300084: spritesheet_03_42
+    21300086: spritesheet_03_43
+    21300088: spritesheet_03_44
+    21300090: spritesheet03_0
+    21300092: spritesheet03_1
+    21300094: spritesheet03_2
+    21300096: spritesheet03_3
+    21300098: spritesheet03_4
+    21300100: spritesheet03_5
+    21300102: spritesheet03_6
+    21300104: spritesheet03_7
+    21300106: spritesheet03_8
+    21300108: spritesheet03_9
+    21300110: spritesheet03_10
+    21300112: spritesheet03_11
+    21300114: spritesheet03_12
+    21300116: spritesheet03_13
+    21300118: spritesheet03_14
+    21300120: spritesheet03_15
+    21300122: spritesheet03_16
+    21300124: spritesheet03_17
+    21300126: spritesheet03_18
+    21300128: spritesheet03_19
+    21300130: spritesheet03_20
+    21300132: spritesheet03_21
+    21300134: spritesheet03_22
+    21300136: spritesheet03_23
+    21300138: spritesheet03_24
+    21300140: spritesheet03_25
+    21300142: spritesheet03_26
+    21300144: spritesheet03_27
+    21300146: spritesheet03_28
+    21300148: spritesheet03_29
+    21300150: spritesheet03_30
+    21300152: spritesheet03_31
+    21300154: spritesheet03_32
+    21300156: spritesheet03_33
+    21300158: spritesheet03_34
+    21300160: spritesheet03_35
+    21300162: spritesheet03_36
+    21300164: spritesheet03_37
+    21300166: spritesheet03_38
+    21300168: spritesheet03_39
+    21300170: spritesheet03_40
+    21300172: spritesheet03_41
+    21300174: spritesheet03_42
+    21300176: spritesheet03_43
+    21300178: spritesheet03_44
+    21300180: Shiz_0
+    21300182: Shiz_1
+    21300184: Shiz_2
+    21300186: Shiz_3
+    21300188: Shiz_4
+    21300190: Shiz_5
+    21300192: Shiz_6
+    21300194: Shiz_7
+    21300196: Shiz_8
+    21300198: Shiz_9
+    21300200: Shiz_10
+    21300202: Shiz_11
+    21300204: Shiz_12
+    21300206: Shiz_13
+    21300208: Shiz_14
+    21300210: Shiz_15
+    21300212: Shiz_16
+    21300214: Shiz_17
+    21300216: Shiz_18
+    21300218: Shiz_19
+    21300220: Shiz_20
+    21300222: Shiz_21
+    21300224: Shiz_22
+    21300226: Shiz_23
+    21300228: Shiz_24
+    21300230: Shiz_25
+    21300232: Shiz_26
+    21300234: Shiz_27
+    21300236: Shiz_28
+    21300238: Shiz_29
+    21300240: Shiz_30
+    21300242: Shiz_31
+    21300244: Shiz_32
+    21300246: Shiz_33
+    21300248: Shiz_34
+    21300250: Shiz_35
+    21300252: Shiz_36
+    21300254: Shiz_37
+    21300256: Shiz_38
+    21300258: Shiz_39
+    21300260: Shiz_40
+    21300262: Shiz_41
+    21300264: Shiz_42
+    21300266: Shiz_43
+    21300268: Shiz_44
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Shiz_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 15
+        width: 52
+        height: 64
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_1
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 62
+        width: 16
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_2
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 62
+        width: 16
+        height: 26
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_3
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 62
+        width: 16
+        height: 26
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_4
+      rect:
+        serializedVersion: 2
+        x: 123
+        y: 62
+        width: 16
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_5
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 62
+        width: 16
+        height: 26
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_6
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 62
+        width: 16
+        height: 26
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_7
+      rect:
+        serializedVersion: 2
+        x: 183
+        y: 62
+        width: 16
+        height: 26
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_8
+      rect:
+        serializedVersion: 2
+        x: 203
+        y: 62
+        width: 15
+        height: 25
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_9
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 62
+        width: 16
+        height: 24
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_10
+      rect:
+        serializedVersion: 2
+        x: 242
+        y: 62
+        width: 16
+        height: 22
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_11
+      rect:
+        serializedVersion: 2
+        x: 262
+        y: 62
+        width: 16
+        height: 22
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_12
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 62
+        width: 15
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_13
+      rect:
+        serializedVersion: 2
+        x: 301
+        y: 62
+        width: 14
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_14
+      rect:
+        serializedVersion: 2
+        x: 319
+        y: 62
+        width: 16
+        height: 26
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_15
+      rect:
+        serializedVersion: 2
+        x: 339
+        y: 62
+        width: 16
+        height: 26
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_16
+      rect:
+        serializedVersion: 2
+        x: 359
+        y: 62
+        width: 16
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_17
+      rect:
+        serializedVersion: 2
+        x: 379
+        y: 62
+        width: 14
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_18
+      rect:
+        serializedVersion: 2
+        x: 397
+        y: 62
+        width: 15
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_19
+      rect:
+        serializedVersion: 2
+        x: 416
+        y: 62
+        width: 14
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_20
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 31
+        width: 15
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_21
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 31
+        width: 16
+        height: 25
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_22
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 31
+        width: 15
+        height: 25
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_23
+      rect:
+        serializedVersion: 2
+        x: 124
+        y: 31
+        width: 14
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_24
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 31
+        width: 16
+        height: 24
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_25
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 31
+        width: 16
+        height: 25
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_26
+      rect:
+        serializedVersion: 2
+        x: 183
+        y: 31
+        width: 14
+        height: 25
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_27
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 31
+        width: 18
+        height: 24
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_28
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 31
+        width: 16
+        height: 25
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_29
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 31
+        width: 15
+        height: 25
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_30
+      rect:
+        serializedVersion: 2
+        x: 262
+        y: 31
+        width: 16
+        height: 25
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_31
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 31
+        width: 15
+        height: 25
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_32
+      rect:
+        serializedVersion: 2
+        x: 301
+        y: 31
+        width: 15
+        height: 26
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_33
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 31
+        width: 15
+        height: 26
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_34
+      rect:
+        serializedVersion: 2
+        x: 339
+        y: 31
+        width: 15
+        height: 26
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_35
+      rect:
+        serializedVersion: 2
+        x: 358
+        y: 31
+        width: 14
+        height: 26
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_36
+      rect:
+        serializedVersion: 2
+        x: 376
+        y: 31
+        width: 15
+        height: 26
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_37
+      rect:
+        serializedVersion: 2
+        x: 395
+        y: 31
+        width: 14
+        height: 26
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_38
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 15
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_39
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 0
+        width: 14
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_40
+      rect:
+        serializedVersion: 2
+        x: 101
+        y: 0
+        width: 16
+        height: 22
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_41
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 0
+        width: 16
+        height: 23
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_42
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 0
+        width: 16
+        height: 23
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_43
+      rect:
+        serializedVersion: 2
+        x: 161
+        y: 0
+        width: 16
+        height: 23
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Shiz_44
+      rect:
+        serializedVersion: 2
+        x: 181
+        y: 0
+        width: 16
+        height: 22
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

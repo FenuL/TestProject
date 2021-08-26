@@ -1,9 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
+using System.Collections.Generic;
 
 /// <summary>
 /// Class for the Grid of Tiles that make up a Scenario's base. 
 /// </summary>
+
+[Serializable]
 public class Tile_Grid : MonoBehaviour
 {
     /// <summary>
@@ -34,7 +38,7 @@ public class Tile_Grid : MonoBehaviour
     /// Variables:
     ///     Prefabs:
     ///     object_prefab - Used to generate the Objects on top of the Tiles.
-    ///     effect_prefab - Used to generate the Effects on top of the Tiles.
+    ///     hazard_prefab - Used to generate the Effects on top of the Tiles.
     ///     reachable_prefab - Used to generate the Reachable Tile Indicators.
     ///     character_prefab - Used to generate Characters on top of the Tiles. 
     ///     
@@ -50,23 +54,21 @@ public class Tile_Grid : MonoBehaviour
     ///     int[,] character_sprite_ids - The Ids of Characters on the Tile Grid.
     ///     int[,] tile_heights - The heights of tiles on the Tile Grid.
     ///     Transform[,] tiles - The actual Tile Objects that make up the Tile Grid.
-    ///     Graph navmesh - The Nav Mesh used to navigate the Tile Grid.
     /// </summary>
     //Constants
     //File Locations
     private static string OBJECT_SPRITESHEET_FILE = "Sprites/Object Sprites/object_spritesheet_transparent";
     private static string OBJECT_PREFAB_SRC = "Prefabs/Scenario Prefabs/Object Prefabs/object_prefab";
-    private static string EFFECT_PREFAB_SRC = "Prefabs/Scenario Prefabs/Effect Prefabs/effect_prefab";
+    private static string HAZARD_PREFAB_SRC = "Prefabs/Scenario Prefabs/Hazard Prefabs/hazard_prefab";
     private static string EMPTY_PREFAB_SRC = "Prefabs/Scenario Prefabs/empty_prefab";
     private static string CHARACTER_PREFAB_SRC = "Prefabs/Character_Prefab/Character_Prefab";
-    private static string REACHABLE_PREFAB_SRC = "Prefabs/Scenario Prefabs/Tile Prefabs/Reachable";
     //Grid size restriction in number of tiles
-    private static int MAX_WIDTH = 40;
-    private static int MAX_LENGTH = 40;
-    private static int MAX_HEIGHT = 30;
-    private static int MIN_WIDTH = 5;
-    private static int MIN_LENGTH = 5;
-    private static int MIN_HEIGHT = 1;
+    public static int MAX_WIDTH = 40;
+    public static int MAX_LENGTH = 40;
+    public static int MAX_HEIGHT = 30;
+    public static int MIN_WIDTH = 5;
+    public static int MIN_LENGTH = 5;
+    public static int MIN_HEIGHT = 1;
     //Starting coordinates for the grid;
     private static float START_X = 0;
     private static float START_Y = 3.5f;
@@ -84,41 +86,370 @@ public class Tile_Grid : MonoBehaviour
     }
 
     //Prefabs
-    public GameObject object_prefab { get; private set; }
-    public GameObject effect_prefab { get; private set; }
-    public GameObject empty_prefab { get; private set; }
-    public GameObject reachable_prefab { get; private set; }
-    public GameObject character_prefab { get; private set; }
+    GameObject object_prefab;
+    GameObject hazard_prefab;
+    GameObject empty_prefab;
+    GameObject reachable_prefab;
+    GameObject character_prefab;
 
     //Spritesheets
     Sprite[] object_sprite_sheet;
 
-    public int grid_width { get; private set; }
-    public int grid_length { get; private set; }
-    private Material[] materials;
-    private double[] modifiers;
-    public int[,] tile_mat_ids { get; private set; }
-    public int[,] object_sprite_ids { get; private set; }
-    public int[,] character_ids { get; private set; }
-    public int[,] tile_heights { get; private set; }
-    public Tile[,] tiles { get; private set; }
-    public Graph navmesh { get; private set; }
-    public bool idle { get; private set; }
+    Material[] materials;
+    double[] modifiers;
+    [SerializeField] Tile[,] tiles;
+    Stack<Tile> visited_tiles;
+
+    public int Get_Width()
+    {
+        return tiles.GetLength(0);
+    }
+    public int Get_Length()
+    {
+        return tiles.GetLength(1);
+    }
+    public Tile Get_Tile(int x, int y)
+    {
+        Tile tile = null;
+        try
+        {
+            tile = tiles[x,y];
+        } catch (IndexOutOfRangeException e)
+        {
+            Debug.Log("Tile [" + x + "," + y + "] could not be found");
+        }
+        return tile;
+    }
 
     /// <summary>
-    /// Empty Start Method for class. Loads prefabs and creates a generic grid.
+    /// Exports the current Tile_Grid as a Tile_Grid_Data object that can be serialized.
+    /// </summary>
+    /// <returns></returns>
+    public Tile_Grid_Data Export_Data()
+    {
+        return new Tile_Grid_Data(this);
+    }
+
+    /// <summary>
+    /// Prints the entire graph, edge by edge.
+    /// </summary>
+    public void Print_Graph()
+    {
+        foreach (Tile t in tiles)
+        {
+            t.printEdges();
+        }
+    }
+
+    /// <summary>
+    /// Add a Tile to the Tile_Grid
+    /// </summary>
+    /// <param name="tile">The Tile to add to the Tile_Grid</param>
+    public void Add_Tile(Tile tile)
+    {
+        int x = tile.index[0];
+        int y = tile.index[1];
+        tiles[x, y] = tile;
+        // Connect the new node to previous nodes in the mesh
+        if (x > 0)
+        {
+            tile.addEdge(tiles[x-1,y], 3);
+        }
+        if (y > 0)
+        {
+            tile.addEdge(tiles[x,y-1], 0);
+        }
+    }
+
+    /// <summary>
+    /// Empty start method for the class.
     /// </summary>
     public void Start()
     {
+
+    }
+
+    /// <summary>
+    /// Start Method for class. Loads prefabs and creates a generic grid that is x by y.
+    /// </summary>
+    /// <param name="width">The width of the new grid.</param>
+    /// <param name="length">The height of the new grid.</param>
+    public void Start(int width, int length)
+    {
         //Load the prefabs
         object_prefab = Resources.Load(OBJECT_PREFAB_SRC, typeof(GameObject)) as GameObject;
-        effect_prefab = Resources.Load(EFFECT_PREFAB_SRC, typeof(GameObject)) as GameObject;
+        hazard_prefab = Resources.Load(HAZARD_PREFAB_SRC, typeof(GameObject)) as GameObject;
         empty_prefab = Resources.Load(EMPTY_PREFAB_SRC, typeof(GameObject)) as GameObject;
-        reachable_prefab = Resources.Load(REACHABLE_PREFAB_SRC, typeof(GameObject)) as GameObject;
         character_prefab = Resources.Load(CHARACTER_PREFAB_SRC, typeof(GameObject)) as GameObject;
 
         //Load the spritesheets
         object_sprite_sheet = Resources.LoadAll<Sprite>(OBJECT_SPRITESHEET_FILE);
+
+        tiles = new Tile[width,length];
+        visited_tiles = new Stack<Tile>();
+
+        Material material = (Material)Resources.Load("Objects/Materials/Tile_Materials/TileMat00");
+        if (width > MAX_WIDTH)
+        {
+            width = MAX_WIDTH;
+        }
+        if(width < MIN_WIDTH)
+        {
+            width = MIN_WIDTH;
+        }
+        if (length > MAX_LENGTH)
+        {
+            length = MAX_LENGTH;
+        }
+        if (length < MIN_LENGTH)
+        {
+            length = MIN_LENGTH;
+        }
+
+        for (int x =0; x< width; x++)
+        {
+            GameObject empty = ((GameObject)Instantiate(empty_prefab,
+                    new Vector3(0,
+                        0,
+                        0),
+                    Quaternion.identity));
+
+            //Set empty object as father for a row.
+            empty.transform.parent = GameObject.FindGameObjectWithTag("Scenario").transform.GetChild(0);
+
+            //Change the object name to be the tile index
+            empty.name = "Row " + x;
+            for (int y =0; y< length; y++)
+            {
+                //Instantiate the tile object.
+                string file = "Objects/Tiles/" + 1 + "TCanvas";
+                //string file = "Objects/Tiles/Object-3x3x" + tile_heights[x, y];
+
+                GameObject tile3d = Resources.Load(file, typeof(GameObject)) as GameObject;
+                int NEWSTARTX = 0;
+                int NEWSTARTY = 0;
+                int NEWSTARTZ = 0;
+                float NEWTILEWIDTH = 1.5f;
+                float NEWTILELENGTH = 1.5f;
+                float NEWSCALE = 2f;
+                //GameObject instance = ((GameObject)Instantiate(tile3d, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity));
+                GameObject instance = ((GameObject)Instantiate(tile3d,
+                    new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y),
+                        (float)(NEWSTARTY),
+                        (float)(NEWSTARTZ - NEWTILELENGTH * x)),
+                    Quaternion.identity));
+                instance.transform.localScale = new Vector3(tile_scale, tile_scale, tile_scale);
+
+                //Set the parent to be the Scenario object Tile_Grid
+                instance.transform.parent = GameObject.FindGameObjectWithTag("Scenario").transform.GetChild(0).GetChild(x);
+
+                //Change the object name to be the tile index
+                instance.name = "[" + x + "," + y + "]";
+
+                //Change the Tag to be a Tile
+                instance.tag = "Tile";
+
+                //Add a collider to the tile (TEMPORARY)
+                BoxCollider collider = instance.AddComponent<BoxCollider>();
+                //collider.size = new Vector3(NEWTILELENGTH*NEWSCALE,tile_heights[x,y]*NEWTILEHEIGHT*(NEWSCALE/2),NEWTILEWIDTH*NEWSCALE);
+                collider.size = new Vector3(NEWTILELENGTH * NEWSCALE, 0, NEWTILEWIDTH * NEWSCALE);
+                //collider.center = new Vector3(0, 10, 0);
+                collider.center = new Vector3(0, 1, 0);
+
+                //Set the material
+                //instance.GetComponentInChildren<Renderer>().material = materials[tile_mat_ids[x, y] % 10];
+
+                instance.GetComponentInChildren<Renderer>().material = material;
+
+                //Generate the tile data for the tile
+                instance.AddComponent<Tile>();
+                instance.GetComponent<Tile>().Instantiate(x, y, 0, 0, 1, 0, new double[10]);
+
+                //Store the instantiated tile in our Tile Tranform Grid;
+                Add_Tile(instance.GetComponent<Tile>());
+            }
+        }
+    }
+
+    /// <summary>
+    /// Reads a JSON string and returns a Character_Action class.
+    /// </summary>
+    /// <param name="json">The JSON string to parse.</param>
+    /// <returns>The Character_Action the JSON represents, or null if the json couldn't be parsed.</returns>
+    public static Tile_Grid Parse_Json(string json)
+    {
+        Tile_Grid grid = JsonUtility.FromJson<Tile_Grid>(json);
+        //Debug.Log("act name " + act.name);
+        if (grid.tiles != null && grid.tiles.Length > 0)
+        {
+            return grid;
+        }
+        else
+        {
+            Debug.Log("Invalid JSON: " + json);
+        }
+        return null;
+
+    }
+
+    public void Start(string map_file)
+    {
+        object_prefab = Resources.Load(OBJECT_PREFAB_SRC, typeof(GameObject)) as GameObject;
+        hazard_prefab = Resources.Load(HAZARD_PREFAB_SRC, typeof(GameObject)) as GameObject;
+        empty_prefab = Resources.Load(EMPTY_PREFAB_SRC, typeof(GameObject)) as GameObject;
+        character_prefab = Resources.Load(CHARACTER_PREFAB_SRC, typeof(GameObject)) as GameObject;
+
+        //Load the spritesheets
+        object_sprite_sheet = Resources.LoadAll<Sprite>(OBJECT_SPRITESHEET_FILE);
+
+        Tile_Grid grid = Parse_Json(System.IO.File.ReadAllText(map_file));
+        string json = JsonUtility.ToJson(grid);
+        Debug.Log("Grid: " + json);
+        //Debug.Log("Fields:" + action2.name);
+
+        //tiles = new List<TileList>();
+        tiles = new Tile[30, 30];
+        visited_tiles = new Stack<Tile>();
+
+        for( int x =0; x< grid.tiles.GetLength(0); x++)
+        {
+            //tiles.Add(new TileList());
+            GameObject empty = ((GameObject)Instantiate(empty_prefab,
+                    new Vector3(0,
+                        0,
+                        0),
+                    Quaternion.identity));
+
+            //Set empty object as father for a row.
+            empty.transform.parent = Game_Controller.Get_Curr_Scenario().transform.GetChild(0);
+
+            //Change the object name to be the tile index
+            empty.name = "Row " + x;
+
+            for( int y = 0; y< tiles.GetLength(1); y++)
+            {
+                Tile tile = grid.tiles[x, y];
+                //Instantiate the tile object.
+                string file = "Objects/Tiles/" + tile.height + "TCanvas";
+                //string file = "Objects/Tiles/Object-3x3x" + tile_heights[x, y];
+
+                GameObject tile3d = Resources.Load(file, typeof(GameObject)) as GameObject;
+                int NEWSTARTX = 0;
+                int NEWSTARTY = 0;
+                int NEWSTARTZ = 0;
+                float NEWTILEWIDTH = 1.5f;
+                float NEWTILELENGTH = 1.5f;
+                float NEWSCALE = 2f;
+                //GameObject instance = ((GameObject)Instantiate(tile3d, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity));
+                GameObject instance = ((GameObject)Instantiate(tile3d,
+                    new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y),
+                        (float)(NEWSTARTY),
+                        (float)(NEWSTARTZ - NEWTILELENGTH * x)),
+                    Quaternion.identity));
+                instance.transform.localScale = new Vector3(tile_scale, tile_scale, tile_scale);
+
+                //Set the parent to be the Scenario object Tile_Grid
+                instance.transform.parent = Game_Controller.Get_Curr_Scenario().transform.GetChild(0).GetChild(x);
+
+                //Change the object name to be the tile index
+                instance.name = "[" + x + "," + y + "]";
+
+                //Change the Tag to be a Tile
+                instance.tag = "Tile";
+
+                //Add a collider to the tile (TEMPORARY)
+                BoxCollider collider = instance.AddComponent<BoxCollider>();
+                //collider.size = new Vector3(NEWTILELENGTH*NEWSCALE,tile_heights[x,y]*NEWTILEHEIGHT*(NEWSCALE/2),NEWTILEWIDTH*NEWSCALE);
+                collider.size = new Vector3(NEWTILELENGTH * NEWSCALE, 0, NEWTILEWIDTH * NEWSCALE);
+                //collider.center = new Vector3(0, 10, 0);
+                collider.center = new Vector3(0, tile.height, 0);
+
+                //Set the material
+                //instance.GetComponentInChildren<Renderer>().material = materials[tile_mat_ids[x, y] % 10];
+                //instance.GetComponentInChildren<Renderer>().material = materials[tile_mat_ids[x, y] % 10];
+
+                //Generate the tile data for the tile
+                instance.AddComponent<Tile>();
+                //instance.GetComponent<Tile>().Instantiate(x, y, tile.height, tile_mat_ids[x, y], modifiers);
+
+                //Store the instantiated tile in our Tile Tranform Grid;
+                Add_Tile(instance.GetComponent<Tile>());
+
+                //Create Objects on top of tiles
+                if (tile.obj != null)
+                {
+                    GameObject prefab = object_prefab;
+                    if (tile.obj.GetComponent<Character_Script>())
+                    {
+                        prefab = character_prefab;
+                    }
+                    //Calculate offsets
+                    float height_offset = (prefab.GetComponent<SpriteRenderer>().sprite.rect.height *
+                        prefab.transform.localScale.y /
+                        prefab.GetComponent<SpriteRenderer>().sprite.pixelsPerUnit /
+                        2);
+                    float offset = (height_offset) / 3.5f;
+
+                    //Instantiate the prefab
+                    GameObject obj = ((GameObject)Instantiate(prefab,
+                        new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y),
+                            (float)(NEWSTARTY + tile_scale * tile.height),
+                            (float)(NEWSTARTZ - NEWTILELENGTH * x)),
+                        Quaternion.identity));
+
+                    if (tile.obj.GetComponent<Character_Script>())
+                    {
+                        //Set the character tile to the current tile
+                        obj.GetComponent<Character_Script>().Set_Curr_Tile(tiles[x,y]);
+
+                        //Set the parent to be the Scenario object Characters
+                        obj.transform.parent = Game_Controller.Get_Curr_Scenario().transform.GetChild(3);
+                    }
+                    else
+                    {
+                        //pull up the object prefab
+                        SpriteRenderer sprite = obj.GetComponent<SpriteRenderer>();
+
+                        //set the right sprite;
+                        sprite.sprite = (Sprite)object_sprite_sheet[tile.obj.GetComponent<Object_Script>().sprite - 1];
+                        //sprite.sortingOrder = tile_number;
+                        sprite.sortingOrder = 5000;
+                        //Set the character tile to the current tile
+                        obj.GetComponent<Object_Script>().Set_Curr_Tile(tiles[x,y]);
+
+                        //Set the parent to be the Scenario object Tile_Objects
+                        obj.transform.parent = Game_Controller.Get_Curr_Scenario().transform.GetChild(1);
+
+                        //Set the name to be the name of the object.
+                        obj.name = obj.GetComponent<Object_Script>().obj_name;
+                    }
+                    //character.GetComponent<Character_Script>().character_id = character_ids[x, y];
+
+                    //Set the tile object to that character and set traversible to false;
+                    tiles[x,y].Set_Obj(obj);
+                    tiles[x,y].Set_Traversible(false);
+                }
+                //Instantiate Tile Effects
+                if (tile.hazard != null)
+                {
+                    //Calculate offsets
+                    float height_offset = (hazard_prefab.GetComponent<SpriteRenderer>().sprite.rect.height *
+                        hazard_prefab.transform.localScale.y /
+                        hazard_prefab.GetComponent<SpriteRenderer>().sprite.pixelsPerUnit /
+                        2);
+                    float offset = (height_offset) / 3.5f;
+
+                    //Instantiate the prefab
+                    GameObject hazard = ((GameObject)Instantiate(hazard_prefab,
+                        new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y),
+                            (float)(NEWSTARTY + tile_scale * tile.height),
+                            (float)(NEWSTARTZ - NEWTILELENGTH * x)),
+                        Quaternion.identity));
+                }
+                y++;
+            }
+            x++;
+        }
     }
 
     /// <summary>
@@ -131,11 +462,11 @@ public class Tile_Grid : MonoBehaviour
     /// <param name="new_tile_mat_ids">The IDs for the tile types.</param>
     /// <param name="new_object_sprite_ids">The ids for objects to put on the Tile Grid.</param>
     /// <param name="new_character_sprite_ids">The ids for Character sprites to put on the Tile Grid.</param>
-    public void Start(int width, int length, Material[] new_materials, double[] new_modifiers, int[,] new_tile_mat_ids, int[,] new_object_sprite_ids, int[,] new_character_ids)
+    /*public void Start(int width, int length, Material[] new_materials, double[] new_modifiers, int[,] new_tile_mat_ids, int[,] new_object_sprite_ids, int[,] new_character_ids)
     {
         //Load the prefabs
         object_prefab = Resources.Load(OBJECT_PREFAB_SRC, typeof(GameObject)) as GameObject;
-        effect_prefab = Resources.Load(EFFECT_PREFAB_SRC, typeof(GameObject)) as GameObject;
+        hazard_prefab = Resources.Load(EFFECT_PREFAB_SRC, typeof(GameObject)) as GameObject;
         empty_prefab = Resources.Load(EMPTY_PREFAB_SRC, typeof(GameObject)) as GameObject;
         reachable_prefab = Resources.Load(REACHABLE_PREFAB_SRC, typeof(GameObject)) as GameObject;
         character_prefab = Resources.Load(CHARACTER_PREFAB_SRC, typeof(GameObject)) as GameObject;
@@ -164,366 +495,34 @@ public class Tile_Grid : MonoBehaviour
         tiles = new Tile[width, length];
         navmesh = new Graph();
         idle = true;
-    }
-
-    /// <summary>
-    /// Deprecated Coroutine for animating the transition for the Elevate process.
-    /// </summary>
-    /*public IEnumerator Raise()
-    {
-        float elapsedTime = 0;
-        float duration = .3f;
-        Vector3 start = transform.position;
-        Vector3 target = curr_tile.position + camera_position_offset + new Vector3(0, height_offset + Tile_Grid.tile_scale * (curr_tile.GetComponent<Tile>().height), 0);
-        while (elapsedTime < duration)
-        {
-            transform.position = Vector3.Lerp(start,
-                target,
-                elapsedTime / duration);
-            elapsedTime += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
     }*/
 
 
-    /// <summary>
-    /// Function for Raising/Lowering tiles.
-    /// </summary>
-    /// <param name="target">The target tile to Raise/Lower</param>
-    /// <param name="height">The height to change the tile.</param>
-    public IEnumerator Elevate(Transform target, int height)
-    {
-        idle = false;
-        //Modify tile height
-        Tile tile = target.GetComponent<Tile>();
-        tile.height += height;
-        tile_heights[tile.index[0], tile.index[1]] += height;
-
-        if (tile.height < 1)
-        {
-            tile.height = 1;
-        }
-        if (tile.height > 30)
-        {
-            tile.height = 30;
-        }
-
-        //Modify object
-        string file = "Objects/Tiles/" + tile.height + "TCanvas";
-        tile.gameObject.GetComponentsInChildren<MeshFilter>()[0].mesh = Resources.Load(file, typeof(Mesh)) as Mesh;
-
-        //Move the tile and any objects on it to the right place.
-        float elapsedTime = 0;
-        float duration = 0.3f;
-        Vector3 tile_start = new Vector3(tile.transform.position.x,
-                        (float)(Tile_Grid.TILE_SCALE * (-height)),
-                        tile.transform.position.z); 
-        Vector3 tile_end = tile.transform.position;
-        Vector3 obj_start = new Vector3(0,0,0);
-        Vector3 obj_end = new Vector3(0, 0, 0);
-        if (tile.obj != null) {
-            obj_start = tile.obj.transform.position;
-            Vector3 camera_offset = new Vector3(0, 0, 0);
-            float height_offset = 0.5f;
-            Character_Script chara = tile.obj.GetComponent<Character_Script>();
-            if (chara != null)
-            {
-                camera_offset = chara.camera_position_offset;
-                height_offset = chara.height_offset;
-            }
-            obj_end = tile.transform.position + 
-                camera_offset + 
-                new Vector3(0, tile_scale * tile.height + height_offset, 0);
-        }
-        while (elapsedTime < duration)
-        {
-            tile.transform.position = Vector3.Lerp(tile_start, tile_end, elapsedTime / duration);
-            if (tile.obj!= null)
-            {
-                tile.obj.transform.position = Vector3.Lerp(obj_start, obj_end, elapsedTime / duration);
-            }
-            elapsedTime += Time.deltaTime;
-            yield return new WaitForEndOfFrame();
-        }
-        tile.transform.position = tile_end;
-
-        //Modify the collider
-        BoxCollider collider =  tile.gameObject.GetComponent<BoxCollider>();
-        float NEWTILEWIDTH = 1.5f;
-        float NEWTILELENGTH = 1.5f;
-        float NEWSCALE = 2f;
-        collider.size = new Vector3(NEWTILELENGTH * NEWSCALE, 0, NEWTILEWIDTH * NEWSCALE);
-        collider.center = new Vector3(0, tile.height, 0);
-
-        /*string file = "Objects/Tiles/" + tile.height + "TCanvas";
-        GameObject tile3d = Resources.Load(file, typeof(GameObject)) as GameObject;
-        float NEWTILEWIDTH = 1.5f;
-        float NEWTILELENGTH = 1.5f;
-        float NEWSCALE = 2f;
-        GameObject instance;
-        //If the shift is positive, we create the tile lower and raise it up.
-        if (height > 0)
-        {
-            instance = ((GameObject)Instantiate(tile3d, target.position - new Vector3(), Quaternion.identity));
-            instance.transform.localScale = new Vector3(tile_scale, tile_scale, tile_scale);
-            if (tile.obj != null)
-            {
-                if (tile.obj.GetComponent<Character_Script>() != null)
-                {
-                    tile.obj.transform.position = instance.transform.position + tile.obj.GetComponent<Character_Script>().camera_position_offset + new Vector3(0, tile_scale * tile.height + tile.obj.GetComponent<Character_Script>().height_offset, 0);
-                    tile.obj.GetComponent<Character_Script>().curr_tile = instance.transform;
-                }
-            }
-        }
-        else
-        {
-            //if the shift is negative, we create the tile higher and lower it. 
-            instance = ((GameObject)Instantiate(tile3d, target.position + new Vector3(), Quaternion.identity));
-            instance.transform.localScale = new Vector3(tile_scale, tile_scale, tile_scale);
-            if (tile.obj != null)
-            {
-
-                tile.obj.transform.position = instance.transform.position + tile.obj.GetComponent<Character_Script>().camera_position_offset + new Vector3(0, tile_scale * tile.height + tile.obj.GetComponent<Character_Script>().height_offset, 0);
-                tile.obj.GetComponent<Character_Script>().curr_tile = instance.transform;
-                //instance.transform.GetComponent<Tile>().obj = tile.obj;
-                //Debug.Log(instance.transform.GetComponent<Tile>().obj.GetComponent<Character_Script>().name);
-            }
-        }
-
-        //Add a collider to the tile (TEMPORARY)
-        BoxCollider collider = instance.AddComponent<BoxCollider>();
-        collider.size = new Vector3(NEWTILELENGTH * NEWSCALE, 0, NEWTILEWIDTH * NEWSCALE);
-        collider.center = new Vector3(0, tile.height, 0);
-
-        //Change material
-        instance.GetComponentInChildren<Renderer>().material = materials[tile_mat_ids[tile.index[0], tile.index[1]] % 10];
-
-        //Generate the tile data for the tile
-        instance.AddComponent<Tile>();
-        instance.GetComponent<Tile>().Instantiate(tile);
-
-        //Store the instantiated tile in our Tile Tranform Grid;
-        tiles[tile.index[0], tile.index[1]] = instance.transform;
-        */
-
-        //Modify navmesh
-        foreach (Edge e in tile.edges)
-        {
-            //Modify local edges
-            if (e != null)
-            {
-                e.Update_Cost(e.tile2);
-
-                //Debug.Log("Edge between (" + e.tile1.index[0] + "," + e.tile1.index[1] + ") and (" + e.tile2.index[0] + "," + e.tile2.index[1] + ") has cost " + e.cost);
-                //modify edges of adjacent nodes
-                foreach (Edge edge in e.tile2.edges)
-                {
-                    if (edge != null)
-                    {
-                        if (edge.tile2.Equals(e.tile1))
-                        {
-                            edge.Update_Cost(e.tile1);
-                            //edge.tile2 = e.tile1;
-                            //Debug.Log("Edge between (" + edge.node1.index[0] + ", " + edge.node1.index[1] + ") and(" + edge.node2.index[0] + ", " + edge.node2.index[1] + ") has cost " + edge.cost);
-                        }
-                    }
-                }
-            }
-        }
-
-        //Destroy old object 
-        //Destroy(tile.gameObject);
-        idle = true;
-    }
-
-    /// <summary>
-    /// Function used to Start the Tile_Grid since Tild_Grid is not a Monobehavior and is not attached to any specific GameObject.
-    /// </summary>
-    public void Instantiate()
-    {
-        int tile_number = 0;
-        for (int x = 0; x < grid_width; x++)
-        {
-            //Create empty suboject under Scenario's Tile_Grid object
-            GameObject empty = ((GameObject)Instantiate(empty_prefab,
-                    new Vector3(0,
-                        0,
-                        0),
-                    Quaternion.identity));
-
-            //Set empty object as father for a row.
-            empty.transform.parent = Game_Controller.curr_scenario.transform.GetChild(0);
-
-            //Change the object name to be the tile index
-            empty.name = "Row " + x;
-
-            for (int y = 0; y < grid_length; y++)
-            {
-                tile_number++;
-
-                //Instantiate the tile object.
-                string file = "Objects/Tiles/" + tile_heights[x, y] + "TCanvas";
-                //string file = "Objects/Tiles/Object-3x3x" + tile_heights[x, y];
-
-                GameObject tile3d = Resources.Load(file, typeof(GameObject)) as GameObject;
-                int NEWSTARTX = 0;
-                int NEWSTARTY = 0;
-                int NEWSTARTZ = 0;
-                float NEWTILEWIDTH = 1.5f;
-                float NEWTILELENGTH = 1.5f;
-                float NEWSCALE = 2f;
-                //GameObject instance = ((GameObject)Instantiate(tile3d, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity));
-                GameObject instance = ((GameObject)Instantiate(tile3d, 
-                    new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y), 
-                        (float)(NEWSTARTY), 
-                        (float)(NEWSTARTZ - NEWTILELENGTH * x)), 
-                    Quaternion.identity));
-                instance.transform.localScale = new Vector3(tile_scale, tile_scale, tile_scale);
-
-                //Set the parent to be the Scenario object Tile_Grid
-                instance.transform.parent = Game_Controller.curr_scenario.transform.GetChild(0).GetChild(x);
-
-                //Change the object name to be the tile index
-                instance.name = "[" + x + "," + y + "]";
-
-                //Change the Tag to be a Tile
-                instance.tag = "Tile";
-
-                //Add a collider to the tile (TEMPORARY)
-                BoxCollider collider = instance.AddComponent<BoxCollider>();
-                //collider.size = new Vector3(NEWTILELENGTH*NEWSCALE,tile_heights[x,y]*NEWTILEHEIGHT*(NEWSCALE/2),NEWTILEWIDTH*NEWSCALE);
-                collider.size = new Vector3(NEWTILELENGTH * NEWSCALE, 0, NEWTILEWIDTH * NEWSCALE);
-                //collider.center = new Vector3(0, 10, 0);
-                collider.center = new Vector3(0, tile_heights[x, y], 0);
-
-                //Set the material
-                instance.GetComponentInChildren<Renderer>().material = materials[tile_mat_ids[x, y] % 10];
-
-                //Generate the tile data for the tile
-                instance.AddComponent<Tile>();
-                instance.GetComponent<Tile>().Instantiate(x, y, tile_heights[x, y], tile_mat_ids[x, y], modifiers);
-
-                //Store the instantiated tile in our Tile Tranform Grid;
-                tiles[x, y] = instance.GetComponent<Tile>();
-
-                //Add a node to the navmesh
-                navmesh.addTile(tiles[x, y].GetComponent<Tile>());
-
-                //Connect the new node to previous nodes in the mesh
-                if (x > 0)
-                {
-                    tiles[x, y].GetComponent<Tile>().addEdge(tiles[x - 1, y].GetComponent<Tile>(), 3);
-                }
-                if (y > 0)
-                {
-                    tiles[x, y].GetComponent<Tile>().addEdge(tiles[x, y - 1].GetComponent<Tile>(), 0);
-                }
-
-                //Create Characters on top of tiles
-                if (character_ids[x, y] != 0)
-                {
-
-                    //Calculate offsets
-                    float height_offset = (character_prefab.GetComponent<SpriteRenderer>().sprite.rect.height *
-                        character_prefab.transform.localScale.y /
-                        character_prefab.GetComponent<SpriteRenderer>().sprite.pixelsPerUnit /
-                        2);
-                    float offset = (height_offset) / 3.5f;
-
-                    //Instantiate the prefab
-                    GameObject character = ((GameObject)Instantiate(character_prefab,
-                        new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y),
-                            (float)(NEWSTARTY + tile_scale * tile_heights[x, y]),
-                            (float)(NEWSTARTZ - NEWTILELENGTH * x)),
-                        Quaternion.identity));
-
-                    //Set the parent to be the Scenario object Characters
-                    character.transform.parent = Game_Controller.curr_scenario.transform.GetChild(3);
-
-                    //Set the character tile to the current tile
-                    character.GetComponent<Character_Script>().curr_tile = getTile(x, y);
-                    character.GetComponent<Character_Script>().character_id = character_ids[x, y];
-
-                    //Set the tile object to that character and set traversible to false;
-                    tiles[x, y].GetComponent<Tile>().obj = character;
-                    //tiles[x, y].GetComponent<Tile>().traversible = false;
-                }
-
-                //create OBJECTS on top of tiles
-                SpriteRenderer sprite;
-                if (object_sprite_ids[x, y] != 0)
-                {
-                    //pull up the object prefab
-                    sprite = object_prefab.GetComponent<SpriteRenderer>();
-
-                    //set the right sprite;
-                    sprite.sprite = (Sprite)object_sprite_sheet[object_sprite_ids[x, y] - 1];
-                    //sprite.sortingOrder = tile_number;
-                    sprite.sortingOrder = 5000;
-
-                    //instantiate the object
-                    //Instantiate(object_prefab, new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y + XOFFSET), (float)(NEWSTARTY + YOFFSET), (float)(NEWSTARTZ - NEWTILELENGTH * x + ZOFFSET)), Quaternion.identity);
-                    GameObject obj = (GameObject)Instantiate(object_prefab, 
-                        new Vector3((float)(NEWSTARTX - NEWTILEWIDTH * y),
-                            (float)(NEWSTARTY + 0.66f + .5f * tile_heights[x, y]),
-                            (float)(NEWSTARTZ - NEWTILELENGTH * x)), 
-                        Quaternion.identity);
-
-                    //Set the parent to be the Scenario object Tile_Objects
-                    obj.transform.parent = Game_Controller.curr_scenario.transform.GetChild(1);
-
-                    obj.GetComponent<Object_Script>().curr_tile = tiles[x, y].transform;
-
-                    //Set the name to be the name of the object.
-                    obj.name = "TEST_OBJ";
-
-                    tiles[x, y].GetComponent<Tile>().obj = obj;
-
-                    //Instantiate(object_prefab, new Vector3((float)(START_X - (x) * (TILE_WIDTH / 200) + (y) * (TILE_WIDTH / 200)), (float)(START_Y - (x) * (TILE_LENGTH / 200) - (y) * (TILE_LENGTH / 200) + tile_heights[x, y] * TILE_HEIGHT / 100.0 + .35f), 0), Quaternion.identity);
-                }
-
-                //If there is an object on the tile, mark it non traversible
-                if (object_sprite_ids[x, y] == 0)
-                {
-                    tiles[x, y].GetComponent<Tile>().traversible = true;
-                }
-                else
-                {
-                    tiles[x, y].GetComponent<Tile>().traversible = false;
-                }
-            }
-        }
-    }
 
     /// <summary>
     /// Create a Tile Effect on a specific Tile.
     /// </summary>
-    /// <param name="tile">The tile on which to create the Effect.</param>
-    public void CreateEffect(GameObject tile_object)
+    /// <param name="tile_obj">The GameObject on which to create the Hazard.</param>
+    /// <param name="data">The data used to create the Hazard.</param>
+    public void Create_Hazard(GameObject tile_obj, Hazard_Data data)
     {
-        Tile tile = tile_object.GetComponent<Tile>();
+        Tile tile = tile_obj.GetComponent<Tile>();
         if (tile != null) {
             //create Effects on top of tiles
-            tile.effect = (GameObject)Instantiate(effect_prefab,
-                    new Vector3((float)(tile_object.transform.position.x),
-                        (float)(tile_object.transform.position.y + 0.66f),
-                        (float)(tile_object.transform.position.z)),
+            GameObject hazard_obj = (GameObject)Instantiate(hazard_prefab,
+                    new Vector3((float)(tile_obj.transform.position.x),
+                        (float)(tile_obj.transform.position.y + 0.66f),
+                        (float)(tile_obj.transform.position.z)),
                     Quaternion.identity);
+            Hazard hazard = hazard_obj.GetComponent<Hazard>();
+            hazard.Instantiate(data);
+            tile.Set_Hazard(hazard_obj);
+
         }
     }
 
-    /// <summary>
-    /// Function to return a specific tile in the array.
-    /// </summary>
-    /// <param name="x">X index for the lookup.</param>
-    /// <param name="y">Y index for the lookup.</param>
-    /// <returns>Returns the Tile at the specified Index, or null if that index does not exist.</returns>
-    public Tile getTile(int x, int y)
-    {
-        if (x >= 0 && y >= 0 && x < grid_width && y < grid_length)
-        {
-            return tiles[x, y];
-        }
-        return null;
-    }
+    
+
+    
+
 }

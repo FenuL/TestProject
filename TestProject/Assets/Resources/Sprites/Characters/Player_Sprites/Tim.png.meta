@@ -1,0 +1,346 @@
+fileFormatVersion: 2
+guid: ad9e20f39ea942147907f7b670e25b66
+timeCreated: 1583907509
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: spritesheet_04_0
+    21300002: spritesheet_04_1
+    21300004: spritesheet_04_2
+    21300006: spritesheet_04_3
+    21300008: spritesheet_04_4
+    21300010: spritesheet_04_5
+    21300012: spritesheet_04_6
+    21300014: spritesheet_04_7
+    21300016: spritesheet_04_8
+    21300018: spritesheet_04_9
+    21300020: spritesheet_04_10
+    21300022: spritesheet_04_11
+    21300024: spritesheet_04_12
+    21300026: spritesheet_04_13
+    21300028: spritesheet_04_14
+    21300030: spritesheet_04_15
+    21300032: spritesheet_04_16
+    21300034: spritesheet_04_17
+    21300036: spritesheet04_0
+    21300038: spritesheet04_1
+    21300040: spritesheet04_2
+    21300042: spritesheet04_3
+    21300044: spritesheet04_4
+    21300046: spritesheet04_5
+    21300048: spritesheet04_6
+    21300050: spritesheet04_7
+    21300052: spritesheet04_8
+    21300054: spritesheet04_9
+    21300056: spritesheet04_10
+    21300058: spritesheet04_11
+    21300060: spritesheet04_12
+    21300062: spritesheet04_13
+    21300064: spritesheet04_14
+    21300066: spritesheet04_15
+    21300068: spritesheet04_16
+    21300070: spritesheet04_17
+    21300072: Tim_0
+    21300074: Tim_1
+    21300076: Tim_2
+    21300078: Tim_3
+    21300080: Tim_4
+    21300082: Tim_5
+    21300084: Tim_6
+    21300086: Tim_7
+    21300088: Tim_8
+    21300090: Tim_9
+    21300092: Tim_10
+    21300094: Tim_11
+    21300096: Tim_12
+    21300098: Tim_13
+    21300100: Tim_14
+    21300102: Tim_15
+    21300104: Tim_16
+    21300106: Tim_17
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Tim_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 1
+        width: 55
+        height: 63
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Tim_1
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 15
+        width: 16
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Tim_2
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 15
+        width: 18
+        height: 30
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Tim_3
+      rect:
+        serializedVersion: 2
+        x: 105
+        y: 15
+        width: 16
+        height: 30
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Tim_4
+      rect:
+        serializedVersion: 2
+        x: 125
+        y: 15
+        width: 16
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Tim_5
+      rect:
+        serializedVersion: 2
+        x: 145
+        y: 15
+        width: 16
+        height: 30
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Tim_6
+      rect:
+        serializedVersion: 2
+        x: 165
+        y: 15
+        width: 18
+        height: 30
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Tim_7
+      rect:
+        serializedVersion: 2
+        x: 187
+        y: 15
+        width: 15
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Tim_8
+      rect:
+        serializedVersion: 2
+        x: 206
+        y: 15
+        width: 18
+        height: 29
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Tim_9
+      rect:
+        serializedVersion: 2
+        x: 228
+        y: 15
+        width: 16
+        height: 29
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Tim_10
+      rect:
+        serializedVersion: 2
+        x: 248
+        y: 15
+        width: 14
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Tim_11
+      rect:
+        serializedVersion: 2
+        x: 266
+        y: 15
+        width: 16
+        height: 28
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Tim_12
+      rect:
+        serializedVersion: 2
+        x: 286
+        y: 15
+        width: 18
+        height: 29
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Tim_13
+      rect:
+        serializedVersion: 2
+        x: 308
+        y: 15
+        width: 15
+        height: 29
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Tim_14
+      rect:
+        serializedVersion: 2
+        x: 327
+        y: 15
+        width: 18
+        height: 31
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Tim_15
+      rect:
+        serializedVersion: 2
+        x: 349
+        y: 15
+        width: 17
+        height: 30
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Tim_16
+      rect:
+        serializedVersion: 2
+        x: 370
+        y: 15
+        width: 14
+        height: 29
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Tim_17
+      rect:
+        serializedVersion: 2
+        x: 388
+        y: 15
+        width: 13
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

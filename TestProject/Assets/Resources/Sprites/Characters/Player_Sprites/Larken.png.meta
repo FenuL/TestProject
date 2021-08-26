@@ -1,0 +1,1002 @@
+fileFormatVersion: 2
+guid: 9d16ff3819ed8754badf90f0011022dd
+timeCreated: 1583907465
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: spritesheet_02_0
+    21300002: spritesheet_02_1
+    21300004: spritesheet_02_2
+    21300006: spritesheet_02_3
+    21300008: spritesheet_02_4
+    21300010: spritesheet_02_5
+    21300012: spritesheet_02_6
+    21300014: spritesheet_02_7
+    21300016: spritesheet_02_8
+    21300018: spritesheet_02_9
+    21300020: spritesheet_02_10
+    21300022: spritesheet_02_11
+    21300024: spritesheet_02_12
+    21300026: spritesheet_02_13
+    21300028: spritesheet_02_14
+    21300030: spritesheet_02_15
+    21300032: spritesheet_02_16
+    21300034: spritesheet_02_17
+    21300036: spritesheet_02_18
+    21300038: spritesheet_02_19
+    21300040: spritesheet_02_20
+    21300042: spritesheet_02_21
+    21300044: spritesheet_02_22
+    21300046: spritesheet_02_23
+    21300048: spritesheet_02_24
+    21300050: spritesheet_02_25
+    21300052: spritesheet_02_26
+    21300054: spritesheet_02_27
+    21300056: spritesheet_02_28
+    21300058: spritesheet_02_29
+    21300060: spritesheet_02_30
+    21300062: spritesheet_02_31
+    21300064: spritesheet_02_32
+    21300066: spritesheet_02_33
+    21300068: spritesheet_02_34
+    21300070: spritesheet_02_35
+    21300072: spritesheet_02_36
+    21300074: spritesheet_02_37
+    21300076: spritesheet_02_38
+    21300078: spritesheet_02_39
+    21300080: spritesheet_02_40
+    21300082: spritesheet_02_41
+    21300084: spritesheet_02_42
+    21300086: spritesheet_02_43
+    21300088: spritesheet_02_44
+    21300090: spritesheet_02_45
+    21300092: spritesheet_02_46
+    21300094: spritesheet_02_47
+    21300096: spritesheet_02_48
+    21300098: spritesheet_02_49
+    21300100: spritesheet_02_50
+    21300102: spritesheet_02_51
+    21300104: spritesheet_02_52
+    21300106: spritesheet_02_53
+    21300108: spritesheet_02_54
+    21300110: spritesheet_02_55
+    21300112: spritesheet_02_56
+    21300114: spritesheet_02_57
+    21300116: spritesheet_02_58
+    21300118: spritesheet02_0
+    21300120: spritesheet02_1
+    21300122: spritesheet02_2
+    21300124: spritesheet02_3
+    21300126: spritesheet02_4
+    21300128: spritesheet02_5
+    21300130: spritesheet02_6
+    21300132: spritesheet02_7
+    21300134: spritesheet02_8
+    21300136: spritesheet02_9
+    21300138: spritesheet02_10
+    21300140: spritesheet02_11
+    21300142: spritesheet02_12
+    21300144: spritesheet02_13
+    21300146: spritesheet02_14
+    21300148: spritesheet02_15
+    21300150: spritesheet02_16
+    21300152: spritesheet02_17
+    21300154: spritesheet02_18
+    21300156: spritesheet02_19
+    21300158: spritesheet02_20
+    21300160: spritesheet02_21
+    21300162: spritesheet02_22
+    21300164: spritesheet02_23
+    21300166: spritesheet02_24
+    21300168: spritesheet02_25
+    21300170: spritesheet02_26
+    21300172: spritesheet02_27
+    21300174: spritesheet02_28
+    21300176: spritesheet02_29
+    21300178: spritesheet02_30
+    21300180: spritesheet02_31
+    21300182: spritesheet02_32
+    21300184: spritesheet02_33
+    21300186: spritesheet02_34
+    21300188: spritesheet02_35
+    21300190: spritesheet02_36
+    21300192: spritesheet02_37
+    21300194: spritesheet02_38
+    21300196: spritesheet02_39
+    21300198: spritesheet02_40
+    21300200: spritesheet02_41
+    21300202: spritesheet02_42
+    21300204: spritesheet02_43
+    21300206: spritesheet02_44
+    21300208: spritesheet02_45
+    21300210: spritesheet02_46
+    21300212: spritesheet02_47
+    21300214: spritesheet02_48
+    21300216: spritesheet02_49
+    21300218: spritesheet02_50
+    21300220: spritesheet02_51
+    21300222: spritesheet02_52
+    21300224: spritesheet02_53
+    21300226: spritesheet02_54
+    21300228: spritesheet02_55
+    21300230: spritesheet02_56
+    21300232: spritesheet02_57
+    21300234: spritesheet02_58
+    21300236: Larken_0
+    21300238: Larken_1
+    21300240: Larken_2
+    21300242: Larken_3
+    21300244: Larken_4
+    21300246: Larken_5
+    21300248: Larken_6
+    21300250: Larken_7
+    21300252: Larken_8
+    21300254: Larken_9
+    21300256: Larken_10
+    21300258: Larken_11
+    21300260: Larken_12
+    21300262: Larken_13
+    21300264: Larken_14
+    21300266: Larken_15
+    21300268: Larken_16
+    21300270: Larken_17
+    21300272: Larken_18
+    21300274: Larken_19
+    21300276: Larken_20
+    21300278: Larken_21
+    21300280: Larken_22
+    21300282: Larken_23
+    21300284: Larken_24
+    21300286: Larken_25
+    21300288: Larken_26
+    21300290: Larken_27
+    21300292: Larken_28
+    21300294: Larken_29
+    21300296: Larken_30
+    21300298: Larken_31
+    21300300: Larken_32
+    21300302: Larken_33
+    21300304: Larken_34
+    21300306: Larken_35
+    21300308: Larken_36
+    21300310: Larken_37
+    21300312: Larken_38
+    21300314: Larken_39
+    21300316: Larken_40
+    21300318: Larken_41
+    21300320: Larken_42
+    21300322: Larken_43
+    21300324: Larken_44
+    21300326: Larken_45
+    21300328: Larken_46
+    21300330: Larken_47
+    21300332: Larken_48
+    21300334: Larken_49
+    21300336: Larken_50
+    21300338: Larken_51
+    21300340: Larken_52
+    21300342: Larken_53
+    21300344: Larken_54
+    21300346: Larken_55
+    21300348: Larken_56
+    21300350: Larken_57
+    21300352: Larken_58
+  serializedVersion: 2
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    linearTexture: 0
+    correctGamma: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 0
+  cubemapConvolution: 0
+  cubemapConvolutionSteps: 7
+  cubemapConvolutionExponent: 1.5
+  seamlessCubemap: 0
+  textureFormat: -1
+  maxTextureSize: 2048
+  textureSettings:
+    filterMode: -1
+    aniso: 16
+    mipBias: -1
+    wrapMode: 1
+  nPOTScale: 0
+  lightmap: 0
+  rGBM: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 100
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  buildTargetSettings: []
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Larken_0
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 19
+        width: 50
+        height: 62
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_1
+      rect:
+        serializedVersion: 2
+        x: 63
+        y: 66
+        width: 16
+        height: 28
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_2
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 66
+        width: 16
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_3
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 66
+        width: 16
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_4
+      rect:
+        serializedVersion: 2
+        x: 123
+        y: 66
+        width: 16
+        height: 28
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_5
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 66
+        width: 16
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_6
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 66
+        width: 16
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_7
+      rect:
+        serializedVersion: 2
+        x: 183
+        y: 66
+        width: 15
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_8
+      rect:
+        serializedVersion: 2
+        x: 202
+        y: 66
+        width: 14
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_9
+      rect:
+        serializedVersion: 2
+        x: 220
+        y: 66
+        width: 16
+        height: 21
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_10
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 66
+        width: 15
+        height: 25
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_11
+      rect:
+        serializedVersion: 2
+        x: 259
+        y: 66
+        width: 15
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_12
+      rect:
+        serializedVersion: 2
+        x: 278
+        y: 66
+        width: 15
+        height: 28
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_13
+      rect:
+        serializedVersion: 2
+        x: 297
+        y: 66
+        width: 15
+        height: 28
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_14
+      rect:
+        serializedVersion: 2
+        x: 316
+        y: 66
+        width: 16
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_15
+      rect:
+        serializedVersion: 2
+        x: 336
+        y: 66
+        width: 16
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_16
+      rect:
+        serializedVersion: 2
+        x: 356
+        y: 66
+        width: 15
+        height: 28
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_17
+      rect:
+        serializedVersion: 2
+        x: 375
+        y: 66
+        width: 14
+        height: 28
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_18
+      rect:
+        serializedVersion: 2
+        x: 393
+        y: 66
+        width: 14
+        height: 28
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_19
+      rect:
+        serializedVersion: 2
+        x: 411
+        y: 66
+        width: 14
+        height: 28
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_20
+      rect:
+        serializedVersion: 2
+        x: 431
+        y: 52
+        width: 15
+        height: 23
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_21
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 34
+        width: 14
+        height: 28
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_22
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 34
+        width: 16
+        height: 26
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_23
+      rect:
+        serializedVersion: 2
+        x: 103
+        y: 34
+        width: 15
+        height: 26
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_24
+      rect:
+        serializedVersion: 2
+        x: 124
+        y: 34
+        width: 14
+        height: 28
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_25
+      rect:
+        serializedVersion: 2
+        x: 143
+        y: 34
+        width: 16
+        height: 25
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_26
+      rect:
+        serializedVersion: 2
+        x: 163
+        y: 34
+        width: 16
+        height: 26
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_27
+      rect:
+        serializedVersion: 2
+        x: 183
+        y: 34
+        width: 14
+        height: 26
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_28
+      rect:
+        serializedVersion: 2
+        x: 201
+        y: 34
+        width: 18
+        height: 25
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_29
+      rect:
+        serializedVersion: 2
+        x: 223
+        y: 34
+        width: 16
+        height: 26
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_30
+      rect:
+        serializedVersion: 2
+        x: 243
+        y: 34
+        width: 15
+        height: 26
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_31
+      rect:
+        serializedVersion: 2
+        x: 262
+        y: 34
+        width: 16
+        height: 25
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_32
+      rect:
+        serializedVersion: 2
+        x: 282
+        y: 34
+        width: 15
+        height: 26
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_33
+      rect:
+        serializedVersion: 2
+        x: 301
+        y: 34
+        width: 15
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_34
+      rect:
+        serializedVersion: 2
+        x: 320
+        y: 34
+        width: 14
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_35
+      rect:
+        serializedVersion: 2
+        x: 338
+        y: 34
+        width: 14
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_36
+      rect:
+        serializedVersion: 2
+        x: 356
+        y: 34
+        width: 15
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_37
+      rect:
+        serializedVersion: 2
+        x: 375
+        y: 34
+        width: 15
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_38
+      rect:
+        serializedVersion: 2
+        x: 394
+        y: 34
+        width: 14
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_39
+      rect:
+        serializedVersion: 2
+        x: 412
+        y: 34
+        width: 15
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_40
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 2
+        width: 15
+        height: 26
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_41
+      rect:
+        serializedVersion: 2
+        x: 83
+        y: 2
+        width: 15
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_42
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 2
+        width: 15
+        height: 27
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_43
+      rect:
+        serializedVersion: 2
+        x: 121
+        y: 2
+        width: 14
+        height: 23
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_44
+      rect:
+        serializedVersion: 2
+        x: 139
+        y: 2
+        width: 14
+        height: 28
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_45
+      rect:
+        serializedVersion: 2
+        x: 157
+        y: 2
+        width: 16
+        height: 22
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_46
+      rect:
+        serializedVersion: 2
+        x: 177
+        y: 2
+        width: 16
+        height: 22
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_47
+      rect:
+        serializedVersion: 2
+        x: 197
+        y: 2
+        width: 16
+        height: 21
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_48
+      rect:
+        serializedVersion: 2
+        x: 217
+        y: 2
+        width: 16
+        height: 22
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_49
+      rect:
+        serializedVersion: 2
+        x: 237
+        y: 2
+        width: 16
+        height: 21
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_50
+      rect:
+        serializedVersion: 2
+        x: 257
+        y: 2
+        width: 16
+        height: 28
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_51
+      rect:
+        serializedVersion: 2
+        x: 277
+        y: 2
+        width: 16
+        height: 26
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_52
+      rect:
+        serializedVersion: 2
+        x: 297
+        y: 2
+        width: 16
+        height: 28
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_53
+      rect:
+        serializedVersion: 2
+        x: 317
+        y: 2
+        width: 16
+        height: 28
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_54
+      rect:
+        serializedVersion: 2
+        x: 337
+        y: 2
+        width: 24
+        height: 24
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_55
+      rect:
+        serializedVersion: 2
+        x: 365
+        y: 2
+        width: 19
+        height: 22
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_56
+      rect:
+        serializedVersion: 2
+        x: 388
+        y: 2
+        width: 16
+        height: 21
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_57
+      rect:
+        serializedVersion: 2
+        x: 408
+        y: 2
+        width: 16
+        height: 21
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Larken_58
+      rect:
+        serializedVersion: 2
+        x: 428
+        y: 2
+        width: 16
+        height: 10
+      alignment: 7
+      pivot: {x: 0.5, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    outline: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

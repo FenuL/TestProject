@@ -33,23 +33,17 @@
 	},
 	{
 	  "type":1,
-	  "target":1,"checks":["CHK_TDST_LTQ_CRNG"],
+	  "target":1,
+	  "checks":["CHK_TDST_LTQ_CRNG"],
 	  "values":["2","VECT","ABSL[4-(CC_COO-CC_ORI+2)%4]","CC_STR/2"],
 	  "min_target_limit":0,
-	  "max_target_limit":1,
-	  "activation":0,
-	  "trigger":2,
-	  "trigger_target":2,
-	  "condition":null,
-	  "origin":0,
-	  "enabled":true,
-	  "animation":"Attack"
+	  "max_target_limit":1
 	}
   ],
   "activation":0,
   "trigger":2,
   "trigger_target":2,
-  "condition":null,
+  "trigger_checks":null,
   "origin":0,
   "enabled":true,
   "animation":"Attack"

@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/3d grid.unity
+- path: Assets/Resources/Scenes/Editor.unity
   isLoaded: 1
   isActive: 1

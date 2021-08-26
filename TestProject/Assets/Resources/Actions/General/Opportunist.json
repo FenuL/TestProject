@@ -35,7 +35,7 @@
   "activation":2,
   "trigger":0,
   "trigger_target":2,
-  "condition":null,
+  "trigger_checks":null,
   "origin":0,
   "enabled":true,
   "animation":"Attack"
